@@ -1,11 +1,8 @@
 package net.rizon.moo;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.util.Enumeration;
 
 public class moo
 {
@@ -13,43 +10,8 @@ public class moo
 	public static socket sock = null;
 	public static boolean quitting = false;
 	
-	private static void loadClass(final String path) throws Exception
-	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		Enumeration<URL> resources = classLoader.getResources(path.replace('.', '/'));
-			
-		while (resources.hasMoreElements())
-		{
-			URL resource = resources.nextElement();
-			File dir = new File(resource.getFile());
-			
-			if (dir.isDirectory() == false)
-				continue;
-
-			for (File file : dir.listFiles())
-			{
-				if (file.getName().endsWith(".class"))
-				{
-					Class<?> c = classLoader.loadClass(path + "." + file.getName().substring(0, file.getName().length() - 6));
-					Constructor<?>[] cons = c.getConstructors();
-					if (cons.length > 0)
-					{
-						try
-						{
-							cons[0].newInstance();
-							if (conf.getDebug() > 3)
-								System.out.println("Loading class " + c.getName());
-						}
-						catch (IllegalAccessException ex)
-						{
-							if (conf.getDebug() > 3)
-								System.out.println("Unable to load " + c.getName() + ", Illegal access exception");
-						}
-					}
-				}
-			}
-		}
-	}
+	private static final String[] messages = { "message001", "message015", "message213", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
+	private static final String[] commands = { "commandFlood", "commandMap", "commandScheck", "commandSplit" };
 
 	public static void main(String[] args)
 	{
@@ -67,8 +29,19 @@ public class moo
 		
 		try
 		{
-			loadClass("net.rizon.moo.messages");
-			loadClass("net.rizon.moo.commands");
+			for (int i = 0; i < messages.length; ++i)
+			{
+				Class<?> c = Class.forName("net.rizon.moo.messages." + messages[i]);
+				Constructor<?>[] cons = c.getConstructors();
+				cons[0].newInstance();
+			}
+			
+			for (int i = 0; i < commands.length; ++i)
+			{
+				Class<?> c = Class.forName("net.rizon.moo.commands." + commands[i]);
+				Constructor<?>[] cons = c.getConstructors();
+				cons[0].newInstance();
+			}
 		}
 		catch (Exception ex)
 		{
