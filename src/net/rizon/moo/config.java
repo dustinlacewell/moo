@@ -24,7 +24,7 @@ public class config
 	public void load() throws IOException
 	{
 		Properties prop = new Properties();
-		prop.load(new FileInputStream("moo.properties.template"));
+		prop.load(new FileInputStream("moo.properties"));
 		
 		this.server = prop.getProperty("server");
 		this.port = Integer.parseInt(prop.getProperty("port"));
