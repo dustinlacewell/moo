@@ -1,5 +1,5 @@
 # The server to connect to
-server=192.168.1.2
+server=irc.rizon.net
 
 # The port to connect to
 port=6697
@@ -14,7 +14,7 @@ nick=moo
 ident=moo
 
 # Host to bind to when connecting (optional)
-host=192.168.1.10
+#host=127.0.0.1
 
 # Realname
 realname=Rizon Bot
@@ -26,15 +26,15 @@ realname=Rizon Bot
 version=moo v2.0
 
 # NickServ password (optional)
-nickserv_pass=qwerty
+#nickserv_pass=moo
 
 # GeoServ password (optional)
 #geoserv_pass=moo
 
 # Oper details (optional)
-oper=bobsmith f00
+#oper=moo somepass
 
 # Comma separated list of channels to join
-channels=#adam,#debug
+channels=#opers,#o
 
-debug=2
+debug=0
