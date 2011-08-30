@@ -67,22 +67,22 @@ public class commandSplit extends command
 				if (s.isSplit())
 				{
 					++split;
-					moo.sock.privmsg(target, "[Split] " + s.getName() + " <-> " + s.split_from + ", " + ago(now, s.split_when));
+					moo.sock.privmsg(target, "[SPLIT] " + s.getName() + " <-> " + s.split_from + ", " + ago(now, s.split_when));
 				}
 			}
 			
-			moo.sock.privmsg(target, "[Split] [" + split + "/" + count + "]");
+			moo.sock.privmsg(target, "[SPLIT] [" + split + "/" + count + "]");
 		}
 		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
-				moo.sock.privmsg(target, "[Split] Server " + params[2] + " not found");
+				moo.sock.privmsg(target, "[SPLIT] Server " + params[2] + " not found");
 			else if (s.isSplit() == false)
-				moo.sock.privmsg(target, "[Split] Server " + s.getName() + " is not marked as split");
+				moo.sock.privmsg(target, "[SPLIT] Server " + s.getName() + " is not marked as split");
 			else
 			{
-				moo.sock.privmsg(target, "[Split] Removed server " + s.getName());
+				moo.sock.privmsg(target, "[SPLIT] Removed server " + s.getName());
 				s.splitDel();
 				s.destroy();
 			}

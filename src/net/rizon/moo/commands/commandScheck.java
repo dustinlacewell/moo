@@ -48,7 +48,7 @@ class scheck extends Thread
 		try
 		{
 			socket s = new socket();
-			moo.sock.privmsg(this.target, "Connecting to " + this.server + "...");
+			moo.sock.privmsg(this.target, "[SCHECK] Connecting to " + this.server + "...");
 			s.connect(this.server, 6667, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
@@ -65,7 +65,7 @@ class scheck extends Thread
 				}
 				else if (token.length > 7 && token[1].equals("242"))
 				{
-					moo.sock.privmsg(this.target, "[" + token[0].substring(1) + "] Global users: " + this.users + ", Uptime: " + token[5] + " days " + token[7]);
+					moo.sock.privmsg(this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -73,15 +73,15 @@ class scheck extends Thread
 		}
 		catch (NoRouteToHostException ex)
 		{
-			moo.sock.privmsg(this.target, "Unable to connect to " + this.server + ", no route to host");
+			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
 		}
 		catch (SocketTimeoutException ex)
 		{
-			moo.sock.privmsg(this.target, "Unable to connect to " + this.server + ", connection timeout");
+			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
 		}
 		catch (IOException ex)
 		{
-			moo.sock.privmsg(this.target, "Unable to connect to " + this.server);
+			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server);
 		}
 	}
 }
@@ -103,7 +103,7 @@ public class commandScheck extends command
 			String search = "*" + params[1] + "*";
 			server serv = server.findServer(search);
 			if (serv == null)
-				moo.sock.privmsg(target, "Unable to find a server matching " + search);
+				moo.sock.privmsg(target, "[SCHECK] Server " + params[1] + " not found");
 			else
 			{
 				scheck check = new scheck(serv.getName(), target);

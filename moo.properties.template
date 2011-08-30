@@ -34,4 +34,4 @@ oper=bobsmith f00
 # Comma separated list of channels to join
 channels=#adam
 
-debug=1
+debug=2
