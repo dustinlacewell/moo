@@ -19,6 +19,7 @@ public class config
 	private String geoserv_pass;
 	private String oper;
 	private String[] channels;
+	private boolean shell;
 	private int debug;
 
 	public void load() throws IOException
@@ -41,6 +42,7 @@ public class config
 		String chan = prop.getProperty("channels");
 		if (chan != null)
 			this.channels = chan.split(",");
+		this.shell = Boolean.parseBoolean(prop.getProperty("enableshell"));
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
 		this.check();
@@ -123,6 +125,11 @@ public class config
 	public final String[] getChannels()
 	{
 		return this.channels;
+	}
+	
+	public boolean getShell()
+	{
+		return this.shell;
 	}
 	
 	public final int getDebug()

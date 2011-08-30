@@ -44,6 +44,9 @@ public class commandShell extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
+		if (moo.conf.getShell() == false)
+			return;
+
 		String param = "";
 		for (int i = 1; i < params.length; ++i)
 			param += params[i];

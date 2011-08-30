@@ -37,4 +37,7 @@ version=moo v2.0
 # Comma separated list of channels to join
 channels=#opers,#o
 
+# Set to true to enable !shell
+enableshell=false
+
 debug=0
