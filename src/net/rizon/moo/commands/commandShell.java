@@ -1,6 +1,7 @@
 package net.rizon.moo.commands;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -22,7 +23,7 @@ class shellExec extends Thread
 	{
 		try
 		{
-			Process proc = Runtime.getRuntime().exec(this.command);
+			Process proc = Runtime.getRuntime().exec(this.command, null, new File(moo.conf.getShellBase()));
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
 				moo.sock.privmsg(this.target, line);
@@ -44,14 +45,24 @@ public class commandShell extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (moo.conf.getShell() == false || moo.conf.isAdminChannel(target) == false)
+		if (moo.conf.getShell() == false || moo.conf.isAdminChannel(target) == false || params.length == 1)
 			return;
+		
+		File base = new File(moo.conf.getShellBase());
+		if (base.exists() == false || base.isDirectory() == false)
+		{
+			moo.sock.privmsg(target, "Shell base dir is set to an invalid path");
+			return;
+		}
 
 		String param = "";
 		for (int i = 1; i < params.length; ++i)
 			param += params[i];
+		
+		if (param.indexOf("..") != -1)
+			return;
 
-		shellExec e = new shellExec(target,param);
+		shellExec e = new shellExec(target, param);
 		e.start();
 	}
 }

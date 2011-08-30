@@ -41,6 +41,9 @@ channels=#opers,#o,#r,#x
 admin_channels=#r,#x
 
 # Set to true to enable !shell
-enableshell=false
+enable_shell=false
+
+# The base path for shell commands
+shell_base=/home/adam/rizon/moo/shell
 
 debug=0

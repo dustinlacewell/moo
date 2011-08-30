@@ -21,6 +21,7 @@ public class config
 	private String[] channels;
 	private String[] admin_channels;
 	private boolean shell;
+	private String shell_base;
 	private int debug;
 
 	public void load() throws IOException
@@ -45,8 +46,9 @@ public class config
 			this.channels = chan.split(",");
 		chan = prop.getProperty("admin_channels");
 		if (chan != null)
-			this.admin_channels = chan.split(" ");
-		this.shell = Boolean.parseBoolean(prop.getProperty("enableshell"));
+			this.admin_channels = chan.split(",");
+		this.shell = Boolean.parseBoolean(prop.getProperty("enable_shell"));
+		this.shell_base = prop.getProperty("shell_base");
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
 		this.check();
@@ -64,6 +66,8 @@ public class config
 			throw new IOException("A valid ident must be configured");
 		else if (this.getRealname() == null || this.getRealname().isEmpty())
 			throw new IOException("A valid realname must be configured");
+		else if (this.getShellBase() == null)
+			throw new IOException("A valid shell base must be configured");
 	}
 	
 	public final String getServer()
@@ -143,6 +147,11 @@ public class config
 	public boolean getShell()
 	{
 		return this.shell;
+	}
+	
+	public final String getShellBase()
+	{
+		return this.shell_base;
 	}
 	
 	public final int getDebug()
