@@ -9,6 +9,11 @@ public class message015 extends message
 	{
 		super("015");
 	}
+	
+	private static boolean isValidServerChar(char c)
+	{
+		return c == '.' || c == '-' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); 
+	}
 
 	@Override
 	public void run(String source, String[] message)
@@ -24,7 +29,7 @@ public class message015 extends message
 				break;
 		
 		String name = "";
-		for (; i < map.length() && (map.charAt(i) == '.' || Character.isLetter(map.charAt(i))); ++i)
+		for (; i < map.length() && (map.charAt(i) == '.' || isValidServerChar(map.charAt(i))); ++i)
 			name += map.charAt(i);
 		
 		server serv = server.findServerAbsolute(name);
