@@ -177,4 +177,11 @@ public class moo
 		
 		return true;
 	}
+	
+	public static void akill(final String host, final String time, final String reason)
+	{
+		if (host.equals("255.255.255.255"))
+			return;
+		sock.privmsg("GeoServ", "AKILL ADD " + time + " *@" + host + " " + reason);
+	}
 }

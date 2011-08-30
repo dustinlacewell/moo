@@ -16,7 +16,7 @@ public abstract class command extends message
 		if (message.length < 2 || message[0].startsWith("#") == false || message[1].startsWith("!") == false)
 			return;
 		
-		String tokens[] = message[1].substring(1).split(" ");
+		String tokens[] = message[1].split(" ");
 		if (this.cmdname.equalsIgnoreCase(tokens[0]))
 			this.execute(source, message[0], tokens);
 	}

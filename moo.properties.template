@@ -32,6 +32,6 @@ nickserv_pass=qwerty
 oper=bobsmith f00
 
 # Comma separated list of channels to join
-channels=#adam
+channels=#adam,#debug
 
 debug=2

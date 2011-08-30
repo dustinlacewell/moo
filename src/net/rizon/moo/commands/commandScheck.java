@@ -90,7 +90,7 @@ public class commandScheck extends command
 {
 	public commandScheck()
 	{
-		super("SCHECK");
+		super("!SCHECK");
 	}
 
 	@Override

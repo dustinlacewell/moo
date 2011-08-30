@@ -63,6 +63,14 @@ public class socket extends Socket
 		this.write("PRIVMSG " + target + " :" + buffer);
 	}
 	
+	public void notice(String target, final String buffer)
+	{
+		int ex = target.indexOf('!');
+		if (ex != -1)
+			target = target.substring(0, ex);
+		this.write("NOTICE " + target + " :" + buffer);
+	}
+	
 	public void join(String target)
 	{
 		this.write("JOIN " + target);

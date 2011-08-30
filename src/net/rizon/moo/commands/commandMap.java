@@ -119,7 +119,7 @@ class commandMapRegular extends commandMapBase
 {
 	public commandMapRegular()
 	{
-		super("MAP", false);
+		super("!MAP", false);
 	}
 }
 
@@ -127,7 +127,7 @@ class commandMapAll extends commandMapBase
 {
 	public commandMapAll()
 	{
-		super("MAP-" , true);
+		super("!MAP-" , true);
 	}
 }
 

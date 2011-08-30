@@ -11,7 +11,7 @@ public class commandSplit extends command
 {
 	public commandSplit()
 	{
-		super("SPLIT");
+		super("!SPLIT");
 	}
 	
 	private static String ago(Date now, Date then)
