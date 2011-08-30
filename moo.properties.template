@@ -1,0 +1,37 @@
+# The server to connect to
+server=192.168.1.2
+
+# The port to connect to
+port=6667
+
+# Nick to use
+nick=moo
+
+# Ident to use
+ident=moo
+
+# Host to bind to when connecting (optional)
+host=192.168.1.10
+
+# Realname
+realname=Rizon Bot
+
+# Server password (optional)
+#server_pass=moo
+
+# Bot version
+version=moo v2.0
+
+# NickServ password (optional)
+nickserv_pass=qwerty
+
+# GeoServ password (optional)
+#geoserv_pass=moo
+
+# Oper details (optional)
+oper=bobsmith f00
+
+# Comma separated list of channels to join
+channels=#adam
+
+debug=1
