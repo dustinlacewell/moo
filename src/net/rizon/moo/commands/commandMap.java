@@ -13,43 +13,6 @@ class message211 extends message
 	{
 		super("211");
 	}
-	
-	public static String request_chan = null;
-	public static boolean request_all = false;
-	
-	private String convertBytes(String b)
-	{
-		double bb = Double.parseDouble(b);
-		String what = "bytes";
-		
-		if (bb > 1024D)
-		{
-			bb /= 1024D;
-			what = "KB";
-		}
-		if (bb > 1024D)
-		{
-			bb /= 1024D;
-			what = "MB";
-		}
-		if (bb > 1024D)
-		{
-			bb /= 1024D;
-			what = "GB";
-		}
-		if (bb > 1024D)
-		{
-			bb /= 1024D;
-			what = "TB";
-		}
-		
-		b = Double.toString(bb);
-		int dp = b.indexOf('.');
-		if (b.length() > dp + 2)
-			return b.substring(0, dp + 3) + " " + what;
-		else
-			return b + " " + what;
-	}
 
 	/* 
 	 * 0: moo
@@ -64,16 +27,68 @@ class message211 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (request_chan == null)
-			return;
+		long bytes = Long.parseLong(message[2]);
+		server serv = server.findServerAbsolute(source);
+		if (serv == null)
+			serv = new server(source);
+		else
+			serv.splitDel();
+		serv.bytes += bytes;
+	}
+}
 
-		int lag = Integer.parseInt(message[2]);
-		if (lag > 1024 || request_all)
+class message219 extends message
+{
+	public message219()
+	{
+		super("219");
+	}
+	
+	private String convertBytes(long b)
+	{
+		String what = "bytes";
+		
+		if (b > 1024L)
 		{
-			String to_server = message[1].split("\\[")[0];
-			
-			moo.sock.privmsg(request_chan, "[MAP] " + source + " -> " + to_server + ": " + this.convertBytes(message[2]));
+			b /= 1024L;
+			what = "KB";
 		}
+		if (b > 1024L)
+		{
+			b /= 1024L;
+			what = "MB";
+		}
+		if (b > 1024L)
+		{
+			b /= 1024L;
+			what = "GB";
+		}
+		if (b > 1024L)
+		{
+			b /= 1024L;
+			what = "TB";
+		}
+		
+		String tmp = Long.toString(b);
+		int dp = tmp.indexOf('.');
+		if (tmp.length() > dp + 2)
+			return tmp.substring(0, dp + 3) + " " + what;
+		else
+			return b + " " + what;
+	}
+	
+	
+	public static String request_chan = null;
+	public static boolean request_all = false;
+
+	@Override
+	public void run(String source, String[] message)
+	{
+		server serv = server.findServerAbsolute(source);
+		if (serv == null || request_chan == null)
+			return;
+		else if (request_all || serv.bytes >= 1024)
+			moo.sock.privmsg(request_chan, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
 	}
 }
 
@@ -96,10 +111,13 @@ class commandMapBase extends command
 			{
 				server s = it.next();
 				if (s.isHub())
+				{
+					s.bytes = 0;
 					moo.sock.write("STATS ? " + s.getName());
+				}
 			}
-			message211.request_all = this.full;
-			message211.request_chan = target;
+			message219.request_all = this.full;
+			message219.request_chan = target;
 		}
 		else if (params.length > 1)
 		{
@@ -119,9 +137,10 @@ class commandMapBase extends command
 					moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
 				else
 				{
+					s.bytes = 0;
 					moo.sock.write("STATS ? " + s.getName());;
-					message211.request_all = this.full;
-					message211.request_chan = target;
+					message219.request_all = this.full;
+					message219.request_chan = target;
 				}
 			}
 		}
@@ -148,6 +167,8 @@ public class commandMap
 {
 	@SuppressWarnings("unused")
 	private static message211 msg_211 = new message211();
+	@SuppressWarnings("unused")
+	private static message219 msg_219 = new message219();
 	@SuppressWarnings("unused")
 	private static commandMapRegular map_reg = new commandMapRegular();
 	@SuppressWarnings("unused")

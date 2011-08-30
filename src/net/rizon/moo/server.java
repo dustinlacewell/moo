@@ -13,12 +13,14 @@ public class server
 
 	public String split_from;
 	public Date split_when;
+	public long bytes; 
 
 	public server(final String name)
 	{
 		this.name = name;
 		this.split_from = null;
 		this.split_when = null;
+		this.bytes = 0;
 		servers.push(this);
 		
 		if (moo.conf.getDebug() > 0)
