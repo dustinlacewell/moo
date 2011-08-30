@@ -8,6 +8,7 @@ public class config
 {
 	private String server;
 	private int port;
+	private boolean ssl;
 	private String nick;
 	private String ident;
 	private String host;
@@ -27,6 +28,7 @@ public class config
 		
 		this.server = prop.getProperty("server");
 		this.port = Integer.parseInt(prop.getProperty("port"));
+		this.ssl = Boolean.parseBoolean(prop.getProperty("ssl"));
 		this.nick = prop.getProperty("nick");
 		this.ident = prop.getProperty("ident");
 		this.host = prop.getProperty("host");
@@ -66,6 +68,11 @@ public class config
 	public final int getPort()
 	{
 		return this.port;
+	}
+	
+	public final boolean getSSL()
+	{
+		return this.ssl;
 	}
 	
 	public final String getNick()

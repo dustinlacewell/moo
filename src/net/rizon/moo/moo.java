@@ -83,10 +83,13 @@ public class moo
 		{
 			try
 			{
-				sock = new socket();
+				if (moo.conf.getSSL())
+					sock = socket.createSSL();
+				else
+					sock = socket.create();
 				
 				if (conf.getHost() != null && conf.getHost().isEmpty() == false)
-					sock.bind(new InetSocketAddress(conf.getHost(), 0));
+					sock.getSocket().bind(new InetSocketAddress(conf.getHost(), 0));
 				
 				sock.connect(conf.getServer(), conf.getPort());
 				

@@ -47,7 +47,7 @@ class scheck extends Thread
 	{
 		try
 		{
-			socket s = new socket();
+			socket s = socket.create();
 			moo.sock.privmsg(this.target, "[SCHECK] Connecting to " + this.server + "...");
 			s.connect(this.server, 6667, 15000);
 
