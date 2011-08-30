@@ -29,7 +29,7 @@ public class message015 extends message
 				break;
 		
 		String name = "";
-		for (; i < map.length() && (map.charAt(i) == '.' || isValidServerChar(map.charAt(i))); ++i)
+		for (; i < map.length() && isValidServerChar(map.charAt(i)); ++i)
 			name += map.charAt(i);
 		
 		server serv = server.findServerAbsolute(name);
