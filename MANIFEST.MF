@@ -1,0 +1,3 @@
+Name: "moo"
+Created-By: "Adam <adam@rizon.net>"
+Main-Class: net.rizon.moo.moo
