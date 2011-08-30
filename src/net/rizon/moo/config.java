@@ -19,6 +19,7 @@ public class config
 	private String geoserv_pass;
 	private String oper;
 	private String[] channels;
+	private String[] admin_channels;
 	private boolean shell;
 	private int debug;
 
@@ -42,6 +43,9 @@ public class config
 		String chan = prop.getProperty("channels");
 		if (chan != null)
 			this.channels = chan.split(",");
+		chan = prop.getProperty("admin_channels");
+		if (chan != null)
+			this.admin_channels = chan.split(" ");
 		this.shell = Boolean.parseBoolean(prop.getProperty("enableshell"));
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
@@ -125,6 +129,15 @@ public class config
 	public final String[] getChannels()
 	{
 		return this.channels;
+	}
+	
+	public final boolean isAdminChannel(final String channel)
+	{
+		if (this.admin_channels != null)
+			for (int i = 0; i < this.admin_channels.length; ++i)
+				if (this.admin_channels[i].equalsIgnoreCase(channel))
+					return true;
+		return false;
 	}
 	
 	public boolean getShell()

@@ -35,7 +35,10 @@ version=moo v2.0
 #oper=moo somepass
 
 # Comma separated list of channels to join
-channels=#opers,#o
+channels=#opers,#o,#r,#x
+
+# Comma separated list of admin channels. !flood and !shell are limited to these
+admin_channels=#r,#x
 
 # Set to true to enable !shell
 enableshell=false

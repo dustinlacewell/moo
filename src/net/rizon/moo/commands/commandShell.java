@@ -44,7 +44,7 @@ public class commandShell extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (moo.conf.getShell() == false)
+		if (moo.conf.getShell() == false || moo.conf.isAdminChannel(target) == false)
 			return;
 
 		String param = "";

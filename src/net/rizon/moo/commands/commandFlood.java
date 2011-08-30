@@ -157,7 +157,9 @@ public class commandFlood extends command
 
 	public void execute(String source, String target, String[] params)
 	{
-		if (params.length == 1)
+		if (moo.conf.isAdminChannel(target) == false)
+			return;
+		else if (params.length == 1)
 		{
 			moo.sock.notice(source, "Flood commands:");
 			moo.sock.notice(source, "!flood <flood list number> list -- Displays all entries in a flood list");
