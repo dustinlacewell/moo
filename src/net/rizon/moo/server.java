@@ -9,6 +9,7 @@ public class server
 {
 	private String name;
 	public HashSet<String> clines = new HashSet<String>();
+	public HashSet<String> links = new HashSet<String>();
 
 	public String split_from;
 	public Date split_when;
@@ -44,8 +45,15 @@ public class server
 		return this.getName().endsWith(".hub");
 	}
 	
+	public void link(final String to)
+	{
+		this.links.add(to);
+	}
+	
 	public void split(final String from)
 	{
+		this.links.remove(from);
+		
 		this.split_from = from;
 		this.split_when = new Date();
 	}

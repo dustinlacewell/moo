@@ -26,11 +26,20 @@ public class messageNotice extends message
 			if (message[1].indexOf("being introduced by") != -1)
 			{
 				String[] tokens = message[1].split(" ");
+				
 				server serv = server.findServerAbsolute(tokens[4]);
 				if (serv == null)
 					serv = new server(tokens[4]);
 				else
 					serv.splitDel();
+				serv.link(tokens[8]);
+				
+				serv = server.findServerAbsolute(tokens[8]);
+				if (serv == null)
+					new server(tokens[8]);
+				else
+					serv.splitDel();
+				serv.link(tokens[4]);
 			}
 			else if (message[1].indexOf("End of burst from") != -1)
 			{
@@ -40,6 +49,14 @@ public class messageNotice extends message
 					serv = new server(tokens[7]);
 				else
 					serv.splitDel();
+				serv.link(source);
+				
+				serv = server.findServerAbsolute(source);
+				if (serv == null)
+					new server(source);
+				else
+					serv.splitDel();
+				serv.link(tokens[7]);
 			}
 			else if (message[1].indexOf("split from") != -1)
 			{

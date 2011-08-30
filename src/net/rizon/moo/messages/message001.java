@@ -25,5 +25,6 @@ public class message001 extends message
 		
 		server.clearServers();
 		moo.sock.write("MAP");
+		moo.sock.write("LINKS");
 	}
 }

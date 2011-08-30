@@ -103,14 +103,26 @@ class commandMapBase extends command
 		}
 		else if (params.length > 1)
 		{
-			server s = server.findServer(params[1]);
-			if (s == null)
-				moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
+			if (params[1].equalsIgnoreCase("HUB") && params.length > 2)
+			{
+				server s = server.findServer(params[2]);
+				if (s == null)
+					moo.sock.privmsg(target, "[MAP] Server " + params[2] + " not found");
+				else
+					for (Iterator<String> it = s.links.iterator(); it.hasNext();)
+						moo.sock.privmsg(target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
+			}
 			else
 			{
-				moo.sock.write("STATS ? " + s.getName());;
-				message211.request_all = this.full;
-				message211.request_chan = target;
+				server s = server.findServer(params[1]);
+				if (s == null)
+					moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
+				else
+				{
+					moo.sock.write("STATS ? " + s.getName());;
+					message211.request_all = this.full;
+					message211.request_chan = target;
+				}
 			}
 		}
 	}
