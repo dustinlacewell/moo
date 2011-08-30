@@ -11,7 +11,7 @@ public class moo
 	public static boolean quitting = false;
 	
 	private static final String[] messages = { "message001", "message015", "message213", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandFlood", "commandMap", "commandScheck", "commandSplit" };
+	private static final String[] commands = { "commandFlood", "commandMap", "commandScheck", "commandSplit", "commandStatus" };
 
 	public static void main(String[] args)
 	{

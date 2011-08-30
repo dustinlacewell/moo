@@ -95,7 +95,8 @@ class commandMapBase extends command
 			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 			{
 				server s = it.next();
-				moo.sock.write("STATS ? " + s.getName());
+				if (s.isHub())
+					moo.sock.write("STATS ? " + s.getName());
 			}
 			message211.request_all = this.full;
 			message211.request_chan = target;
