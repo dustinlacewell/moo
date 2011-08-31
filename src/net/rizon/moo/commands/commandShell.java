@@ -55,7 +55,7 @@ public class commandShell extends command
 			return;
 		}
 
-		String param = "";
+		String param = "./";
 		for (int i = 1; i < params.length; ++i)
 			param += params[i];
 		
