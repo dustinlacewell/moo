@@ -242,6 +242,8 @@ public class commandFlood extends command
 				floodData d = it.next();
 				moo.akill(d.host, "+2d", "Possible flood bot (" + d.nick + ")");
 			}
+
+			floodManager.removeList(i - 1);
 		}
 	}
 }
