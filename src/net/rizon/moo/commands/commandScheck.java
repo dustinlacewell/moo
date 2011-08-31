@@ -13,6 +13,7 @@ import net.rizon.moo.socket;
 class scheck extends Thread
 {
 	private String server;
+	private int port;
 	private String target;
 	private String users;
 	
@@ -36,10 +37,11 @@ class scheck extends Thread
 		return buf;
 	}
 
-	public scheck(final String server, final String target)
+	public scheck(final String server, final String target, int port)
 	{
 		this.server = server;
 		this.target = target;
+		this.port = port;
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ class scheck extends Thread
 		{
 			socket s = socket.create();
 			moo.sock.privmsg(this.target, "[SCHECK] Connecting to " + this.server + "...");
-			s.connect(this.server, 6667, 15000);
+			s.connect(this.server, this.port, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
 			s.write("NICK " + moo.conf.getNick() + "-" + getRandom());
@@ -97,7 +99,7 @@ public class commandScheck extends command
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
-			moo.sock.privmsg(target, "Syntax: !scheck <server>");
+			moo.sock.privmsg(target, "Syntax: !scheck <server> [port]");
 		else
 		{
 			String search = "*" + params[1] + "*";
@@ -106,7 +108,18 @@ public class commandScheck extends command
 				moo.sock.privmsg(target, "[SCHECK] Server " + params[1] + " not found");
 			else
 			{
-				scheck check = new scheck(serv.getName(), target);
+				int port = 6667;
+				if (params.length > 2)
+				{
+					try
+					{
+						port = Integer.parseInt(params[2]);
+					}
+					catch (NumberFormatException ex)
+					{
+					}
+				}
+				scheck check = new scheck(serv.getName(), target, port);
 				check.start();
 			}
 		}
