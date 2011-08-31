@@ -16,6 +16,8 @@ public class message001 extends message
 	{
 		if (moo.conf.getOper() != null && moo.conf.getOper().isEmpty() == false)
 			moo.sock.write("OPER " + moo.conf.getOper());
+		if (moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
+			moo.sock.privmsg("NickServ", "IDENTIFY " + moo.conf.getNickServPass());
 		if (moo.conf.getGeoServPass() != null && moo.conf.getGeoServPass().isEmpty() == false)
 			moo.sock.privmsg("GeoServ", "ACCESS IDENTIFY " + moo.conf.getGeoServPass());
 		

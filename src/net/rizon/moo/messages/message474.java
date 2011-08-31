@@ -1,5 +1,7 @@
 package net.rizon.moo.messages;
 
+import java.util.HashSet;
+
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 
@@ -10,17 +12,22 @@ public class message474 extends message
 		super("474");
 	}
 	
-	private String lastchan = "";
+	private HashSet<String> invited = new HashSet<String>();
 
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length > 1 && message[1].equalsIgnoreCase(this.lastchan) == false)
+		if (this.invited.contains(message[1]))
+		{
+			this.invited.remove(message[1]);
+			return;
+		}
+		else if (message.length > 1)
 		{
 			moo.sock.privmsg("ChanServ", "UNBAN " + message[1]);
 			moo.sock.privmsg("ChanServ", "INVITE " + message[1]);
 			moo.sock.join(message[1]);
-			this.lastchan = message[1];
+			this.invited.add(message[1]);
 		}
 	}
 }
