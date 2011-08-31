@@ -126,6 +126,12 @@ public class moo
 				ex.printStackTrace();
 			}
 			
+			if (moo.sock != null)
+			{
+				moo.sock.shutdown();
+				moo.sock = null;
+			}
+			
 			try
 			{
 				Thread.sleep(10 * 1000);

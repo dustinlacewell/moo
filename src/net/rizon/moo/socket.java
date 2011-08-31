@@ -169,7 +169,7 @@ public class socket
 		try { this.in.close(); }
 		catch (Exception ex) { }
 		
-		try { this.clone(); }
+		try { this.sock.close(); }
 		catch (Exception ex) { }
 	}
 	
