@@ -92,6 +92,28 @@ class message219 extends message
 	}
 }
 
+class message265 extends message
+{
+	public message265()
+	{
+		super("265");
+	}
+	
+	public static String request_chan = null;
+	public static int request_users = 0;
+
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (request_chan == null || message.length < 2)
+			return;
+
+		int users = Integer.parseInt(message[1]);
+		if (users >= request_users)
+			moo.sock.privmsg(request_chan, "[MAP] " + source + " " + users);
+	}
+}
+
 class commandMapBase extends command
 {
 	private boolean full;
@@ -132,15 +154,31 @@ class commandMapBase extends command
 			}
 			else
 			{
-				server s = server.findServer(params[1]);
-				if (s == null)
-					moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
-				else
+				try
 				{
-					s.bytes = 0;
-					moo.sock.write("STATS ? " + s.getName());;
-					message219.request_all = this.full;
-					message219.request_chan = target;
+					int users = Integer.parseInt(params[1]);
+
+					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+					{
+						server s = it.next();
+						moo.sock.write("USERS " + s.getName());
+					}
+					
+					message265.request_chan = target;
+					message265.request_users = users;
+				}
+				catch (NumberFormatException ex)
+				{
+					server s = server.findServer(params[1]);
+					if (s == null)
+						moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
+					else
+					{
+						s.bytes = 0;
+						moo.sock.write("STATS ? " + s.getName());;
+						message219.request_all = this.full;
+						message219.request_chan = target;
+					}
 				}
 			}
 		}
@@ -169,6 +207,8 @@ public class commandMap
 	private static message211 msg_211 = new message211();
 	@SuppressWarnings("unused")
 	private static message219 msg_219 = new message219();
+	@SuppressWarnings("unused")
+	private static message265 msg_265 = new message265();
 	@SuppressWarnings("unused")
 	private static commandMapRegular map_reg = new commandMapRegular();
 	@SuppressWarnings("unused")
