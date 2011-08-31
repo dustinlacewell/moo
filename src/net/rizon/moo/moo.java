@@ -135,6 +135,8 @@ public class moo
 				quitting = true;
 			}
 		}
+		
+		System.exit(0);
 	}
 	
 	public static boolean match(String text, String pattern)
