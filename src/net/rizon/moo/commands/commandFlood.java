@@ -69,16 +69,16 @@ class floodManager
 		if (floodTime > 0 && System.currentTimeMillis() > floodTime)
 		{
 			floodTime = 0;
-			if (moo.conf.getChannels() != null)
-				for (int c = 0; c < moo.conf.getChannels().length; ++c)
-					moo.sock.privmsg(moo.conf.getChannels()[c], "End of flood - found " + (floodData.isEmpty() == false ? floodData.lastElement().size() : 0) + " matches");
+			if (moo.conf.getAdminChannels() != null)
+				for (int c = 0; c < moo.conf.getAdminChannels().length; ++c)
+					moo.sock.privmsg(moo.conf.getAdminChannels()[c], "End of flood - found " + (floodData.isEmpty() == false ? floodData.lastElement().size() : 0) + " matches");
 		}
 		
 		if (floodTime == 0 && recentConnects.size() == 50 && recentConnects.getFirst().when.after(then))
 		{
-			if (moo.conf.getChannels() != null)
-				for (int c = 0; c < moo.conf.getChannels().length; ++c)
-					moo.sock.privmsg(moo.conf.getChannels()[c], "Flood detected - (50 in 30s) *** collecting matching nick/ident/gecos for next 60s");
+			if (moo.conf.getAdminChannels() != null)
+				for (int c = 0; c < moo.conf.getAdminChannels().length; ++c)
+					moo.sock.privmsg(moo.conf.getAdminChannels()[c], "Flood detected - (50 in 30s) *** collecting matching nick/ident/gecos for next 60s");
 			floodTime = System.currentTimeMillis() + (60 * 1000);
 			floodNew = true;
 		}

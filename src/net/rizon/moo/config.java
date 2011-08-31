@@ -134,6 +134,11 @@ public class config
 	{
 		return this.channels;
 	}
+
+	public final String[] getAdminChannels()
+	{
+		return this.admin_channels;
+	}
 	
 	public final boolean isAdminChannel(final String channel)
 	{
