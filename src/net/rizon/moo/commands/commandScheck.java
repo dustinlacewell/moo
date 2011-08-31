@@ -114,6 +114,8 @@ public class commandScheck extends command
 					try
 					{
 						port = Integer.parseInt(params[2]);
+						if (port <= 0 || port > 65535)
+							throw new NumberFormatException("Invalid port range");
 					}
 					catch (NumberFormatException ex)
 					{
