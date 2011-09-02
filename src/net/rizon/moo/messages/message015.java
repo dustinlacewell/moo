@@ -32,10 +32,16 @@ public class message015 extends message
 		for (; i < map.length() && isValidServerChar(map.charAt(i)); ++i)
 			name += map.charAt(i);
 		
+		String sid = "";
+		++i;
+		for (int j = 0; i < map.length() && j < 3; ++i, ++j)
+			sid += map.charAt(i);
+		
 		server serv = server.findServerAbsolute(name);
 		if (serv == null)
 			serv = new server(name);
 		else
 			serv.splitDel();
+		serv.setSID(sid);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 public class server
 {
 	private String name;
+	private String sid;
 	public HashSet<String> clines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
 
@@ -40,6 +41,16 @@ public class server
 	public final String getName()
 	{
 		return this.name;
+	}
+	
+	public void setSID(final String s)
+	{
+		this.sid = s;
+	}
+	
+	public final String getSID()
+	{
+		return this.sid;
 	}
 
 	public final boolean isHub()

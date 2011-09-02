@@ -36,7 +36,10 @@ public class messageNotice extends message
 				
 				serv = server.findServerAbsolute(tokens[8]);
 				if (serv == null)
-					new server(tokens[8]);
+				{
+					serv = new server(tokens[8]);
+					moo.sock.write("MAP");
+				}
 				else
 					serv.splitDel();
 				serv.link(tokens[4]);
@@ -46,7 +49,10 @@ public class messageNotice extends message
 				String[] tokens = message[1].split(" ");
 				server serv = server.findServerAbsolute(tokens[7]);
 				if (serv == null)
+				{
 					serv = new server(tokens[7]);
+					moo.sock.write("MAP");
+				}
 				else
 					serv.splitDel();
 				serv.link(source);
