@@ -65,8 +65,10 @@ class message351 extends message
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
 			buf += " \003";
-			if (ver_num >= 0 && ver_num < max_ver - 1)
+			if (ver_num >= 0 && ver_num < max_ver - 4)
 				buf += "04";
+			else if (ver_num >= 0 && ver_num < max_ver - 1)
+				buf += "08";
 			else if (ver_num < max_ver)
 				buf += "03";
 			else
@@ -99,7 +101,8 @@ public class commandVersions extends command
 		{
 			server s = it.next();
 			
-			moo.sock.write("VERSION " + s.getName());
+			if (s.getName().endsWith(".rizon.net") == false)
+				moo.sock.write("VERSION " + s.getName());
 		}
 		
 		message351.target_channel = target;
