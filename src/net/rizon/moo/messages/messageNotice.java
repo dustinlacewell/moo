@@ -66,22 +66,23 @@ public class messageNotice extends message
 					serv = new server(tokens[4]);
 				serv.split(tokens[7]);
 				
-				for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-				{
-					server s = it.next();
-					if (s.isSplit() == false && s.isHub() == true)
-						for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
-						{
-							String cline = it2.next();
-							
-							if (serv.getName().equalsIgnoreCase(cline))
+				if (moo.conf.getDisableSplitMessage() == false)
+					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+					{
+						server s = it.next();
+						if (s.isSplit() == false && s.isHub() == true)
+							for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
 							{
-								if (moo.conf.getChannels() != null)
-									for (int i = 0; i < moo.conf.getChannels().length; ++i)
-										moo.sock.privmsg(moo.conf.getChannels()[i], serv.getName() + " can connect to " + s.getName());
+								String cline = it2.next();
+								
+								if (serv.getName().equalsIgnoreCase(cline))
+								{
+									if (moo.conf.getChannels() != null)
+										for (int i = 0; i < moo.conf.getChannels().length; ++i)
+											moo.sock.privmsg(moo.conf.getChannels()[i], serv.getName() + " can connect to " + s.getName());
+								}
 							}
-						}
-				}
+					}
 			}
 		}
 	}

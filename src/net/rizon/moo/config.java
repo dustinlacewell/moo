@@ -22,6 +22,7 @@ public class config
 	private String[] admin_channels;
 	private boolean shell;
 	private String shell_base;
+	private boolean disable_split_message;
 	private int debug;
 
 	public void load() throws IOException
@@ -49,6 +50,7 @@ public class config
 			this.admin_channels = chan.split(",");
 		this.shell = Boolean.parseBoolean(prop.getProperty("enable_shell"));
 		this.shell_base = prop.getProperty("shell_base");
+		this.disable_split_message = Boolean.parseBoolean(prop.getProperty("disable_split_message"));
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
 		this.check();
@@ -157,6 +159,11 @@ public class config
 	public final String getShellBase()
 	{
 		return this.shell_base;
+	}
+	
+	public final boolean getDisableSplitMessage()
+	{
+		return this.disable_split_message;
 	}
 	
 	public final int getDebug()

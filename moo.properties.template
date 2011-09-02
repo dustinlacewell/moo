@@ -46,4 +46,7 @@ enable_shell=false
 # The base path for shell commands
 shell_base=/home/adam/rizon/moo/shell
 
+# Set to true to disable the "server X can connect to Y" message on every split
+disable_split_message=false
+
 debug=0
