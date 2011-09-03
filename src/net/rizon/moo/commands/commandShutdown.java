@@ -9,14 +9,12 @@ public class commandShutdown extends command
 	public commandShutdown()
 	{
 		super("!SHUTDOWN");
+		this.requireAdmin();
 	}
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (moo.conf.isAdminChannel(target) == false)
-			return;
-
 		moo.sock.privmsg(target, "Shutting down");
 		moo.sock.write("QUIT :SHUTDOWN from " + source);
 		moo.sock.shutdown();

@@ -40,12 +40,13 @@ public class commandShell extends command
 	public commandShell()
 	{
 		super("!SHELL");
+		this.requireAdmin();
 	}
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (moo.conf.getShell() == false || moo.conf.isAdminChannel(target) == false || params.length == 1)
+		if (moo.conf.getShell() == false || params.length == 1)
 			return;
 		
 		File base = new File(moo.conf.getShellBase());
