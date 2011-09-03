@@ -9,7 +9,7 @@ public class commandHelp extends command
 {
 	public commandHelp()
 	{
-		super("!HELP-MOO");
+		super("!MOO-HELP");
 	}
 
 	@Override
