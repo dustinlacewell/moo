@@ -9,7 +9,7 @@ public class commandHelp extends command
 {
 	public commandHelp()
 	{
-		super("!MOO-HELP");
+		super("!MOO-HELP", "Shows this list");
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class commandHelp extends command
 			if (c.requiresAdmin() && moo.conf.isAdminChannel(target) == false)
 				continue;
 			
-			moo.sock.notice(source, c.getCommandName());
+			c.onHelp(source, target);
 		}
 	}
 }

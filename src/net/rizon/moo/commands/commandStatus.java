@@ -7,7 +7,7 @@ public class commandStatus extends command
 {
 	public commandStatus()
 	{
-		super("!STATUS");
+		super("!STATUS", "View " + moo.conf.getNick() + "'s status");
 	}
 	
 	private String convertBytes(long bb)

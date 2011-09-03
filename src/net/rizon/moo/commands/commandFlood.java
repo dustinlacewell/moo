@@ -152,14 +152,13 @@ public class commandFlood extends command
 
 	public commandFlood()
 	{
-		super("!FLOOD");
+		super("!FLOOD", "Manage flood lists");
+		this.requireAdmin();
 	}
 
 	public void execute(String source, String target, String[] params)
 	{
-		if (moo.conf.isAdminChannel(target) == false)
-			return;
-		else if (params.length == 1)
+		if (params.length == 1)
 		{
 			moo.sock.notice(source, "Flood commands:");
 			moo.sock.notice(source, "!flood <flood list number> list -- Displays all entries in a flood list");

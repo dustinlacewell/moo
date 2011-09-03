@@ -92,7 +92,7 @@ public class commandScheck extends command
 {
 	public commandScheck()
 	{
-		super("!SCHECK");
+		super("!SCHECK", "Check if a server is online");
 	}
 
 	@Override

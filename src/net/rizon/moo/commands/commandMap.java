@@ -120,7 +120,7 @@ class commandMapBase extends command
 
 	public commandMapBase(final String cmd, boolean full)
 	{
-		super(cmd);
+		super(cmd, "View hub lag and routing information");
 		this.full = full;
 	}
 

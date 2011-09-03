@@ -39,7 +39,7 @@ public class commandShell extends command
 {
 	public commandShell()
 	{
-		super("!SHELL");
+		super("!SHELL", "Execute a shell command");
 		this.requireAdmin();
 	}
 

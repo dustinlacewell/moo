@@ -11,7 +11,7 @@ public class commandSid extends command
 {
 	public commandSid()
 	{
-		super("!NEW-SID");
+		super("!NEW-SID", "Generates a new server ID");
 	}
 	
 	private boolean inUse(final String sid)

@@ -8,7 +8,7 @@ public class commandShutdown extends command
 {
 	public commandShutdown()
 	{
-		super("!SHUTDOWN");
+		super("!SHUTDOWN", "Shutdown " + moo.conf.getNick());
 		this.requireAdmin();
 	}
 
