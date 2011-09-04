@@ -1,7 +1,6 @@
 package net.rizon.moo;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 public class config
@@ -25,7 +24,7 @@ public class config
 	private boolean disable_split_message;
 	private int debug;
 
-	public void load() throws IOException
+	public void load() throws Exception
 	{
 		Properties prop = new Properties();
 		prop.load(new FileInputStream("moo.properties"));
@@ -56,20 +55,22 @@ public class config
 		this.check();
 	}
 	
-	private void check() throws IOException
+	private void check() throws Exception
 	{
 		if (this.getServer() == null || this.getServer().isEmpty())
-			throw new IOException("A server must be configured");
+			throw new Exception("A server must be configured");
 		else if (this.getPort() <= 0 || this.getPort() > 65535)
-			throw new IOException("A valid port must be given");
+			throw new Exception("A valid port must be given");
 		else if (this.getNick() == null || this.getNick().isEmpty())
-			throw new IOException("A valid nick must be configured");
+			throw new Exception("A valid nick must be configured");
 		else if (this.getIdent() == null || this.getIdent().isEmpty())
-			throw new IOException("A valid ident must be configured");
+			throw new Exception("A valid ident must be configured");
 		else if (this.getRealname() == null || this.getRealname().isEmpty())
-			throw new IOException("A valid realname must be configured");
+			throw new Exception("A valid realname must be configured");
+		else if (this.getVersion() == null || this.getVersion().isEmpty())
+			throw new Exception("A valid version must be configured");
 		else if (this.getShellBase() == null)
-			throw new IOException("A valid shell base must be configured");
+			throw new Exception("A valid shell base must be configured");
 	}
 	
 	public final String getServer()

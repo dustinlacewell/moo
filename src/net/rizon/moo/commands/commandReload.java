@@ -1,0 +1,29 @@
+package net.rizon.moo.commands;
+
+import net.rizon.moo.command;
+import net.rizon.moo.config;
+import net.rizon.moo.moo;
+
+public class commandReload extends command
+{
+	public commandReload()
+	{
+		super("!RELOAD", "Reloads the configuration file");
+	}
+
+	@Override
+	public void execute(String source, String target, String[] params)
+	{
+		try
+		{
+			config c = new config();
+			c.load();
+			moo.conf = c;
+			moo.sock.privmsg(target, "Successfully reloaded configuration");
+		}
+		catch (Exception ex)
+		{
+			moo.sock.privmsg(target, "Error reloading configuration: " + ex.getMessage());
+		}
+	}
+}
