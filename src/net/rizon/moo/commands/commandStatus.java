@@ -52,6 +52,6 @@ public class commandStatus extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		moo.sock.privmsg(target, "[STATUS] " + moo.conf.getNick() + " version " + moo.conf.getVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		moo.sock.privmsg(target, "[STATUS] " + moo.conf.getNick() + " version " + moo.conf.getVersion() + ", created on " + moo.getCreated() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

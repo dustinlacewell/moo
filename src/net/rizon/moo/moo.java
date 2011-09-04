@@ -3,9 +3,12 @@ package net.rizon.moo;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
+import java.util.Date;
 
 public class moo
 {
+	private static Date created = new Date();
+
 	public static config conf = null;
 	public static socket sock = null;
 	public static boolean quitting = false;
@@ -143,6 +146,11 @@ public class moo
 		}
 		
 		System.exit(0);
+	}
+	
+	public static final String getCreated()
+	{
+		return created.toString();
 	}
 	
 	public static boolean match(String text, String pattern)
