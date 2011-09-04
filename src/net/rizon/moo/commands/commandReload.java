@@ -9,6 +9,7 @@ public class commandReload extends command
 	public commandReload()
 	{
 		super("!RELOAD", "Reloads the configuration file");
+		this.requireAdmin();
 	}
 
 	@Override
