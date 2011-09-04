@@ -91,7 +91,7 @@ public class commandVersions extends command
 
 	public commandVersions()
 	{
-		super("!IRCD-VERSIONS", "View the IRCd versions");
+		super("!VERSIONS", "View the IRCd versions");
 	}
 
 	@Override
