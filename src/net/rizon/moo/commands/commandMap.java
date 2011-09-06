@@ -85,7 +85,7 @@ class message219 extends message
 	public void run(String source, String[] message)
 	{
 		server serv = server.findServerAbsolute(source);
-		if (serv == null || request_chan == null)
+		if (serv == null || request_chan == null || message[1].equals("?") == false)
 			return;
 		else if (request_all || serv.bytes >= 1024)
 			moo.sock.privmsg(request_chan, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
