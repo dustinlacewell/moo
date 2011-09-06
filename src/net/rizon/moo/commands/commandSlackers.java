@@ -84,6 +84,7 @@ class message366 extends message
 		}
 		
 		commandSlackers.opers.clear();
+		target_chan = null;
 	}
 }
 
