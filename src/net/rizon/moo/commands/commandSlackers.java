@@ -23,7 +23,7 @@ class message249 extends message
 			return;
 		
 		String oper = m[1];
-		commandMissingOpers.opers.add(oper);
+		commandSlackers.opers.add(oper);
 	}
 }
 
@@ -44,7 +44,7 @@ class message353 extends message
 			while (name.isEmpty() == false && Character.isLetter(name.charAt(0)) == false)
 				name = name.substring(1);
 			if (name.isEmpty() == false)
-				commandMissingOpers.opers.remove(name);
+				commandSlackers.opers.remove(name);
 		}
 	}
 }
@@ -64,15 +64,15 @@ class message366 extends message
 		if (target_chan == null)
 			return;
 		
-		if (commandMissingOpers.opers.isEmpty())
+		if (commandSlackers.opers.isEmpty())
 			moo.sock.privmsg(target_chan, "There are no opers missing from " + target_chan);
 		else
 		{
-			moo.sock.privmsg(target_chan, "There are " + commandMissingOpers.opers.size() + " opers missing from " + target_chan + ":");
+			moo.sock.privmsg(target_chan, "There are " + commandSlackers.opers.size() + " opers missing from " + target_chan + ":");
 			String operbuf = "";
-			for (int i = 0; i < commandMissingOpers.opers.size(); ++i)
+			for (int i = 0; i < commandSlackers.opers.size(); ++i)
 			{
-				operbuf += " " + commandMissingOpers.opers.get(i);
+				operbuf += " " + commandSlackers.opers.get(i);
 				if (operbuf.length() > 200)
 				{
 					moo.sock.privmsg(target_chan, operbuf.substring(1));
@@ -83,11 +83,11 @@ class message366 extends message
 				moo.sock.privmsg(target_chan, operbuf.substring(1));
 		}
 		
-		commandMissingOpers.opers.clear();
+		commandSlackers.opers.clear();
 	}
 }
 
-public class commandMissingOpers extends command
+public class commandSlackers extends command
 {	
 	@SuppressWarnings("unused")
 	private static message249 msg_249 = new message249();
@@ -98,7 +98,7 @@ public class commandMissingOpers extends command
 	
 	public static LinkedList<String> opers = new LinkedList<String>();
 
-	public commandMissingOpers()
+	public commandSlackers()
 	{
 		super("!SLACKERS", "Find opers online but not in the channel");
 	}
