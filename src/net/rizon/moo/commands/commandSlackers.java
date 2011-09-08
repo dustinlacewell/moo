@@ -41,7 +41,7 @@ class message353 extends message
 		for (int i = 0; i < names.length; ++i)
 		{
 			String name = names[i];
-			while (name.isEmpty() == false && Character.isLetter(name.charAt(0)) == false)
+			while (name.isEmpty() == false && (name.charAt(0) == '~' || name.charAt(0) == '&' || name.charAt(0) == '@' || name.charAt(0) == '%' || name.charAt(0) == '+'))
 				name = name.substring(1);
 			if (name.isEmpty() == false)
 				commandSlackers.opers.remove(name);
