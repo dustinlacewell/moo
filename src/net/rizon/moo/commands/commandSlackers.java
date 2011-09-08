@@ -137,8 +137,11 @@ public class commandSlackers extends command
 		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 		{
 			server s = it.next();
-			moo.sock.write("STATS p " + s.getName());
-			message366.waiting_on.add(s.getName());
+			if (s.getSID().endsWith("C") || s.getSID().endsWith("H") || s.getSID().endsWith("Z"))
+			{
+				moo.sock.write("STATS p " + s.getName());
+				message366.waiting_on.add(s.getName());
+			}
 		}
 		message366.target_chan = target;
 	}
