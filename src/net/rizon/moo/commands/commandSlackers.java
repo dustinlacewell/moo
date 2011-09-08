@@ -1,5 +1,6 @@
 package net.rizon.moo.commands;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -24,6 +25,25 @@ class message249 extends message
 		
 		String oper = m[1];
 		commandSlackers.opers.add(oper);
+	}
+}
+
+class message219_s extends message
+{
+	public message219_s()
+	{
+		super("219");
+	}
+
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message[1].equals("p") == false)
+			return;
+
+		message366.waiting_on.remove(source);
+		if (message366.waiting_on.isEmpty() && message366.target_chan != null)
+			moo.sock.write("NAMES " + message366.target_chan);
 	}
 }
 
@@ -57,6 +77,7 @@ class message366 extends message
 	}
 	
 	public static String target_chan = null;
+	public static HashSet<String> waiting_on = new HashSet<String>();
 
 	@Override
 	public void run(String source, String[] message)
@@ -85,6 +106,7 @@ class message366 extends message
 		
 		commandSlackers.opers.clear();
 		target_chan = null;
+		waiting_on.clear();
 	}
 }
 
@@ -92,6 +114,8 @@ public class commandSlackers extends command
 {	
 	@SuppressWarnings("unused")
 	private static message249 msg_249 = new message249();
+	@SuppressWarnings("unused")
+	private static message219_s msg_219 = new message219_s();
 	@SuppressWarnings("unused")
 	private static message353 msg_353 = new message353();
 	@SuppressWarnings("unused")
@@ -107,9 +131,15 @@ public class commandSlackers extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
+		opers.clear();
+		message366.target_chan = null;
+		message366.waiting_on.clear();
 		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-			moo.sock.write("STATS p " + it.next().getName());
-		moo.sock.write("NAMES " + target);
+		{
+			server s = it.next();
+			moo.sock.write("STATS p " + s.getName());
+			message366.waiting_on.add(s.getName());
+		}
 		message366.target_chan = target;
 	}
 }
