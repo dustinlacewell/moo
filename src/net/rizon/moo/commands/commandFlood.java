@@ -194,7 +194,7 @@ public class commandFlood extends command
 		LinkedList<floodData> data = floodManager.getList(i - 1);
 		if (data == null)
 		{
-			moo.sock.notice(target, "There is no flood list numbered " + i);
+			moo.sock.notice(source, "There is no flood list numbered " + i);
 			return;
 		}
 		
@@ -203,9 +203,9 @@ public class commandFlood extends command
 			for (int j = 0; j < data.size(); ++j)
 			{
 				floodData fd = data.get(j);
-				moo.sock.notice(target, (j + 1) + ": " + fd.nick + " (" + fd.ident + "@" + fd.host + ")");
+				moo.sock.notice(source, (j + 1) + ": " + fd.nick + " (" + fd.ident + "@" + fd.host + ")");
 			}
-			moo.sock.notice(target, "End of flood list, " + data.size() + " entries");
+			moo.sock.notice(source, "End of flood list, " + data.size() + " entries");
 		}
 		else if (params[2].equalsIgnoreCase("DEL"))
 		{
@@ -217,18 +217,18 @@ public class commandFlood extends command
 					floodData d = it.next();
 					if (moo.match(d.host, params[3]))
 					{
-						moo.sock.notice(target, "Removed flood entry " + d.host);
+						moo.sock.notice(source, "Removed flood entry " + d.host);
 						it.remove();
 						match = true;
 					}
 				}
 				if (match == false)
-					moo.sock.notice(target, "No match for " + params[3]);
+					moo.sock.notice(source, "No match for " + params[3]);
 			}
 			else
 			{
 				data.clear();
-				moo.sock.notice(target, "Removed flood list " + i);
+				moo.sock.notice(source, "Removed flood list " + i);
 			}
 
 			if (data.isEmpty() == true)
@@ -242,7 +242,7 @@ public class commandFlood extends command
 				moo.akill(d.host, "+2d", "Possible flood bot (" + d.nick + ")");
 			}
 
-			moo.sock.notice(target, "Akilled " + data.size() + " entries");
+			moo.sock.notice(source, "Akilled " + data.size() + " entries");
 			floodManager.removeList(i - 1);
 		}
 	}
