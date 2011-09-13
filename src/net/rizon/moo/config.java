@@ -22,6 +22,8 @@ public class config
 	private boolean shell;
 	private String shell_base;
 	private boolean disable_split_message;
+	private String sendmail_path;
+	private String split_email;
 	private int debug;
 
 	public void load() throws Exception
@@ -50,6 +52,8 @@ public class config
 		this.shell = Boolean.parseBoolean(prop.getProperty("enable_shell"));
 		this.shell_base = prop.getProperty("shell_base");
 		this.disable_split_message = Boolean.parseBoolean(prop.getProperty("disable_split_message"));
+		this.sendmail_path = prop.getProperty("sendmail_path");
+		this.split_email = prop.getProperty("split_email");
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
 		this.check();
@@ -165,6 +169,16 @@ public class config
 	public final boolean getDisableSplitMessage()
 	{
 		return this.disable_split_message;
+	}
+	
+	public final String getSendmailPath()
+	{
+		return this.sendmail_path;
+	}
+	
+	public final String getSplitEmail()
+	{
+		return this.split_email;
 	}
 	
 	public final int getDebug()

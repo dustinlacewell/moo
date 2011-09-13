@@ -2,6 +2,7 @@ package net.rizon.moo.messages;
 
 import java.util.Iterator;
 
+import net.rizon.moo.mail;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
@@ -89,6 +90,8 @@ public class messageNotice extends message
 								}
 							}
 					}
+				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+					mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + tokens[7]);
 			}
 		}
 	}

@@ -49,4 +49,10 @@ shell_base=/home/adam/rizon/moo/shell
 # Set to true to disable the "server X can connect to Y" message on every split
 disable_split_message=false
 
+# Path to sendmail
+sendmail_path=/usr/sbin/sendmail
+
+# Email address to mail whenever a server splits
+split_email=grimlock@rizon.net
+
 debug=0
