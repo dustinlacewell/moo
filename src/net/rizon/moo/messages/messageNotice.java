@@ -30,17 +30,17 @@ public class messageNotice extends message
 				
 				server serv = server.findServerAbsolute(tokens[4]);
 				if (serv == null)
+				{
 					serv = new server(tokens[4]);
+					moo.sock.write("MAP");
+				}
 				else
 					serv.splitDel();
 				serv.link(tokens[8]);
 				
 				serv = server.findServerAbsolute(tokens[8]);
 				if (serv == null)
-				{
 					serv = new server(tokens[8]);
-					moo.sock.write("MAP");
-				}
 				else
 					serv.splitDel();
 				serv.link(tokens[4]);

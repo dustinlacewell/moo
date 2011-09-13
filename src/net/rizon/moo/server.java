@@ -19,6 +19,7 @@ public class server
 	public server(final String name)
 	{
 		this.name = name;
+		this.sid = null;
 		this.split_from = null;
 		this.split_when = null;
 		this.bytes = 0;
