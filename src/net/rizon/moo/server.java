@@ -15,6 +15,8 @@ public class server
 	public String split_from;
 	public Date split_when;
 	public long bytes; 
+	
+	public static Date last_link = null;
 
 	public server(final String name)
 	{
@@ -62,6 +64,7 @@ public class server
 	public void link(final String to)
 	{
 		this.links.add(to);
+		last_link = new Date();
 	}
 	
 	public void split(final String from)

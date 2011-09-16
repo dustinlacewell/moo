@@ -8,6 +8,7 @@ import java.util.Vector;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.server;
 
 class messageePrivmsg extends message
 {
@@ -58,13 +59,16 @@ class floodManager
 
 	public static void add(final String nick, final String ident, final String host)
 	{
+		Date then = new Date(System.currentTimeMillis() - (30 * 1000)); // 30 seconds ago
+		
+		if (server.last_link != null && server.last_link.after(then))
+			return;
+
 		floodData d = new floodData();
 		d.nick = nick;
 		d.ident = ident;
 		d.host = host;
 		d.when = new Date();
-		
-		Date then = new Date(System.currentTimeMillis() - (30 * 1000)); // 30 seconds ago
 		
 		if (floodTime > 0 && System.currentTimeMillis() > floodTime)
 		{
