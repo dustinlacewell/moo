@@ -84,6 +84,12 @@ public class server
 	{
 		this.split_from = null;
 		this.split_when = null;
+		
+		if (this.isHub())
+		{
+			moo.sock.write("STATS c " + this.getName());
+			this.clines.clear();
+		}
 	}
 	
 	private static LinkedList<server> servers = new LinkedList<server>();
