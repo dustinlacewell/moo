@@ -81,15 +81,15 @@ public class server
 	}
 	
 	public void splitDel()
-	{
-		this.split_from = null;
-		this.split_when = null;
-		
-		if (this.isHub())
+	{		
+		if (this.split_from != null && this.split_when != null && this.isHub())
 		{
 			moo.sock.write("STATS c " + this.getName());
 			this.clines.clear();
 		}
+
+		this.split_from = null;
+		this.split_when = null;
 	}
 	
 	private static LinkedList<server> servers = new LinkedList<server>();
