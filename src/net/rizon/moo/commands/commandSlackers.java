@@ -106,6 +106,7 @@ class message366 extends message
 		}
 		
 		commandSlackers.opers.clear();
+		target_source = null;
 		target_chan = null;
 		waiting_on.clear();
 	}
@@ -133,7 +134,6 @@ public class commandSlackers extends command
 	public void execute(String source, String target, String[] params)
 	{
 		opers.clear();
-		message366.target_chan = null;
 		message366.waiting_on.clear();
 		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 		{
