@@ -51,12 +51,12 @@ public abstract class command extends message
 	
 	public abstract void execute(final String source, final String target, final String[] params);
 	
-	public void onHelp(final String source, final String target)
+	public void onHelp(final String source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
-			moo.sock.reply(source, target, this.getCommandName() + " - " + this.getDescription());
+			moo.sock.notice(source, this.getCommandName() + " - " + this.getDescription());
 		else
-			moo.sock.reply(source, target, this.getCommandName());
+			moo.sock.notice(source, this.getCommandName());
 	}
 	
 	private static LinkedList<command> commands = new LinkedList<command>();
