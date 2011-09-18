@@ -10,11 +10,13 @@ import net.rizon.moo.moo;
 
 class shellExec extends Thread
 {
+	private String source;
 	private String target;
 	private String command;
 
-	public shellExec(final String target, final String command)
+	public shellExec(final String source, final String target, final String command)
 	{
+		this.source = source;
 		this.target = target;
 		this.command = command;
 	}
@@ -26,11 +28,11 @@ class shellExec extends Thread
 			Process proc = Runtime.getRuntime().exec(this.command, null, new File(moo.conf.getShellBase()));
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
-				moo.sock.privmsg(this.target, line);
+				moo.sock.reply(this.source, this.target, line);
 		}
 		catch (IOException ex)
 		{
-			moo.sock.privmsg(target, "Error running command");
+			moo.sock.reply(this.source, this.target, "Error running command");
 		}
 	}
 }
@@ -52,7 +54,7 @@ public class commandShell extends command
 		File base = new File(moo.conf.getShellBase());
 		if (base.exists() == false || base.isDirectory() == false)
 		{
-			moo.sock.privmsg(target, "Shell base dir is set to an invalid path");
+			moo.sock.reply(source, target, "Shell base dir is set to an invalid path");
 			return;
 		}
 
@@ -63,7 +65,7 @@ public class commandShell extends command
 		if (param.indexOf("..") != -1)
 			return;
 
-		shellExec e = new shellExec(target, param);
+		shellExec e = new shellExec(source, target, param);
 		e.start();
 	}
 }

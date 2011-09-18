@@ -14,6 +14,7 @@ class scheck extends Thread
 {
 	private String server;
 	private int port;
+	private String source;
 	private String target;
 	private String users;
 	
@@ -37,9 +38,10 @@ class scheck extends Thread
 		return buf;
 	}
 
-	public scheck(final String server, final String target, int port)
+	public scheck(final String server, final String source, final String target, int port)
 	{
 		this.server = server;
+		this.source = source;
 		this.target = target;
 		this.port = port;
 	}
@@ -50,7 +52,7 @@ class scheck extends Thread
 		try
 		{
 			socket s = socket.create();
-			moo.sock.privmsg(this.target, "[SCHECK] Connecting to " + this.server + "...");
+			moo.sock.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
 			s.connect(this.server, this.port, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
@@ -67,7 +69,7 @@ class scheck extends Thread
 				}
 				else if (token.length > 7 && token[1].equals("242"))
 				{
-					moo.sock.privmsg(this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Uptime: " + token[5] + " days " + token[7]);
+					moo.sock.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -75,15 +77,15 @@ class scheck extends Thread
 		}
 		catch (NoRouteToHostException ex)
 		{
-			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
+			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
 		}
 		catch (SocketTimeoutException ex)
 		{
-			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
+			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
 		}
 		catch (IOException ex)
 		{
-			moo.sock.privmsg(this.target, "[SCHECK] Unable to connect to " + this.server);
+			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
 		}
 	}
 }
@@ -99,13 +101,13 @@ public class commandScheck extends command
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
-			moo.sock.privmsg(target, "Syntax: !scheck <server> [port]");
+			moo.sock.reply(source, target, "Syntax: !scheck <server> [port]");
 		else
 		{
 			String search = "*" + params[1] + "*";
 			server serv = server.findServer(search);
 			if (serv == null)
-				moo.sock.privmsg(target, "[SCHECK] Server " + params[1] + " not found");
+				moo.sock.reply(source, target, "[SCHECK] Server " + params[1] + " not found");
 			else
 			{
 				int port = 6667;
@@ -121,7 +123,7 @@ public class commandScheck extends command
 					{
 					}
 				}
-				scheck check = new scheck(serv.getName(), target, port);
+				scheck check = new scheck(serv.getName(), source, target, port);
 				check.start();
 			}
 		}

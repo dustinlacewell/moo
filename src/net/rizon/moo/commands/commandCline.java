@@ -22,7 +22,7 @@ public class commandCline extends command
 		server s = server.findServer(params[1]);
 		if (s == null)
 		{
-			moo.sock.privmsg(target, "Unknown server " + params[1]);
+			moo.sock.reply(source, target, "Unknown server " + params[1]);
 			return;
 		}
 		
@@ -35,11 +35,11 @@ public class commandCline extends command
 			for (Iterator<String> it2 = serv.clines.iterator(); it2.hasNext();)
 				if (it2.next().equalsIgnoreCase(s.getName()))
 				{
-					moo.sock.privmsg(target, s.getName() + " can connect to " + serv.getName());
+					moo.sock.reply(source, target, s.getName() + " can connect to " + serv.getName());
 					found = true;
 				}
 		}
 		if (found == false)
-			moo.sock.privmsg(target, s.getName() + " can't connect to anything, how sad");
+			moo.sock.reply(source, target, s.getName() + " can't connect to anything, how sad");
 	}
 }

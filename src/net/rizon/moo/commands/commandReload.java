@@ -20,11 +20,11 @@ public class commandReload extends command
 			config c = new config();
 			c.load();
 			moo.conf = c;
-			moo.sock.privmsg(target, "Successfully reloaded configuration");
+			moo.sock.reply(source, target, "Successfully reloaded configuration");
 		}
 		catch (Exception ex)
 		{
-			moo.sock.privmsg(target, "Error reloading configuration: " + ex.getMessage());
+			moo.sock.reply(source, target, "Error reloading configuration: " + ex.getMessage());
 		}
 	}
 }

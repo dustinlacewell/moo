@@ -15,7 +15,7 @@ public class commandShutdown extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		moo.sock.privmsg(target, "Shutting down");
+		moo.sock.reply(source, target, "Shutting down");
 		moo.sock.write("QUIT :SHUTDOWN from " + source);
 		moo.sock.shutdown();
 		moo.quitting = true;

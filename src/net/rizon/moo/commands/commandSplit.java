@@ -67,27 +67,27 @@ public class commandSplit extends command
 				if (s.isSplit())
 				{
 					++split;
-					moo.sock.privmsg(target, "[SPLIT] " + s.getName() + " <-> " + s.split_from + ", " + ago(now, s.split_when));
+					moo.sock.reply(source, target, "[SPLIT] " + s.getName() + " <-> " + s.split_from + ", " + ago(now, s.split_when));
 				}
 			}
 			
-			moo.sock.privmsg(target, "[SPLIT] [" + split + "/" + count + "]");
+			moo.sock.reply(source, target, "[SPLIT] [" + split + "/" + count + "]");
 		}
 		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
-				moo.sock.privmsg(target, "[SPLIT] Server " + params[2] + " not found");
+				moo.sock.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
 			else if (s.isSplit() == false)
-				moo.sock.privmsg(target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+				moo.sock.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
 			else
 			{
-				moo.sock.privmsg(target, "[SPLIT] Removed server " + s.getName());
+				moo.sock.reply(source, target, "[SPLIT] Removed server " + s.getName());
 				s.splitDel();
 				s.destroy();
 			}
 		}
 		else
-			moo.sock.privmsg(target, "Syntax: !split [del server]");
+			moo.sock.reply(source, target, "Syntax: !split [del server]");
 	}
 }

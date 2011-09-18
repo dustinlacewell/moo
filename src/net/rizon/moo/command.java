@@ -39,7 +39,7 @@ public abstract class command extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length < 2 || message[0].startsWith("#") == false || message[1].startsWith("!") == false)
+		if (message.length < 2 || message[1].startsWith("!") == false)
 			return;
 		else if (this.requiresAdmin() && moo.conf.isAdminChannel(message[0]) == false)
 			return;
@@ -54,9 +54,9 @@ public abstract class command extends message
 	public void onHelp(final String source, final String target)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
-			moo.sock.notice(source, this.getCommandName() + " - " + this.getDescription());
+			moo.sock.reply(source, target, this.getCommandName() + " - " + this.getDescription());
 		else
-			moo.sock.notice(source, this.getCommandName());
+			moo.sock.reply(source, target, this.getCommandName());
 	}
 	
 	private static LinkedList<command> commands = new LinkedList<command>();

@@ -179,7 +179,7 @@ public class commandFlood extends command
 				for (int i = 0; i < floodManager.listSize(); ++i)
 				{
 					LinkedList<floodData> fd = floodManager.getList(i);
-					moo.sock.privmsg(target, (i + 1) + ": Contains " + fd.size() + " entries, last entry at: " + fd.getLast().when);
+					moo.sock.reply(source, target, (i + 1) + ": Contains " + fd.size() + " entries, last entry at: " + fd.getLast().when);
 				}
 			return;
 		}
@@ -232,7 +232,7 @@ public class commandFlood extends command
 			else
 			{
 				data.clear();
-				moo.sock.notice(source, "Removed flood list " + i);
+				moo.sock.reply(source, target, "Removed flood list " + i);
 			}
 
 			if (data.isEmpty() == true)
@@ -246,7 +246,7 @@ public class commandFlood extends command
 				moo.akill(d.host, "+2d", "Possible flood bot (" + d.nick + ")");
 			}
 
-			moo.sock.notice(source, "Akilled " + data.size() + " entries");
+			moo.sock.reply(source, target, "Akilled " + data.size() + " entries");
 			floodManager.removeList(i - 1);
 		}
 	}

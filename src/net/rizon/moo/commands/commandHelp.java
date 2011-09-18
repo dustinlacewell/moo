@@ -15,7 +15,7 @@ public class commandHelp extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		moo.sock.notice(source, "Available commands:");
+		moo.sock.reply(source, target, "Available commands:");
 		for (Iterator<command> it = command.getCommands().iterator(); it.hasNext();)
 		{
 			command c = it.next();

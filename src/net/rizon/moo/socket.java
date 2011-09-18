@@ -204,6 +204,14 @@ public class socket
 		this.write("NOTICE " + target + " :" + buffer);
 	}
 	
+	public void reply(String source, String target, final String buffer)
+	{
+		if (target.equalsIgnoreCase(moo.conf.getNick()))
+			this.notice(source, buffer);
+		else
+			this.privmsg(target, buffer);
+	}
+	
 	public void join(String target)
 	{
 		this.write("JOIN " + target);

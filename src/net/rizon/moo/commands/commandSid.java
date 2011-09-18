@@ -48,6 +48,6 @@ public class commandSid extends command
 			sid = getSID();
 		while (inUse(sid));
 		
-		moo.sock.privmsg(target, "[SID] " + sid);
+		moo.sock.reply(source, target, "[SID] " + sid);
 	}
 }

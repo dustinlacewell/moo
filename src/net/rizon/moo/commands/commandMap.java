@@ -78,17 +78,18 @@ class message219 extends message
 	}
 	
 	
-	public static String request_chan = null;
+	public static String request_source = null;
+	public static String request_target = null;
 	public static boolean request_all = false;
 
 	@Override
 	public void run(String source, String[] message)
 	{
 		server serv = server.findServerAbsolute(source);
-		if (serv == null || request_chan == null || message[1].equals("?") == false)
+		if (serv == null || request_source == null || request_target == null || message[1].equals("?") == false)
 			return;
 		else if (request_all || serv.bytes >= 1024)
-			moo.sock.privmsg(request_chan, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
+			moo.sock.reply(request_source, request_target, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
 	}
 }
 
@@ -99,18 +100,19 @@ class message265 extends message
 		super("265");
 	}
 	
-	public static String request_chan = null;
+	public static String request_source = null;
+	public static String request_target = null;
 	public static int request_users = 0;
 
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (request_chan == null || message.length < 2)
+		if (request_source == null || request_target == null || message.length < 2)
 			return;
 
 		int users = Integer.parseInt(message[1]);
 		if (users >= request_users)
-			moo.sock.privmsg(request_chan, "[MAP] " + source + " " + users);
+			moo.sock.reply(request_source, request_target, "[MAP] " + source + " " + users);
 	}
 }
 
@@ -139,7 +141,8 @@ class commandMapBase extends command
 				}
 			}
 			message219.request_all = this.full;
-			message219.request_chan = target;
+			message219.request_source = source;
+			message219.request_target = target;
 		}
 		else if (params.length > 1)
 		{
@@ -147,10 +150,10 @@ class commandMapBase extends command
 			{
 				server s = server.findServer(params[2]);
 				if (s == null)
-					moo.sock.privmsg(target, "[MAP] Server " + params[2] + " not found");
+					moo.sock.reply(source, target, "[MAP] Server " + params[2] + " not found");
 				else
 					for (Iterator<String> it = s.links.iterator(); it.hasNext();)
-						moo.sock.privmsg(target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
+						moo.sock.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
 			}
 			else
 			{
@@ -164,20 +167,22 @@ class commandMapBase extends command
 						moo.sock.write("USERS " + s.getName());
 					}
 					
-					message265.request_chan = target;
+					message265.request_source = source;
+					message265.request_target = target;
 					message265.request_users = users;
 				}
 				catch (NumberFormatException ex)
 				{
 					server s = server.findServer(params[1]);
 					if (s == null)
-						moo.sock.privmsg(target, "[MAP] Server " + params[1] + " not found");
+						moo.sock.reply(source, target, "[MAP] Server " + params[1] + " not found");
 					else
 					{
 						s.bytes = 0;
 						moo.sock.write("STATS ? " + s.getName());;
 						message219.request_all = this.full;
-						message219.request_chan = target;
+						message219.request_source = source;
+						message219.request_target = target;
 					}
 				}
 			}

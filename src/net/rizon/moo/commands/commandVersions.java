@@ -15,6 +15,7 @@ class message351 extends message
 	}
 	
 	public static String target_channel = null;
+	public static String target_source = null;
 	private static int max_ver = 0;
 	
 	private static int dashesFor(server s)
@@ -33,7 +34,7 @@ class message351 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (target_channel == null)
+		if (target_channel == null || target_source == null)
 			return;
 
 		String tok = message[1];
@@ -75,7 +76,7 @@ class message351 extends message
 				buf += "09";
 			buf += ver + "\003";
 			
-			moo.sock.privmsg(target_channel, buf);
+			moo.sock.reply(target_source, target_channel, buf);
 		}
 		catch (Exception ex)
 		{
@@ -106,5 +107,6 @@ public class commandVersions extends command
 		}
 		
 		message351.target_channel = target;
+		message351.target_source = source;
 	}
 }
