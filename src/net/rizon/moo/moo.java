@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class moo
 {
@@ -14,7 +16,7 @@ public class moo
 	public static boolean quitting = false;
 	
 	private static final String[] messages = { "message001", "message015", "message213", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandCline", "commandFlood", "commandHelp", "commandMap", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSplit", "commandStatus", "commandVersions" };
+	private static final String[] commands = { "commandCline", "commandFlood", "commandHelp", "commandMap", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSplit", "commandStatus", "commandUserlist", "commandVersions" };
 
 	public static void main(String[] args)
 	{
@@ -155,19 +157,14 @@ public class moo
 	
 	public static boolean match(String text, String pattern)
 	{
-		String[] tokens = pattern.split("\\*");
-		
-		for (String token : tokens)
-		{
-			int idx = text.indexOf(token);
+		text = text.toLowerCase();
+		pattern = pattern.toLowerCase();
 
-			if (idx == -1)
-				return false;
-
-			text = text.substring(idx + token.length());
-		}
-		
-		return true;
+		pattern = pattern.replaceAll("\\.", "\\\\.");
+		pattern = pattern.replaceAll("\\*", "\\.\\*");
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(text);
+		return m.matches();
 	}
 	
 	public static void akill(final String host, final String time, final String reason)
