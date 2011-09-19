@@ -39,7 +39,7 @@ public abstract class command extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length < 2 || message[1].startsWith("!") == false)
+		if (message.length < 2 || message[0].startsWith("#") == false || message[1].startsWith("!") == false)
 			return;
 		else if (this.requiresAdmin() && moo.conf.isAdminChannel(message[0]) == false)
 			return;
