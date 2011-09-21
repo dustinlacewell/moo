@@ -34,7 +34,7 @@ version=moo v2.0
 # Oper details (optional)
 #oper=moo somepass
 
-# Command separted list of channels to do nothing in
+# Command separated list of channels to do nothing in
 idle_channels=#adam
 
 # Comma separated list of channels to join
