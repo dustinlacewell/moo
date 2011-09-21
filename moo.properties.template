@@ -34,8 +34,11 @@ version=moo v2.0
 # Oper details (optional)
 #oper=moo somepass
 
+# Command separted list of channels to do nothing in
+idle_channels=#adam
+
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x
+channels=#opers,#o,#r,#x,#adam
 
 # Comma separated list of admin channels. !flood and !shell are limited to these
 admin_channels=#r,#x

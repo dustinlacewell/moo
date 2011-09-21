@@ -17,6 +17,7 @@ public class config
 	private String nickserv_pass;
 	private String geoserv_pass;
 	private String oper;
+	private String[] idle_channels;
 	private String[] channels;
 	private String[] admin_channels;
 	private boolean shell;
@@ -43,7 +44,10 @@ public class config
 		this.nickserv_pass = prop.getProperty("nickserv_pass");
 		this.geoserv_pass = prop.getProperty("geoserv_pass");
 		this.oper = prop.getProperty("oper");
-		String chan = prop.getProperty("channels");
+		String chan;
+		chan = prop.getProperty("idle_channels");
+			this.idle_channels = chan.split(",");
+		chan = prop.getProperty("channels");
 		if (chan != null)
 			this.channels = chan.split(",");
 		chan = prop.getProperty("admin_channels");
@@ -135,6 +139,15 @@ public class config
 	public final String getOper()
 	{
 		return this.oper;
+	}
+	
+	public final boolean isIdleChannel(final String channel)
+	{
+		if (this.idle_channels != null)
+			for (int i = 0; i < this.idle_channels.length; ++i)
+				if (this.idle_channels[i].equalsIgnoreCase(channel))
+					return true;
+		return false;
 	}
 	
 	public final String[] getChannels()

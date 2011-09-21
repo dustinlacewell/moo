@@ -41,6 +41,8 @@ public abstract class command extends message
 	{
 		if (message.length < 2 || message[0].startsWith("#") == false || message[1].startsWith("!") == false)
 			return;
+		else if (moo.conf.isIdleChannel(message[0]))
+			return;
 		else if (this.requiresAdmin() && moo.conf.isAdminChannel(message[0]) == false)
 			return;
 		
