@@ -68,7 +68,10 @@ public class messageNotice extends message
 			else if (message[1].indexOf("split from") != -1)
 			{
 				String[] tokens = message[1].split(" ");
-				server serv = server.findServerAbsolute(tokens[4]);
+				server serv = server.findServerAbsolute(tokens[7]);
+				if (serv != null)
+					serv.links.remove(tokens[4]);
+				serv = server.findServerAbsolute(tokens[4]);
 				if (serv == null)
 					serv = new server(tokens[4]);
 				serv.split(tokens[7]);
