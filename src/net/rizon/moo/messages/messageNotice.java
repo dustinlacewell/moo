@@ -44,6 +44,9 @@ public class messageNotice extends message
 				else
 					serv.splitDel();
 				serv.link(tokens[4]);
+				
+				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[4] + " introduced by " + tokens[8]);
 			}
 			else if (message[1].indexOf("End of burst from") != -1)
 			{
@@ -64,6 +67,9 @@ public class messageNotice extends message
 				else
 					serv.splitDel();
 				serv.link(tokens[7]);
+				
+				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[7] + " introduced");
 			}
 			else if (message[1].indexOf("split from") != -1)
 			{
