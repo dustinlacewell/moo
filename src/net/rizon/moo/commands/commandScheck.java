@@ -104,8 +104,7 @@ public class commandScheck extends command
 			moo.sock.reply(source, target, "Syntax: !scheck <server> [port]");
 		else
 		{
-			String search = "*" + params[1] + "*";
-			server serv = server.findServer(search);
+			server serv = server.findServer(params[1]);
 			if (serv == null)
 				moo.sock.reply(source, target, "[SCHECK] Server " + params[1] + " not found");
 			else
