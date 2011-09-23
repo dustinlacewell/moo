@@ -138,7 +138,7 @@ public class commandSlackers extends command
 		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 		{
 			server s = it.next();
-			if (s.getSID().endsWith("C") || s.getSID().endsWith("H") || s.getSID().endsWith("Z"))
+			if (s.isSplit() == false && (s.getSID().endsWith("C") || s.getSID().endsWith("H") || s.getSID().endsWith("Z")))
 			{
 				moo.sock.write("STATS p " + s.getName());
 				message366.waiting_on.add(s.getName());
