@@ -63,6 +63,8 @@ class floodManager
 		
 		if (server.last_link != null && server.last_link.after(then))
 			return;
+		else if (server.last_split != null && server.last_split.after(then))
+			return;
 
 		floodData d = new floodData();
 		d.nick = nick;

@@ -16,7 +16,7 @@ public class server
 	public Date split_when;
 	public long bytes; 
 	
-	public static Date last_link = null;
+	public static Date last_link = null, last_split = null;
 
 	public server(final String name)
 	{
@@ -70,6 +70,7 @@ public class server
 	public void split(final String from)
 	{
 		this.links.remove(from);
+		last_split = new Date();
 		
 		this.split_from = from;
 		this.split_when = new Date();
