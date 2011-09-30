@@ -21,9 +21,12 @@ public class message001 extends message
 		if (moo.conf.getGeoServPass() != null && moo.conf.getGeoServPass().isEmpty() == false)
 			moo.sock.privmsg("GeoServ", "ACCESS IDENTIFY " + moo.conf.getGeoServPass());
 		
-		if (moo.conf.getChannels() != null && moo.conf.getChannels().length > 0)
+		if (moo.conf.getChannels() != null)
 			for (int i = 0; i < moo.conf.getChannels().length; ++i)
 				moo.sock.join(moo.conf.getChannels()[i]);
+		if (moo.conf.getIdleChannels() != null)
+			for (int i = 0; i < moo.conf.getIdleChannels().length; ++i)
+				moo.sock.join(moo.conf.getIdleChannels()[i]);
 		
 		server.clearServers();
 		moo.sock.write("MAP");

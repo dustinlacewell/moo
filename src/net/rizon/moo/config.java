@@ -150,6 +150,11 @@ public class config
 		return false;
 	}
 	
+	public final String[] getIdleChannels()
+	{
+		return this.idle_channels;
+	}
+	
 	public final String[] getChannels()
 	{
 		return this.channels;
