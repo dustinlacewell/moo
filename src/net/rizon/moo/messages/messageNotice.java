@@ -83,6 +83,10 @@ public class messageNotice extends message
 				serv.split(tokens[7]);
 				
 				if (moo.conf.getDisableSplitMessage() == false)
+				{
+					if (moo.conf.getChannels() != null)
+						for (int i = 0; i < moo.conf.getChannels().length; ++i)
+							moo.sock.privmsg(moo.conf.getChannels()[i], tokens[4] + " split from " + tokens[7]);
 					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 					{
 						server s = it.next();
@@ -99,6 +103,7 @@ public class messageNotice extends message
 								}
 							}
 					}
+				}
 				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + tokens[7]);
 			}
