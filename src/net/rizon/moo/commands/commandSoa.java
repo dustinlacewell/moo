@@ -43,7 +43,7 @@ class soaCheck extends Thread
 				
 				String[] tokens = line.split(" ");
 				
-				nameservers.put(tokens[4], -1);
+				nameservers.put(tokens[4], 0);
 				
 				if (this.debug)
 					moo.sock.reply(this.source, this.target, this.domain + " has nameserver " + tokens[4]);
