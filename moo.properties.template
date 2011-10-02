@@ -38,7 +38,7 @@ version=moo v2.0
 idle_channels=#adam
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#adam
+channels=#opers,#o,#r,#x
 
 # Comma separated list of admin channels. !flood and !shell are limited to these
 admin_channels=#r,#x
