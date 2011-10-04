@@ -19,6 +19,7 @@ public class config
 	private String oper;
 	private String[] idle_channels;
 	private String[] channels;
+	private String[] split_channels;
 	private String[] admin_channels;
 	private boolean shell;
 	private String shell_base;
@@ -50,6 +51,9 @@ public class config
 		chan = prop.getProperty("channels");
 		if (chan != null)
 			this.channels = chan.split(",");
+		chan = prop.getProperty("split_channels");
+		if (chan != null)
+			this.split_channels = chan.split(" ");
 		chan = prop.getProperty("admin_channels");
 		if (chan != null)
 			this.admin_channels = chan.split(",");
@@ -158,6 +162,11 @@ public class config
 	public final String[] getChannels()
 	{
 		return this.channels;
+	}
+	
+	public final String[] getSplitChannels()
+	{
+		return this.split_channels;
 	}
 
 	public final String[] getAdminChannels()

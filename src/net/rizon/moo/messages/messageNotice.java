@@ -84,9 +84,9 @@ public class messageNotice extends message
 				
 				if (moo.conf.getDisableSplitMessage() == false)
 				{
-					if (moo.conf.getChannels() != null)
-						for (int i = 0; i < moo.conf.getChannels().length; ++i)
-							moo.sock.privmsg(moo.conf.getChannels()[i], tokens[4] + " split from " + tokens[7]);
+					if (moo.conf.getSplitChannels() != null)
+						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+							moo.sock.privmsg(moo.conf.getSplitChannels()[i], tokens[4] + " split from " + tokens[7]);
 					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 					{
 						server s = it.next();
@@ -97,9 +97,9 @@ public class messageNotice extends message
 								
 								if (serv.getName().equalsIgnoreCase(cline))
 								{
-									if (moo.conf.getChannels() != null)
-										for (int i = 0; i < moo.conf.getChannels().length; ++i)
-											moo.sock.privmsg(moo.conf.getChannels()[i], serv.getName() + " can connect to " + s.getName());
+									if (moo.conf.getSplitChannels() != null)
+										for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+											moo.sock.privmsg(moo.conf.getSplitChannels()[i], serv.getName() + " can connect to " + s.getName());
 								}
 							}
 					}

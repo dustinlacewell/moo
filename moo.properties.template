@@ -40,7 +40,10 @@ idle_channels=#adam
 # Comma separated list of channels to join
 channels=#opers,#o,#r,#x
 
-# Comma separated list of admin channels. !flood and !shell are limited to these
+# Comma separated list of channels to announce splits to
+split_channels=#opers
+
+# Comma separated list of admin channels
 admin_channels=#r,#x
 
 # Set to true to enable !shell
