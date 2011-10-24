@@ -82,6 +82,9 @@ public class messageNotice extends message
 					serv = new server(tokens[4]);
 				serv.split(tokens[7]);
 				
+				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
+					return;
+				
 				if (moo.conf.getDisableSplitMessage() == false)
 				{
 					if (moo.conf.getSplitChannels() != null)
