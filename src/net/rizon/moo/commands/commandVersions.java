@@ -1,5 +1,6 @@
 package net.rizon.moo.commands;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.rizon.moo.command;
@@ -14,6 +15,7 @@ class message351 extends message
 		super("351");
 	}
 	
+	public static HashSet<String> waiting_for = new HashSet<String>();
 	public static String target_channel = null;
 	public static String target_source = null;
 	private static int max_ver = 0;
@@ -36,6 +38,15 @@ class message351 extends message
 	{
 		if (target_channel == null || target_source == null)
 			return;
+		
+		server s = server.findServerAbsolute(source);
+		if (s == null)
+			s = new server(source);
+		else
+			s.splitDel();
+
+		if (waiting_for.remove(s.getName()) == false)
+			return;
 
 		String tok = message[1];
 		
@@ -55,12 +66,6 @@ class message351 extends message
 					max_ver = ver_num;
 			}
 			catch (NumberFormatException ex) { }
-			
-			server s = server.findServerAbsolute(source);
-			if (s == null)
-				s = new server(source);
-			else
-				s.splitDel();
 			
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
@@ -103,7 +108,10 @@ public class commandVersions extends command
 			server s = it.next();
 			
 			if (s.getName().endsWith(".rizon.net") == false)
+			{
 				moo.sock.write("VERSION " + s.getName());
+				message351.waiting_for.add(s.getName());
+			}
 		}
 		
 		message351.target_channel = target;

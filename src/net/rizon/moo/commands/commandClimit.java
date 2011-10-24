@@ -1,5 +1,6 @@
 package net.rizon.moo.commands;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.rizon.moo.command;
@@ -22,6 +23,7 @@ class message005 extends message
 		return longest - s.getName().length() + 2;
 	}
 	
+	public static HashSet<String> waiting_for = new HashSet<String>();
 	public static String target_channel = null;
 	public static String target_source = null;
 
@@ -38,6 +40,9 @@ class message005 extends message
 
 		server s = server.findServerAbsolute(source);
 		if (s == null)
+			return;
+		
+		if (waiting_for.remove(s.getName()) == false)
 			return;
 
 		String[] tokens = message[1].split(" ");
@@ -76,6 +81,7 @@ public class commandClimit extends command
 		{
 			server s = it.next();
 			moo.sock.write("VERSION " + s.getName());
+			message005.waiting_for.add(s.getName());
 		}
 		
 		message005.target_channel = target;
