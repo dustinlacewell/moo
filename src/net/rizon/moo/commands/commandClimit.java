@@ -41,15 +41,15 @@ class message005 extends message
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			return;
-		
-		if (waiting_for.remove(s.getName()) == false)
-			return;
 
 		String[] tokens = message[1].split(" ");
 		for (String token : tokens)
 		{
 			if (token.startsWith("CHANLIMIT="))
-			{
+			{				
+				if (waiting_for.remove(s.getName()) == false)
+					return;
+
 				String limit = token.substring(12);
 				String buf = "[CLIMIT] " + s.getName() + " ";
 				for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
