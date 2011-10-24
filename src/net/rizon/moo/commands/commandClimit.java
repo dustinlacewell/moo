@@ -25,14 +25,17 @@ class message005 extends message
 	public static String target_channel = null;
 	public static String target_source = null;
 
-	public message005()
+	public message005(String what)
 	{
-		super("005");
+		super(what);
 	}
 
 	@Override
 	public void run(String source, String[] message)
 	{
+		if (target_channel == null || target_source == null)
+			return;
+
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			return;
@@ -57,7 +60,9 @@ class message005 extends message
 public class commandClimit extends command
 {
 	@SuppressWarnings("unused")
-	private static message005 message_005 = new message005();
+	private static message005 message_005 = new message005("005");
+	@SuppressWarnings("unused")
+	private static message005 message_105 = new message005("105");
 
 	public commandClimit()
 	{
