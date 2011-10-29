@@ -92,7 +92,13 @@ class message391 extends message
 			long common_time = commonTime();
 			
 			if (common_time != 0 && common_time != them)
-				buf += "\00304" + message[2] + "\003 (off by " + (common_time - them) + " seconds)";
+			{
+				if (Math.abs(common_time - them) < 60)
+					buf += "\00307";
+				else
+					buf += "\00304";
+				buf += message[2] + "\003 (off by " + (common_time - them) + " seconds)";
+			}
 			else
 				buf += "\00309" + message[2] + "\003";
 			
