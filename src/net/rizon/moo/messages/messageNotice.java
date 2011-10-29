@@ -45,6 +45,13 @@ public class messageNotice extends message
 					serv.splitDel();
 				serv.link(tokens[4]);
 				
+				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
+					return;
+				
+				if (moo.conf.getDisableSplitMessage() == false)
+					if (moo.conf.getSplitChannels() != null)
+						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " introduced by " + tokens[8] + "\2");
 				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[4] + " introduced by " + tokens[8]);
 			}
@@ -68,6 +75,13 @@ public class messageNotice extends message
 					serv.splitDel();
 				serv.link(tokens[7]);
 				
+				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
+					return;
+				
+				if (moo.conf.getDisableSplitMessage() == false)
+					if (moo.conf.getSplitChannels() != null)
+						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[7] + " introduced\2");
 				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[7] + " introduced");
 			}
