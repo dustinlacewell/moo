@@ -39,7 +39,10 @@ class message391 extends message
 			int i = known_times.get(key);
 			
 			if (i > highest_count)
+			{
+				highest_count = i;
 				highest_ts = key;
+			}
 		}
 		
 		return highest_ts;
