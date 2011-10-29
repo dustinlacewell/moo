@@ -94,7 +94,7 @@ class message391 extends message
 			if (common_time != 0 && common_time != them)
 			{
 				if (Math.abs(common_time - them) < 60)
-					buf += "\00307";
+					buf += "\00308";
 				else
 					buf += "\00304";
 				buf += message[2] + "\003 (off by " + (common_time - them) + " seconds)";
