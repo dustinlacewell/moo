@@ -45,7 +45,7 @@ public class messageNotice extends message
 					serv.splitDel();
 				serv.link(tokens[4]);
 				
-				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
+				if (tokens[4].startsWith("py") && tokens[4].endsWith(".rizon.net"))
 					return;
 				
 				if (moo.conf.getDisableSplitMessage() == false)
@@ -75,7 +75,7 @@ public class messageNotice extends message
 					serv.splitDel();
 				serv.link(tokens[7]);
 				
-				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
+				if (tokens[7].startsWith("py") && tokens[7].endsWith(".rizon.net"))
 					return;
 				
 				if (moo.conf.getDisableSplitMessage() == false)
