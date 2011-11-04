@@ -40,8 +40,6 @@ public class message015 extends message
 		server serv = server.findServerAbsolute(name);
 		if (serv == null)
 			serv = new server(name);
-		else
-			serv.splitDel();
 		serv.setSID(sid);
 	}
 }

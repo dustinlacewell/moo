@@ -16,8 +16,6 @@ public class message213 extends message
 		server serv = server.findServerAbsolute(source);
 		if (serv == null)
 			serv = new server(source);
-		else
-			serv.splitDel();
 		
 		if (message.length > 4)
 			serv.clines.add(message[4]);

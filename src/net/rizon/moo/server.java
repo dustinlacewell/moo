@@ -8,23 +8,16 @@ import java.util.LinkedList;
 public class server
 {
 	private String name;
-	private String sid;
+	private String sid = null;
 	public HashSet<String> clines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
+	private LinkedList<split> splits = new LinkedList<split>();
 
-	public String split_from;
-	public Date split_when;
-	public long bytes; 
-	
-	public static Date last_link = null, last_split = null;
+	public long bytes = 0;
 
 	public server(final String name)
 	{
 		this.name = name;
-		this.sid = null;
-		this.split_from = null;
-		this.split_when = null;
-		this.bytes = 0;
 		servers.push(this);
 		
 		if (moo.conf.getDebug() > 0)
@@ -69,31 +62,51 @@ public class server
 	
 	public void split(final String from)
 	{
+		Date now = new Date();
 		this.links.remove(from);
-		last_split = new Date();
+		last_split = now;
 		
-		this.split_from = from;
-		this.split_when = new Date();
+		split s = new split();
+		s.me = this.getName();
+		s.from = from;
+		s.when = now;
+		this.splits.addLast(s);
+		if (this.splits.size() > 10)
+			this.splits.removeFirst();
 	}
 	
-	public final boolean isSplit()
+	public split getSplit()
 	{
-		return this.split_from != null;
+		if (this.splits.isEmpty() == false && this.splits.getLast().end == null)
+			return this.splits.getLast();
+		return null;
 	}
 	
-	public void splitDel()
-	{		
-		if (this.split_from != null && this.split_when != null && this.isHub())
+	public split[] getSplits()
+	{
+		split[] splits = new split[this.splits.size()];
+		this.splits.toArray(splits);
+		return splits;
+	}
+	
+	public void splitDel(final String to)
+	{
+		if (this.getSplit() == null)
+			return;
+		
+		if (this.isHub())
 		{
 			moo.sock.write("STATS c " + this.getName());
 			this.clines.clear();
 		}
 
-		this.split_from = null;
-		this.split_when = null;
+		split s = this.getSplit();
+		s.to = to;
+		s.end = new Date();
 	}
 	
 	private static LinkedList<server> servers = new LinkedList<server>();
+	public static Date last_link = null, last_split = null;
 	
 	public static server findServer(final String name)
 	{

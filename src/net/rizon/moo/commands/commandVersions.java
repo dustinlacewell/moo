@@ -42,8 +42,6 @@ class message351 extends message
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			s = new server(source);
-		else
-			s.splitDel();
 
 		if (waiting_for.remove(s.getName()) == false)
 			return;

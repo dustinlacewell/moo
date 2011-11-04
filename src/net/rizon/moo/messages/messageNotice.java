@@ -35,14 +35,12 @@ public class messageNotice extends message
 					moo.sock.write("MAP");
 				}
 				else
-					serv.splitDel();
+					serv.splitDel(tokens[8]);
 				serv.link(tokens[8]);
 				
 				serv = server.findServerAbsolute(tokens[8]);
 				if (serv == null)
 					serv = new server(tokens[8]);
-				else
-					serv.splitDel();
 				serv.link(tokens[4]);
 				
 				if (tokens[4].startsWith("py") && tokens[4].endsWith(".rizon.net"))
@@ -65,14 +63,12 @@ public class messageNotice extends message
 					moo.sock.write("MAP");
 				}
 				else
-					serv.splitDel();
+					serv.splitDel(source);
 				serv.link(source);
 				
 				serv = server.findServerAbsolute(source);
 				if (serv == null)
 					new server(source);
-				else
-					serv.splitDel();
 				serv.link(tokens[7]);
 				
 				if (tokens[7].startsWith("py") && tokens[7].endsWith(".rizon.net"))
@@ -81,9 +77,9 @@ public class messageNotice extends message
 				if (moo.conf.getDisableSplitMessage() == false)
 					if (moo.conf.getSplitChannels() != null)
 						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[7] + " introduced\2");
+							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + source + " introduced " + tokens[7] + "\2");
 				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
-					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[7] + " introduced");
+					mail.send(moo.conf.getSplitEmail(), "Server introduced", source + " introduced " + tokens[7]);
 			}
 			else if (message[1].indexOf("split from") != -1)
 			{
@@ -107,7 +103,7 @@ public class messageNotice extends message
 					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 					{
 						server s = it.next();
-						if (s.isSplit() == false && s.isHub() == true)
+						if (s.isHub() == true && s.getSplit() == null)
 							for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
 							{
 								String cline = it2.next();

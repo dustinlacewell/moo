@@ -31,8 +31,6 @@ class message211 extends message
 		server serv = server.findServerAbsolute(source);
 		if (serv == null)
 			serv = new server(source);
-		else
-			serv.splitDel();
 		serv.bytes += bytes;
 	}
 }
