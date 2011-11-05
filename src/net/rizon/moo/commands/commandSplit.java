@@ -157,7 +157,7 @@ public class commandSplit extends command
 					{
 						split sp = splits[i - 1];
 						
-						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + ".";
+						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 						if (sp.end != null && sp.to != null)
 							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
 						
