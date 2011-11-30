@@ -17,6 +17,7 @@ class scheck extends Thread
 	private String source;
 	private String target;
 	private String users;
+	private String servers;
 	
 	private static final Random rand = new Random();
 	private static final String getRandom()
@@ -62,14 +63,18 @@ class scheck extends Thread
 			{
 				String[] token = in.split(" ");
 				
-				if (token.length > 8 && token[1].equals("266"))
+				if (token.length > 11 && token[1].equals("251"))
+				{
+					this.servers = token[11];
+				}
+				else if (token.length > 8 && token[1].equals("266"))
 				{
 					this.users = token[8].replace(",", "");
 					s.write("STATS u");
 				}
 				else if (token.length > 7 && token[1].equals("242"))
 				{
-					moo.sock.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Uptime: " + token[5] + " days " + token[7]);
+					moo.sock.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
