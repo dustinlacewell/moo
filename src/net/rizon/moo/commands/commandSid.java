@@ -7,14 +7,14 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 
-public class commandSid extends command
+abstract class commandSidBase extends command
 {
-	public commandSid()
+	protected commandSidBase(final String name, final String desc)
 	{
-		super("!SID", "Generates a new server ID");
+		super(name, desc);
 	}
 	
-	private boolean inUse(final String sid)
+	private static boolean inUse(final String sid)
 	{
 		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 		{
@@ -27,17 +27,9 @@ public class commandSid extends command
 		return false;
 	}
 	
-	private static final Random rand  = new Random();
+	protected static final Random rand  = new Random();
 
-	private String getSID()
-	{
-		int i = rand.nextInt(100);
-		String s = Integer.toString(i);
-		if (s.length() == 1)
-			s = "0" + s;
-		s += "C";
-		return s;
-	}
+	protected abstract String getSID();
 
 	@Override
 	public void execute(String source, String target, String[] params)
@@ -50,4 +42,50 @@ public class commandSid extends command
 		
 		moo.sock.reply(source, target, "[SID] " + sid);
 	}
+}
+
+final class commandSidClient extends commandSidBase
+{
+	public commandSidClient()
+	{
+		super("!SID", "Generates a new server ID");
+	}
+	
+	@Override
+	protected String getSID()
+	{
+		int i = rand.nextInt(100);
+		String s = Integer.toString(i);
+		if (s.length() == 1)
+			s = "0" + s;
+		s += "C";
+		return s;
+	}
+}
+
+final class commandSidHub extends commandSidBase
+{
+	public commandSidHub()
+	{
+		super("!HUBSID", "Generates a new hub server ID");
+	}
+	
+	@Override
+	protected String getSID()
+	{
+		int i = rand.nextInt(100);
+		String s = Integer.toString(i);
+		if (s.length() == 1)
+			s = "0" + s;
+		s += "H";
+		return s;
+	}
+}
+
+public class commandSid
+{
+	@SuppressWarnings("unused")
+	private commandSidClient sid_client = new commandSidClient();
+	@SuppressWarnings("unused")
+	private commandSidHub sid_hub = new commandSidHub();
 }

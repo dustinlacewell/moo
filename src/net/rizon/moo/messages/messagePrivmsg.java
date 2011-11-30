@@ -24,5 +24,11 @@ public class messagePrivmsg extends message
 			moo.sock.notice(source, "\1TIME " + (new Date().toString()) + "\1");
 		else if (message[1].startsWith("\1ACTION pets " + moo.conf.getNick()))
 			moo.sock.privmsg(message[0], "\1ACTION moos\1");
+		else if (message[1].startsWith("\1ACTION milks " + moo.conf.getNick()))
+		{
+			int e = source.indexOf('!');
+			String nick = source.substring(0, e != -1 ? e : source.length());
+			moo.sock.privmsg(message[0], "\1ACTION kicks " + nick + " in the face\1");
+		}
 	}
 }
