@@ -30,8 +30,24 @@ final class operComparator implements Comparator<String>
 	}
 }
 
+final class serverComparator implements Comparator<server>
+{
+	@Override
+	public int compare(server arg0, server arg1)
+	{
+		if (arg0.olines.size() < arg1.olines.size())
+			return -1;
+		else if (arg0.olines.size() > arg1.olines.size())
+			return 1;
+		else
+			return 0;
+	}
+}
+
 public class commandOline extends command
 {
+	private static final serverComparator servComparator = new serverComparator();
+
 	public commandOline()
 	{
 		super("!OLINE", "View olines");
@@ -109,46 +125,77 @@ public class commandOline extends command
 
 				moo.sock.reply(source, target, oper + ": " + oper_count);
 			}
-			
-			return;
 		}
-
-		boolean found = false;
-		server s = server.findServer(params[1]);
-		if (s != null)
+		else if (params[1].equalsIgnoreCase("SERVER"))
 		{
-			String buffer = "o:lines for " + s.getName() + ": ";
-			if (s.olines.isEmpty())
-				buffer += "none";
-			else
+			int min = 2;
+			if (params.length > 2)
 			{
-				for (Iterator<String> it = s.olines.iterator(); it.hasNext();)
+				try
 				{
-					String oline = it.next();
-					buffer += oline + ", ";
+					min = Integer.parseInt(params[2]);
 				}
-				buffer = buffer.substring(0, buffer.length() - 2);
+				catch (NumberFormatException ex) { }
+			}
+
+			server servers[] = new server[server.getServers().size()];
+			server.getServers().toArray(servers);
+			Arrays.sort(servers, servComparator);
+			
+			moo.sock.reply(source, target, "Servers with a least " + min +  " o:lines:");
+			
+			for (int i = servers.length; i > 0; --i)
+			{
+				server s = servers[i - 1];
+
+				if (s.olines.size() < min)
+					continue;
+				
+				String olines = s.olines.toString();
+				olines = olines.substring(1, olines.length() - 1);
+				
+				moo.sock.reply(source, target, s.getName() + ": " + olines); 
+			}
+		}
+		else
+		{
+			boolean found = false;
+			server s = server.findServer(params[1]);
+			if (s != null)
+			{
+				String buffer = "o:lines for " + s.getName() + ": ";
+				if (s.olines.isEmpty())
+					buffer += "none";
+				else
+				{
+					for (Iterator<String> it = s.olines.iterator(); it.hasNext();)
+					{
+						String oline = it.next();
+						buffer += oline + ", ";
+					}
+					buffer = buffer.substring(0, buffer.length() - 2);
+				}
+				
+				moo.sock.reply(source, target, buffer);
+				found = true;
 			}
 			
-			moo.sock.reply(source, target, buffer);
-			found = true;
+			String servers = "";
+			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+			{
+				s = it.next();
+				
+				if (s.olines.contains(params[1]))
+					servers += s.getName() +  ", ";
+			}
+			if (!servers.isEmpty())
+			{
+				servers = servers.substring(0, servers.length() - 2);
+				moo.sock.reply(source, target, params[1] + " has o:lines on: " + servers);
+				found = true;
+			}
+			if (found == false)
+				moo.sock.reply(source, target, "No o:lines for " + params[1]);
 		}
-		
-		String servers = "";
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-		{
-			s = it.next();
-			
-			if (s.olines.contains(params[1]))
-				servers += s.getName() +  ", ";
-		}
-		if (!servers.isEmpty())
-		{
-			servers = servers.substring(0, servers.length() - 2);
-			moo.sock.reply(source, target, params[1] + " has o:lines on: " + servers);
-			found = true;
-		}
-		if (found == false)
-			moo.sock.reply(source, target, "No o:lines for " + params[1]);
 	}
 }
