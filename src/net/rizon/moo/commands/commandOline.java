@@ -43,6 +43,12 @@ public class commandOline extends command
 		if (params.length <= 1)
 			return;
 		
+		server s = server.findServerAbsolute(source);
+		if (s == null)
+			s = new server(source);
+		if (s.isServices())
+			return;
+		
 		if (params[1].equalsIgnoreCase("COUNT"))
 		{			
 			int min = 2;
@@ -58,7 +64,7 @@ public class commandOline extends command
 			HashMap<String, Integer> oper_map = new HashMap<String, Integer>();
 			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 			{
-				server s = it.next();
+				s = it.next();
 				
 				for (Iterator<String> it2 = s.olines.iterator(); it2.hasNext();)
 				{
@@ -114,7 +120,7 @@ public class commandOline extends command
 		}
 
 		boolean found = false;
-		server s = server.findServer(params[1]);
+		s = server.findServer(params[1]);
 		if (s != null)
 		{
 			String buffer = "o:lines for " + s.getName() + ": ";

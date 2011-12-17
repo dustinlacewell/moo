@@ -105,7 +105,7 @@ public class commandVersions extends command
 		{
 			server s = it.next();
 			
-			if (s.getName().endsWith(".rizon.net") == false)
+			if (s.isServices() == false)
 			{
 				moo.sock.write("VERSION " + s.getName());
 				message351.waiting_for.add(s.getName());

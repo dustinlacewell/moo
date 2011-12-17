@@ -56,6 +56,11 @@ public class server
 		return this.getName().endsWith(".hub");
 	}
 	
+	public final boolean isServices()
+	{
+		return this.getName().endsWith(".rizon.net");
+	}
+	
 	public void link(final String to)
 	{
 		this.links.add(to);
