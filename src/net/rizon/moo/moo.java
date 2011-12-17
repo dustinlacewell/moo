@@ -15,8 +15,8 @@ public class moo
 	public static socket sock = null;
 	public static boolean quitting = false;
 	
-	private static final String[] messages = { "message001", "message015", "message213", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandClimit", "commandCline", "commandFlood", "commandHelp", "commandMap", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
+	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
+	private static final String[] commands = { "commandClimit", "commandCline", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
 
 	public static void main(String[] args)
 	{

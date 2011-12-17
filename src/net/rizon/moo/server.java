@@ -10,6 +10,7 @@ public class server
 	private String name;
 	private String sid = null;
 	public HashSet<String> clines = new HashSet<String>();
+	public HashSet<String> olines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
 	private LinkedList<split> splits = new LinkedList<split>();
 
@@ -25,6 +26,7 @@ public class server
 		
 		if (this.isHub())
 			moo.sock.write("STATS c " + this.getName());
+		moo.sock.write("STATS o " + this.getName());
 	}
 	
 	public void destroy()
@@ -99,6 +101,9 @@ public class server
 			moo.sock.write("STATS c " + this.getName());
 			this.clines.clear();
 		}
+		
+		moo.sock.write("STATS o " + this.getName());
+		this.olines.clear();
 
 		split s = this.getSplit();
 		s.to = to;

@@ -9,7 +9,6 @@ public class message364 extends message
 	{
 		super("364");
 	}
-	
 
 	@Override
 	public void run(String source, String[] message)
