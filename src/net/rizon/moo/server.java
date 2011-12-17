@@ -26,7 +26,8 @@ public class server
 		
 		if (this.isHub())
 			moo.sock.write("STATS c " + this.getName());
-		moo.sock.write("STATS o " + this.getName());
+		if (this.isServices())
+			moo.sock.write("STATS o " + this.getName());
 	}
 	
 	public void destroy()
@@ -107,8 +108,11 @@ public class server
 			this.clines.clear();
 		}
 		
-		moo.sock.write("STATS o " + this.getName());
-		this.olines.clear();
+		if (this.isServices())
+		{
+			moo.sock.write("STATS o " + this.getName());
+			this.olines.clear();
+		}
 
 		split s = this.getSplit();
 		s.to = to;
