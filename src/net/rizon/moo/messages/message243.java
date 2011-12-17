@@ -21,6 +21,8 @@ public class message243 extends message
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			s = new server(source);
+		if (s.isServices())
+			return;
 		s.olines.add(oper);
 	}
 }
