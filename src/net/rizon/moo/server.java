@@ -54,12 +54,12 @@ public class server
 
 	public final boolean isHub()
 	{
-		return this.getName().endsWith(".hub");
+		return this.getSID().endsWith("H");
 	}
 	
 	public final boolean isServices()
 	{
-		return this.getName().endsWith(".rizon.net");
+		return this.getSID().endsWith("S");
 	}
 	
 	public void link(final String to)
