@@ -168,6 +168,9 @@ public class server
 		{
 			try
 			{
+				for (Iterator<server> it = servers.iterator(); it.hasNext();)
+					it.next().splits.clear();
+
 				int count = 0;
 				ResultSet rs = moo.db.executeQuery("SELECT * FROM splits");
 				while (rs.next())
