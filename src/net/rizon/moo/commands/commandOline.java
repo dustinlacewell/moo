@@ -76,6 +76,9 @@ public class commandOline extends command
 			{
 				server s = it.next();
 				
+				if (s.isServices())
+					continue;
+				
 				for (Iterator<String> it2 = s.olines.iterator(); it2.hasNext();)
 				{
 					String oline = it2.next();
@@ -148,7 +151,7 @@ public class commandOline extends command
 			{
 				server s = servers[i - 1];
 
-				if (s.olines.size() < min)
+				if (s.isServices() || s.olines.size() < min)
 					continue;
 				
 				String olines = s.olines.toString();
@@ -184,6 +187,9 @@ public class commandOline extends command
 			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 			{
 				s = it.next();
+				
+				if (s.isServices())
+					continue;
 				
 				if (s.olines.contains(params[1]))
 					servers += s.getName() +  ", ";

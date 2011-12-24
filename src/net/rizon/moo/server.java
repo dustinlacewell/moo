@@ -27,10 +27,8 @@ public class server
 		if (moo.conf.getDebug() > 0)
 			System.out.println("Adding server " + this.getName());
 		
-		if (this.isHub())
-			moo.sock.write("STATS c " + this.getName());
-		if (this.isServices() == false)
-			moo.sock.write("STATS o " + this.getName());
+		moo.sock.write("STATS c " + this.getName());
+		moo.sock.write("STATS o " + this.getName());
 	}
 	
 	public void destroy()
@@ -111,17 +109,11 @@ public class server
 		if (this.getSplit() == null)
 			return;
 		
-		if (this.isHub())
-		{
-			moo.sock.write("STATS c " + this.getName());
-			this.clines.clear();
-		}
-		
-		if (this.isServices() == false)
-		{
-			moo.sock.write("STATS o " + this.getName());
-			this.olines.clear();
-		}
+		moo.sock.write("STATS c " + this.getName());
+		this.clines.clear();
+
+		moo.sock.write("STATS o " + this.getName());
+		this.olines.clear();
 
 		split s = this.getSplit();
 		s.to = to;
