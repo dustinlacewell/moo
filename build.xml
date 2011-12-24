@@ -6,18 +6,20 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="moo">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../usr/lib64/eclipse-3.5"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="moo.classpath">
         <pathelement location="bin"/>
     </path>
+    <path id="run.moo.classpath">
+        <pathelement location="lib/sqlitejdbc-v056.jar"/>
+        <path refid="moo.classpath"/>
+    </path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -51,7 +53,7 @@
     </target>
     <target name="moo">
         <java classname="net.rizon.moo.moo" failonerror="true" fork="yes">
-            <classpath refid="moo.classpath"/>
+            <classpath refid="run.moo.classpath"/>
         </java>
     </target>
 </project>
