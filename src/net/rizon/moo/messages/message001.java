@@ -14,19 +14,17 @@ public class message001 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (moo.conf.getOper() != null && moo.conf.getOper().isEmpty() == false)
+		if (moo.conf.getOper().isEmpty() == false)
 			moo.sock.write("OPER " + moo.conf.getOper());
-		if (moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
+		if (moo.conf.getNickServPass().isEmpty() == false)
 			moo.sock.privmsg("NickServ", "IDENTIFY " + moo.conf.getNickServPass());
-		if (moo.conf.getGeoServPass() != null && moo.conf.getGeoServPass().isEmpty() == false)
+		if (moo.conf.getGeoServPass().isEmpty() == false)
 			moo.sock.privmsg("GeoServ", "ACCESS IDENTIFY " + moo.conf.getGeoServPass());
 		
-		if (moo.conf.getChannels() != null)
-			for (int i = 0; i < moo.conf.getChannels().length; ++i)
-				moo.sock.join(moo.conf.getChannels()[i]);
-		if (moo.conf.getIdleChannels() != null)
-			for (int i = 0; i < moo.conf.getIdleChannels().length; ++i)
-				moo.sock.join(moo.conf.getIdleChannels()[i]);
+		for (int i = 0; i < moo.conf.getChannels().length; ++i)
+			moo.sock.join(moo.conf.getChannels()[i]);
+		for (int i = 0; i < moo.conf.getIdleChannels().length; ++i)
+			moo.sock.join(moo.conf.getIdleChannels()[i]);
 		
 		server.clearServers();
 

@@ -47,10 +47,9 @@ public class messageNotice extends message
 					return;
 				
 				if (moo.conf.getDisableSplitMessage() == false)
-					if (moo.conf.getSplitChannels() != null)
-						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " introduced by " + tokens[8] + "\2");
-				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " introduced by " + tokens[8] + "\2");
+				if (moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[4] + " introduced by " + tokens[8]);
 			}
 			else if (message[1].indexOf("End of burst from") != -1)
@@ -75,10 +74,9 @@ public class messageNotice extends message
 					return;
 				
 				if (moo.conf.getDisableSplitMessage() == false)
-					if (moo.conf.getSplitChannels() != null)
-						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + source + " introduced " + tokens[7] + "\2");
-				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + source + " introduced " + tokens[7] + "\2");
+				if (moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server introduced", source + " introduced " + tokens[7]);
 			}
 			else if (message[1].indexOf("split from") != -1)
@@ -97,9 +95,8 @@ public class messageNotice extends message
 				
 				if (moo.conf.getDisableSplitMessage() == false)
 				{
-					if (moo.conf.getSplitChannels() != null)
-						for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-							moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " split from " + tokens[7] + "\2");
+					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " split from " + tokens[7] + "\2");
 					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
 					{
 						server s = it.next();
@@ -109,15 +106,12 @@ public class messageNotice extends message
 								String cline = it2.next();
 								
 								if (serv.getName().equalsIgnoreCase(cline))
-								{
-									if (moo.conf.getSplitChannels() != null)
-										for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-											moo.sock.privmsg(moo.conf.getSplitChannels()[i], serv.getName() + " can connect to " + s.getName());
-								}
+									for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
+										moo.sock.privmsg(moo.conf.getSplitChannels()[i], serv.getName() + " can connect to " + s.getName());
 							}
 					}
 				}
-				if (moo.conf.getSplitEmail() != null && moo.conf.getSplitEmail().isEmpty() == false)
+				if (moo.conf.getSplitEmail().isEmpty() == false)
 					mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + tokens[7]);
 			}
 		}

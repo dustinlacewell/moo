@@ -93,12 +93,12 @@ public class moo
 				else
 					sock = socket.create();
 				
-				if (conf.getHost() != null && conf.getHost().isEmpty() == false)
+				if (conf.getHost().isEmpty() == false)
 					sock.getSocket().bind(new InetSocketAddress(conf.getHost(), 0));
 				
 				sock.connect(conf.getServer(), conf.getPort());
 				
-				if (conf.getServerPass() != null && conf.getServerPass().isEmpty() == false)
+				if (conf.getServerPass().isEmpty() == false)
 					sock.write("PASS :" + conf.getServerPass());
 				
 				sock.write("USER " + conf.getIdent() + " . . :" + conf.getRealname());

@@ -63,7 +63,7 @@ public class mail
 {
 	public static void send(final String to, final String subject, final String message)
 	{
-		if (moo.conf.getSendmailPath() == null || moo.conf.getSendmailPath().isEmpty() == true)
+		if (moo.conf.getSendmailPath().isEmpty() == true)
 			return;
 		
 		File sendmail = new File(moo.conf.getSendmailPath());
