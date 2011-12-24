@@ -2,6 +2,6 @@
 
 . ./build.sh
 
-tar zcf moo.tar.gz moo.jar *.template run.sh
+tar zcf moo.tar.gz moo.jar lib *.template run.sh
 rm -f moo.jar
 
