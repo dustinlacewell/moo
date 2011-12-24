@@ -28,62 +28,65 @@ public class config
 	private String split_email;
 	private String database;
 	private int debug;
+	
+	private String getProperty(Properties prop, final String name)
+	{
+		final String value = prop.getProperty(name);
+		return value != null ? value : "";
+	}
 
 	public void load() throws Exception
 	{
 		Properties prop = new Properties();
 		prop.load(new FileInputStream("moo.properties"));
 		
-		this.server = prop.getProperty("server");
-		this.port = Integer.parseInt(prop.getProperty("port"));
-		this.ssl = Boolean.parseBoolean(prop.getProperty("ssl"));
-		this.nick = prop.getProperty("nick");
-		this.ident = prop.getProperty("ident");
-		this.host = prop.getProperty("host");
-		this.realname = prop.getProperty("realname");
-		this.server_pass = prop.getProperty("server_pass");
-		this.version = prop.getProperty("version");
-		this.nickserv_pass = prop.getProperty("nickserv_pass");
-		this.geoserv_pass = prop.getProperty("geoserv_pass");
-		this.oper = prop.getProperty("oper");
+		this.server = this.getProperty(prop, "server");
+		this.port = Integer.parseInt(this.getProperty(prop, "port"));
+		this.ssl = Boolean.parseBoolean(this.getProperty(prop, "ssl"));
+		this.nick = this.getProperty(prop, "nick");
+		this.ident = this.getProperty(prop, "ident");
+		this.host = this.getProperty(prop, "host");
+		this.realname = this.getProperty(prop, "realname");
+		this.server_pass = this.getProperty(prop, "server_pass");
+		this.version = this.getProperty(prop, "version");
+		this.nickserv_pass = this.getProperty(prop, "nickserv_pass");
+		this.geoserv_pass = this.getProperty(prop, "geoserv_pass");
+		this.oper = this.getProperty(prop, "oper");
 		String chan;
-		chan = prop.getProperty("idle_channels");
-			this.idle_channels = chan.split(",");
-		chan = prop.getProperty("channels");
-		if (chan != null)
-			this.channels = chan.split(",");
-		chan = prop.getProperty("split_channels");
-		if (chan != null)
-			this.split_channels = chan.split(" ");
-		chan = prop.getProperty("admin_channels");
-		if (chan != null)
-			this.admin_channels = chan.split(",");
-		this.shell = Boolean.parseBoolean(prop.getProperty("enable_shell"));
-		this.shell_base = prop.getProperty("shell_base");
-		this.disable_split_message = Boolean.parseBoolean(prop.getProperty("disable_split_message"));
-		this.sendmail_path = prop.getProperty("sendmail_path");
-		this.split_email = prop.getProperty("split_email");
-		this.database = prop.getProperty("database");
-		this.debug = Integer.parseInt(prop.getProperty("debug"));
+		chan = this.getProperty(prop, "idle_channels");
+		this.idle_channels = chan.split(",");
+		chan = this.getProperty(prop, "channels");
+		this.channels = chan.split(",");
+		chan = this.getProperty(prop, "split_channels");
+		this.split_channels = chan.split(" ");
+		chan = this.getProperty(prop, "admin_channels");
+		this.admin_channels = chan.split(",");
+		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
+		this.shell_base = this.getProperty(prop, "shell_base");
+		this.disable_split_message = Boolean.parseBoolean(this.getProperty(prop, "disable_split_message"));
+		this.sendmail_path = this.getProperty(prop, "sendmail_path");
+		this.split_email = this.getProperty(prop, "split_email");
+		this.database = this.getProperty(prop, "database");
+		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
 		this.check();
 	}
 	
 	private void check() throws Exception
 	{
-		if (this.getServer() == null || this.getServer().isEmpty())
+		if (this.getServer().isEmpty())
 			throw new Exception("A server must be configured");
 		else if (this.getPort() <= 0 || this.getPort() > 65535)
 			throw new Exception("A valid port must be given");
-		else if (this.getNick() == null || this.getNick().isEmpty())
+		else if (this.getNick().isEmpty())
 			throw new Exception("A valid nick must be configured");
-		else if (this.getIdent() == null || this.getIdent().isEmpty())
+		else if (this.getIdent().isEmpty())
 			throw new Exception("A valid ident must be configured");
-		else if (this.getRealname() == null || this.getRealname().isEmpty())
+		else if (this.getRealname().isEmpty())
 			throw new Exception("A valid realname must be configured");
-		else if (this.getVersion() == null || this.getVersion().isEmpty())
+		else if (this.getVersion().isEmpty())
 			throw new Exception("A valid version must be configured");
-		else if (this.getShellBase() == null)
+		else if (this.getShellBase().isEmpty())
 			throw new Exception("A valid shell base must be configured");
 	}
 	
@@ -149,10 +152,9 @@ public class config
 	
 	public final boolean isIdleChannel(final String channel)
 	{
-		if (this.idle_channels != null)
-			for (int i = 0; i < this.idle_channels.length; ++i)
-				if (this.idle_channels[i].equalsIgnoreCase(channel))
-					return true;
+		for (int i = 0; i < this.idle_channels.length; ++i)
+			if (this.idle_channels[i].equalsIgnoreCase(channel))
+				return true;
 		return false;
 	}
 	
@@ -178,10 +180,9 @@ public class config
 	
 	public final boolean isAdminChannel(final String channel)
 	{
-		if (this.admin_channels != null)
-			for (int i = 0; i < this.admin_channels.length; ++i)
-				if (this.admin_channels[i].equalsIgnoreCase(channel))
-					return true;
+		for (int i = 0; i < this.admin_channels.length; ++i)
+			if (this.admin_channels[i].equalsIgnoreCase(channel))
+				return true;
 		return false;
 	}
 	

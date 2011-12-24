@@ -18,7 +18,7 @@ public class moo
 	public static boolean quitting = false;
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
-	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
+	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
 	private static final String[] commands = { "commandClimit", "commandCline", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
 
 	public static void main(String[] args)
@@ -62,7 +62,8 @@ public class moo
 		
 		try
 		{
-			db = new database();
+			if (moo.conf.getDatabase().isEmpty() == false)
+				db = new database();
 		}
 		catch (ClassNotFoundException ex)
 		{
@@ -79,8 +80,9 @@ public class moo
 
 		System.out.println("Starting up " + conf.getNick());
 		
-		for (table t : table.getTables())
-			t.init();
+		if (moo.conf.getDatabase().isEmpty() == false)
+			for (table t : table.getTables())
+				t.init();
 		
 		while (quitting == false)
 		{

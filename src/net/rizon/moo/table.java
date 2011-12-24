@@ -14,8 +14,9 @@ class database_timer extends timer
 	@Override
 	public void run(Date now)
 	{
-		for (table t : table.getTables())
-			t.save();
+		if (moo.conf.getDatabase().isEmpty() == false)
+			for (table t : table.getTables())
+				t.save();
 	}
 }
 

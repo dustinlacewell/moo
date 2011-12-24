@@ -3,7 +3,6 @@ package net.rizon.moo.messages;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
-import net.rizon.moo.table;
 
 public class message001 extends message
 {
@@ -30,10 +29,8 @@ public class message001 extends message
 				moo.sock.join(moo.conf.getIdleChannels()[i]);
 		
 		server.clearServers();
+
 		moo.sock.write("MAP");
-		moo.sock.write("LINKS");
-		
-		for (table t : table.getTables())
-			t.load();
+		moo.sock.write("LINKS"); // This returns numeric 365, we load databases here
 	}
 }
