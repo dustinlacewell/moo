@@ -26,6 +26,7 @@ public class config
 	private boolean disable_split_message;
 	private String sendmail_path;
 	private String split_email;
+	private String database;
 	private int debug;
 
 	public void load() throws Exception
@@ -62,6 +63,7 @@ public class config
 		this.disable_split_message = Boolean.parseBoolean(prop.getProperty("disable_split_message"));
 		this.sendmail_path = prop.getProperty("sendmail_path");
 		this.split_email = prop.getProperty("split_email");
+		this.database = prop.getProperty("database");
 		this.debug = Integer.parseInt(prop.getProperty("debug"));
 		
 		this.check();
@@ -206,6 +208,11 @@ public class config
 	public final String getSplitEmail()
 	{
 		return this.split_email;
+	}
+	
+	public final String getDatabase()
+	{
+		return this.database;
 	}
 	
 	public final int getDebug()

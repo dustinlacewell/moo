@@ -3,6 +3,7 @@ package net.rizon.moo.messages;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
+import net.rizon.moo.table;
 
 public class message001 extends message
 {
@@ -31,5 +32,8 @@ public class message001 extends message
 		server.clearServers();
 		moo.sock.write("MAP");
 		moo.sock.write("LINKS");
+		
+		for (table t : table.getTables())
+			t.load();
 	}
 }

@@ -52,6 +52,9 @@ public class commandSplit extends command
 			ldiff -= 60;
 		}
 		
+		if (lnow == lthen)
+			return "0 seconds";
+		
 		String buffer = "";
 		if (days > 0)
 			buffer += days + " day" + (days == 1 ? "" : "s") + " ";

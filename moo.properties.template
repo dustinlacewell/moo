@@ -61,4 +61,7 @@ sendmail_path=/usr/sbin/sendmail
 # Email address to mail whenever a server splits
 split_email=grimlock@rizon.net
 
+# Database to use
+database=jdbc:sqlite:c:/users/adam/desktop/moo.db
+
 debug=0

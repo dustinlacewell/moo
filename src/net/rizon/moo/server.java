@@ -1,5 +1,8 @@
 package net.rizon.moo;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +29,7 @@ public class server
 		
 		if (this.isHub())
 			moo.sock.write("STATS c " + this.getName());
-		if (this.isServices())
+		if (this.isServices() == false)
 			moo.sock.write("STATS o " + this.getName());
 	}
 	
@@ -114,7 +117,7 @@ public class server
 			this.clines.clear();
 		}
 		
-		if (this.isServices())
+		if (this.isServices() == false)
 		{
 			moo.sock.write("STATS o " + this.getName());
 			this.olines.clear();
@@ -158,5 +161,85 @@ public class server
 	public static void clearServers()
 	{
 		servers.clear();
+	}
+	
+	static class db extends table
+	{
+		@Override
+		protected void init() 
+		{
+			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
+		}
+
+		@Override
+		public void load()
+		{
+			try
+			{
+				int count = 0;
+				ResultSet rs = moo.db.executeQuery("SELECT * FROM splits");
+				while (rs.next())
+				{
+					String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to");
+					Date when = rs.getDate("when"), end = rs.getDate("end");
+					
+					server s = server.findServerAbsolute(name);
+					if (s == null)
+						s = new server(name);
+					split sp = new split();
+					sp.me = name;
+					sp.from = from;
+					sp.to = to;
+					sp.when = when;
+					sp.end = end;
+					s.splits.add(sp);
+					
+					++count;
+				}
+				
+				System.out.println("Loaded " + count + " splits");
+			}
+			catch (SQLException ex)
+			{
+				database.handleException(ex);
+			}
+		}
+
+		@Override
+		public void save()
+		{
+			try
+			{
+				moo.db.executeUpdate("DELETE FROM splits");
+				
+				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`) VALUES(?, ?, ?, ?, ?)"); 
+				
+				for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+				{
+					server s = it.next();
+					split[] splits = s.getSplits();
+					
+					for (split sp : splits)
+					{
+						statement.setString(1, sp.me);
+						statement.setString(2, sp.from);
+						statement.setString(3, sp.to);
+						statement.setDate(4, new java.sql.Date(sp.when.getTime()));
+						statement.setDate(5, (sp.end != null ? new java.sql.Date(sp.end.getTime()) : null));
+						moo.db.executeUpdate();
+					}
+				}
+			}
+			catch (SQLException ex)
+			{
+				System.out.println("Error saving splits");
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	static
+	{
+		new db();
 	}
 }

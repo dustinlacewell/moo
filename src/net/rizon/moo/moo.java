@@ -3,6 +3,7 @@ package net.rizon.moo;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,8 +14,10 @@ public class moo
 
 	public static config conf = null;
 	public static socket sock = null;
+	public static database db = null;
 	public static boolean quitting = false;
 	
+	private static final String[] static_classes = { "net.rizon.moo.server" };
 	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
 	private static final String[] commands = { "commandClimit", "commandCline", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
 
@@ -34,6 +37,8 @@ public class moo
 		
 		try
 		{
+			for (int i = 0; i < static_classes.length; ++i)
+				Class.forName(static_classes[i]);
 			for (int i = 0; i < messages.length; ++i)
 			{
 				Class<?> c = Class.forName("net.rizon.moo.messages." + messages[i]);
@@ -54,8 +59,28 @@ public class moo
 			ex.printStackTrace();
 			System.exit(-1);
 		}
+		
+		try
+		{
+			db = new database();
+		}
+		catch (ClassNotFoundException ex)
+		{
+			System.out.println("Error loading database driver");
+			ex.printStackTrace();
+			System.exit(-1);
+		}
+		catch (SQLException ex)
+		{
+			System.out.println("Error initializing database");
+			ex.printStackTrace();
+			System.exit(-1);
+		}
 
 		System.out.println("Starting up " + conf.getNick());
+		
+		for (table t : table.getTables())
+			t.init();
 		
 		while (quitting == false)
 		{
@@ -76,9 +101,26 @@ public class moo
 				
 				sock.write("USER " + conf.getIdent() + " . . :" + conf.getRealname());
 				sock.write("NICK :" + conf.getNick());
+				
+				long last_timer_check = System.currentTimeMillis() / 1000L;
 
 				for (String in; (in = sock.read()) != null;)
 				{
+					try
+					{
+						long now = System.currentTimeMillis() / 1000L;
+						if (now - last_timer_check >= 5)
+						{
+							timer.processTimers();
+							last_timer_check = now;
+						}
+					}
+					catch (Exception ex)
+					{
+						System.out.println("Error processing timers");
+						ex.printStackTrace();
+					}
+					
 					try
 					{
 						String[] tokens = in.split(" ");
@@ -146,6 +188,11 @@ public class moo
 				quitting = true;
 			}
 		}
+		
+		for (table t : table.getTables())
+			t.save();
+		
+		db.shutdown();
 		
 		System.exit(0);
 	}
