@@ -91,7 +91,7 @@ class message219_dnsbl extends message
 			commandDnsbl.dnsbl_values.keySet().toArray(keys_sorted);
 			Arrays.sort(keys_sorted, dnsblComparator.cmp);
 			
-			for (int i = keys_sorted.length; i > 0; ++i)
+			for (int i = keys_sorted.length; i > 0; --i)
 			{
 				String name = keys_sorted[i - 1];
 				long value = commandDnsbl.dnsbl_values.get(name);
