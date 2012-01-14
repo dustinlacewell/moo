@@ -1,5 +1,7 @@
 package net.rizon.moo.commands;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +47,23 @@ class message227 extends message
 	}
 }
 
+class dnsblComparator implements Comparator<String>
+{
+	public static dnsblComparator cmp = new dnsblComparator();
+
+	@Override
+	public int compare(String arg0, String arg1)
+	{
+		long val0 = commandDnsbl.dnsbl_values.get(arg0), val1 = commandDnsbl.dnsbl_values.get(arg1);
+		if (val0 < val1)
+			return -1;
+		else if (val0 > val1)
+			return 1;
+		else
+			return 0;
+	}
+}
+
 class message219_dnsbl extends message
 {
 	public message219_dnsbl()
@@ -68,11 +87,16 @@ class message219_dnsbl extends message
 			for (Iterator<String> it = commandDnsbl.dnsbl_values.keySet().iterator(); it.hasNext();)
 				total += commandDnsbl.dnsbl_values.get(it.next());
 			
-			for (Iterator<String> it = commandDnsbl.dnsbl_values.keySet().iterator(); it.hasNext();)
+			String keys_sorted[] = new String[commandDnsbl.dnsbl_values.size()];
+			commandDnsbl.dnsbl_values.keySet().toArray(keys_sorted);
+			Arrays.sort(keys_sorted, dnsblComparator.cmp);
+			
+			for (int i = 0; i < keys_sorted.length; ++i)
 			{
-				String name = it.next();
+				String name = keys_sorted[i];
 				long value = commandDnsbl.dnsbl_values.get(name);
-				long percent = total > 0 ? value / total * 100 : 0;
+				float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
+				percent = Math.round(percent);
 				
 				moo.sock.reply(commandDnsbl.target_source, commandDnsbl.target_chan, name + ": " + value + " (" + percent + "%)");
 			}
