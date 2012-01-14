@@ -19,7 +19,7 @@ public class moo
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
 	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandClimit", "commandCline", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
+	private static final String[] commands = { "commandClimit", "commandCline", "commandDnsbl", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
 
 	public static void main(String[] args)
 	{
@@ -149,7 +149,8 @@ public class moo
 						for (int i = begin; i < end; ++i)
 							buffer[buffer_count++] = tokens[i];
 						
-						buffer[buffer_count] = tokens[end].substring(1);
+						if (buffer.length > 0)
+							buffer[buffer_count] = tokens[end].startsWith(":") ? tokens[end].substring(1) : tokens[end];
 						for (int i = end + 1; i < tokens.length; ++i)
 							buffer[buffer_count] += " " + tokens[i];
 						
