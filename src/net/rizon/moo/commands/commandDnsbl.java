@@ -91,14 +91,14 @@ class message219_dnsbl extends message
 			commandDnsbl.dnsbl_values.keySet().toArray(keys_sorted);
 			Arrays.sort(keys_sorted, dnsblComparator.cmp);
 			
-			for (int i = 0; i < keys_sorted.length; ++i)
+			for (int i = keys_sorted.length; i > 0; ++i)
 			{
-				String name = keys_sorted[i];
+				String name = keys_sorted[i - 1];
 				long value = commandDnsbl.dnsbl_values.get(name);
 				float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
-				percent = Math.round(percent);
+				int percent_i = Math.round(percent);
 				
-				moo.sock.reply(commandDnsbl.target_source, commandDnsbl.target_chan, name + ": " + value + " (" + percent + "%)");
+				moo.sock.reply(commandDnsbl.target_source, commandDnsbl.target_chan, name + ": " + value + " (" + percent_i + "%)");
 			}
 			
 			commandDnsbl.dnsbl_values.clear();
