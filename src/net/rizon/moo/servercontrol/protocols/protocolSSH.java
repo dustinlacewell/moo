@@ -1,9 +1,12 @@
-package net.rizon.moo.servercontrol;
+package net.rizon.moo.servercontrol.protocols;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+
+import net.rizon.moo.servercontrol.connection;
+import net.rizon.moo.servercontrol.protocol;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -14,10 +17,10 @@ final class connectionSSH extends connection
 {
 	private static JSch jsch = new JSch();
 	
-	private Session session;
-	private ChannelExec channel;
-	private PrintStream shellStream;
-	private BufferedReader reader;
+	private Session session = null;
+	private ChannelExec channel = null;
+	private PrintStream shellStream = null;
+	private BufferedReader reader = null;
 
 	public connectionSSH(protocol proto)
 	{
@@ -48,7 +51,14 @@ final class connectionSSH extends connection
 		catch (Exception ex) { }
 	}
 	
-	public void connect() throws Exception
+	@Override
+	public boolean isConnected()
+	{
+		return this.session != null && this.session.isConnected();
+	}
+	
+	@Override
+	public void connect() throws IOException
 	{
 		try
 		{
@@ -60,21 +70,30 @@ final class connectionSSH extends connection
 		}
 		catch (JSchException e)
 		{
-			throw new Exception(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public void execute(final String command) throws Exception
+	@Override
+	public void execute(final String command) throws IOException
 	{
 		this.cleanUp();
 
-		this.channel = (ChannelExec) this.session.openChannel("exec");
-		this.shellStream = new PrintStream(this.channel.getOutputStream());
-		this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
-		this.channel.setCommand(command);
-		this.channel.connect();
+		try
+		{
+			this.channel = (ChannelExec) this.session.openChannel("exec");
+			this.shellStream = new PrintStream(this.channel.getOutputStream());
+			this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
+			this.channel.setCommand(command);
+			this.channel.connect();
+		}
+		catch (JSchException e)
+		{
+			throw new IOException(e);
+		}
 	}
 	
+	@Override
 	public String readLine()
 	{
 		try

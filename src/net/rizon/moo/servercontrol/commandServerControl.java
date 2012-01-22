@@ -28,10 +28,10 @@ public class commandServerControl extends command
 			return;
 		}
 		
-		serverInfo[] server_info = servercontrol.findServers(params[1]);
+		serverInfo[] server_info = servercontrol.findServers(params[1], params[2]);
 		if (server_info == null)
 		{
-			moo.sock.reply(source, target, "No servers found for " + params[1]);
+			moo.sock.reply(source, target, "No servers found for " + params[1] + " using " + params[2]);
 			return;
 		}
 		
@@ -52,12 +52,9 @@ public class commandServerControl extends command
 						con.setPort(si.port);
 					con.setUser(si.user);
 					con.setPassword(si.pass);
-					
-					con.connect();
 				}
 			
-				con.execute(command);
-				process proc = new process(con, source, target);
+				process proc = new process(con, source, target, command);
 				proc.start();
 			}
 			catch (Exception ex)

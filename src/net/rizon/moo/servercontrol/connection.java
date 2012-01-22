@@ -1,5 +1,6 @@
 package net.rizon.moo.servercontrol;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +11,7 @@ final class connectionTimer extends timer
 {
 	public connectionTimer()
 	{
-		super(60, true);
+		super(300, true);
 	}
 	
 	public void run(final Date now)
@@ -107,8 +108,9 @@ public abstract class connection
 		return this.password;
 	}
 	
-	public abstract void connect() throws Exception;
-	public abstract void execute(final String command) throws Exception;
+	public abstract boolean isConnected();
+	public abstract void connect() throws IOException;
+	public abstract void execute(final String command) throws IOException;
 	public abstract String readLine();
 	
 	private static LinkedList<connection> connections = new LinkedList<connection>();
