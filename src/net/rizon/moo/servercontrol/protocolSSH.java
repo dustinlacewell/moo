@@ -19,9 +19,33 @@ final class connectionSSH extends connection
 	private PrintStream shellStream;
 	private BufferedReader reader;
 
-	public connectionSSH()
+	public connectionSSH(protocol proto)
 	{
+		super(proto);
 		this.setPort(22);
+	}
+	
+	@Override
+	public void destroy()
+	{
+		super.destroy();
+		try { this.reader.close(); }
+		catch (IOException ex) { }
+		this.shellStream.close();
+		this.channel.disconnect();
+		this.session.disconnect();
+	}
+	
+	private void cleanUp()
+	{
+		try { this.channel.disconnect(); }
+		catch (Exception ex) { }
+		
+		try { this.shellStream.close(); }
+		catch (Exception ex) { }
+		
+		try { this.reader.close(); } 
+		catch (Exception ex) { }
 	}
 	
 	public void connect() throws Exception
@@ -33,9 +57,6 @@ final class connectionSSH extends connection
 			this.session.setPassword(this.getPassword());
 			this.session.setConfig("StrictHostKeyChecking", "no");
 			this.session.connect();
-			this.channel = (ChannelExec) this.session.openChannel("exec");
-			this.shellStream = new PrintStream(this.channel.getOutputStream());
-			this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
 		}
 		catch (JSchException e)
 		{
@@ -43,17 +64,15 @@ final class connectionSSH extends connection
 		}
 	}
 	
-	public void execute(final String command)
+	public void execute(final String command) throws Exception
 	{
+		this.cleanUp();
+
+		this.channel = (ChannelExec) this.session.openChannel("exec");
+		this.shellStream = new PrintStream(this.channel.getOutputStream());
+		this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
 		this.channel.setCommand(command);
-		try
-		{
-			this.channel.connect();
-		}
-		catch (JSchException e)
-		{
-			e.printStackTrace();
-		}
+		this.channel.connect();
 	}
 	
 	public String readLine()
@@ -67,15 +86,6 @@ final class connectionSSH extends connection
 			return null;
 		}
 	}
-	
-	public void destroy()
-	{
-		try { this.reader.close(); }
-		catch (IOException ex) { }
-		this.shellStream.close();
-		this.channel.disconnect();
-		this.session.disconnect();
-	}
 }
 
 public class protocolSSH extends protocol
@@ -88,6 +98,6 @@ public class protocolSSH extends protocol
 	
 	public connection createConnection()
 	{
-		return new connectionSSH();
+		return new connectionSSH(this);
 	}
 }

@@ -4,9 +4,17 @@ import java.util.HashMap;
 
 public abstract class protocol
 {
+	private String name;
+
 	public protocol(final String name)
 	{
 		protocols.put(name.toLowerCase(), this);
+		this.name = name;
+	}
+	
+	public final String getProtocolName()
+	{
+		return this.name;
 	}
 	
 	public abstract connection createConnection();

@@ -16,6 +16,7 @@ public class servercontrol extends mpackage
 		super("Server Control", "Manage servers");
 		
 		new commandServerControl(this);
+		new commandConnections(this);
 		
 		new protocolSSH();
 		

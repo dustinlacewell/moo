@@ -4,27 +4,6 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-final class process extends Thread
-{
-	private connection con;
-	private String source, target;
-
-	public process(connection con, final String source, final String target)
-	{
-		this.con = con;
-		this.source = source;
-		this.target = target;
-	}
-	
-	@Override
-	public void run()
-	{
-		for (String in; (in = this.con.readLine()) != null;)
-			moo.sock.reply(this.source, this.target, "[" + this.con.getHost() + "] " + in);
-		this.con.destroy();
-	}
-}
-
 public class commandServerControl extends command
 {
 	public commandServerControl(mpackage pkg)
@@ -62,16 +41,21 @@ public class commandServerControl extends command
 		
 		for (serverInfo si : server_info)
 		{
-			connection con = proto.createConnection();
-			con.setHost(si.host);
-			if (si.port > 0)
-				con.setPort(si.port);
-			con.setUser(si.user);
-			con.setPassword(si.pass);
-			
 			try
 			{
-				con.connect();
+				connection con = connection.findProcess(si.host, si.protocol);
+				if (con == null)
+				{
+					con = proto.createConnection();
+					con.setHost(si.host);
+					if (si.port > 0)
+						con.setPort(si.port);
+					con.setUser(si.user);
+					con.setPassword(si.pass);
+					
+					con.connect();
+				}
+			
 				con.execute(command);
 				process proc = new process(con, source, target);
 				proc.start();
@@ -79,7 +63,6 @@ public class commandServerControl extends command
 			catch (Exception ex)
 			{
 				moo.sock.reply(source, target, "Error executing command on " + si.host + ": " + ex.getMessage());
-				con.destroy();
 			}
 		}
 	}
