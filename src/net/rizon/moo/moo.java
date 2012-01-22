@@ -19,7 +19,7 @@ public class moo
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
 	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] commands = { "commandClimit", "commandCline", "commandDnsbl", "commandFlood", "commandHelp", "commandMap", "commandOline", "commandReload", "commandScheck", "commandShell", "commandShutdown", "commandSid", "commandSlackers", "commandSoa", "commandSplit", "commandStatus", "commandTime", "commandVersions" };
+	private static final String[] packages = { "commands", "servercontrol" };
 
 	public static void main(String[] args)
 	{
@@ -31,31 +31,6 @@ public class moo
 		catch (Exception ex)
 		{
 			System.out.println("Error loading configuration");
-			ex.printStackTrace();
-			System.exit(-1);
-		}
-		
-		try
-		{
-			for (int i = 0; i < static_classes.length; ++i)
-				Class.forName(static_classes[i]);
-			for (int i = 0; i < messages.length; ++i)
-			{
-				Class<?> c = Class.forName("net.rizon.moo.messages." + messages[i]);
-				Constructor<?>[] cons = c.getConstructors();
-				cons[0].newInstance();
-			}
-			
-			for (int i = 0; i < commands.length; ++i)
-			{
-				Class<?> c = Class.forName("net.rizon.moo.commands." + commands[i]);
-				Constructor<?>[] cons = c.getConstructors();
-				cons[0].newInstance();
-			}
-		}
-		catch (Exception ex)
-		{
-			System.out.println("Error loading resources");
 			ex.printStackTrace();
 			System.exit(-1);
 		}
@@ -74,6 +49,32 @@ public class moo
 		catch (SQLException ex)
 		{
 			System.out.println("Error initializing database");
+			ex.printStackTrace();
+			System.exit(-1);
+		}
+		
+		try
+		{
+			for (int i = 0; i < static_classes.length; ++i)
+				Class.forName(static_classes[i]);
+
+			for (int i = 0; i < messages.length; ++i)
+			{
+				Class<?> c = Class.forName("net.rizon.moo.messages." + messages[i]);
+				Constructor<?>[] cons = c.getConstructors();
+				cons[0].newInstance();
+			}
+			
+			for (int i = 0; i < packages.length; ++i)
+			{
+				Class<?> c = Class.forName("net.rizon.moo." + packages[i] + "." + packages[i]);
+				Constructor<?>[] cons = c.getConstructors();
+				cons[0].newInstance();
+			}
+		}
+		catch (Exception ex)
+		{
+			System.out.println("Error loading resources");
 			ex.printStackTrace();
 			System.exit(-1);
 		}

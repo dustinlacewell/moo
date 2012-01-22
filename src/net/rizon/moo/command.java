@@ -1,19 +1,24 @@
 package net.rizon.moo;
 
-import java.util.LinkedList;
-
 public abstract class command extends message
 {
+	private mpackage pkg;
 	private String cmdname;
 	private String description;
 	private boolean requireAdmin;
 
-	public command(final String cmdname, final String desc)
+	public command(mpackage pkg, final String cmdname, final String desc)
 	{
 		super("PRIVMSG");
+		this.pkg = pkg;
 		this.cmdname = cmdname;
 		this.description = desc;
-		commands.add(this);
+		pkg.addCommand(this);
+	}
+	
+	public mpackage getPackage()
+	{
+		return this.pkg;
 	}
 	
 	public final String getCommandName()
@@ -56,15 +61,8 @@ public abstract class command extends message
 	public void onHelp(final String source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
-			moo.sock.notice(source, this.getCommandName() + " - " + this.getDescription());
+			moo.sock.notice(source, " " + this.getCommandName() + " - " + this.getDescription());
 		else
-			moo.sock.notice(source, this.getCommandName());
-	}
-	
-	private static LinkedList<command> commands = new LinkedList<command>();
-
-	public static final LinkedList<command> getCommands()
-	{
-		return commands;
+			moo.sock.notice(source, " " + this.getCommandName());
 	}
 }

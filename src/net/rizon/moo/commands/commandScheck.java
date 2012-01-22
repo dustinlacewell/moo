@@ -7,6 +7,7 @@ import java.util.Random;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.socket;
 
@@ -97,9 +98,9 @@ class scheck extends Thread
 
 public class commandScheck extends command
 {
-	public commandScheck()
+	public commandScheck(mpackage pkg)
 	{
-		super("!SCHECK", "Check if a server is online");
+		super(pkg, "!SCHECK", "Check if a server is online");
 	}
 
 	@Override

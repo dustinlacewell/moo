@@ -6,6 +6,7 @@ import java.util.Iterator;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message005 extends message
@@ -69,9 +70,9 @@ public class commandClimit extends command
 	@SuppressWarnings("unused")
 	private static message005 message_105 = new message005("105");
 
-	public commandClimit()
+	public commandClimit(mpackage pkg)
 	{
-		super("!CLIMIT", "View server channel limits"); 
+		super(pkg, "!CLIMIT", "View server channel limits"); 
 	}
 
 	@Override

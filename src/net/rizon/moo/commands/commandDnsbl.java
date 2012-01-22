@@ -9,6 +9,7 @@ import java.util.Iterator;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message227 extends message
@@ -118,9 +119,9 @@ public class commandDnsbl extends command
 	public static HashMap<String, Long> dnsbl_values = new HashMap<String, Long>();
 	public static String target_chan, target_source;
 	
-	public commandDnsbl()
+	public commandDnsbl(mpackage pkg)
 	{
-		super("!DNSBL", "Views DNSBL counts");
+		super(pkg, "!DNSBL", "Views DNSBL counts");
 	}
 	
 	@Override

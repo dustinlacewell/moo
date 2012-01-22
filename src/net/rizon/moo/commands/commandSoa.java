@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 class soaCheck extends Thread
 {
@@ -112,9 +113,9 @@ class soaCheck extends Thread
 
 public class commandSoa extends command
 {
-	public commandSoa()
+	public commandSoa(mpackage pkg)
 	{
-		super("!SOA", "Check if SOA records for a domain are valid");
+		super(pkg, "!SOA", "Check if SOA records for a domain are valid");
 	}
 
 	@Override

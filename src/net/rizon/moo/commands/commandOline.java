@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 final class operComparator implements Comparator<String>
@@ -48,9 +49,9 @@ public class commandOline extends command
 {
 	private static final serverComparator servComparator = new serverComparator();
 
-	public commandOline()
+	public commandOline(mpackage pkg)
 	{
-		super("!OLINE", "View olines");
+		super(pkg, "!OLINE", "View olines");
 	}
 
 	@Override

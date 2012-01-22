@@ -6,6 +6,7 @@ import java.util.Iterator;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message351 extends message
@@ -93,9 +94,9 @@ public class commandVersions extends command
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();
 
-	public commandVersions()
+	public commandVersions(mpackage pkg)
 	{
-		super("!VERSIONS", "View the IRCd versions");
+		super(pkg, "!VERSIONS", "View the IRCd versions");
 	}
 
 	@Override

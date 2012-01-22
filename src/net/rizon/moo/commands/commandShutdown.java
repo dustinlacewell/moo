@@ -2,13 +2,14 @@ package net.rizon.moo.commands;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 
 public class commandShutdown extends command
 {
-	public commandShutdown()
+	public commandShutdown(mpackage pkg)
 	{
-		super("!SHUTDOWN", "Shutdown " + moo.conf.getNick());
+		super(pkg, "!SHUTDOWN", "Shutdown " + moo.conf.getNick());
 		this.requireAdmin();
 	}
 

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 class shellExec extends Thread
 {
@@ -39,9 +40,9 @@ class shellExec extends Thread
 
 public class commandShell extends command
 {
-	public commandShell()
+	public commandShell(mpackage pkg)
 	{
-		super("!SHELL", "Execute a shell command");
+		super(pkg, "!SHELL", "Execute a shell command");
 		this.requireAdmin();
 	}
 

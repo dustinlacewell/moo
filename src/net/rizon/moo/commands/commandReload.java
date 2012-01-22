@@ -3,12 +3,13 @@ package net.rizon.moo.commands;
 import net.rizon.moo.command;
 import net.rizon.moo.config;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 public class commandReload extends command
 {
-	public commandReload()
+	public commandReload(mpackage pkg)
 	{
-		super("!RELOAD", "Reloads the configuration file");
+		super(pkg, "!RELOAD", "Reloads the configuration file");
 		this.requireAdmin();
 	}
 

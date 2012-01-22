@@ -2,12 +2,13 @@ package net.rizon.moo.commands;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 public class commandStatus extends command
 {
-	public commandStatus()
+	public commandStatus(mpackage pkg)
 	{
-		super("!STATUS", "View " + moo.conf.getNick() + "'s status");
+		super(pkg, "!STATUS", "View " + moo.conf.getNick() + "'s status");
 	}
 	
 	private String convertBytes(long bb)

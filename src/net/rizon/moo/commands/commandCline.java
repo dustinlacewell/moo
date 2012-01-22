@@ -4,13 +4,14 @@ import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 public class commandCline extends command
 {
-	public commandCline()
+	public commandCline(mpackage pkg)
 	{
-		super("!CLINE", "Check where servers can connect to");
+		super(pkg, "!CLINE", "Check where servers can connect to");
 	}
 
 	@Override

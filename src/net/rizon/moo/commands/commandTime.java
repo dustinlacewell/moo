@@ -11,6 +11,7 @@ import java.util.Iterator;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message391 extends message
@@ -124,9 +125,9 @@ public class commandTime extends command
 	@SuppressWarnings("unused")
 	private static message391 message_391 = new message391("391");
 
-	public commandTime()
+	public commandTime(mpackage pkg)
 	{
-		super("!TIME", "View server times"); 
+		super(pkg, "!TIME", "View server times"); 
 	}
 
 	@Override

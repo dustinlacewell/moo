@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.split;
 
@@ -24,9 +25,9 @@ class splitComparator implements Comparator<split>
 
 public class commandSplit extends command
 {
-	public commandSplit()
+	public commandSplit(mpackage pkg)
 	{
-		super("!SPLIT", "Views split servers");
+		super(pkg, "!SPLIT", "Views split servers");
 	}
 	
 	private static String difference(Date now, Date then)

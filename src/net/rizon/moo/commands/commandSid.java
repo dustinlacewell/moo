@@ -5,13 +5,14 @@ import java.util.Random;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 abstract class commandSidBase extends command
 {
-	protected commandSidBase(final String name, final String desc)
+	protected commandSidBase(mpackage pkg, final String name, final String desc)
 	{
-		super(name, desc);
+		super(pkg, name, desc);
 	}
 	
 	private static boolean inUse(final String sid)
@@ -46,9 +47,9 @@ abstract class commandSidBase extends command
 
 final class commandSidClient extends commandSidBase
 {
-	public commandSidClient()
+	public commandSidClient(mpackage pkg)
 	{
-		super("!SID", "Generates a new server ID");
+		super(pkg, "!SID", "Generates a new server ID");
 	}
 	
 	@Override
@@ -65,9 +66,9 @@ final class commandSidClient extends commandSidBase
 
 final class commandSidHub extends commandSidBase
 {
-	public commandSidHub()
+	public commandSidHub(mpackage pkg)
 	{
-		super("!HUBSID", "Generates a new hub server ID");
+		super(pkg, "!HUBSID", "Generates a new hub server ID");
 	}
 	
 	@Override
@@ -85,7 +86,13 @@ final class commandSidHub extends commandSidBase
 public class commandSid
 {
 	@SuppressWarnings("unused")
-	private commandSidClient sid_client = new commandSidClient();
+	private commandSidClient sid_client;
 	@SuppressWarnings("unused")
-	private commandSidHub sid_hub = new commandSidHub();
+	private commandSidHub sid_hub;
+	
+	public commandSid(mpackage pkg)
+	{
+		this.sid_client = new commandSidClient(pkg);
+		this.sid_hub = new commandSidHub(pkg);
+	}
 }

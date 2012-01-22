@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message249 extends message
@@ -125,9 +126,9 @@ public class commandSlackers extends command
 	
 	public static LinkedList<String> opers = new LinkedList<String>();
 
-	public commandSlackers()
+	public commandSlackers(mpackage pkg)
 	{
-		super("!SLACKERS", "Find opers online but not in the channel");
+		super(pkg, "!SLACKERS", "Find opers online but not in the channel");
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class message211 extends message
@@ -118,9 +119,9 @@ class commandMapBase extends command
 {
 	private boolean full;
 
-	public commandMapBase(final String cmd, boolean full)
+	public commandMapBase(mpackage pkg, final String cmd, boolean full)
 	{
-		super(cmd, "View hub lag and routing information");
+		super(pkg, cmd, "View hub lag and routing information");
 		this.full = full;
 	}
 
@@ -190,17 +191,17 @@ class commandMapBase extends command
 
 class commandMapRegular extends commandMapBase
 {
-	public commandMapRegular()
+	public commandMapRegular(mpackage pkg)
 	{
-		super("!MAP", false);
+		super(pkg, "!MAP", false);
 	}
 }
 
 class commandMapAll extends commandMapBase
 {
-	public commandMapAll()
+	public commandMapAll(mpackage pkg)
 	{
-		super("!MAP-" , true);
+		super(pkg, "!MAP-" , true);
 	}
 }
 
@@ -213,7 +214,13 @@ public class commandMap
 	@SuppressWarnings("unused")
 	private static message265 msg_265 = new message265();
 	@SuppressWarnings("unused")
-	private static commandMapRegular map_reg = new commandMapRegular();
+	private commandMapRegular map_reg;
 	@SuppressWarnings("unused")
-	private static commandMapAll map_all = new commandMapAll();
+	private commandMapAll map_all;
+	
+	public commandMap(mpackage pkg)
+	{
+		this.map_reg = new commandMapRegular(pkg);
+		this.map_all = new commandMapAll(pkg);
+	}
 }

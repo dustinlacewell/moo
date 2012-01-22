@@ -8,6 +8,7 @@ import java.util.Vector;
 import net.rizon.moo.command;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
 class messageePrivmsg extends message
@@ -154,9 +155,9 @@ public class commandFlood extends command
 	@SuppressWarnings("unused")
 	private static messageePrivmsg nm = new messageePrivmsg();
 
-	public commandFlood()
+	public commandFlood(mpackage pkg)
 	{
-		super("!FLOOD", "Manage flood lists");
+		super(pkg, "!FLOOD", "Manage flood lists");
 		this.requireAdmin();
 	}
 

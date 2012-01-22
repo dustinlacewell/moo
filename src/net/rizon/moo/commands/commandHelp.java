@@ -4,26 +4,38 @@ import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
 
 public class commandHelp extends command
 {
-	public commandHelp()
+	public commandHelp(mpackage pkg)
 	{
-		super("!MOO-HELP", "Shows this list");
+		super(pkg, "!MOO-HELP", "Shows this list");
 	}
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		moo.sock.notice(source, "Available commands:");
-		for (Iterator<command> it = command.getCommands().iterator(); it.hasNext();)
+		for (Iterator<mpackage> it = mpackage.getPackages().iterator(); it.hasNext();)
 		{
-			command c = it.next();
+			mpackage pkg = it.next();
+			boolean show_header = false;
 			
-			if (c.requiresAdmin() && moo.conf.isAdminChannel(target) == false)
-				continue;
-			
-			c.onHelp(source);
+			for (Iterator<command> it2 = pkg.getCommands().iterator(); it2.hasNext();)
+			{
+				command c = it2.next();
+				
+				if (c.requiresAdmin() && moo.conf.isAdminChannel(target) == false)
+					continue;
+				
+				if (show_header == false)
+				{
+					moo.sock.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
+					show_header = true;
+				}
+				
+				c.onHelp(source);
+			}
 		}
 	}
 }
