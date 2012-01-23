@@ -11,6 +11,8 @@
     <property name="source" value="1.6"/>
     <path id="moo.classpath">
         <pathelement location="bin"/>
+        <pathelement location="lib/jsch-0.1.45.jar"/>
+        <pathelement location="lib/commons-net-3.0.1.jar"/>
     </path>
     <path id="run.moo.classpath">
         <pathelement location="lib/sqlitejdbc-v056.jar"/>
