@@ -25,6 +25,8 @@ final class connectionTelnet extends connection
 	@Override
 	public void destroy()
 	{
+		super.destroy();
+
 		try { this.client.disconnect(); }
 		catch (Exception ex) { }
 		
@@ -117,6 +119,7 @@ public class protocolTelnet extends protocol
 		super("TELNET");
 	}
 	
+	@Override
 	public connection createConnection()
 	{
 		return new connectionTelnet(this);

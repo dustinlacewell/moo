@@ -114,7 +114,7 @@ public class protocolSSH extends protocol
 		super("SSH");
 	}
 	
-	
+	@Override
 	public connection createConnection()
 	{
 		return new connectionSSH(this);

@@ -1,8 +1,13 @@
-package net.rizon.moo.servercontrol;
+package net.rizon.moo.servercontrol.commands;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
+import net.rizon.moo.servercontrol.connection;
+import net.rizon.moo.servercontrol.process;
+import net.rizon.moo.servercontrol.protocol;
+import net.rizon.moo.servercontrol.serverInfo;
+import net.rizon.moo.servercontrol.servercontrol;
 
 public class commandServerControl extends command
 {

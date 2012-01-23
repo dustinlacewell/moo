@@ -1,8 +1,9 @@
-package net.rizon.moo.servercontrol;
+package net.rizon.moo.servercontrol.commands;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
+import net.rizon.moo.servercontrol.connection;
 
 public class commandConnections extends command
 {
