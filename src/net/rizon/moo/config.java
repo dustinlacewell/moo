@@ -27,6 +27,7 @@ public class config
 	private String sendmail_path;
 	private String split_email;
 	private String database;
+	private String[] packages;
 	private int debug;
 	
 	private String getProperty(Properties prop, final String name)
@@ -52,21 +53,23 @@ public class config
 		this.nickserv_pass = this.getProperty(prop, "nickserv_pass");
 		this.geoserv_pass = this.getProperty(prop, "geoserv_pass");
 		this.oper = this.getProperty(prop, "oper");
-		String chan;
-		chan = this.getProperty(prop, "idle_channels");
-		this.idle_channels = chan.split(",");
-		chan = this.getProperty(prop, "channels");
-		this.channels = chan.split(",");
-		chan = this.getProperty(prop, "split_channels");
-		this.split_channels = chan.split(" ");
-		chan = this.getProperty(prop, "admin_channels");
-		this.admin_channels = chan.split(",");
+		String s;
+		s = this.getProperty(prop, "idle_channels");
+		this.idle_channels = s.split(",");
+		s = this.getProperty(prop, "channels");
+		this.channels = s.split(",");
+		s = this.getProperty(prop, "split_channels");
+		this.split_channels = s.split(" ");
+		s = this.getProperty(prop, "admin_channels");
+		this.admin_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
 		this.shell_base = this.getProperty(prop, "shell_base");
 		this.disable_split_message = Boolean.parseBoolean(this.getProperty(prop, "disable_split_message"));
 		this.sendmail_path = this.getProperty(prop, "sendmail_path");
 		this.split_email = this.getProperty(prop, "split_email");
 		this.database = this.getProperty(prop, "database");
+		s = this.getProperty(prop, "packages");
+		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
 		this.check();
@@ -214,6 +217,11 @@ public class config
 	public final String getDatabase()
 	{
 		return this.database;
+	}
+	
+	public final String[] getPackages()
+	{
+		return this.packages;
 	}
 	
 	public final int getDebug()

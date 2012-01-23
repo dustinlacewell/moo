@@ -19,7 +19,6 @@ public class moo
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
 	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
-	private static final String[] packages = { "commands", "servercontrol" };
 
 	public static void main(String[] args)
 	{
@@ -65,9 +64,9 @@ public class moo
 				cons[0].newInstance();
 			}
 			
-			for (int i = 0; i < packages.length; ++i)
+			for (final String pkg : conf.getPackages())
 			{
-				Class<?> c = Class.forName("net.rizon.moo." + packages[i] + "." + packages[i]);
+				Class<?> c = Class.forName("net.rizon.moo." + pkg + "." + pkg);
 				Constructor<?>[] cons = c.getConstructors();
 				cons[0].newInstance();
 			}
