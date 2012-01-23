@@ -101,10 +101,15 @@ final class connectionTelnet extends connection
 				this.reader.mark(512);
 				char buf[] = new char[512];
 				this.reader.read(buf, 0, 512);
-				if (buf[buf.length - 1] != '\n')
-					return null;
-				this.reader.reset();
+				for (int i = 0; i < buf.length; ++i)
+					if (buf[i] == '\n')
+					{
+						this.reader.reset();
+						return this.reader.readLine();
+					}
+				return null;
 			}
+			
 			return this.reader.readLine();
 		}
 		catch (IOException ex)
