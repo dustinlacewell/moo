@@ -27,7 +27,7 @@ public class commandDelServer extends command
 		
 		try
 		{
-			PreparedStatement statement = moo.db.prepare("DELETE FROM servercontrol WHERE `host` = ? AND `protocol` = ?");
+			PreparedStatement statement = moo.db.prepare("DELETE FROM servercontrol WHERE `name` = ? AND `protocol` = ?");
 			statement.setString(1, params[1]);
 			statement.setString(2, params[2]);
 			moo.db.executeUpdate();
