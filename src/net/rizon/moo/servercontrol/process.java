@@ -33,7 +33,7 @@ public class process extends Thread
 		}
 		catch (Exception ex)
 		{
-			moo.sock.reply(this.source, this.target, "Error running command on " + this.con.getServerInfo().name + ":" + this.con.getProtocol().getProtocolName() + ": " + ex.getMessage());
+			moo.sock.reply(this.source, this.target, "Error running command on " + this.con.getServerInfo().name + ": " + this.con.getProtocol().getProtocolName() + ": " + ex.getMessage());
 			ex.printStackTrace();
 		}
 		finally
