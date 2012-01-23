@@ -80,8 +80,6 @@ final class connectionTelnet extends connection
 			Thread.sleep(1000);
 		}
 		catch (InterruptedException e) { }
-
-		while (this.readLine() != null);
 	}
 
 	@Override
@@ -94,28 +92,36 @@ final class connectionTelnet extends connection
 	@Override
 	public String readLine()
 	{
+		long last_recv = System.currentTimeMillis() / 1000L;
+		
 		try
 		{
-			if (this.reader.ready())
+			while (last_recv + 30 > System.currentTimeMillis() / 1000L)
 			{
-				this.reader.mark(512);
-				char buf[] = new char[512];
-				this.reader.read(buf, 0, 512);
-				for (int i = 0; i < buf.length; ++i)
-					if (buf[i] == '\n')
-					{
-						this.reader.reset();
-						return this.reader.readLine();
-					}
-				return null;
+				if (this.reader.ready())
+				{
+					this.reader.mark(512);
+					char buf[] = new char[512];
+					this.reader.read(buf, 0, 512);
+					this.reader.reset();
+					for (int i = 0; i < buf.length; ++i)
+						if (buf[i] == '\n')
+						{
+							last_recv = System.currentTimeMillis() / 1000L;
+							return this.reader.readLine();
+						}
+				}
+				
+				try
+				{
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e) { }
 			}
-			
-			return this.reader.readLine();
 		}
-		catch (IOException ex)
-		{
-			return null;
-		}
+		catch (IOException ex) { }
+		
+		return null;
 	}
 }
 
