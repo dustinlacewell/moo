@@ -15,7 +15,6 @@ public class commands extends mpackage
 		new commandMap(this);
 		new commandOline(this);
 		new commandScheck(this);
-		new commandShell(this);
 		new commandSid(this);
 		new commandSlackers(this);
 		new commandSoa(this);

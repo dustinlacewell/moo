@@ -10,6 +10,7 @@ public class core extends mpackage
 		
 		new commandHelp(this);
 		new commandReload(this);
+		new commandShell(this);
 		new commandShutdown(this);
 		new commandStatus(this);
 	}
