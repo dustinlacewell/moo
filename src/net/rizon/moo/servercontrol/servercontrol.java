@@ -8,7 +8,9 @@ import java.util.LinkedList;
 import net.rizon.moo.database;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
+import net.rizon.moo.servercontrol.commands.commandAddServer;
 import net.rizon.moo.servercontrol.commands.commandConnections;
+import net.rizon.moo.servercontrol.commands.commandDelServer;
 import net.rizon.moo.servercontrol.commands.commandServerControl;
 import net.rizon.moo.servercontrol.commands.commandServers;
 import net.rizon.moo.servercontrol.protocols.protocolFTP;
@@ -21,7 +23,9 @@ public class servercontrol extends mpackage
 	{
 		super("Server Control", "Manage servers");
 		
+		new commandAddServer(this);
 		new commandConnections(this);
+		new commandDelServer(this);
 		new commandServerControl(this);
 		new commandServers(this);
 		
