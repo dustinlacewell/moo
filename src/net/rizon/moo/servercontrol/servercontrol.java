@@ -33,7 +33,7 @@ public class servercontrol extends mpackage
 		new protocolSSH();
 		new protocolTelnet();
 		
-		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`host` varchar(64), `port` int(11), `protocol` varchar(64), `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
+		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64), `host` varchar(64), `port` int(11), `protocol` varchar(64), `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
 	}
 	
 	private static final serverInfo[] processServers(ResultSet rs) throws SQLException
@@ -42,6 +42,7 @@ public class servercontrol extends mpackage
 		while (rs.next())
 		{
 			serverInfo si = new serverInfo();
+			si.name = rs.getString("name");
 			si.host = rs.getString("host");
 			si.port = rs.getInt("port");
 			si.protocol = rs.getString("protocol");
@@ -65,7 +66,7 @@ public class servercontrol extends mpackage
 	{
 		try
 		{
-			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`host` LIKE ? OR `group` = ?) AND `protocol` = ?");
+			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?) AND `protocol` = ?");
 			statement.setString(1, "%" + name + "%");
 			statement.setString(2, name);
 			statement.setString(3, protocol);
@@ -85,7 +86,7 @@ public class servercontrol extends mpackage
 	{
 		try
 		{
-			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`host` LIKE ? OR `group` = ?)");
+			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?)");
 			statement.setString(1, "%" + name + "%");
 			statement.setString(2, name);
 			
