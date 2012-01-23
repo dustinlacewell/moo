@@ -1,4 +1,4 @@
-package net.rizon.moo.commands;
+package net.rizon.moo.core;
 
 import java.util.Iterator;
 

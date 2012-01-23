@@ -65,6 +65,6 @@ split_email=grimlock@rizon.net
 database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 
 # Packages to use.
-packages=commands,servercontrol
+packages=commands,core,servercontrol
 
 debug=0
