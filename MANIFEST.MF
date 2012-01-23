@@ -1,4 +1,4 @@
 Name: "moo"
 Created-By: "Adam <adam@rizon.net>"
 Main-Class: net.rizon.moo.moo
-Class-Path: lib/sqlitejdbc-v056.jar
+Class-Path: lib/commons-net-3.0.1.jar lib/jsch-0.1.45.jar lib/sqlitejdbc-v056.jar
