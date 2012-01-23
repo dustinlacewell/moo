@@ -25,7 +25,6 @@ final class connectionSSH extends connection
 	public connectionSSH(protocol proto)
 	{
 		super(proto);
-		this.setPort(22);
 	}
 	
 	@Override
@@ -62,9 +61,12 @@ final class connectionSSH extends connection
 	{
 		try
 		{
-			this.session = jsch.getSession(this.getUser(), this.getHost());
-			this.session.setPort(this.getPort());
-			this.session.setPassword(this.getPassword());
+			this.session = jsch.getSession(this.getServerInfo().user, this.getServerInfo().host);
+			int port = this.getServerInfo().port;
+			if (port == 0)
+				port = 22;
+			this.session.setPort(port);
+			this.session.setPassword(this.getServerInfo().pass);
 			this.session.setConfig("StrictHostKeyChecking", "no");
 			this.session.connect();
 		}

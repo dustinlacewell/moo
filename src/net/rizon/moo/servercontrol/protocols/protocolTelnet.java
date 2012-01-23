@@ -19,7 +19,6 @@ final class connectionTelnet extends connection
 	public connectionTelnet(protocol proto)
 	{
 		super(proto);
-		this.setPort(23);
 	}
 	
 	@Override
@@ -63,15 +62,18 @@ final class connectionTelnet extends connection
 	public void connect() throws IOException
 	{
 		this.client = new TelnetClient();
-		this.client.connect(this.getHost(), this.getPort());
+		int port = this.getServerInfo().port;
+		if (port == 0)
+			port = 23;
+		this.client.connect(this.getServerInfo().host, port);
 		this.shellStream = new PrintStream(this.client.getOutputStream());
 		this.reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
 		
 		this.readUntil(login_patterns);
-		this.execute(this.getUser());
+		this.execute(this.getServerInfo().user);
 		
 		this.readUntil(password_patterns);
-		this.execute(this.getPassword());
+		this.execute(this.getServerInfo().pass);
 		
 		try
 		{

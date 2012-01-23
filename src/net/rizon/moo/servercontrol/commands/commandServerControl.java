@@ -48,15 +48,11 @@ public class commandServerControl extends command
 		{
 			try
 			{
-				connection con = connection.findProcess(si.host, si.protocol);
+				connection con = connection.findProcess(si.name, si.protocol);
 				if (con == null)
 				{
 					con = proto.createConnection();
-					con.setHost(si.host);
-					if (si.port > 0)
-						con.setPort(si.port);
-					con.setUser(si.user);
-					con.setPassword(si.pass);
+					con.setServerInfo(si);
 				}
 			
 				process proc = new process(con, source, target, command);

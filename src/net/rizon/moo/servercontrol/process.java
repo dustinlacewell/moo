@@ -29,11 +29,11 @@ public class process extends Thread
 			
 			for (String in; (in = this.con.readLine()) != null;)
 				if (in.trim().isEmpty() == false)
-					moo.sock.reply(this.source, this.target, "[" + this.con.getHost() + ":" + this.con.getProtocol().getProtocolName() + "] " + in);
+					moo.sock.reply(this.source, this.target, "[" + this.con.getServerInfo().name + ":" + this.con.getProtocol().getProtocolName() + "] " + in);
 		}
 		catch (Exception ex)
 		{
-			moo.sock.reply(this.source, this.target, "Error running command on " + this.con.getHost() + ":" + this.con.getProtocol().getProtocolName() + ": " + ex.getMessage());
+			moo.sock.reply(this.source, this.target, "Error running command on " + this.con.getServerInfo().name + ":" + this.con.getProtocol().getProtocolName() + ": " + ex.getMessage());
 			ex.printStackTrace();
 		}
 		finally

@@ -28,7 +28,7 @@ public class commandServers extends command
 			
 			moo.sock.reply(source, target, "There are " + servers.length + " servers");
 			for (serverInfo si : servers)
-				moo.sock.reply(source, target, si.host + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
+				moo.sock.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
 		}
 		else
 		{
@@ -42,7 +42,7 @@ public class commandServers extends command
 
 			moo.sock.reply(source, target, "There are " + servers.length + " servers that match " + params[1]);
 			for (serverInfo si : servers)
-				moo.sock.reply(source, target, si.host + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
+				moo.sock.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
 		}
 	}
 }

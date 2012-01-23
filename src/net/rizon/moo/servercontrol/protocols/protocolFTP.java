@@ -15,7 +15,6 @@ final class connectionFTP extends connection
 	public connectionFTP(protocol proto)
 	{
 		super(proto);
-		this.setPort(21);
 	}
 	
 	@Override
@@ -39,8 +38,11 @@ final class connectionFTP extends connection
 	public void connect() throws IOException
 	{
 		this.client = new FTPClient();
-		this.client.connect(this.getHost(), this.getPort());
-		this.client.login(this.getUser(), this.getPassword());
+		int port = this.getServerInfo().port;
+		if (port == 0)
+			port = 21;
+		this.client.connect(this.getServerInfo().host, port);
+		this.client.login(this.getServerInfo().user, this.getServerInfo().pass);
 		
 		if (FTPReply.isPositiveCompletion(this.client.getReplyCode()) == false)
 			throw new IOException("Unable to login");

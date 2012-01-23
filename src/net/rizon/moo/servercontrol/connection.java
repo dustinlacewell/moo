@@ -36,12 +36,9 @@ final class connectionTimer extends timer
 public abstract class connection
 {
 	private protocol proto;
-	public LinkedList<process> processes = new LinkedList<process>(); 
-	private String host;
-	private int port;
-	private String user;
-	private String password;
-	
+	public LinkedList<process> processes = new LinkedList<process>();
+	private serverInfo info = null;
+
 	public connection(protocol proto)
 	{
 		this.proto = proto;
@@ -63,49 +60,15 @@ public abstract class connection
 	{
 		return this.proto;
 	}
-
-	public connection setHost(final String host)
+	
+	public void setServerInfo(serverInfo info)
 	{
-		this.host = host;
-		return this;
+		this.info = info;
 	}
 	
-	public final String getHost()
+	public serverInfo getServerInfo()
 	{
-		return this.host;
-	}
-	
-	public connection setPort(int port)
-	{
-		this.port = port;
-		return this;
-	}
-	
-	public int getPort()
-	{
-		return this.port;
-	}
-	
-	public connection setUser(final String user)
-	{
-		this.user = user;
-		return this;
-	}
-	
-	public final String getUser()
-	{
-		return this.user;
-	}
-	
-	public connection setPassword(final String password)
-	{
-		this.password = password;
-		return this;
-	}
-	
-	public final String getPassword()
-	{
-		return this.password;
+		return this.info;
 	}
 	
 	public abstract boolean isConnected();
@@ -115,12 +78,12 @@ public abstract class connection
 	
 	private static LinkedList<connection> connections = new LinkedList<connection>();
 	
-	public static connection findProcess(final String host, final String protocol)
+	public static connection findProcess(final String name, final String protocol)
 	{
 		for (Iterator<connection> it = connections.iterator(); it.hasNext();)
 		{
 			connection con = it.next();
-			if (con.getHost().equalsIgnoreCase(host) && con.getProtocol().getProtocolName().equalsIgnoreCase(protocol))
+			if (con.getServerInfo().name.equalsIgnoreCase(name) && con.getProtocol().getProtocolName().equalsIgnoreCase(protocol))
 				return con;
 		}
 		
