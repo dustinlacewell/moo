@@ -47,6 +47,7 @@ final class connectionFTP extends connection
 		if (port == 0)
 			port = 21;
 		this.client.connect(this.getServerInfo().host, port);
+		this.client.enterLocalPassiveMode();
 		this.client.login(this.getServerInfo().user, this.getServerInfo().pass);
 		
 		if (FTPReply.isPositiveCompletion(this.client.getReplyCode()) == false)
