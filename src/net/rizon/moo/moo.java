@@ -182,6 +182,9 @@ public class moo
 				moo.sock = null;
 			}
 			
+			for (table t : table.getTables())
+				t.save();
+			
 			try
 			{
 				Thread.sleep(10 * 1000);
@@ -191,9 +194,6 @@ public class moo
 				quitting = true;
 			}
 		}
-		
-		for (table t : table.getTables())
-			t.save();
 		
 		db.shutdown();
 		
