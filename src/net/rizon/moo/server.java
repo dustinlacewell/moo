@@ -92,7 +92,7 @@ public class server
 	
 	public split getSplit()
 	{
-		if (this.splits.isEmpty() == false && this.splits.getLast().end == null)
+		if (this.links.isEmpty() && this.splits.isEmpty() == false && this.splits.getLast().end == null)
 			return this.splits.getLast();
 		return null;
 	}
