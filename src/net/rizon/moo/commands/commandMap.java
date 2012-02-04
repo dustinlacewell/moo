@@ -130,15 +130,12 @@ class commandMapBase extends command
 	{
 		if (params.length == 1)
 		{
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-			{
-				server s = it.next();
+			for (server s : server.getServers())
 				if (s.isHub())
 				{
 					s.bytes = 0;
 					moo.sock.write("STATS ? " + s.getName());
 				}
-			}
 			message219.request_all = this.full;
 			message219.request_source = source;
 			message219.request_target = target;
@@ -160,12 +157,9 @@ class commandMapBase extends command
 				{
 					int users = Integer.parseInt(params[1]);
 
-					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-					{
-						server s = it.next();
+					for (server s : server.getServers())
 						moo.sock.write("USERS " + s.getName());
-					}
-					
+
 					message265.request_source = source;
 					message265.request_target = target;
 					message265.request_users = users;

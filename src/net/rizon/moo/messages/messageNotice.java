@@ -97,9 +97,8 @@ public class messageNotice extends message
 				{
 					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
 						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " split from " + tokens[7] + "\2");
-					for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+					for (server s : server.getServers())
 					{
-						server s = it.next();
 						if (s.isHub() == true && s.getSplit() == null)
 							for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
 							{

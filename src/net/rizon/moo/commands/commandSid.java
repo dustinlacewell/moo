@@ -1,6 +1,5 @@
 package net.rizon.moo.commands;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import net.rizon.moo.command;
@@ -17,13 +16,9 @@ abstract class commandSidBase extends command
 	
 	private static boolean inUse(final String sid)
 	{
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-		{
-			server s = it.next();
-
+		for (server s : server.getServers())
 			if (s.getSID().equalsIgnoreCase(sid))
 				return true;
-		}
 		
 		return false;
 	}

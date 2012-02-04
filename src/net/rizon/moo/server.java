@@ -151,9 +151,11 @@ public class server
 		return null;
 	}
 	
-	public static final LinkedList<server> getServers()
+	public static final server[] getServers()
 	{
-		return servers;
+		server[] s = new server[servers.size()];
+		servers.toArray(s);
+		return s;
 	}
 	
 	public static void clearServers()
@@ -215,9 +217,8 @@ public class server
 				
 				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`) VALUES(?, ?, ?, ?, ?)"); 
 				
-				for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+				for (server s : server.getServers())
 				{
-					server s = it.next();
 					split[] splits = s.getSplits();
 					
 					for (split sp : splits)

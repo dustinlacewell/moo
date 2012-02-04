@@ -1,7 +1,6 @@
 package net.rizon.moo.commands;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.message;
@@ -14,9 +13,9 @@ class message005 extends message
 	private static int dashesFor(server s)
 	{
 		int longest = 0;
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+		for (server s2 : server.getServers())
 		{
-			int l = it.next().getName().length();
+			int l = s2.getName().length();
 			if (l > longest)
 				longest = l;
 		}
@@ -78,9 +77,8 @@ public class commandClimit extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+		for (server s : server.getServers())
 		{
-			server s = it.next();
 			moo.sock.write("VERSION " + s.getName());
 			message005.waiting_for.add(s.getName());
 		}

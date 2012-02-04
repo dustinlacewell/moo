@@ -14,14 +14,14 @@ import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.timer;
 
-class dnsblComparator implements Comparator<String>
+class dnsblComparator implements Comparator<server>
 {
 	public static dnsblComparator cmp = new dnsblComparator();
 
 	@Override
-	public int compare(String arg0, String arg1)
+	public int compare(server arg0, server arg1)
 	{
-		long val0 = commandDnsbl.command_dnsbl_values.get(arg0), val1 = commandDnsbl.command_dnsbl_values.get(arg1);
+		long val0 = commandDnsbl.getDnsblFor(arg0), val1 = commandDnsbl.getDnsblFor(arg1);
 		if (val0 < val1)
 			return -1;
 		else if (val0 > val1)
@@ -55,24 +55,22 @@ class message219_dnsbl extends message
 			moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
 			
 			long total = 0;
-			for (Iterator<String> it = commandDnsbl.command_dnsbl_values.keySet().iterator(); it.hasNext();)
-				total += commandDnsbl.command_dnsbl_values.get(it.next());
+			for (server s : server.getServers())
+				total += commandDnsbl.getDnsblFor(s);
 			
-			String keys_sorted[] = new String[commandDnsbl.command_dnsbl_values.size()];
-			commandDnsbl.command_dnsbl_values.keySet().toArray(keys_sorted);
-			Arrays.sort(keys_sorted, dnsblComparator.cmp);
+			server servers[] = server.getServers();
+			Arrays.sort(servers, dnsblComparator.cmp);
 			
-			for (int i = keys_sorted.length; i > 0; --i)
+			for (int i = servers.length; i > 0; --i)
 			{
-				String name = keys_sorted[i - 1];
-				long value = commandDnsbl.command_dnsbl_values.get(name);
+				server s = servers[i - 1];
+				long value = commandDnsbl.getDnsblFor(s);
 				float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
 				int percent_i = Math.round(percent);
 				
-				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, name + ": " + value + " (" + percent_i + "%)");
+				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
 			}
 			
-			commandDnsbl.command_dnsbl_values.clear();
 			commandDnsbl.command_target_chan = commandDnsbl.command_target_source = null;
 		}
 		
@@ -80,10 +78,9 @@ class message219_dnsbl extends message
 		{
 			long after_total_count = 0;
 			HashMap<String, Long> after_counts = new HashMap<String, Long>();
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+			
+			for (server s : server.getServers())
 			{
-				server s = it.next();
-				
 				long count = commandDnsbl.getDnsblFor(s);
 				after_total_count += count;
 				after_counts.put(s.getName(), count);
@@ -134,9 +131,7 @@ class dnsblTimer extends timer
 		before_count.clear();
 		check_requested = true;
 
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-		{
-			server s = it.next();
+		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())
 			{
 				moo.sock.write("STATS B " + s.getName());
@@ -146,7 +141,6 @@ class dnsblTimer extends timer
 				before_total_count += count;
 				before_count.put(s.getName(), count);
 			}
-		}
 	}
 }
 
@@ -156,7 +150,6 @@ public class commandDnsbl extends command
 	private static message219_dnsbl msg_219 = new message219_dnsbl();
 	
 	public static HashSet<String> command_waiting_on = new HashSet<String>();
-	public static HashMap<String, Long> command_dnsbl_values = new HashMap<String, Long>();
 	public static String command_target_chan, command_target_source;
 	
 	private dnsblTimer dnsbl_timer;
@@ -173,19 +166,15 @@ public class commandDnsbl extends command
 	public void execute(String source, String target, String[] params)
 	{
 		command_waiting_on.clear();
-		command_dnsbl_values.clear();
 		command_target_chan = target;
 		command_target_source = source;
 
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-		{
-			server s = it.next();
+		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())
 			{
 				moo.sock.write("STATS B " + s.getName());
 				command_waiting_on.add(s.getName());
 			}
-		}
 	}
 	
 	public static long getDnsblFor(server s)

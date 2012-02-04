@@ -28,9 +28,8 @@ public class commandCline extends command
 		}
 		
 		boolean found = false;
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+		for (server serv : server.getServers())
 		{
-			server serv = it.next();
 			if (!serv.isHub())
 				continue;
 			for (Iterator<String> it2 = serv.clines.iterator(); it2.hasNext();)

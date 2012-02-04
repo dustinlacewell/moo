@@ -73,10 +73,8 @@ public class commandOline extends command
 			}
 
 			HashMap<String, Integer> oper_map = new HashMap<String, Integer>();
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-			{
-				server s = it.next();
-				
+			for (server s : server.getServers())
+			{	
 				if (s.isServices())
 					continue;
 				
@@ -142,8 +140,7 @@ public class commandOline extends command
 				catch (NumberFormatException ex) { }
 			}
 
-			server servers[] = new server[server.getServers().size()];
-			server.getServers().toArray(servers);
+			server servers[] = server.getServers();
 			Arrays.sort(servers, servComparator);
 			
 			moo.sock.reply(source, target, "Servers with a least " + min +  " o:lines:");
@@ -185,15 +182,13 @@ public class commandOline extends command
 			}
 			
 			String servers = "";
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+			for (server s2 : server.getServers())
 			{
-				s = it.next();
-				
-				if (s.isServices())
+				if (s2.isServices())
 					continue;
 				
-				if (s.olines.contains(params[1]))
-					servers += s.getName() +  ", ";
+				if (s2.olines.contains(params[1]))
+					servers += s2.getName() +  ", ";
 			}
 			if (!servers.isEmpty())
 			{

@@ -1,7 +1,6 @@
 package net.rizon.moo.commands;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.rizon.moo.command;
@@ -136,15 +135,12 @@ public class commandSlackers extends command
 	{
 		opers.clear();
 		message366.waiting_on.clear();
-		for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
-		{
-			server s = it.next();
+		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())
 			{
 				moo.sock.write("STATS p " + s.getName());
 				message366.waiting_on.add(s.getName());
 			}
-		}
 		message366.target_chan = target;
 		message366.target_source = source;
 	}

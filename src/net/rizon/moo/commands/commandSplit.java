@@ -78,9 +78,8 @@ public class commandSplit extends command
 			Date now = new Date();
 			int count = 0, split = 0;
 
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+			for (server s : server.getServers())
 			{
-				server s = it.next();
 				split sp = s.getSplit();
 				++count;
 				
@@ -98,9 +97,8 @@ public class commandSplit extends command
 			TreeSet<split> ts = new TreeSet<split>(new splitComparator());
 			Date now = new Date();
 			
-			for (Iterator<server> it = server.getServers().iterator(); it.hasNext();)
+			for (server s : server.getServers())
 			{
-				server s = it.next();
 				split[] splits = s.getSplits();
 				
 				for (int i = splits.length; i > 0; --i)
