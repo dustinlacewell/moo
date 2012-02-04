@@ -20,6 +20,7 @@ public class config
 	private String[] idle_channels;
 	private String[] channels;
 	private String[] split_channels;
+	private String[] dnsbl_channels;
 	private String[] admin_channels;
 	private boolean shell;
 	private String shell_base;
@@ -59,7 +60,9 @@ public class config
 		s = this.getProperty(prop, "channels");
 		this.channels = s.split(",");
 		s = this.getProperty(prop, "split_channels");
-		this.split_channels = s.split(" ");
+		this.split_channels = s.split(",");
+		s = this.getProperty(prop, "dnsbl_channels");
+		this.dnsbl_channels = s.split(",");
 		s = this.getProperty(prop, "admin_channels");
 		this.admin_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
@@ -174,6 +177,11 @@ public class config
 	public final String[] getSplitChannels()
 	{
 		return this.split_channels;
+	}
+	
+	public final String[] getDnsblChannels()
+	{
+		return this.dnsbl_channels;
 	}
 
 	public final String[] getAdminChannels()

@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,6 +16,7 @@ public class server
 	public HashSet<String> clines = new HashSet<String>();
 	public HashSet<String> olines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
+	public HashMap<String, Integer> dnsbl = new HashMap<String, Integer>();
 	private LinkedList<split> splits = new LinkedList<split>();
 
 	public long bytes = 0;
@@ -29,6 +31,7 @@ public class server
 		
 		moo.sock.write("STATS c " + this.getName());
 		moo.sock.write("STATS o " + this.getName());
+		moo.sock.write("STATS B " + this.getName());
 	}
 	
 	public void destroy()
@@ -114,6 +117,9 @@ public class server
 
 		moo.sock.write("STATS o " + this.getName());
 		this.olines.clear();
+		
+		moo.sock.write("STATS B " + this.getName());
+		this.dnsbl.clear();
 
 		split s = this.getSplit();
 		s.to = to;

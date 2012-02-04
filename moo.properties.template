@@ -43,6 +43,9 @@ channels=#opers,#o,#r,#x
 # Comma separated list of channels to announce splits to
 split_channels=#opers
 
+# Comma separated list of channels to announce DNSBL flood to
+dnsbl_channels=#o
+
 # Comma separated list of admin channels
 admin_channels=#r,#x
 

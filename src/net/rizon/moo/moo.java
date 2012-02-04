@@ -18,7 +18,7 @@ public class moo
 	public static boolean quitting = false;
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
-	private static final String[] messages = { "message001", "message015", "message213", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
+	private static final String[] messages = { "message001", "message015", "message213", "message227", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
 
 	public static void main(String[] args)
 	{
