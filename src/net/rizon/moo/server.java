@@ -16,7 +16,7 @@ public class server
 	public HashSet<String> clines = new HashSet<String>();
 	public HashSet<String> olines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
-	public HashMap<String, Integer> dnsbl = new HashMap<String, Integer>();
+	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
 	private LinkedList<split> splits = new LinkedList<split>();
 
 	public long bytes = 0;

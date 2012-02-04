@@ -70,10 +70,37 @@ class message219_dnsbl extends message
 		
 		if (commandDnsbl.command_waiting_on.isEmpty() && commandDnsbl.command_target_chan != null && commandDnsbl.command_target_source != null)
 		{
-			moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
-			
-			if (commandDnsbl.do_server_counts)
+			if (commandDnsbl.do_server_name != null)
 			{
+				server s = server.findServer(commandDnsbl.do_server_name);
+				if (s == null)
+					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "No servers found for " + commandDnsbl.do_server_name);
+				else
+				{
+					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts for " + s.getName() + ":");
+					
+					long total = commandDnsbl.getDnsblFor(s);
+					String[] dnsbl_names = new String[s.dnsbl.size()];
+					s.dnsbl.keySet().toArray(dnsbl_names);
+					dnsblCountComparator.counts = s.dnsbl;
+					Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
+					
+					for (int i = dnsbl_names.length; i > 0; --i)
+					{
+						final String dnsbl_name = dnsbl_names[i - 1];
+						long dnsbl_count = s.dnsbl.get(dnsbl_name);
+						
+						float percent = total > 0 ? ((float) dnsbl_count / (float) total * (float) 100) : 0;
+						int percent_i = Math.round(percent);
+						
+						moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
+					}
+				}
+			}
+			else if (commandDnsbl.do_server_counts)
+			{
+				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts by server:");
+
 				long total = 0;
 				for (server s : server.getServers())
 					total += commandDnsbl.getDnsblFor(s);
@@ -97,6 +124,8 @@ class message219_dnsbl extends message
 			}
 			else
 			{
+				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
+
 				HashMap<String, Long> dnsbl_counts = new HashMap<String, Long>();
 				long total = 0;
 				for (server s : server.getServers())
@@ -212,6 +241,7 @@ public class commandDnsbl extends command
 	public static HashSet<String> command_waiting_on = new HashSet<String>();
 	public static String command_target_chan, command_target_source;
 	public static boolean do_server_counts;
+	public static String do_server_name;
 	
 	private dnsblTimer dnsbl_timer;
 	
@@ -230,9 +260,15 @@ public class commandDnsbl extends command
 		command_target_chan = target;
 		command_target_source = source;
 		do_server_counts = false;
+		do_server_name = null;
 		
 		if (params.length > 1 && params[1].equalsIgnoreCase("server"))
+		{
 			do_server_counts = true;
+			
+			if (params.length > 2)
+				do_server_name = params[2];
+		}
 
 		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())

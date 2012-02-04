@@ -17,11 +17,11 @@ public class message227 extends message
 			return;
 		
 		final String name = message[2];
-		int count;
+		long count;
 		
 		try
 		{
-			count = Integer.parseInt(message[3]);
+			count = Long.parseLong(message[3]);
 		}
 		catch (Exception ex)
 		{
