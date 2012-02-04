@@ -14,14 +14,32 @@ import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.timer;
 
-class dnsblComparator implements Comparator<server>
+class dnsblServerComparator implements Comparator<server>
 {
-	public static dnsblComparator cmp = new dnsblComparator();
+	public static dnsblServerComparator cmp = new dnsblServerComparator();
 
 	@Override
 	public int compare(server arg0, server arg1)
 	{
 		long val0 = commandDnsbl.getDnsblFor(arg0), val1 = commandDnsbl.getDnsblFor(arg1);
+		if (val0 < val1)
+			return -1;
+		else if (val0 > val1)
+			return 1;
+		else
+			return 0;
+	}
+}
+
+class dnsblCountComparator implements Comparator<String>
+{
+	public static dnsblCountComparator cmp = new dnsblCountComparator();
+	public static HashMap<String, Long> counts = null;
+	
+	@Override
+	public int compare(String arg0, String arg1)
+	{
+		long val0 = counts.get(arg0), val1 = counts.get(arg1);
 		if (val0 < val1)
 			return -1;
 		else if (val0 > val1)
@@ -54,23 +72,65 @@ class message219_dnsbl extends message
 		{
 			moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
 			
-			long total = 0;
-			for (server s : server.getServers())
-				total += commandDnsbl.getDnsblFor(s);
-			
-			server servers[] = server.getServers();
-			Arrays.sort(servers, dnsblComparator.cmp);
-			
-			for (int i = servers.length; i > 0; --i)
+			if (commandDnsbl.do_server_counts)
 			{
-				server s = servers[i - 1];
-				long value = commandDnsbl.getDnsblFor(s);
-				float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
-				int percent_i = Math.round(percent);
+				long total = 0;
+				for (server s : server.getServers())
+					total += commandDnsbl.getDnsblFor(s);
 				
-				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
+				server servers[] = server.getServers();
+				Arrays.sort(servers, dnsblServerComparator.cmp);
+				
+				for (int i = servers.length; i > 0; --i)
+				{
+					server s = servers[i - 1];
+					long value = commandDnsbl.getDnsblFor(s);
+					
+					if (value == 0)
+						continue;
+
+					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
+					int percent_i = Math.round(percent);
+					
+					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
+				}
 			}
-			
+			else
+			{
+				HashMap<String, Long> dnsbl_counts = new HashMap<String, Long>();
+				long total = 0;
+				for (server s : server.getServers())
+				{
+					total += commandDnsbl.getDnsblFor(s);
+					
+					for (Iterator<String> it = s.dnsbl.keySet().iterator(); it.hasNext();)
+					{
+						final String dnsbl_name = it.next();
+						long dnsbl_count = s.dnsbl.get(dnsbl_name);
+						
+						long i = dnsbl_counts.containsKey(dnsbl_name) ? dnsbl_counts.get(dnsbl_name) : 0;
+						i += dnsbl_count;
+						dnsbl_counts.put(dnsbl_name, i);
+					}
+				}
+				
+				String[] dnsbl_names = new String[dnsbl_counts.size()];
+				dnsbl_counts.keySet().toArray(dnsbl_names);
+				dnsblCountComparator.counts = dnsbl_counts;
+				Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
+				
+				for (int i = dnsbl_names.length; i > 0; --i)
+				{
+					final String name = dnsbl_names[i - 1];
+					long value = dnsbl_counts.get(name);
+					
+					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
+					int percent_i = Math.round(percent);
+					
+					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, name + ": " + value + " (" + percent_i + "%)");
+				}
+			}
+				
 			commandDnsbl.command_target_chan = commandDnsbl.command_target_source = null;
 		}
 		
@@ -126,10 +186,10 @@ class dnsblTimer extends timer
 	@Override
 	public void run(Date now)
 	{
+		check_requested = true;
 		check_waiting_on.clear();
 		before_total_count = 0;
 		before_count.clear();
-		check_requested = true;
 
 		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())
@@ -151,6 +211,7 @@ public class commandDnsbl extends command
 	
 	public static HashSet<String> command_waiting_on = new HashSet<String>();
 	public static String command_target_chan, command_target_source;
+	public static boolean do_server_counts;
 	
 	private dnsblTimer dnsbl_timer;
 	
@@ -168,6 +229,10 @@ public class commandDnsbl extends command
 		command_waiting_on.clear();
 		command_target_chan = target;
 		command_target_source = source;
+		do_server_counts = false;
+		
+		if (params.length > 1 && params[1].equalsIgnoreCase("server"))
+			do_server_counts = true;
 
 		for (server s : server.getServers())
 			if (s.getSplit() == null && !s.isServices())
