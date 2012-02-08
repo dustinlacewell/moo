@@ -169,11 +169,12 @@ class message219_dnsbl extends message
 			HashMap<String, Long> after_counts = new HashMap<String, Long>();
 			
 			for (server s : server.getServers())
-			{
-				long count = commandDnsbl.getDnsblFor(s);
-				after_total_count += count;
-				after_counts.put(s.getName(), count);
-			}
+				if (s.getSplit() == null && !s.isServices())
+				{
+					long count = commandDnsbl.getDnsblFor(s);
+					after_total_count += count;
+					after_counts.put(s.getName(), count);
+				}
 			
 			long global_change = after_total_count - dnsblTimer.before_total_count;
 			if (global_change >= global_threshold)
