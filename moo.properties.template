@@ -67,6 +67,9 @@ split_email=grimlock@rizon.net
 # Database to use
 database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 
+# Data to save to databases.
+database_classes=net.rizon.moo.server$db
+
 # Packages to use.
 packages=commands,core,servercontrol
 

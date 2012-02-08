@@ -163,8 +163,13 @@ public class server
 		servers.clear();
 	}
 	
-	static class db extends table
+	public static class db extends table
 	{
+		static
+		{
+			new db();
+		}
+		
 		@Override
 		protected void init() 
 		{
@@ -238,10 +243,5 @@ public class server
 				ex.printStackTrace();
 			}
 		}
-	}
-	
-	static
-	{
-		new db();
 	}
 }

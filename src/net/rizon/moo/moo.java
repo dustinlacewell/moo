@@ -16,8 +16,6 @@ public class moo
 	public static socket sock = null;
 	public static database db = null;
 	public static boolean quitting = false;
-	
-	private static final String[] static_classes = { "net.rizon.moo.server" };
 
 	public static void main(String[] args)
 	{
@@ -53,8 +51,8 @@ public class moo
 		
 		try
 		{
-			for (int i = 0; i < static_classes.length; ++i)
-				Class.forName(static_classes[i]);
+			for (final String db_class : conf.getDatabaseClasses())
+				Class.forName(db_class);
 			
 			for (final String pkg : conf.getPackages())
 			{

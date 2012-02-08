@@ -28,6 +28,7 @@ public class config
 	private String sendmail_path;
 	private String split_email;
 	private String database;
+	private String[] database_classes;
 	private String[] packages;
 	private int debug;
 	
@@ -71,6 +72,8 @@ public class config
 		this.sendmail_path = this.getProperty(prop, "sendmail_path");
 		this.split_email = this.getProperty(prop, "split_email");
 		this.database = this.getProperty(prop, "database");
+		s = this.getProperty(prop, "database_classes");
+		this.database_classes = s.split(",");
 		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
@@ -225,6 +228,11 @@ public class config
 	public final String getDatabase()
 	{
 		return this.database;
+	}
+	
+	public final String[] getDatabaseClasses()
+	{
+		return this.database_classes;
 	}
 	
 	public final String[] getPackages()
