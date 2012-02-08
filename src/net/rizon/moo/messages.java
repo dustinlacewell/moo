@@ -382,7 +382,7 @@ class messagePrivmsg extends message
 			boolean kill = new Random().nextInt(100) == 0;
 			
 			if (kill == false)
-				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stop on their lifeless body\1");
+				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
 			else
 			{
 				moo.privmsg(message[0], "HOW DARE YOU ATTEMT TO BRAND MOO");
