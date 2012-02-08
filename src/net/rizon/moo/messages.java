@@ -373,6 +373,8 @@ class messagePrivmsg extends message
 			String nick = source.substring(0, e != -1 ? e : source.length());
 			moo.privmsg(message[0], "\1ACTION kicks " + nick + " in the face\1");
 		}
+		else if (message[1].startsWith("\1ACTION feeds " + moo.conf.getNick()))
+			moo.privmsg(message[0], "\1ACTION eats happily\1");
 		else if (message[1].startsWith("\1ACTION brands " + moo.conf.getNick()))
 		{
 			int e = source.indexOf('!');
@@ -380,10 +382,11 @@ class messagePrivmsg extends message
 			boolean kill = new Random().nextInt(100) == 0;
 			
 			if (kill == false)
-				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stop on their lifeless body");
+				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stop on their lifeless body\1");
 			else
 			{
 				moo.privmsg(message[0], "HOW DARE YOU ATTEMT TO BRAND MOO");
+				moo.kill(nick, "HOW DARE YOU ATTEMT TO BRAND MOO");
 			}
 		}
 	}
