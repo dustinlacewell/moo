@@ -18,7 +18,6 @@ public class moo
 	public static boolean quitting = false;
 	
 	private static final String[] static_classes = { "net.rizon.moo.server" };
-	private static final String[] messages = { "message001", "message015", "message213", "message227", "message243", "message364", "message365", "message474", "messageInvite", "messageNotice", "messagePing", "messagePrivmsg" };
 
 	public static void main(String[] args)
 	{
@@ -56,13 +55,6 @@ public class moo
 		{
 			for (int i = 0; i < static_classes.length; ++i)
 				Class.forName(static_classes[i]);
-
-			for (int i = 0; i < messages.length; ++i)
-			{
-				Class<?> c = Class.forName("net.rizon.moo.messages." + messages[i]);
-				Constructor<?>[] cons = c.getConstructors();
-				cons[0].newInstance();
-			}
 			
 			for (final String pkg : conf.getPackages())
 			{
@@ -79,6 +71,8 @@ public class moo
 		}
 
 		System.out.println("Starting up " + conf.getNick());
+		
+		messages.initMessages();
 		
 		if (moo.conf.getDatabase().isEmpty() == false)
 			for (table t : table.getTables())
