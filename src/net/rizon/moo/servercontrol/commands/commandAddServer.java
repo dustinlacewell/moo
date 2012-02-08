@@ -22,7 +22,7 @@ public class commandAddServer extends command
 	{
 		if (params.length < 7)
 		{
-			moo.sock.reply(source, target, "Syntax: !addserver name host port protocol user pass group");
+			moo.reply(source, target, "Syntax: !addserver name host port protocol user pass group");
 			return;
 		}
 		
@@ -33,13 +33,13 @@ public class commandAddServer extends command
 		}
 		catch (NumberFormatException ex)
 		{
-			moo.sock.reply(source, target, "Invalid port");
+			moo.reply(source, target, "Invalid port");
 			return;
 		}
 		
 		if (protocol.findProtocol(params[4]) == null)
 		{
-			moo.sock.reply(source, target, "Unknown protocol " + params[3]);
+			moo.reply(source, target, "Unknown protocol " + params[3]);
 			return;
 		}
 		
@@ -58,7 +58,7 @@ public class commandAddServer extends command
 				statement.setString(7, "");
 			moo.db.executeUpdate();
 			
-			moo.sock.reply(source, target, "Server added");
+			moo.reply(source, target, "Server added");
 		}
 		catch (SQLException ex)
 		{

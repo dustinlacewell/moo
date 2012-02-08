@@ -22,21 +22,21 @@ public class commandServerControl extends command
 	{
 		if (params.length < 4)
 		{
-			moo.sock.reply(source, target, "Syntax: !exec server protocol command");
+			moo.reply(source, target, "Syntax: !exec server protocol command");
 			return;
 		}
 		
 		protocol proto = protocol.findProtocol(params[2]);
 		if (proto == null)
 		{
-			moo.sock.reply(source, target, "No such protocol " + params[2]);
+			moo.reply(source, target, "No such protocol " + params[2]);
 			return;
 		}
 		
 		serverInfo[] server_info = servercontrol.findServers(params[1], params[2]);
 		if (server_info == null)
 		{
-			moo.sock.reply(source, target, "No servers found for " + params[1] + " using " + params[2]);
+			moo.reply(source, target, "No servers found for " + params[1] + " using " + params[2]);
 			return;
 		}
 		
@@ -60,7 +60,7 @@ public class commandServerControl extends command
 			}
 			catch (Exception ex)
 			{
-				moo.sock.reply(source, target, "Error executing command on " + si.host + ": " + ex.getMessage());
+				moo.reply(source, target, "Error executing command on " + si.host + ": " + ex.getMessage());
 			}
 		}
 	}

@@ -1,9 +1,11 @@
-package net.rizon.moo;
+package net.rizon.moo.servermonitor;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import net.rizon.moo.moo;
 
 class outputWriter extends OutputStreamWriter
 {

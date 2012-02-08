@@ -36,7 +36,7 @@ abstract class commandSidBase extends command
 			sid = getSID();
 		while (inUse(sid));
 		
-		moo.sock.reply(source, target, "[SID] " + sid);
+		moo.reply(source, target, "[SID] " + sid);
 	}
 }
 

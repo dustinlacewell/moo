@@ -21,7 +21,7 @@ public class commandDelServer extends command
 	{
 		if (params.length < 3)
 		{
-			moo.sock.reply(source, target, "Syntax: !delserver host protocol");
+			moo.reply(source, target, "Syntax: !delserver host protocol");
 			return;
 		}
 		
@@ -31,7 +31,7 @@ public class commandDelServer extends command
 			statement.setString(1, params[1]);
 			statement.setString(2, params[2]);
 			moo.db.executeUpdate();
-			moo.sock.reply(source, target, "Done.");
+			moo.reply(source, target, "Done.");
 		}
 		catch (SQLException ex)
 		{

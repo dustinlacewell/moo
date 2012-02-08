@@ -54,7 +54,7 @@ class scheck extends Thread
 		try
 		{
 			socket s = socket.create();
-			moo.sock.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
+			moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
 			s.connect(this.server, this.port, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
@@ -75,7 +75,7 @@ class scheck extends Thread
 				}
 				else if (token.length > 7 && token[1].equals("242"))
 				{
-					moo.sock.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
+					moo.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -83,15 +83,15 @@ class scheck extends Thread
 		}
 		catch (NoRouteToHostException ex)
 		{
-			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
+			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
 		}
 		catch (SocketTimeoutException ex)
 		{
-			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
+			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
 		}
 		catch (IOException ex)
 		{
-			moo.sock.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
+			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
 		}
 	}
 }
@@ -107,12 +107,12 @@ public class commandScheck extends command
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
-			moo.sock.reply(source, target, "Syntax: !scheck <server> [port]");
+			moo.reply(source, target, "Syntax: !scheck <server> [port]");
 		else
 		{
 			server serv = server.findServer(params[1]);
 			if (serv == null)
-				moo.sock.reply(source, target, "[SCHECK] Server " + params[1] + " not found");
+				moo.reply(source, target, "[SCHECK] Server " + params[1] + " not found");
 			else
 			{
 				int port = 6667;

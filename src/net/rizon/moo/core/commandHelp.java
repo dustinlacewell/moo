@@ -30,7 +30,7 @@ public class commandHelp extends command
 				
 				if (show_header == false)
 				{
-					moo.sock.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
+					moo.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
 					show_header = true;
 				}
 				

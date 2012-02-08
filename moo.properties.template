@@ -71,6 +71,6 @@ database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 database_classes=net.rizon.moo.server$db
 
 # Packages to use.
-packages=commands,core,servercontrol
+packages=commands,core,servercontrol,servermonitor
 
 debug=0

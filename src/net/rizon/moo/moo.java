@@ -8,6 +8,22 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+class databaseTimer extends timer
+{
+	public databaseTimer()
+	{
+		super(600, true);
+		this.start();
+	}
+
+	@Override
+	public void run(Date now)
+	{
+		for (event e : event.getEvents())
+			e.saveDatabases();
+	}
+}
+
 public class moo
 {
 	private static Date created = new Date();
@@ -71,10 +87,11 @@ public class moo
 		System.out.println("Starting up " + conf.getNick());
 		
 		messages.initMessages();
+
+		for (event e : event.getEvents())
+			e.initDatabases();
 		
-		if (moo.conf.getDatabase().isEmpty() == false)
-			for (table t : table.getTables())
-				t.init();
+		new databaseTimer();
 		
 		while (quitting == false)
 		{
@@ -174,8 +191,8 @@ public class moo
 				moo.sock = null;
 			}
 			
-			for (table t : table.getTables())
-				t.save();
+			for (event e : event.getEvents())
+				e.saveDatabases();
 			
 			try
 			{
@@ -209,10 +226,44 @@ public class moo
 		return m.matches();
 	}
 	
+	public static void privmsg(String target, final String buffer)
+	{
+		int ex = target.indexOf('!');
+		if (ex != -1)
+			target = target.substring(0, ex);
+		moo.sock.write("PRIVMSG " + target + " :" + buffer);
+	}
+	
+	public static void notice(String target, final String buffer)
+	{
+		int ex = target.indexOf('!');
+		if (ex != -1)
+			target = target.substring(0, ex);
+		moo.sock.write("NOTICE " + target + " :" + buffer);
+	}
+	
+	public static void reply(String source, String target, final String buffer)
+	{
+		if (target.equalsIgnoreCase(moo.conf.getNick()))
+			notice(source, buffer);
+		else
+			privmsg(target, buffer);
+	}
+	
+	public static void join(String target)
+	{
+		moo.sock.write("JOIN " + target);
+	}
+	
+	public static void kill(final String nick, final String reason)
+	{
+		sock.write("KILL " + nick + " :" + reason);
+	}
+	
 	public static void akill(final String host, final String time, final String reason)
 	{
 		if (host.equals("255.255.255.255"))
 			return;
-		sock.privmsg("GeoServ", "AKILL ADD " + time + " *@" + host + " " + reason);
+		privmsg("GeoServ", "AKILL ADD " + time + " *@" + host + " " + reason);
 	}
 }

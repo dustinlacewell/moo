@@ -187,33 +187,4 @@ public class socket
 			System.out.println("<- " + in);
 		return in;
 	}
-	
-	public void privmsg(String target, final String buffer)
-	{
-		int ex = target.indexOf('!');
-		if (ex != -1)
-			target = target.substring(0, ex);
-		this.write("PRIVMSG " + target + " :" + buffer);
-	}
-	
-	public void notice(String target, final String buffer)
-	{
-		int ex = target.indexOf('!');
-		if (ex != -1)
-			target = target.substring(0, ex);
-		this.write("NOTICE " + target + " :" + buffer);
-	}
-	
-	public void reply(String source, String target, final String buffer)
-	{
-		if (target.equalsIgnoreCase(moo.conf.getNick()))
-			this.notice(source, buffer);
-		else
-			this.privmsg(target, buffer);
-	}
-	
-	public void join(String target)
-	{
-		this.write("JOIN " + target);
-	}
 }

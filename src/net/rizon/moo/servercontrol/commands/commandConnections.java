@@ -17,11 +17,11 @@ public class commandConnections extends command
 	public void execute(String source, String target, String[] params)
 	{
 		connection[] cons = connection.getConnections();
-		moo.sock.reply(source, target, "There are currently " + cons.length + " active connections");
+		moo.reply(source, target, "There are currently " + cons.length + " active connections");
 		for (int i = 0; i < cons.length; ++i)
 		{
 			connection con = cons[i];
-			moo.sock.reply(source, target, (i + 1) + ": " + con.getServerInfo().name + ":" + con.getServerInfo().port + " " + con.getProtocol().getProtocolName());
+			moo.reply(source, target, (i + 1) + ": " + con.getServerInfo().name + ":" + con.getServerInfo().port + " " + con.getProtocol().getProtocolName());
 		}
 	}
 }

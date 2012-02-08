@@ -111,7 +111,7 @@ class message391 extends message
 				known_times.put(them, cur + 1);
 			}
 			
-			moo.sock.reply(target_source, target_channel, buf);
+			moo.reply(target_source, target_channel, buf);
 		}
 		catch (ParseException ex)
 		{

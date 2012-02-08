@@ -163,7 +163,7 @@ public class server
 		servers.clear();
 	}
 	
-	public static class db extends table
+	public static class db extends event
 	{
 		static
 		{
@@ -171,13 +171,13 @@ public class server
 		}
 		
 		@Override
-		protected void init() 
+		protected void initDatabases() 
 		{
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
 		}
 
 		@Override
-		public void load()
+		public void loadDatabases()
 		{
 			try
 			{
@@ -214,7 +214,7 @@ public class server
 		}
 
 		@Override
-		public void save()
+		public void saveDatabases()
 		{
 			try
 			{

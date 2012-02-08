@@ -88,7 +88,7 @@ class message219 extends message
 		if (serv == null || request_source == null || request_target == null || message[1].equals("?") == false)
 			return;
 		else if (request_all || serv.bytes >= 1024)
-			moo.sock.reply(request_source, request_target, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
+			moo.reply(request_source, request_target, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
 	}
 }
 
@@ -111,7 +111,7 @@ class message265 extends message
 
 		int users = Integer.parseInt(message[1]);
 		if (users >= request_users)
-			moo.sock.reply(request_source, request_target, "[MAP] " + source + " " + users);
+			moo.reply(request_source, request_target, "[MAP] " + source + " " + users);
 	}
 }
 
@@ -146,10 +146,10 @@ class commandMapBase extends command
 			{
 				server s = server.findServer(params[2]);
 				if (s == null)
-					moo.sock.reply(source, target, "[MAP] Server " + params[2] + " not found");
+					moo.reply(source, target, "[MAP] Server " + params[2] + " not found");
 				else
 					for (Iterator<String> it = s.links.iterator(); it.hasNext();)
-						moo.sock.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
+						moo.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
 			}
 			else
 			{
@@ -168,7 +168,7 @@ class commandMapBase extends command
 				{
 					server s = server.findServer(params[1]);
 					if (s == null)
-						moo.sock.reply(source, target, "[MAP] Server " + params[1] + " not found");
+						moo.reply(source, target, "[MAP] Server " + params[1] + " not found");
 					else
 					{
 						s.bytes = 0;

@@ -101,7 +101,7 @@ public class commandOline extends command
 			
 			if (count == 0)
 			{
-				moo.sock.reply(source, target, "No opers with " + min + " o:lines");
+				moo.reply(source, target, "No opers with " + min + " o:lines");
 				return;
 			}
 			
@@ -119,13 +119,13 @@ public class commandOline extends command
 			operComparator compare = new operComparator(oper_map);
 			Arrays.sort(opers, compare);
 			
-			moo.sock.reply(source, target, "Oper list with at least " + min + " o:lines");
+			moo.reply(source, target, "Oper list with at least " + min + " o:lines");
 			for (int i = opers.length; i > 0; --i)
 			{
 				String oper = opers[i - 1];
 				int oper_count = oper_map.get(oper);
 
-				moo.sock.reply(source, target, oper + ": " + oper_count);
+				moo.reply(source, target, oper + ": " + oper_count);
 			}
 		}
 		else if (params[1].equalsIgnoreCase("SERVER"))
@@ -143,7 +143,7 @@ public class commandOline extends command
 			server servers[] = server.getServers();
 			Arrays.sort(servers, servComparator);
 			
-			moo.sock.reply(source, target, "Servers with a least " + min +  " o:lines:");
+			moo.reply(source, target, "Servers with a least " + min +  " o:lines:");
 			
 			for (int i = servers.length; i > 0; --i)
 			{
@@ -155,7 +155,7 @@ public class commandOline extends command
 				String olines = s.olines.toString();
 				olines = olines.substring(1, olines.length() - 1);
 				
-				moo.sock.reply(source, target, s.getName() + ": " + olines); 
+				moo.reply(source, target, s.getName() + ": " + olines); 
 			}
 		}
 		else
@@ -177,7 +177,7 @@ public class commandOline extends command
 					buffer = buffer.substring(0, buffer.length() - 2);
 				}
 				
-				moo.sock.reply(source, target, buffer);
+				moo.reply(source, target, buffer);
 				found = true;
 			}
 			
@@ -193,11 +193,11 @@ public class commandOline extends command
 			if (!servers.isEmpty())
 			{
 				servers = servers.substring(0, servers.length() - 2);
-				moo.sock.reply(source, target, params[1] + " has o:lines on: " + servers);
+				moo.reply(source, target, params[1] + " has o:lines on: " + servers);
 				found = true;
 			}
 			if (found == false)
-				moo.sock.reply(source, target, "No o:lines for " + params[1]);
+				moo.reply(source, target, "No o:lines for " + params[1]);
 		}
 	}
 }

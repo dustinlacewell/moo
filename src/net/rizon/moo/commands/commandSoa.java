@@ -47,7 +47,7 @@ class soaCheck extends Thread
 				nameservers.put(tokens[4], 0);
 				
 				if (this.debug)
-					moo.sock.reply(this.source, this.target, this.domain + " has nameserver " + tokens[4]);
+					moo.reply(this.source, this.target, this.domain + " has nameserver " + tokens[4]);
 			}
 			
 			for (Iterator<String> it = nameservers.keySet().iterator(); it.hasNext();)
@@ -70,13 +70,13 @@ class soaCheck extends Thread
 					nameservers.put(nameserver, Integer.parseInt(tokens[6]));
 				
 					if (this.debug)
-						moo.sock.reply(this.source, this.target, "Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
+						moo.reply(this.source, this.target, "Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
 				}
 			}
 			
 			if (nameservers.size() == 1)
 			{
-				moo.sock.reply(this.source, this.target, this.domain + " only has one nameserver");
+				moo.reply(this.source, this.target, this.domain + " only has one nameserver");
 				return;
 			}
 			
@@ -90,19 +90,19 @@ class soaCheck extends Thread
 					last = value;
 				else if (last != value)
 				{
-					moo.sock.reply(this.source, this.target, "Warning! Nameserver serial numbers are not equal!");
+					moo.reply(this.source, this.target, "Warning! Nameserver serial numbers are not equal!");
 					for (it = nameservers.keySet().iterator(); it.hasNext();)
 					{
 						nameserver = it.next();
 						value = nameservers.get(nameserver);
 						
-						moo.sock.reply(this.source, this.target, "  " + nameserver + ": " + value);
+						moo.reply(this.source, this.target, "  " + nameserver + ": " + value);
 					}
 					return;
 				}
 			}
 			
-			moo.sock.reply(this.source, this.target, "All nameserver serial numbers are equal");
+			moo.reply(this.source, this.target, "All nameserver serial numbers are equal");
 		}
 		catch (Exception ex)
 		{
@@ -125,7 +125,7 @@ public class commandSoa extends command
 			return;
 		else if (params[1].indexOf('.') == -1 || params[1].indexOf(';') != -1 || params[1].indexOf('|') != -1 || params[1].indexOf('&') != -1)
 		{
-			moo.sock.reply(source, target, "You must give a valid hostname.");
+			moo.reply(source, target, "You must give a valid hostname.");
 			return;
 		}
 		

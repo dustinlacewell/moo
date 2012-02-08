@@ -79,7 +79,7 @@ class message351 extends message
 				buf += "09";
 			buf += ver + "\003";
 			
-			moo.sock.reply(target_source, target_channel, buf);
+			moo.reply(target_source, target_channel, buf);
 		}
 		catch (Exception ex)
 		{

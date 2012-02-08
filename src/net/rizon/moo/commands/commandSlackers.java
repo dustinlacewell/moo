@@ -87,22 +87,22 @@ class message366 extends message
 			return;
 		
 		if (commandSlackers.opers.isEmpty())
-			moo.sock.reply(target_source, target_chan, "There are no opers missing from " + target_chan);
+			moo.reply(target_source, target_chan, "There are no opers missing from " + target_chan);
 		else
 		{
-			moo.sock.reply(target_source, target_chan, "There are " + commandSlackers.opers.size() + " opers missing from " + target_chan + ":");
+			moo.reply(target_source, target_chan, "There are " + commandSlackers.opers.size() + " opers missing from " + target_chan + ":");
 			String operbuf = "";
 			for (int i = 0; i < commandSlackers.opers.size(); ++i)
 			{
 				operbuf += " " + commandSlackers.opers.get(i);
 				if (operbuf.length() > 200)
 				{
-					moo.sock.reply(target_source, target_chan, operbuf.substring(1));
+					moo.reply(target_source, target_chan, operbuf.substring(1));
 					operbuf = "";
 				}
 			}
 			if (operbuf.isEmpty() == false)
-				moo.sock.reply(target_source, target_chan, operbuf.substring(1));
+				moo.reply(target_source, target_chan, operbuf.substring(1));
 		}
 		
 		commandSlackers.opers.clear();

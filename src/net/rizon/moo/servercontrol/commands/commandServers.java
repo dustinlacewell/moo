@@ -22,27 +22,27 @@ public class commandServers extends command
 			serverInfo[] servers = servercontrol.getServers();
 			if (servers == null)
 			{
-				moo.sock.reply(source, target, "There are no configured servers.");
+				moo.reply(source, target, "There are no configured servers.");
 				return;
 			}
 			
-			moo.sock.reply(source, target, "There are " + servers.length + " servers");
+			moo.reply(source, target, "There are " + servers.length + " servers");
 			for (serverInfo si : servers)
-				moo.sock.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
+				moo.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
 		}
 		else
 		{
 			serverInfo[] servers = servercontrol.findServers(params[1]);
 			if (servers == null)
 			{
-				moo.sock.reply(source, target, "No servers match " + params[1]);
+				moo.reply(source, target, "No servers match " + params[1]);
 				return;
 			}
 			
 
-			moo.sock.reply(source, target, "There are " + servers.length + " servers that match " + params[1]);
+			moo.reply(source, target, "There are " + servers.length + " servers that match " + params[1]);
 			for (serverInfo si : servers)
-				moo.sock.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
+				moo.reply(source, target, si.name + ":" + si.protocol + ", user: " + si.user + ", group: " + si.group);
 		}
 	}
 }

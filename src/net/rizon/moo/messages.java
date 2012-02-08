@@ -2,7 +2,7 @@ package net.rizon.moo;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Random;
 
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
@@ -20,14 +20,14 @@ class message001 extends message
 		if (moo.conf.getOper().isEmpty() == false)
 			moo.sock.write("OPER " + moo.conf.getOper());
 		if (moo.conf.getNickServPass().isEmpty() == false)
-			moo.sock.privmsg("NickServ", "IDENTIFY " + moo.conf.getNickServPass());
+			moo.privmsg("NickServ", "IDENTIFY " + moo.conf.getNickServPass());
 		if (moo.conf.getGeoServPass().isEmpty() == false)
-			moo.sock.privmsg("GeoServ", "ACCESS IDENTIFY " + moo.conf.getGeoServPass());
+			moo.privmsg("GeoServ", "ACCESS IDENTIFY " + moo.conf.getGeoServPass());
 		
 		for (int i = 0; i < moo.conf.getChannels().length; ++i)
-			moo.sock.join(moo.conf.getChannels()[i]);
+			moo.join(moo.conf.getChannels()[i]);
 		for (int i = 0; i < moo.conf.getIdleChannels().length; ++i)
-			moo.sock.join(moo.conf.getIdleChannels()[i]);
+			moo.join(moo.conf.getIdleChannels()[i]);
 		
 		server.clearServers();
 
@@ -194,9 +194,8 @@ class message365 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (moo.conf.getDatabase().isEmpty() == false)
-			for (table t : table.getTables())
-				t.load();
+		for (event e : event.getEvents())
+			e.loadDatabases();
 	}
 }
 
@@ -219,9 +218,9 @@ class message474 extends message
 		}
 		else if (message.length > 1)
 		{
-			moo.sock.privmsg("ChanServ", "UNBAN " + message[1]);
-			moo.sock.privmsg("ChanServ", "INVITE " + message[1]);
-			moo.sock.join(message[1]);
+			moo.privmsg("ChanServ", "UNBAN " + message[1]);
+			moo.privmsg("ChanServ", "INVITE " + message[1]);
+			moo.join(message[1]);
 			this.invited.add(message[1]);
 		}
 	}
@@ -242,13 +241,13 @@ class messageInvite extends message
 			for (int i = 0; i < moo.conf.getChannels().length; ++i)
 				if (moo.conf.getChannels()[i].equalsIgnoreCase(message[1]))
 				{
-					moo.sock.join(message[1]);
+					moo.join(message[1]);
 					break;
 				}
 			for (int i = 0; i < moo.conf.getIdleChannels().length; ++i)
 				if (moo.conf.getIdleChannels()[i].equalsIgnoreCase(message[1]))
 				{
-					moo.sock.join(message[1]);
+					moo.join(message[1]);
 					break;
 				}
 		}
@@ -268,7 +267,7 @@ class messageNotice extends message
 		if (source.equals("NickServ!service@rizon.net"))
 		{
 			if (message.length > 1 && message[1].indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
-				moo.sock.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());
+				moo.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());
 		}
 		else if (source != null && source.indexOf('.') != -1 && message.length > 1)
 		{
@@ -286,19 +285,13 @@ class messageNotice extends message
 					serv.splitDel(tokens[8]);
 				serv.link(tokens[8]);
 				
-				serv = server.findServerAbsolute(tokens[8]);
-				if (serv == null)
-					serv = new server(tokens[8]);
-				serv.link(tokens[4]);
+				server to = server.findServerAbsolute(tokens[8]);
+				if (to == null)
+					to = new server(tokens[8]);
+				to.link(tokens[4]);
 				
-				if (tokens[4].startsWith("py") && tokens[4].endsWith(".rizon.net"))
-					return;
-				
-				if (moo.conf.getDisableSplitMessage() == false)
-					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " introduced by " + tokens[8] + "\2");
-				if (moo.conf.getSplitEmail().isEmpty() == false)
-					mail.send(moo.conf.getSplitEmail(), "Server introduced", tokens[4] + " introduced by " + tokens[8]);
+				for (event e : event.getEvents())
+					e.onServerLink(serv, to);
 			}
 			else if (message[1].indexOf("End of burst from") != -1)
 			{
@@ -313,53 +306,28 @@ class messageNotice extends message
 					serv.splitDel(source);
 				serv.link(source);
 				
-				serv = server.findServerAbsolute(source);
-				if (serv == null)
-					new server(source);
-				serv.link(tokens[7]);
+				server to = server.findServerAbsolute(source);
+				if (to == null)
+					to = new server(source);
+				to.link(tokens[7]);
 				
-				if (tokens[7].startsWith("py") && tokens[7].endsWith(".rizon.net"))
-					return;
-				
-				if (moo.conf.getDisableSplitMessage() == false)
-					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + source + " introduced " + tokens[7] + "\2");
-				if (moo.conf.getSplitEmail().isEmpty() == false)
-					mail.send(moo.conf.getSplitEmail(), "Server introduced", source + " introduced " + tokens[7]);
+				for (event e : event.getEvents())
+					e.onServerLink(serv, to);
 			}
 			else if (message[1].indexOf("split from") != -1)
 			{
 				String[] tokens = message[1].split(" ");
-				server serv = server.findServerAbsolute(tokens[7]);
-				if (serv != null)
-					serv.links.remove(tokens[4]);
-				serv = server.findServerAbsolute(tokens[4]);
+				server from = server.findServerAbsolute(tokens[7]);
+				if (from != null)
+					from.links.remove(tokens[4]);
+				
+				server serv = server.findServerAbsolute(tokens[4]);
 				if (serv == null)
 					serv = new server(tokens[4]);
 				serv.split(tokens[7]);
 				
-				if (serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net"))
-					return;
-				
-				if (moo.conf.getDisableSplitMessage() == false)
-				{
-					for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-						moo.sock.privmsg(moo.conf.getSplitChannels()[i], "\2" + tokens[4] + " split from " + tokens[7] + "\2");
-					for (server s : server.getServers())
-					{
-						if (s.isHub() == true && s.getSplit() == null)
-							for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
-							{
-								String cline = it2.next();
-								
-								if (serv.getName().equalsIgnoreCase(cline))
-									for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-										moo.sock.privmsg(moo.conf.getSplitChannels()[i], serv.getName() + " can connect to " + s.getName());
-							}
-					}
-				}
-				if (moo.conf.getSplitEmail().isEmpty() == false)
-					mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + tokens[7]);
+				for (event e : event.getEvents())
+					e.onServerSplit(serv, from);
 			}
 		}
 	}
@@ -394,16 +362,29 @@ class messagePrivmsg extends message
 			return;
 
 		if (message[1].equals("\1VERSION\1"))
-			moo.sock.notice(source, "\1VERSION " + moo.conf.getVersion() + "\1");
+			moo.notice(source, "\1VERSION " + moo.conf.getVersion() + "\1");
 		else if (message[1].equals("\1TIME\1"))
-			moo.sock.notice(source, "\1TIME " + (new Date().toString()) + "\1");
+			moo.notice(source, "\1TIME " + (new Date().toString()) + "\1");
 		else if (message[1].startsWith("\1ACTION pets " + moo.conf.getNick()))
-			moo.sock.privmsg(message[0], "\1ACTION moos\1");
+			moo.privmsg(message[0], "\1ACTION moos\1");
 		else if (message[1].startsWith("\1ACTION milks " + moo.conf.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
-			moo.sock.privmsg(message[0], "\1ACTION kicks " + nick + " in the face\1");
+			moo.privmsg(message[0], "\1ACTION kicks " + nick + " in the face\1");
+		}
+		else if (message[1].startsWith("\1ACTION brands " + moo.conf.getNick()))
+		{
+			int e = source.indexOf('!');
+			String nick = source.substring(0, e != -1 ? e : source.length());
+			boolean kill = new Random().nextInt(100) == 0;
+			
+			if (kill == false)
+				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stop on their lifeless body");
+			else
+			{
+				moo.privmsg(message[0], "HOW DARE YOU ATTEMT TO BRAND MOO");
+			}
 		}
 	}
 }

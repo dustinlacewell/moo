@@ -61,8 +61,8 @@ public abstract class command extends message
 	public void onHelp(final String source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
-			moo.sock.notice(source, " " + this.getCommandName() + " - " + this.getDescription());
+			moo.notice(source, " " + this.getCommandName() + " - " + this.getDescription());
 		else
-			moo.sock.notice(source, " " + this.getCommandName());
+			moo.notice(source, " " + this.getCommandName());
 	}
 }

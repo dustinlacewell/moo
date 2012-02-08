@@ -56,7 +56,7 @@ class message005 extends message
 					buf += "-";
 				buf += " \00309" + limit + "\003";
 				
-				moo.sock.reply(target_source, target_channel, buf);
+				moo.reply(target_source, target_channel, buf);
 			}
 		}
 	}

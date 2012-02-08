@@ -77,13 +77,13 @@ class floodManager
 		{
 			floodTime = 0;
 			for (int c = 0; c < moo.conf.getAdminChannels().length; ++c)
-				moo.sock.privmsg(moo.conf.getAdminChannels()[c], "End of flood - found " + (floodData.isEmpty() == false ? floodData.lastElement().size() : 0) + " matches");
+				moo.privmsg(moo.conf.getAdminChannels()[c], "End of flood - found " + (floodData.isEmpty() == false ? floodData.lastElement().size() : 0) + " matches");
 		}
 		
 		if (floodTime == 0 && recentConnects.size() == 50 && recentConnects.getFirst().when.after(then))
 		{
 			for (int c = 0; c < moo.conf.getAdminChannels().length; ++c)
-				moo.sock.privmsg(moo.conf.getAdminChannels()[c], "Flood detected - (50 in 30s) *** collecting matching nick/ident/gecos for next 60s");
+				moo.privmsg(moo.conf.getAdminChannels()[c], "Flood detected - (50 in 30s) *** collecting matching nick/ident/gecos for next 60s");
 			floodTime = System.currentTimeMillis() + (60 * 1000);
 			floodNew = true;
 		}
@@ -165,22 +165,22 @@ public class commandFlood extends command
 	{
 		if (params.length == 1)
 		{
-			moo.sock.notice(source, "Flood commands:");
-			moo.sock.notice(source, "!flood <flood list number> list -- Displays all entries in a flood list");
-			moo.sock.notice(source, "!flood <flood list number> del [host] -- Deletes selected entry from a flood list or the entire list");
-			moo.sock.notice(source, "!flood <flood list number> akill --  Akills the entire list");
-			moo.sock.notice(source, "!flood list -- Lists all available flood lists");
+			moo.notice(source, "Flood commands:");
+			moo.notice(source, "!flood <flood list number> list -- Displays all entries in a flood list");
+			moo.notice(source, "!flood <flood list number> del [host] -- Deletes selected entry from a flood list or the entire list");
+			moo.notice(source, "!flood <flood list number> akill --  Akills the entire list");
+			moo.notice(source, "!flood list -- Lists all available flood lists");
 			return;
 		}
 		else if (params[1].equalsIgnoreCase("LIST"))
 		{
 			if (floodManager.listSize() == 0)
-				moo.sock.privmsg(target, "There are no flood lists.");
+				moo.privmsg(target, "There are no flood lists.");
 			else
 				for (int i = 0; i < floodManager.listSize(); ++i)
 				{
 					LinkedList<floodData> fd = floodManager.getList(i);
-					moo.sock.reply(source, target, (i + 1) + ": Contains " + fd.size() + " entries, last entry at: " + fd.getLast().when);
+					moo.reply(source, target, (i + 1) + ": Contains " + fd.size() + " entries, last entry at: " + fd.getLast().when);
 				}
 			return;
 		}
@@ -192,14 +192,14 @@ public class commandFlood extends command
 		}
 		catch (NumberFormatException ex)
 		{
-			moo.sock.notice(source, "Invalid flood list number");
+			moo.notice(source, "Invalid flood list number");
 			return;
 		}
 		
 		LinkedList<floodData> data = floodManager.getList(i - 1);
 		if (data == null)
 		{
-			moo.sock.notice(source, "There is no flood list numbered " + i);
+			moo.notice(source, "There is no flood list numbered " + i);
 			return;
 		}
 		
@@ -208,9 +208,9 @@ public class commandFlood extends command
 			for (int j = 0; j < data.size(); ++j)
 			{
 				floodData fd = data.get(j);
-				moo.sock.notice(source, (j + 1) + ": " + fd.nick + " (" + fd.ident + "@" + fd.host + ")");
+				moo.notice(source, (j + 1) + ": " + fd.nick + " (" + fd.ident + "@" + fd.host + ")");
 			}
-			moo.sock.notice(source, "End of flood list, " + data.size() + " entries");
+			moo.notice(source, "End of flood list, " + data.size() + " entries");
 		}
 		else if (params[2].equalsIgnoreCase("DEL"))
 		{
@@ -222,18 +222,18 @@ public class commandFlood extends command
 					floodData d = it.next();
 					if (moo.match(d.host, params[3]))
 					{
-						moo.sock.notice(source, "Removed flood entry " + d.host);
+						moo.notice(source, "Removed flood entry " + d.host);
 						it.remove();
 						match = true;
 					}
 				}
 				if (match == false)
-					moo.sock.notice(source, "No match for " + params[3]);
+					moo.notice(source, "No match for " + params[3]);
 			}
 			else
 			{
 				data.clear();
-				moo.sock.reply(source, target, "Removed flood list " + i);
+				moo.reply(source, target, "Removed flood list " + i);
 			}
 
 			if (data.isEmpty() == true)
@@ -247,7 +247,7 @@ public class commandFlood extends command
 				moo.akill(d.host, "+2d", "Possible flood bot (" + d.nick + ")");
 			}
 
-			moo.sock.reply(source, target, "Akilled " + data.size() + " entries");
+			moo.reply(source, target, "Akilled " + data.size() + " entries");
 			floodManager.removeList(i - 1);
 		}
 	}

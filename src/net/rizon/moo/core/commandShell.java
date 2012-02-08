@@ -29,11 +29,11 @@ class shellExec extends Thread
 			Process proc = Runtime.getRuntime().exec(this.command, null, new File(moo.conf.getShellBase()));
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
-				moo.sock.reply(this.source, this.target, line);
+				moo.reply(this.source, this.target, line);
 		}
 		catch (IOException ex)
 		{
-			moo.sock.reply(this.source, this.target, "Error running command");
+			moo.reply(this.source, this.target, "Error running command");
 		}
 	}
 }
@@ -55,7 +55,7 @@ public class commandShell extends command
 		File base = new File(moo.conf.getShellBase());
 		if (base.exists() == false || base.isDirectory() == false)
 		{
-			moo.sock.reply(source, target, "Shell base dir is set to an invalid path");
+			moo.reply(source, target, "Shell base dir is set to an invalid path");
 			return;
 		}
 

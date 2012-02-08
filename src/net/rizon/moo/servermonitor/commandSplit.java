@@ -1,4 +1,4 @@
-package net.rizon.moo.commands;
+package net.rizon.moo.servermonitor;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -86,11 +86,11 @@ public class commandSplit extends command
 				if (sp != null)
 				{
 					++split;
-					moo.sock.reply(source, target, "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago");
+					moo.reply(source, target, "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago");
 				}
 			}
 			
-			moo.sock.reply(source, target, "[SPLIT] [" + split + "/" + count + "]");
+			moo.reply(source, target, "[SPLIT] [" + split + "/" + count + "]");
 		}
 		else if (params[1].equalsIgnoreCase("recent"))
 		{
@@ -109,10 +109,10 @@ public class commandSplit extends command
 				ts.remove(ts.first());
 			
 			if (ts.size() == 0)
-				moo.sock.reply(source, target, "There are no recent splits");
+				moo.reply(source, target, "There are no recent splits");
 			else
 			{
-				moo.sock.reply(source, target, "Recent splits:");
+				moo.reply(source, target, "Recent splits:");
 
 				for (Iterator<split> it = ts.descendingIterator(); it.hasNext();)
 				{
@@ -122,7 +122,7 @@ public class commandSplit extends command
 					if (sp.end != null && sp.to != null)
 						buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
 					
-					moo.sock.reply(source, target, buf);
+					moo.reply(source, target, buf);
 				}
 			}
 		}
@@ -130,12 +130,12 @@ public class commandSplit extends command
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
-				moo.sock.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
+				moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
 			else if (s.getSplit() == null)
-				moo.sock.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+				moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
 			else
 			{
-				moo.sock.reply(source, target, "[SPLIT] Removed server " + s.getName());
+				moo.reply(source, target, "[SPLIT] Removed server " + s.getName());
 				s.destroy();
 			}
 		}
@@ -145,16 +145,16 @@ public class commandSplit extends command
 			Date now = new Date();
 			
 			if (s == null)
-				moo.sock.reply(source, target, "No such server " + params[1]);
+				moo.reply(source, target, "No such server " + params[1]);
 			else
 			{
 				split[] splits = s.getSplits();
 				
 				if (splits.length == 0)
-					moo.sock.reply(source, target, s.getName() + " has never split");
+					moo.reply(source, target, s.getName() + " has never split");
 				else
 				{
-					moo.sock.reply(source, target, "Recent splits for " + s.getName() + ":");
+					moo.reply(source, target, "Recent splits for " + s.getName() + ":");
 					for (int i = splits.length; i > 0; --i)
 					{
 						split sp = splits[i - 1];
@@ -163,7 +163,7 @@ public class commandSplit extends command
 						if (sp.end != null && sp.to != null)
 							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
 						
-						moo.sock.reply(source, target, buf);
+						moo.reply(source, target, buf);
 					}
 				}
 			}

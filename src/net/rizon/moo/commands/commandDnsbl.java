@@ -74,10 +74,10 @@ class message219_dnsbl extends message
 			{
 				server s = server.findServer(commandDnsbl.do_server_name);
 				if (s == null)
-					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "No servers found for " + commandDnsbl.do_server_name);
+					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "No servers found for " + commandDnsbl.do_server_name);
 				else
 				{
-					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts for " + s.getName() + ":");
+					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts for " + s.getName() + ":");
 					
 					long total = commandDnsbl.getDnsblFor(s);
 					String[] dnsbl_names = new String[s.dnsbl.size()];
@@ -93,13 +93,13 @@ class message219_dnsbl extends message
 						float percent = total > 0 ? ((float) dnsbl_count / (float) total * (float) 100) : 0;
 						int percent_i = Math.round(percent);
 						
-						moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
+						moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
 					}
 				}
 			}
 			else if (commandDnsbl.do_server_counts)
 			{
-				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts by server:");
+				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts by server:");
 
 				long total = 0;
 				for (server s : server.getServers())
@@ -119,12 +119,12 @@ class message219_dnsbl extends message
 					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
 					int percent_i = Math.round(percent);
 					
-					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
+					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
 				}
 			}
 			else
 			{
-				moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
+				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
 
 				HashMap<String, Long> dnsbl_counts = new HashMap<String, Long>();
 				long total = 0;
@@ -156,7 +156,7 @@ class message219_dnsbl extends message
 					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
 					int percent_i = Math.round(percent);
 					
-					moo.sock.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, name + ": " + value + " (" + percent_i + "%)");
+					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, name + ": " + value + " (" + percent_i + "%)");
 				}
 			}
 				
@@ -179,7 +179,7 @@ class message219_dnsbl extends message
 			long global_change = after_total_count - dnsblTimer.before_total_count;
 			if (global_change >= global_threshold)
 				for (final String chan : moo.conf.getDnsblChannels())
-					moo.sock.privmsg(chan, "DNSBL WARN: " + global_change + " in 60s");
+					moo.privmsg(chan, "DNSBL WARN: " + global_change + " in 60s");
 			
 			for (Iterator<String> it = dnsblTimer.before_count.keySet().iterator(); it.hasNext();)
 			{
@@ -193,7 +193,7 @@ class message219_dnsbl extends message
 				long server_change = after_count - before_count;
 				if (server_change >= server_threshold)
 					for (final String chan : moo.conf.getDnsblChannels())
-						moo.sock.privmsg(chan, "DNSBL WARN " + s.getName() + ": " + server_change + " in 60s");
+						moo.privmsg(chan, "DNSBL WARN " + s.getName() + ": " + server_change + " in 60s");
 			}
 			
 			dnsblTimer.check_requested = false;
