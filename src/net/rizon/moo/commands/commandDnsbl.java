@@ -168,13 +168,16 @@ class message219_dnsbl extends message
 			long after_total_count = 0;
 			HashMap<String, Long> after_counts = new HashMap<String, Long>();
 			
-			for (server s : server.getServers())
-				if (s.getSplit() == null && !s.isServices())
+			for (String ss : dnsblTimer.requested)
+			{
+				server s = server.findServerAbsolute(ss);
+				if (s != null && s.getSplit() == null && !s.isServices())
 				{
 					long count = commandDnsbl.getDnsblFor(s);
 					after_total_count += count;
 					after_counts.put(s.getName(), count);
 				}
+			}
 			
 			long global_change = after_total_count - dnsblTimer.before_total_count;
 			if (global_change >= global_threshold)
@@ -197,6 +200,9 @@ class message219_dnsbl extends message
 			}
 			
 			dnsblTimer.check_requested = false;
+			dnsblTimer.requested.clear();
+			dnsblTimer.before_total_count = 0;
+			dnsblTimer.before_count.clear();
 		}
 	}
 }
@@ -204,7 +210,7 @@ class message219_dnsbl extends message
 class dnsblTimer extends timer
 {
 	public static boolean check_requested;
-	public static HashSet<String> check_waiting_on = new HashSet<String>();
+	public static HashSet<String> requested = new HashSet<String>(), check_waiting_on = new HashSet<String>();
 	public static long before_total_count;
 	public static HashMap<String, Long> before_count = new HashMap<String, Long>();
 	
@@ -217,6 +223,7 @@ class dnsblTimer extends timer
 	public void run(Date now)
 	{
 		check_requested = true;
+		requested.clear();
 		check_waiting_on.clear();
 		before_total_count = 0;
 		before_count.clear();
@@ -225,6 +232,7 @@ class dnsblTimer extends timer
 			if (s.getSplit() == null && !s.isServices())
 			{
 				moo.sock.write("STATS B " + s.getName());
+				requested.add(s.getName());
 				check_waiting_on.add(s.getName());
 				
 				long count = commandDnsbl.getDnsblFor(s);

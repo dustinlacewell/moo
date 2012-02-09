@@ -391,9 +391,15 @@ class messagePrivmsg extends message
 				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
 			else
 			{
-				moo.privmsg(message[0], "FEEL THE WRATH OF " + moo.conf.getNick());
-				moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + moo.conf.getNick());
+				moo.privmsg(message[0], "FEEL THE WRATH OF " + moo.conf.getNick().toUpperCase());
+				moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + moo.conf.getNick().toUpperCase());
 			}
+		}
+		else if (message[1].startsWith("\1ACTION tips " + moo.conf.getNick()))
+		{
+			int e = source.indexOf('!');
+			String nick = source.substring(0, e != -1 ? e : source.length());
+			moo.privmsg(message[0], "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
 		}
 	}
 }
