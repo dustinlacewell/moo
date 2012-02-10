@@ -136,7 +136,21 @@ public class commandSplit extends command
 			else
 			{
 				moo.reply(source, target, "[SPLIT] Removed server " + s.getName());
+				reconnector.removeReconnectsFor(s);
 				s.destroy();
+			}
+		}
+		else if (params.length > 2 && params[1].equalsIgnoreCase("stop"))
+		{
+			server s = server.findServer(params[2]);
+			if (s == null)
+				moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
+			else if (s.getSplit() == null)
+				moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+			else
+			{
+				moo.reply(source, target, "[SPLIT] Removed reconnect for server " + s.getName());
+				reconnector.removeReconnectsFor(s);
 			}
 		}
 		else

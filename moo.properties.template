@@ -58,6 +58,12 @@ shell_base=/home/adam/rizon/moo/shell
 # Set to true to disable the "server X can connect to Y" message on every split
 disable_split_message=false
 
+# Set to true to disable split reconnecting
+disable_split_reconnect=false
+
+# Port servers use to connect
+split_reconnect_port=27888
+
 # Path to sendmail
 sendmail_path=/usr/sbin/sendmail
 

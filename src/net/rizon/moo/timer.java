@@ -7,14 +7,12 @@ public abstract class timer
 {
 	private static ArrayList<timer> timers = new ArrayList<timer>();
 
-	public Date creation;
-	public Date tick;
-	public long time_from_now;
-	public boolean repeating;
+	private Date tick;
+	private long time_from_now;
+	private boolean repeating;
 
 	public timer(long time_from_now, boolean repeating)
 	{
-		this.creation = new Date();
 		this.tick = new Date(System.currentTimeMillis() + (time_from_now * 1000));
 		this.time_from_now = time_from_now;
 		this.repeating = repeating;	
@@ -28,6 +26,11 @@ public abstract class timer
 	public void stop()
 	{
 		timers.remove(this);
+	}
+	
+	public void setRepeating(boolean r)
+	{
+		this.repeating = r;
 	}
 	
 	public abstract void run(final Date now);

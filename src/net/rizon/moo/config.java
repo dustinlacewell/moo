@@ -25,6 +25,8 @@ public class config
 	private boolean shell;
 	private String shell_base;
 	private boolean disable_split_message;
+	private boolean disable_split_reconnect;
+	private int split_reconnect_port;
 	private String sendmail_path;
 	private String split_email;
 	private String database;
@@ -69,6 +71,8 @@ public class config
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
 		this.shell_base = this.getProperty(prop, "shell_base");
 		this.disable_split_message = Boolean.parseBoolean(this.getProperty(prop, "disable_split_message"));
+		this.disable_split_reconnect = Boolean.parseBoolean(this.getProperty(prop, "disable_split_reconnect"));
+		this.split_reconnect_port = Integer.parseInt(this.getProperty(prop, "split_reconnect_port"));
 		this.sendmail_path = this.getProperty(prop, "sendmail_path");
 		this.split_email = this.getProperty(prop, "split_email");
 		this.database = this.getProperty(prop, "database");
@@ -213,6 +217,16 @@ public class config
 	public final boolean getDisableSplitMessage()
 	{
 		return this.disable_split_message;
+	}
+	
+	public final boolean getDisableSplitReconnect()
+	{
+		return this.disable_split_reconnect;
+	}
+	
+	public final int getSplitReconnectPort()
+	{
+		return this.split_reconnect_port;
 	}
 	
 	public final String getSendmailPath()
