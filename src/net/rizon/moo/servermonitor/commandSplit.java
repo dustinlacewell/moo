@@ -34,8 +34,11 @@ public class commandSplit extends command
 	{
 		long lnow = now.getTime() / 1000L, lthen = then.getTime() / 1000L;
 		
-		long ldiff = lnow - lthen;
+		long ldiff = now.compareTo(then) > 0 ? lnow - lthen : lthen - lnow;
 		int days = 0, hours = 0, minutes = 0;
+		
+		if (ldiff == 0)
+			return "0 seconds";
 		
 		while (ldiff > 86400)
 		{
@@ -52,9 +55,6 @@ public class commandSplit extends command
 			++minutes;
 			ldiff -= 60;
 		}
-		
-		if (lnow == lthen)
-			return "0 seconds";
 		
 		String buffer = "";
 		if (days > 0)
@@ -86,7 +86,11 @@ public class commandSplit extends command
 				if (sp != null)
 				{
 					++split;
-					moo.reply(source, target, "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago");
+					String buffer = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
+					reconnector r = reconnector.reconnectorFor(s);
+					if (r != null)
+						buffer += " Will reconnect in " + difference(now, r.getTick()) + ".";
+					moo.reply(source, target, buffer);
 				}
 			}
 			
@@ -121,6 +125,16 @@ public class commandSplit extends command
 					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 					if (sp.end != null && sp.to != null)
 						buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
+					else
+					{
+						server s = server.findServerAbsolute(sp.me);
+						if (s != null)
+						{
+							reconnector r = reconnector.reconnectorFor(s);
+							if (r != null)
+								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
+						}
+					}
 					
 					moo.reply(source, target, buf);
 				}
@@ -176,6 +190,12 @@ public class commandSplit extends command
 						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 						if (sp.end != null && sp.to != null)
 							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
+						else
+						{
+							reconnector r = reconnector.reconnectorFor(s);
+							if (r != null)
+								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
+						}
 						
 						moo.reply(source, target, buf);
 					}

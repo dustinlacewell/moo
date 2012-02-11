@@ -79,4 +79,16 @@ public class reconnector extends timer
 			if (it.next().serv == s)
 				it.remove();
 	}
+	
+	public static reconnector reconnectorFor(server s)
+	{
+		for (Iterator<reconnector> it = reconnects.iterator(); it.hasNext();)
+		{
+			reconnector r = it.next();
+			if (r.serv == s)
+				return r;
+		}
+		
+		return null;
+	}
 }

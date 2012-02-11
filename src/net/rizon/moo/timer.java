@@ -33,6 +33,11 @@ public abstract class timer
 		this.repeating = r;
 	}
 	
+	public final Date getTick()
+	{
+		return this.tick;
+	}
+	
 	public abstract void run(final Date now);
 	
 	public static void processTimers()
