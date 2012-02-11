@@ -87,7 +87,7 @@ public class commandSplit extends command
 				{
 					++split;
 					String buffer = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
-					reconnector r = reconnector.reconnectorFor(s);
+					reconnector r = reconnector.findValidReconnectorFor(s);
 					if (r != null)
 						buffer += " Will reconnect in " + difference(now, r.getTick()) + ".";
 					moo.reply(source, target, buffer);
@@ -130,7 +130,7 @@ public class commandSplit extends command
 						server s = server.findServerAbsolute(sp.me);
 						if (s != null)
 						{
-							reconnector r = reconnector.reconnectorFor(s);
+							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
 								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
 						}
@@ -192,7 +192,7 @@ public class commandSplit extends command
 							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
 						else
 						{
-							reconnector r = reconnector.reconnectorFor(s);
+							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
 								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
 						}

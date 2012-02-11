@@ -30,7 +30,7 @@ public class reconnector extends timer
 		this.stop();
 		reconnects.remove(this);
 	}
-
+	
 	@Override
 	public void run(Date now)
 	{
@@ -80,12 +80,12 @@ public class reconnector extends timer
 				it.remove();
 	}
 	
-	public static reconnector reconnectorFor(server s)
+	public static reconnector findValidReconnectorFor(server s)
 	{
 		for (Iterator<reconnector> it = reconnects.iterator(); it.hasNext();)
 		{
 			reconnector r = it.next();
-			if (r.serv == s)
+			if (r.serv == s && r.sp == s.getSplit())
 				return r;
 		}
 		
