@@ -77,9 +77,10 @@ class message219_dnsbl extends message
 					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "No servers found for " + commandDnsbl.do_server_name);
 				else
 				{
-					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts for " + s.getName() + ":");
-					
 					long total = commandDnsbl.getDnsblFor(s);
+
+					moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts for " + s.getName() + " (" + total + "):");
+
 					String[] dnsbl_names = new String[s.dnsbl.size()];
 					s.dnsbl.keySet().toArray(dnsbl_names);
 					dnsblCountComparator.counts = s.dnsbl;
@@ -99,12 +100,12 @@ class message219_dnsbl extends message
 			}
 			else if (commandDnsbl.do_server_counts)
 			{
-				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts by server:");
-
 				long total = 0;
 				for (server s : server.getServers())
 					total += commandDnsbl.getDnsblFor(s);
-				
+
+				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts by server (" + total + "):");
+
 				server servers[] = server.getServers();
 				Arrays.sort(servers, dnsblServerComparator.cmp);
 				
@@ -124,8 +125,6 @@ class message219_dnsbl extends message
 			}
 			else
 			{
-				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts:");
-
 				HashMap<String, Long> dnsbl_counts = new HashMap<String, Long>();
 				long total = 0;
 				for (server s : server.getServers())
@@ -142,7 +141,9 @@ class message219_dnsbl extends message
 						dnsbl_counts.put(dnsbl_name, i);
 					}
 				}
-				
+
+				moo.reply(commandDnsbl.command_target_source, commandDnsbl.command_target_chan, "DNSBL counts (" + total + "):");
+
 				String[] dnsbl_names = new String[dnsbl_counts.size()];
 				dnsbl_counts.keySet().toArray(dnsbl_names);
 				dnsblCountComparator.counts = dnsbl_counts;
