@@ -13,7 +13,7 @@ public class reconnector extends timer
 {
 	private server serv, from;
 	private split sp;
-	private int rtry = 0;
+	private int rtry = 0, ctry = 0;
 	
 	public reconnector(server serv, server from)
 	{
@@ -43,13 +43,15 @@ public class reconnector extends timer
 			return;
 		}
 		
-		if (this.rtry == 3)
+		this.rtry++;
+		
+		if (this.rtry > 0 && this.rtry % 3 == 0)
 			for (Iterator<String> it = s.clines.iterator(); it.hasNext();)
 			{
-				final String sname = it.next();
-				if (sname.equals(fr.getName()) == false && server.findServerAbsolute(sname) != null)
+				server alt = server.findServerAbsolute(it.next());
+				if (alt != null && alt != fr && alt.getSplit() == null)
 				{
-					fr = server.findServerAbsolute(sname);
+					fr = alt;
 					break;
 				}
 			}
@@ -57,14 +59,14 @@ public class reconnector extends timer
 		if (fr.getSplit() != null)
 			return;
 		
-		this.rtry++;
+		this.ctry++;
 		
 		for (final String chan : moo.conf.getSplitChannels())
-			moo.privmsg(chan, "Reconnect #" + this.rtry + " for " + s.getName() + " to " + fr.getName());
+			moo.privmsg(chan, "Reconnect #" + this.ctry + " for " + s.getName() + " to " + fr.getName());
 		
 		moo.sock.write("CONNECT " + s.getName() + " " + moo.conf.getSplitReconnectPort() + " " + fr.getName());
 		
-		if (this.rtry == 3)
+		if (this.ctry == 3)
 		{
 			this.destroy();
 			this.setRepeating(false);
