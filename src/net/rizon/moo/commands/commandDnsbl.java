@@ -205,8 +205,9 @@ class message219_dnsbl extends message
 				}
 			}
 			
-			for (final String chan : moo.conf.getDnsblChannels())
-				moo.privmsg(chan, dnsbl_message);
+			if (!dnsbl_message.isEmpty())
+				for (final String chan : moo.conf.getDnsblChannels())
+					moo.privmsg(chan, dnsbl_message);
 			
 			dnsblTimer.check_requested = false;
 			dnsblTimer.requested.clear();
