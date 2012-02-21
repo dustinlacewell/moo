@@ -180,10 +180,11 @@ class message219_dnsbl extends message
 				}
 			}
 			
+			String dnsbl_message = "";
+			
 			long global_change = after_total_count - dnsblTimer.before_total_count;
 			if (global_change >= global_threshold)
-				for (final String chan : moo.conf.getDnsblChannels())
-					moo.privmsg(chan, "DNSBL WARN: " + global_change + " in 60s");
+				dnsbl_message = "DNSBL WARN: " + global_change + " in 60s";
 			
 			for (Iterator<String> it = dnsblTimer.before_count.keySet().iterator(); it.hasNext();)
 			{
@@ -196,9 +197,16 @@ class message219_dnsbl extends message
 				
 				long server_change = after_count - before_count;
 				if (server_change >= server_threshold)
-					for (final String chan : moo.conf.getDnsblChannels())
-						moo.privmsg(chan, "DNSBL WARN " + s.getName() + ": " + server_change + " in 60s");
+				{
+					if (!dnsbl_message.isEmpty())
+						dnsbl_message += "; " + s.getName() + ": " + server_change + " in 60s";
+					else
+						dnsbl_message = "DNSBL WARN " + s.getName() + ": " + server_change + " in 60s";
+				}
 			}
+			
+			for (final String chan : moo.conf.getDnsblChannels())
+				moo.privmsg(chan, dnsbl_message);
 			
 			dnsblTimer.check_requested = false;
 			dnsblTimer.requested.clear();
