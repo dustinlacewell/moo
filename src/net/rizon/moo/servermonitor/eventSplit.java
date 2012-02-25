@@ -14,9 +14,15 @@ public class eventSplit extends event
 	{
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 		
-		if (moo.conf.getDisableSplitMessage() == false && pypsd == false)
-			for (int i = 0; i < moo.conf.getSplitChannels().length; ++i)
-				moo.privmsg(moo.conf.getSplitChannels()[i], "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+		if (moo.conf.getDisableSplitMessage() == false)
+		{
+			if (pypsd)
+				for (final String channel : moo.conf.getDevChannels())
+					moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+			else
+				for (final String channel : moo.conf.getSplitChannels())
+					moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+		}
 		if (moo.conf.getSplitEmail().isEmpty() == false && pypsd == false)
 			mail.send(moo.conf.getSplitEmail(), "Server introduced", serv.getName() + " introduced by " + to.getName());
 	}
