@@ -40,6 +40,9 @@ idle_channels=#adam
 # Comma separated list of channels to join
 channels=#opers,#o,#r,#x
 
+# Comman separated list of developer channels.
+dev_channels=#d
+
 # Comma separated list of channels to announce splits to
 split_channels=#opers
 

@@ -19,6 +19,7 @@ public class config
 	private String oper;
 	private String[] idle_channels;
 	private String[] channels;
+	private String[] dev_channels;
 	private String[] split_channels;
 	private String[] dnsbl_channels;
 	private String[] admin_channels;
@@ -62,6 +63,8 @@ public class config
 		this.idle_channels = s.split(",");
 		s = this.getProperty(prop, "channels");
 		this.channels = s.split(",");
+		s = this.getProperty(prop, "dev_channels");
+		this.dev_channels = s.split(",");
 		s = this.getProperty(prop, "split_channels");
 		this.split_channels = s.split(",");
 		s = this.getProperty(prop, "dnsbl_channels");
@@ -179,6 +182,11 @@ public class config
 	public final String[] getChannels()
 	{
 		return this.channels;
+	}
+	
+	public final String[] getDevChannels()
+	{
+		return this.dev_channels;
 	}
 	
 	public final String[] getSplitChannels()
