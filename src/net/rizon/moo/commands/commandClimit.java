@@ -8,7 +8,7 @@ import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 
-class message005 extends message
+class message_limit extends message
 {
 	private static int dashesFor(server s)
 	{
@@ -27,7 +27,7 @@ class message005 extends message
 	public static String target_channel = null;
 	public static String target_source = null;
 
-	public message005(String what)
+	public message_limit(String what)
 	{
 		super(what);
 	}
@@ -65,9 +65,9 @@ class message005 extends message
 public class commandClimit extends command
 {
 	@SuppressWarnings("unused")
-	private static message005 message_005 = new message005("005");
+	private static message_limit message_005 = new message_limit("005");
 	@SuppressWarnings("unused")
-	private static message005 message_105 = new message005("105");
+	private static message_limit message_105 = new message_limit("105");
 
 	public commandClimit(mpackage pkg)
 	{
@@ -80,10 +80,10 @@ public class commandClimit extends command
 		for (server s : server.getServers())
 		{
 			moo.sock.write("VERSION " + s.getName());
-			message005.waiting_for.add(s.getName());
+			message_limit.waiting_for.add(s.getName());
 		}
 		
-		message005.target_channel = target;
-		message005.target_source = source;
+		message_limit.target_channel = target;
+		message_limit.target_source = source;
 	}
 }
