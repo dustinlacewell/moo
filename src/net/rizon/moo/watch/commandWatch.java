@@ -1,0 +1,120 @@
+package net.rizon.moo.watch;
+
+import java.util.Date;
+import java.util.Iterator;
+
+import net.rizon.moo.command;
+import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
+
+public class commandWatch extends command
+{
+	public commandWatch(mpackage pkg)
+	{
+		super(pkg, "!WATCH", "View or modify the watch list");
+	}
+
+	@Override
+	public void execute(String source, String target, String[] params)
+	{
+		if (params.length <= 1 || params[1].equalsIgnoreCase("list"))
+		{
+			if (watch.watches.isEmpty())
+				moo.reply(source, target, "The watch list is empty");
+			else
+			{
+				Date now = new Date();
+				int count = 0;
+
+				for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+				{
+					watchEntry e = it.next();
+					
+					if (e.expires.before(now))
+					{
+						it.remove();
+						continue;
+					}
+					
+					moo.reply(source, target, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reasno: " + e.reason);
+				}
+			}
+		}
+		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && moo.conf.isAdminChannel(target))
+		{
+			watchEntry we = null;
+			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+			{
+				watchEntry e = it.next();
+				if (e.nick.equalsIgnoreCase(params[2]))
+				{
+					we = e;
+					break;
+				}
+			}
+			
+			if (we == null)
+			{
+				we = new watchEntry();
+				watch.watches.push(we);
+			}
+			
+			int reason_start = 4;
+			String expires = params[3];
+			long expires_len = 3 * 86400;
+			if (expires.startsWith("+"))
+			{
+				int multiplier = 1;
+				if (expires.endsWith("d"))
+					multiplier = 86400;
+				else if (expires.endsWith("m"))
+					multiplier = 60;
+				
+				expires = expires.substring(1);
+				while (Character.isLetter(expires.charAt(expires.length() - 1)))
+					expires = expires.substring(0, expires.length() - 1);
+				
+				int len = 0;
+				try
+				{
+					len = Integer.parseInt(expires);
+					expires_len = len * multiplier;
+				}
+				catch (NumberFormatException ex)
+				{
+					moo.reply(source, target, "Expiry " + expires + " is not valid");
+					return;
+				}
+			}
+			else
+				reason_start = 3;
+			
+			String reason = "";
+			for (; reason_start < params.length; ++reason_start)
+				reason += params[reason_start] + " ";
+			if (reason.isEmpty())
+				reason = "No reason";
+			
+			we.nick = params[2];
+			we.creator = source;
+			we.reason = reason;
+			we.created = new Date();
+			we.expires = new Date(System.currentTimeMillis() + (expires_len * 1000L));
+		}
+		else if (params[1].equals("del") && params.length > 2)
+		{
+			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+			{
+				watchEntry e = it.next();
+				if (e.nick.equalsIgnoreCase(params[2]))
+				{
+					it.remove();
+					moo.reply(source, target, "Watch for " + e.nick + " removed");
+					return;
+				}
+			}
+			
+			moo.reply(source, target, "No watch for " + params[2] + " found");
+		}
+	}
+}

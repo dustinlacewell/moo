@@ -266,4 +266,9 @@ public class moo
 			return;
 		privmsg("GeoServ", "AKILL ADD " + time + " *@" + host + " " + reason);
 	}
+	
+	public static void qakill(final String nick, final String reason)
+	{
+		privmsg("GeoServ", "QAKILL " + nick + " " + reason);
+	}
 }

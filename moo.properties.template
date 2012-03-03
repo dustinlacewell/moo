@@ -35,12 +35,12 @@ version=moo v2.0
 #oper=moo somepass
 
 # Comma separated list of channels to do nothing in
-idle_channels=#adam
+idle_channels=#adam,#d
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x
+channels=#opers,#o,#r,#x,#a,#d
 
-# Comman separated list of developer channels.
+# Comma separated list of developer channels.
 dev_channels=#d
 
 # Comma separated list of channels to announce splits to
@@ -80,6 +80,6 @@ database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 database_classes=net.rizon.moo.server$db
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor
+packages=commands,core,servercontrol,servermonitor,watch
 
 debug=0
