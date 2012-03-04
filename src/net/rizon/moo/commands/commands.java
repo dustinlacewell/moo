@@ -20,5 +20,6 @@ public class commands extends mpackage
 		new commandSoa(this);
 		new commandTime(this);
 		new commandVersions(this);
+		new commandWhy(this);
 	}
 }
