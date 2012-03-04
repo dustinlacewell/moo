@@ -36,7 +36,7 @@ public class commandWatch extends command
 						continue;
 					}
 					
-					moo.reply(source, target, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reasno: " + e.reason);
+					moo.reply(source, target, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
 				}
 			}
 		}
