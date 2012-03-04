@@ -1,6 +1,7 @@
 package net.rizon.moo.watch;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,12 +23,20 @@ public class messagePrivmsg extends message
 	{
 		if (moo.conf.isIdleChannel(message[0]))
 			return;
-			
+
 		Matcher m = bopm_pattern.matcher(message[1]);
 		if (m.find())
 		{
 			final String nick = m.group(1);
+			
+			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+			{
+				watchEntry e = it.next();
 				
+				if (e.nick.equalsIgnoreCase(nick))
+					return;
+			}
+
 			watchEntry we = new watchEntry();
 			we.nick = nick;
 			we.creator = moo.conf.getNick();
