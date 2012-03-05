@@ -13,11 +13,11 @@ public class reconnector extends timer
 {
 	private server serv, from;
 	private split sp;
-	private int rtry = 0, ctry = 0;
+	private int wtry = 0, rtry = 0, ctry = 0;
 	
 	public reconnector(server serv, server from)
 	{
-		super(serv.isHub() ? 180 : 120, true);
+		super(60, true);
 		this.serv = serv;
 		this.from = from;
 		this.sp = serv.getSplit();
@@ -40,6 +40,17 @@ public class reconnector extends timer
 		{
 			this.destroy();
 			this.setRepeating(false);
+			return;
+		}
+		
+		this.wtry++;
+		int wantWait = serv.isHub() ? 3 : 2;
+		int wait = wantWait - this.wtry;
+		
+		if (wait > 0)
+		{
+			for (final String chan : moo.conf.getSplitChannels())
+				moo.privmsg(chan, "Will reconnect " + s.getName() + " to " + fr.getName() + " in " + wait + " minute" + (wait != 0 ? "s" : ""));
 			return;
 		}
 		
