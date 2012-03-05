@@ -23,6 +23,8 @@ class messageePrivmsg extends message
 	{
 		if (message.length < 2 || message[0].equalsIgnoreCase("#debug") == false || message[1].startsWith("Ident/Gecos/Nick") == false)
 			return;
+		else if (server.lastSplit + 120 > System.currentTimeMillis() / 1000L)
+			return;
 		
 		String[] tokens = message[1].split(" ");
 		

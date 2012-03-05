@@ -18,6 +18,7 @@ public class server
 	public HashSet<String> links = new HashSet<String>();
 	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
 	private LinkedList<split> splits = new LinkedList<split>();
+	public static long lastSplit = 0;
 
 	public long bytes = 0;
 
@@ -91,6 +92,8 @@ public class server
 		this.splits.addLast(s);
 		if (this.splits.size() > 10)
 			this.splits.removeFirst();
+		
+		lastSplit = System.currentTimeMillis() / 1000L;
 	}
 	
 	public split getSplit()
