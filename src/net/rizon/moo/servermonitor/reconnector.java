@@ -50,7 +50,7 @@ public class reconnector extends timer
 		if (wait > 0)
 		{
 			for (final String chan : moo.conf.getSplitChannels())
-				moo.privmsg(chan, "Will reconnect " + s.getName() + " to " + fr.getName() + " in " + wait + " minute" + (wait != 0 ? "s" : ""));
+				moo.privmsg(chan, "Will reconnect " + s.getName() + " to " + fr.getName() + " in " + wait + " minute" + (wait != 1 ? "s" : ""));
 			return;
 		}
 		
