@@ -122,7 +122,6 @@ public class server
 		this.olines.clear();
 		
 		moo.sock.write("STATS B " + this.getName());
-		this.dnsbl.clear();
 
 		split s = this.getSplit();
 		s.to = to;
