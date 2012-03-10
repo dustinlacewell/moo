@@ -100,6 +100,8 @@ public class commandWatch extends command
 			we.reason = reason;
 			we.created = new Date();
 			we.expires = new Date(System.currentTimeMillis() + (expires_len * 1000L));
+			
+			moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
 		}
 		else if (params[1].equals("del") && params.length > 2)
 		{
