@@ -61,12 +61,15 @@ class message_216 extends message
 	{
 		if (message[1].equals("k") == false && message[1].equals("K") == false)
 			return;
-		else if (commandWhy.look_for.isEmpty() || message[2].equalsIgnoreCase(commandWhy.look_for) == false)
+		else if (commandWhy.host_ip.isEmpty())
+			return;
+		else if (message[2].equalsIgnoreCase(commandWhy.host_ip) == false && message[2].equalsIgnoreCase(commandWhy.host_host) == false)
 			return;
 		
-		moo.reply(commandWhy.message_source, commandWhy.message_target, message[2] + " is " + message[1] + "-lined for: " + message[5]);
+		moo.reply(commandWhy.message_source, commandWhy.message_target, "[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[5]);
 
-		commandWhy.look_for = "";
+		commandWhy.host_ip = "";
+		commandWhy.host_host = "";
 	}
 }
 
@@ -82,12 +85,15 @@ class message_225 extends message
 	{
 		if (message[1].equals("d") == false)
 			return;
-		else if (commandWhy.look_for.isEmpty() || message[2].equalsIgnoreCase(commandWhy.look_for) == false)
+		else if (commandWhy.host_ip.isEmpty())
+			return;
+		else if (message[2].equalsIgnoreCase(commandWhy.host_ip) == false && message[2].equalsIgnoreCase(commandWhy.host_host) == false)
 			return;
 		
-		moo.reply(commandWhy.message_source, commandWhy.message_target, message[2] + " is " + message[1] + "-lined for: " + message[3]);
+		moo.reply(commandWhy.message_source, commandWhy.message_target, "[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[3]);
 
-		commandWhy.look_for = "";
+		commandWhy.host_ip = "";
+		commandWhy.host_host = "";
 	}
 }
 
@@ -101,15 +107,17 @@ class message219_why extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (commandWhy.look_for.isEmpty())
+		if (commandWhy.host_ip.isEmpty())
 			return;
 		
 		commandWhy.requested--;
 		
 		if (commandWhy.requested == 0)
 		{
-			moo.reply(commandWhy.message_source, commandWhy.message_target, commandWhy.look_for + " is not banned");
-			commandWhy.look_for = "";
+			moo.reply(commandWhy.message_source, commandWhy.message_target, commandWhy.host_ip + " (" + commandWhy.host_host + ") is not banned");
+			
+			commandWhy.host_ip = "";
+			commandWhy.host_host = "";
 		}
 	}
 }
@@ -123,7 +131,7 @@ public class commandWhy extends command
 	@SuppressWarnings("unused")
 	private static final message219_why message219 = new message219_why();
 	
-	public static String message_target, message_source, look_for = "";
+	public static String message_target, message_source, host_ip = "", host_host = "";
 	public static int requested = 0;
 
 	public commandWhy(mpackage pkg)
@@ -140,11 +148,11 @@ public class commandWhy extends command
 			return;
 		}
 		
-		String ip = params[1];
-		
 		try
 		{
-			InetAddress.getAllByName(ip);
+			InetAddress addr = InetAddress.getByName(params[1]);
+			host_ip = addr.getHostAddress();
+			host_host = addr.getHostName();
 		}
 		catch (UnknownHostException ex)
 		{
@@ -153,7 +161,7 @@ public class commandWhy extends command
 		}
 		
 		
-		Thread t = new DNSBLChecker(source, target, ip);
+		Thread t = new DNSBLChecker(source, target, host_ip);
 		t.start();
 		
 		requested = 0;
@@ -168,6 +176,5 @@ public class commandWhy extends command
 		
 		message_target = target;
 		message_source = source;
-		look_for = ip;
 	}
 }
