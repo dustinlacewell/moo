@@ -65,6 +65,9 @@ class message351 extends message
 			}
 			catch (NumberFormatException ex) { }
 			
+			if (commandVersions.onlyOld && ver_num == max_ver)
+				return;
+			
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
@@ -92,6 +95,8 @@ public class commandVersions extends command
 {
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();
+	
+	public static boolean onlyOld;
 
 	public commandVersions(mpackage pkg)
 	{
@@ -101,6 +106,11 @@ public class commandVersions extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
+		if (params.length > 1 && params[1].equalsIgnoreCase("OLD"))
+			onlyOld = true;
+		else
+			onlyOld = false;
+
 		for (server s : server.getServers())
 			if (s.isServices() == false)
 			{
