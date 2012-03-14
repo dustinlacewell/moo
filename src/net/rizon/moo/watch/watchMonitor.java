@@ -17,18 +17,21 @@ class message_303 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		for (final String nick : message[1].split(" "))
+		for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
-			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
-			{
-				watchEntry e = it.next();
-				
+			watchEntry e = it.next();
+			
+			boolean found = false;
+			for (final String nick : message)
 				if (e.nick.equalsIgnoreCase(nick))
 				{
-					moo.qakill(e.nick, e.reason);
+					e.handleWatch();
+					found = true;
 					break;
 				}
-			}
+			
+			if (found == false)
+				e.handleOffline();
 		}
 	}
 }

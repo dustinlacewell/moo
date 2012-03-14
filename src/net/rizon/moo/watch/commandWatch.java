@@ -100,6 +100,7 @@ public class commandWatch extends command
 			we.reason = reason;
 			we.created = new Date();
 			we.expires = new Date(System.currentTimeMillis() + (expires_len * 1000L));
+			we.registered = watchEntry.registeredState.RS_MANUAL;
 			
 			moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
 		}

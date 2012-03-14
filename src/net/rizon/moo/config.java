@@ -21,7 +21,7 @@ public class config
 	private String[] channels;
 	private String[] dev_channels;
 	private String[] split_channels;
-	private String[] dnsbl_channels;
+	private String[] oper_channels;
 	private String[] admin_channels;
 	private boolean shell;
 	private String shell_base;
@@ -67,8 +67,8 @@ public class config
 		this.dev_channels = s.split(",");
 		s = this.getProperty(prop, "split_channels");
 		this.split_channels = s.split(",");
-		s = this.getProperty(prop, "dnsbl_channels");
-		this.dnsbl_channels = s.split(",");
+		s = this.getProperty(prop, "oper_channels");
+		this.oper_channels = s.split(",");
 		s = this.getProperty(prop, "admin_channels");
 		this.admin_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
@@ -194,9 +194,9 @@ public class config
 		return this.split_channels;
 	}
 	
-	public final String[] getDnsblChannels()
+	public final String[] getOperChannels()
 	{
-		return this.dnsbl_channels;
+		return this.oper_channels;
 	}
 
 	public final String[] getAdminChannels()

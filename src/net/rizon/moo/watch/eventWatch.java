@@ -14,7 +14,7 @@ public class eventWatch extends event
 	@Override
 	protected void initDatabases()
 	{
-		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `watches` (`nick` varchar(64), `creator` varchar(64), `reason` varchar(64), `created` date, `expires` date);");
+		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `watches` (`nick` varchar(64), `creator` varchar(64), `reason` varchar(64), `created` date, `expires` date, `registered` varchar(64));");
 	}
 	
 	@Override
@@ -32,6 +32,7 @@ public class eventWatch extends event
 				we.reason = rs.getString("reason");
 				we.created = new Date(rs.getDate("created").getTime());
 				we.expires = new Date(rs.getDate("expires").getTime());
+				we.registered = watchEntry.registeredState.valueOf(rs.getString("registered"));
 				
 				watch.watches.add(we);
 			}
@@ -50,7 +51,7 @@ public class eventWatch extends event
 		{
 			moo.db.executeUpdate("DELETE FROM `watches`");
 			
-			PreparedStatement statement = moo.db.prepare("INSERT INTO `watches` (`nick`, `creator`, `reason`, `created`, `expires`) VALUES(?, ?, ?, ?, ?);");
+			PreparedStatement statement = moo.db.prepare("INSERT INTO `watches` (`nick`, `creator`, `reason`, `created`, `expires`, `registered`) VALUES(?, ?, ?, ?, ?, ?);");
 			
 			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
 			{
@@ -61,6 +62,7 @@ public class eventWatch extends event
 				statement.setString(3, e.reason);
 				statement.setDate(4, new java.sql.Date(e.created.getTime()));
 				statement.setDate(5, new java.sql.Date(e.expires.getTime()));
+				statement.setString(6, e.registered.toString());
 				
 				moo.db.executeUpdate();
 			}

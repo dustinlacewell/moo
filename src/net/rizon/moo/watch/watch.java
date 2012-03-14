@@ -11,6 +11,7 @@ public class watch extends mpackage
 		super("Watch", "Disallows nicks to be used");
 		
 		new eventWatch();
+		new messageNotice();
 		new messagePrivmsg();
 		new commandWatch(this);
 		new watchMonitor();

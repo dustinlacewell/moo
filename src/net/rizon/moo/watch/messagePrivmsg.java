@@ -43,6 +43,7 @@ public class messagePrivmsg extends message
 			we.reason = "Suspected open proxy";
 			we.created = new Date();
 			we.expires = new Date(System.currentTimeMillis() + ban_time);
+			we.registered = watchEntry.registeredState.RS_UNKNOWN;
 				
 			watch.watches.add(we);
 		}
