@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import net.rizon.moo.event;
+import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 

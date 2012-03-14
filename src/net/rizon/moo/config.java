@@ -1,6 +1,7 @@
 package net.rizon.moo;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class config
@@ -30,6 +31,7 @@ public class config
 	private int split_reconnect_port;
 	private String sendmail_path;
 	private String split_email;
+	private HashMap<String, String> vote_email = new HashMap<String, String>();
 	private String database;
 	private String[] database_classes;
 	private String[] packages;
@@ -78,6 +80,13 @@ public class config
 		this.split_reconnect_port = Integer.parseInt(this.getProperty(prop, "split_reconnect_port"));
 		this.sendmail_path = this.getProperty(prop, "sendmail_path");
 		this.split_email = this.getProperty(prop, "split_email");
+		s = this.getProperty(prop, "vote_email");
+		for (final String ce : s.split(","))
+		{
+			final String[] ces = ce.split(":");
+			if (ces.length == 2)
+				this.vote_email.put(ces[0].toLowerCase(), ces[1]);
+		}
 		this.database = this.getProperty(prop, "database");
 		s = this.getProperty(prop, "database_classes");
 		this.database_classes = s.split(",");
@@ -245,6 +254,11 @@ public class config
 	public final String getSplitEmail()
 	{
 		return this.split_email;
+	}
+	
+	public final String getVoteEmailFor(final String channel)
+	{
+		return this.vote_email.get(channel.toLowerCase());
 	}
 	
 	public final String getDatabase()

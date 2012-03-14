@@ -73,6 +73,9 @@ sendmail_path=/usr/sbin/sendmail
 # Email address to mail whenever a server splits
 split_email=grimlock@rizon.net
 
+# Email address to send new votes to
+vote_email=#o:o@rizon.net,#r:routing.admins@rizon.net,#x:eb@rizon.net
+
 # Database to use
 database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 
@@ -80,6 +83,6 @@ database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 database_classes=net.rizon.moo.server$db
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch
+packages=commands,core,servercontrol,servermonitor,watch,vote
 
 debug=0
