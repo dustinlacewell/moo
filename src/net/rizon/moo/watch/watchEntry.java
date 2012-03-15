@@ -18,6 +18,7 @@ public class watchEntry
 	public Date created, expires;
 	public registeredState registered;
 	private boolean requested_registered = false, warned = false;
+	public boolean handled;
 	
 	private static String difference(Date now, Date then)
 	{
@@ -61,6 +62,8 @@ public class watchEntry
 	
 	public void handleWatch()
 	{
+		this.handled = true;
+
 		if (this.registered == watchEntry.registeredState.RS_UNKNOWN && this.requested_registered == false)
 		{
 			moo.privmsg("NickServ", "INFO " + this.nick);

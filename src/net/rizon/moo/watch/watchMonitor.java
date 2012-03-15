@@ -17,21 +17,29 @@ class message_303 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
+		watchMonitor.request--;
+
 		for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
 			watchEntry e = it.next();
 			
-			boolean found = false;
 			for (final String nick : message)
 				if (e.nick.equalsIgnoreCase(nick))
 				{
 					e.handleWatch();
-					found = true;
 					break;
 				}
-			
-			if (found == false)
-				e.handleOffline();
+		}
+		
+		if (watchMonitor.request == 0)
+		{
+			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+			{
+				watchEntry e = it.next();
+
+				if (e.handled == false)
+					e.handleOffline();
+			}
 		}
 	}
 }
@@ -46,12 +54,16 @@ public class watchMonitor extends timer
 		super(60, true);
 		this.start();
 	}
+	
+	public static int request;
 
 	@Override
 	public void run(Date now)
 	{
 		String buffer = "";
 		int count = 0;
+		
+		request = 0;
 		
 		for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
@@ -63,11 +75,13 @@ public class watchMonitor extends timer
 				continue;
 			}
 			
+			e.handled = false;
 			buffer += e.nick + " ";
 			++count;
 			
 			if (buffer.length() > 450 || count >= 16)
 			{
+				request++;
 				moo.sock.write("ISON :" + buffer);
 				buffer = "";
 				count = 0;
@@ -76,6 +90,7 @@ public class watchMonitor extends timer
 		
 		if (buffer.isEmpty() == false)
 		{
+			request++;
 			moo.sock.write("ISON :" + buffer);
 			buffer = "";
 			count = 0;
