@@ -66,10 +66,11 @@ public class commandVote extends command
 			voteinfo[] votes = voteinfo.getVotes(target);
 
 			boolean any = false;
+			Date date = new Date();
 			for (final voteinfo v : votes)
 				if (all || v.closed == false)
 				{
-					moo.reply(source, target, "[VOTE #" + v.id + "] " + v.info);
+					moo.reply(source, target, "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + difference(date, v.date) + " ago.");
 					any = true;
 				}
 			
@@ -81,6 +82,7 @@ public class commandVote extends command
 		}
 		else if (params[1].equalsIgnoreCase("add") && params.length > 2)
 		{
+			Date date = new Date();
 			voteinfo v = new voteinfo();
 			v.id = voteinfo.getMaxFor(target);
 			if (v.id == -1)
@@ -101,7 +103,7 @@ public class commandVote extends command
 			moo.reply(source, target, "Added vote #" + v.id);
 			
 			if (moo.conf.getVoteEmailFor(target) != null)
-				mail.send(moo.conf.getVoteEmailFor(target), "New vote in " + target, nick + " has added a new vote in " + target);
+				mail.send(moo.conf.getVoteEmailFor(target), "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
 		}
 		else if (params[1].equalsIgnoreCase("info") && params.length > 2)
 		{
