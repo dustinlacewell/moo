@@ -73,7 +73,7 @@ public class watchEntry
 			moo.qakill(this.nick, this.reason);
 		else if (this.registered == watchEntry.registeredState.RS_REGISTERED && this.warned == false)
 		{
-			for (final String chan : moo.conf.getOperChannels())
+			for (final String chan : moo.conf.getSpamChannels())
 				moo.privmsg(chan, "PROXY: " + this.nick + " was detected on an open proxy on " + this.created + ", which was " + difference(new Date(), this.created) + " ago.");
 			this.warned = true;
 		}

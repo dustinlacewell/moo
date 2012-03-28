@@ -38,10 +38,13 @@ version=moo v2.0
 idle_channels=#adam,#d
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d
+channels=#opers,#o,#r,#x,#a,#d,#kline
 
 # Comma separated list of developer channels.
 dev_channels=#d
+
+# Comma separated list of spam channels, where non important messages can go
+spam_channels=#kline
 
 # Comma separated list of channels to announce splits to
 split_channels=#opers

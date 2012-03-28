@@ -21,6 +21,7 @@ public class config
 	private String[] idle_channels;
 	private String[] channels;
 	private String[] dev_channels;
+	private String[] spam_channels;
 	private String[] split_channels;
 	private String[] oper_channels;
 	private String[] admin_channels;
@@ -67,6 +68,8 @@ public class config
 		this.channels = s.split(",");
 		s = this.getProperty(prop, "dev_channels");
 		this.dev_channels = s.split(",");
+		s = this.getProperty(prop, "spam_channels");
+		this.spam_channels = s.split(",");
 		s = this.getProperty(prop, "split_channels");
 		this.split_channels = s.split(",");
 		s = this.getProperty(prop, "oper_channels");
@@ -196,6 +199,11 @@ public class config
 	public final String[] getDevChannels()
 	{
 		return this.dev_channels;
+	}
+	
+	public final String[] getSpamChannels()
+	{
+		return this.spam_channels;
 	}
 	
 	public final String[] getSplitChannels()
