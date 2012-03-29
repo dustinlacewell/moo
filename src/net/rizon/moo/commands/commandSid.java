@@ -17,7 +17,7 @@ abstract class commandSidBase extends command
 	private static boolean inUse(final String sid)
 	{
 		for (server s : server.getServers())
-			if (s.getSID().equalsIgnoreCase(sid))
+			if (s.getSID() != null && s.getSID().equalsIgnoreCase(sid))
 				return true;
 		
 		return false;
