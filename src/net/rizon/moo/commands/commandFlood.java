@@ -1,11 +1,12 @@
 package net.rizon.moo.commands;
 
-import java.util.regex.*;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.rizon.moo.command;
 import net.rizon.moo.message;
@@ -220,7 +221,7 @@ public class commandFlood extends command
 		else if (params[2].equalsIgnoreCase("DEL"))
 		{
 			if (params.length > 3)
-			{				
+			{
 				if (Character.isDigit(params[3].charAt(0)) && !params[3].contains("."))
 				{
 					// A valid range argument would be 1-5,9,10,15. Duplicates should be allowed.
@@ -232,7 +233,7 @@ public class commandFlood extends command
 						
 						if (dashpos == -1) // No range, just a single integer
 						{
-							int tmp = 0;
+							int tmp;
 							try
 							{
 								tmp = Integer.valueOf(parts[k]);
@@ -248,17 +249,18 @@ public class commandFlood extends command
 						}
 						else
 						{
-							int min = 0;
-							int max = 0;
+							int min, max;
+							String lower = parts[k].substring(0, dashpos), upper = parts[k].substring(dashpos+1, parts[k].length());
+
 							try
 							{
-								min = Integer.valueOf(parts[k].substring(0, dashpos));
-								max = Integer.valueOf(parts[k].substring(dashpos+1, parts[k].length()));
+								min = Integer.valueOf(lower);
+								max = Integer.valueOf(upper);
 							}
 							catch (NumberFormatException ex)
 							{
 								if (moo.conf.getDebug() > 0)
-									System.out.println("Invalid number[R]: " + min + " " + max);
+									System.out.println("Invalid number range: " + lower + " " + upper);
 								
 								continue;
 							}
@@ -266,37 +268,40 @@ public class commandFlood extends command
 								tobedeleted.add(min - 1);
 						}
 					}
-					if (tobedeleted == null || tobedeleted.isEmpty())
+					
+					if (tobedeleted.isEmpty())
 					{
 						moo.notice(source, "Nothing to be deleted.");
-						return;
 					}
-					
-					int deleted = 0;
-					for (Iterator<Integer> ii = tobedeleted.descendingIterator(); ii.hasNext();)
+					else
 					{
-						int del = ii.next(); // HACK: A temporary variable seems to be required
-						data.remove(del);
-						deleted++;
+						int deleted = 0;
+						for (Iterator<Integer> ii = tobedeleted.descendingIterator(); ii.hasNext();)
+						{
+							int del = ii.next(); // Required to cast ii.next() to an int to delete from list by position not by object
+							data.remove(del);
+							deleted++;
+						}
+						
+						moo.notice(source, "Deleted " + deleted + " entries");
 					}
-					
-					moo.notice(source, "Deleted " + deleted + " entries");
-					return;
 				}
-				
-				boolean match = false;
-				for (Iterator<floodData> it = data.iterator(); it.hasNext();)
+				else
 				{
-					floodData d = it.next();
-					if (moo.match(d.host, params[3]))
+					boolean match = false;
+					for (Iterator<floodData> it = data.iterator(); it.hasNext();)
 					{
-						moo.notice(source, "Removed flood entry " + d.host);
-						it.remove();
-						match = true;
+						floodData d = it.next();
+						if (moo.match(d.host, params[3]))
+						{
+							moo.notice(source, "Removed flood entry " + d.host);
+							it.remove();
+							match = true;
+						}
 					}
+					if (match == false)
+						moo.notice(source, "No match for " + params[3]);
 				}
-				if (match == false)
-					moo.notice(source, "No match for " + params[3]);
 			}
 			else
 			{
@@ -312,14 +317,15 @@ public class commandFlood extends command
 			String duration = "2d";
 			if (params.length > 3)
 			{
-				if (params[3].startsWith("+"))
-					params[3] = params[3].substring(1);
+				String dur = params[3];
+				if (dur.startsWith("+"))
+					dur = params[3].substring(1);
 				
-				if (params[3].endsWith("d") || params[3].endsWith("h")
-						|| params[3].endsWith("m") || params[3].endsWith("s")
-						|| Character.isDigit(params[3].charAt(params[3].length() - 1)))
+				if (dur.isEmpty() == false && (dur.endsWith("d") || dur.endsWith("h")
+						|| dur.endsWith("m") || dur.endsWith("s")
+						|| Character.isDigit(dur.charAt(dur.length() - 1))))
 				{
-					duration = params[3];
+					duration = dur;
 				}
 				else
 				{
@@ -362,9 +368,9 @@ public class commandFlood extends command
 			{
 				floodManager.removeList(i - 1);
 				moo.notice(source, "All entries removed. Deleted list " + i);
-				return;
 			}
-			moo.notice(source, "Removed " + deleted + " entries. " + data.size() + " entries remain.");
+			else
+				moo.notice(source, "Removed " + deleted + " entries. " + data.size() + " entries remain.");
 		}
 	}
 }
