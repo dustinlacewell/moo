@@ -151,6 +151,19 @@ class commandMapBase extends command
 					for (Iterator<String> it = s.links.iterator(); it.hasNext();)
 						moo.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
 			}
+			else if (params[1].equalsIgnoreCase("FIND") && params.length > 2)
+			{
+				int count = 0;
+				for (server s : server.getServers())
+				{
+					if (moo.match(s.getName(), "*" + params[2] + "*"))
+					{
+						moo.reply(source, target, "[MAP] Server " + s.getName() + " matches " + params[2]);
+						++count;
+					}
+				}
+				moo.reply(source, target, "[MAP] End of match, " + count + " servers found");
+			}
 			else
 			{
 				try
