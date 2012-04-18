@@ -249,6 +249,11 @@ public class config
 		return this.disable_split_reconnect;
 	}
 	
+	public final void setDisableSplitReconnect(boolean state)
+	{
+		this.disable_split_reconnect = state;
+	}
+	
 	public final int getSplitReconnectPort()
 	{
 		return this.split_reconnect_port;

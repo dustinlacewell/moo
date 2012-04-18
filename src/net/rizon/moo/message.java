@@ -10,6 +10,7 @@ public abstract class message
 	public static final String COLOR_ORANGE = "\00307";
 	public static final String COLOR_YELLOW = "\00308";
 	public static final String COLOR_BRIGHTBLUE = "\00311";
+	public static final String COLOR_UNDERLINE = "\037";
 	public static final String COLOR_END = "\017";
 	
 	private String name;

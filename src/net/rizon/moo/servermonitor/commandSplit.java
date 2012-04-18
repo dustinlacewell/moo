@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import net.rizon.moo.command;
+import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
@@ -86,7 +87,12 @@ public class commandSplit extends command
 				if (sp != null)
 				{
 					++split;
-					String buffer = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
+					String s_name;
+					if (s.frozen || moo.conf.getDisableSplitReconnect())
+						s_name = message.COLOR_BRIGHTBLUE + s.getName() + message.COLOR_END;
+					else
+						s_name = s.getName();
+					String buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 					reconnector r = reconnector.findValidReconnectorFor(s);
 					if (r != null)
 						buffer += " Will reconnect in " + difference(now, r.reconectTime()) + ".";
@@ -152,6 +158,18 @@ public class commandSplit extends command
 				moo.reply(source, target, "[SPLIT] Removed reconnect for server " + s.getName());
 				reconnector.removeReconnectsFor(s);
 			}
+		}
+		else if (params[1].equalsIgnoreCase("freeze"))
+		{
+			moo.conf.setDisableSplitReconnect(true);
+			for (server s : server.getServers())
+				reconnector.removeReconnectsFor(s);
+			moo.reply(source, target, "[SPLIT] Disabled all reconnects and all future reconnects");
+		}
+		else if (params[1].equalsIgnoreCase("unfreeze"))
+		{
+			moo.conf.setDisableSplitReconnect(false);
+			moo.reply(source, target, "[SPLIT] Reenabled reconnects");
 		}
 		else
 		{

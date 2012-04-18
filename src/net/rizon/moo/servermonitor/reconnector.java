@@ -16,6 +16,7 @@ public class reconnector extends timer
 	private split sp;
 	private int tick = 0, tries = 0;
 	private HashSet<String> attempted = new HashSet<String>();
+	private static long last_reconnect = 0;
 	
 	public reconnector(server serv, server from)
 	{
@@ -35,7 +36,8 @@ public class reconnector extends timer
 	
 	private server findPreferred()
 	{
-		if (this.from.getSplit() != null && this.tick <= 2)
+		int delay = this.serv.isHub() ? 3 : 2;
+		if (this.from.getSplit() != null && this.tick <= 2 * delay)
 			return this.serv; // Special case.
 		
 		LinkedList<server> candidates = new LinkedList<server>();
@@ -61,19 +63,25 @@ public class reconnector extends timer
 		if (this.from.getSplit() == null && this.attempted.contains(this.from.getName()) == false && this.from.frozen == false)
 			return this.from;
 		
+		server lowest = null;
 		for (Iterator<String> it = this.serv.clines.iterator(); it.hasNext();)
 		{
 			server altserver = server.findServerAbsolute(it.next());
-			if (altserver != null && altserver.isServices() == false && altserver.getSplit() == null && this.attempted.contains(altserver.getName()) == false && altserver.frozen == false)
-				return altserver;
+			if (altserver != null && altserver.isServices() == false && altserver.getSplit() == null
+					&& this.attempted.contains(altserver.getName()) == false && altserver.frozen == false
+					&& (lowest == null || altserver.links.size() < lowest.links.size()))
+				lowest = altserver;
 		}
 		
-		return null;
+		return lowest;
 	}
 	
 	@Override
 	public void run(Date now)
 	{
+		if (last_reconnect + 60 > System.currentTimeMillis() / 1000L)
+			return;
+		
 		++this.tick;
 		
 		server s = server.findServerAbsolute(this.serv.getName());
@@ -83,7 +91,7 @@ public class reconnector extends timer
 			this.setRepeating(false);
 			return;
 		}
-		else if (s.frozen)
+		else if (s.frozen || moo.conf.getDisableSplitReconnect())
 		{
 			for (final String chan : moo.conf.getSplitChannels())
 				moo.privmsg(chan, "Disabling reconnect for frozen server " + s.getName());
@@ -95,7 +103,11 @@ public class reconnector extends timer
 		
 		server targ = this.findPreferred();
 		if (targ == this.serv) // Special case, hold due to the split probably being between me and serv
+		{
+			for (final String chan : moo.conf.getSplitChannels())
+				moo.privmsg(chan, "Delaying reconnect for " + this.serv.getName() + " due to its uplink being split");
 			return;
+		}
 		
 		if (this.tries == 7 || targ == null)
 		{
@@ -108,7 +120,7 @@ public class reconnector extends timer
 			return;
 		}
 		
-		int delay = serv.isHub() ? 3 : 2;
+		int delay = this.serv.isHub() ? 3 : 2;
 		
 		if (this.tick % delay != 0)
 		{
@@ -125,6 +137,7 @@ public class reconnector extends timer
 			moo.privmsg(chan, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
 		
 		moo.sock.write("CONNECT " + s.getName() + " " + moo.conf.getSplitReconnectPort() + " " + targ.getName());
+		last_reconnect = System.currentTimeMillis() / 1000L;
 		if (this.tick != 1) // Allow two tries on the first server
 			this.attempted.add(targ.getName());
 	}

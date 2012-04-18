@@ -12,7 +12,7 @@ import java.util.LinkedList;
 public class server
 {
 	public static long lastSplit = 0;
-	public static int  last_total_users = 0, cur_total_users = 0, work_total_users = 0;
+	public static int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
 	
 	private String name;
 	private Date created;
