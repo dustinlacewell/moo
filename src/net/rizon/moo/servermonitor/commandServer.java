@@ -40,10 +40,10 @@ class commandServerBase extends command
 					
 					if (link_server == null)
 						links += message.COLOR_RED;
-					else if (s.clines.contains(link_server.getName()) == false)
-						links += message.COLOR_YELLOW;
 					else if (link_server.getSplit() != null)
 						links += message.COLOR_ORANGE;
+					else if (s.clines.contains(link_server.getName()) == false)
+						links += message.COLOR_YELLOW;
 					else if (link_server.frozen)
 						links += message.COLOR_BRIGHTBLUE;
 					else if (all == false)
@@ -84,10 +84,10 @@ class commandServerBase extends command
 						links += message.COLOR_RED;
 					else if (cline_server.isServices())
 						continue;
-					else if (cline_server.clines.contains(s.getName()) == false)
-						links += message.COLOR_YELLOW;
 					else if (cline_server.getSplit() != null)
 						links += message.COLOR_ORANGE;
+					else if (cline_server.clines.contains(s.getName()) == false)
+						links += message.COLOR_YELLOW;
 					else if (cline_server.frozen)
 						links += message.COLOR_BRIGHTBLUE;
 					else if (all == false)
