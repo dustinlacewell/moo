@@ -121,6 +121,8 @@ class commandServerBase extends command
 		{
 			boolean all = params.length > 1 && params[1].equalsIgnoreCase("ALL");
 			String match = params.length > 1 && all == false ? params[1] : null;
+			if (match != null)
+				all = params.length > 2 && params[2].equalsIgnoreCase("ALL");
 			boolean all_output = false;
 			for (server s : server.getServers())
 			{
@@ -255,7 +257,7 @@ class commandServerBase extends command
 			if (change.startsWith("-") == false)
 				change = "+" + change;
 			
-			if (all_output || all)
+			if (match == null && (all_output || all))
 				moo.reply(source, target, "Total Users: " + server.cur_total_users + change);
 		}
 	}
