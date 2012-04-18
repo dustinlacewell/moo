@@ -17,7 +17,7 @@ public class server
 	private String name;
 	private Date created;
 	private String sid = null;
-	public HashSet<String> clines = new HashSet<String>();
+	public HashSet<String> clines = new HashSet<String>(), clines_work = new HashSet<String>();
 	public HashSet<String> olines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
 	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();

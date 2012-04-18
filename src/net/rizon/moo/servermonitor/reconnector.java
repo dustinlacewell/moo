@@ -142,7 +142,7 @@ public class reconnector extends timer
 			this.attempted.add(targ.getName());
 	}
 	
-	public Date reconectTime()
+	public Date reconnectTime()
 	{
 		int delay = this.serv.isHub() ? 3 : 2;
 		int wait = 0;

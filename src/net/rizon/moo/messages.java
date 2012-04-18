@@ -130,7 +130,29 @@ class message213 extends message
 			serv = new server(source);
 		
 		if (message.length > 4)
-			serv.clines.add(message[4]);
+			serv.clines_work.add(message[4]);
+	}
+}
+
+class message219 extends message
+{
+	public message219()
+	{
+		super("219");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message[1].equals("c") == false)
+			return;
+		
+		server serv = server.findServerAbsolute(source);
+		if (serv == null)
+			serv = new server(source);
+		
+		serv.clines = serv.clines_work;
+		serv.clines_work = new HashSet<String>();
 	}
 }
 
@@ -450,6 +472,7 @@ public class messages
 		new message015();
 		new message017();
 		new message213();
+		new message219();
 		new message227();
 		new message243();
 		new message364();

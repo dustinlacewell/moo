@@ -1,6 +1,5 @@
 package net.rizon.moo.servermonitor;
 
-import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.command;
@@ -8,7 +7,6 @@ import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
-import net.rizon.moo.timer;
 
 class commandServerBase extends command
 {
@@ -263,27 +261,11 @@ class commandServerBase extends command
 	}
 }
 
-class mapRequester extends timer
-{
-	public mapRequester()
-	{
-		super(60, true);
-	}
-
-	@Override
-	public void run(Date now)
-	{
-		moo.sock.write("MAP");
-	}
-}
-
 public class commandServer
 {
 	public commandServer(mpackage pkg)
 	{
 		new commandServerBase(pkg, "!SERVER");
 		new commandServerBase(pkg, ".SERVER");
-		
-		new mapRequester().start();
 	}
 }
