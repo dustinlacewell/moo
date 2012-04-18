@@ -8,6 +8,7 @@ public class servermonitor extends mpackage
 	{
 		super("Server Monitor", "Monitor servers");
 		
+		new commandServer(this);
 		new commandSplit(this);
 		new eventSplit();
 	}

@@ -44,7 +44,7 @@ public abstract class command extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length < 2 || message[0].startsWith("#") == false || message[1].startsWith("!") == false)
+		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
 			return;
 		else if (moo.conf.isIdleChannel(message[0]))
 			return;

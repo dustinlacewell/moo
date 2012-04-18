@@ -89,7 +89,7 @@ public class commandSplit extends command
 					String buffer = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 					reconnector r = reconnector.findValidReconnectorFor(s);
 					if (r != null)
-						buffer += " Will reconnect in " + difference(now, r.getTick()) + ".";
+						buffer += " Will reconnect in " + difference(now, r.reconectTime()) + ".";
 					moo.reply(source, target, buffer);
 				}
 			}
@@ -132,7 +132,7 @@ public class commandSplit extends command
 						{
 							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
-								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
+								buf += " Will reconnect in " + difference(now, r.reconectTime()) + ".";
 						}
 					}
 					
@@ -140,21 +140,7 @@ public class commandSplit extends command
 				}
 			}
 		}
-		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
-		{
-			server s = server.findServer(params[2]);
-			if (s == null)
-				moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
-			else if (s.getSplit() == null)
-				moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
-			else
-			{
-				moo.reply(source, target, "[SPLIT] Removed server " + s.getName());
-				reconnector.removeReconnectsFor(s);
-				s.destroy();
-			}
-		}
-		else if (params.length > 2 && params[1].equalsIgnoreCase("stop"))
+		else if (params.length > 2 && (params[1].equalsIgnoreCase("stop") || params[1].equalsIgnoreCase("del")))
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
@@ -194,7 +180,7 @@ public class commandSplit extends command
 						{
 							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
-								buf += " Will reconnect in " + difference(now, r.getTick()) + ".";
+								buf += " Will reconnect in " + difference(now, r.reconectTime()) + ".";
 						}
 						
 						moo.reply(source, target, buf);

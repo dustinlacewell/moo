@@ -70,10 +70,48 @@ class message015 extends message
 		for (int j = 0; i < map.length() && j < 3; ++i, ++j)
 			sid += map.charAt(i);
 		
+		int users = -1;
+		i = map.indexOf("Users:");
+		if (i != -1)
+		{
+			String s = map.substring(i + 6);
+			s = s.trim();
+			i = s.indexOf(' ');
+			if (i != -1)
+				s = s.substring(0, i);
+			try
+			{
+				users = Integer.parseInt(s);
+			}
+			catch (NumberFormatException ex)
+			{
+				System.err.println("Invalid user count in map 015: " + s);
+			}
+		}
+		
 		server serv = server.findServerAbsolute(name);
 		if (serv == null)
 			serv = new server(name);
 		serv.setSID(sid);
+		serv.last_users = serv.users;
+		serv.users = users;
+		server.work_total_users += users;
+	}
+}
+
+class message017 extends message
+{
+	public message017()
+	{
+		super("017");
+	}
+
+	@Override
+	public void run(String source, String[] message)
+	{
+		server.last_total_users = server.cur_total_users;
+		server.cur_total_users = server.work_total_users;
+		server.work_total_users = 0;
 	}
 }
 
@@ -410,6 +448,7 @@ public class messages
 	{
 		new message001();
 		new message015();
+		new message017();
 		new message213();
 		new message227();
 		new message243();

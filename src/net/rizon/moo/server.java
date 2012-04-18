@@ -11,16 +11,21 @@ import java.util.LinkedList;
 
 public class server
 {
+	public static long lastSplit = 0;
+	public static int  last_total_users = 0, cur_total_users = 0, work_total_users = 0;
+	
 	private String name;
+	private Date created;
 	private String sid = null;
 	public HashSet<String> clines = new HashSet<String>();
 	public HashSet<String> olines = new HashSet<String>();
 	public HashSet<String> links = new HashSet<String>();
 	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
 	private LinkedList<split> splits = new LinkedList<split>();
-	public static long lastSplit = 0;
-
 	public long bytes = 0;
+	public int users = 0, last_users = 0;
+	public LinkedList<String> preferred_links = new LinkedList<String>();
+	public boolean frozen = false;
 
 	public server(final String name)
 	{
@@ -39,12 +44,30 @@ public class server
 	{
 		if (moo.conf.getDebug() > 0)
 			System.out.println("Removing server " + this.getName());
+		
+		try
+		{
+			PreparedStatement statement = moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
+			statement.setString(1, this.getName());
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			System.err.print("Error removing server from database");
+			ex.printStackTrace();
+		}
+		
 		servers.remove(this);
 	}
 	
 	public final String getName()
 	{
 		return this.name;
+	}
+	
+	public final Date getCreated()
+	{
+		return this.created;
 	}
 	
 	public void setSID(final String s)
@@ -176,6 +199,8 @@ public class server
 		protected void initDatabases() 
 		{
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
+			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`);");
+			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `name_idx` on `servers` (`name`);");
 		}
 
 		@Override
@@ -213,6 +238,31 @@ public class server
 			{
 				database.handleException(ex);
 			}
+			
+			try
+			{
+				for (Iterator<server> it = servers.iterator(); it.hasNext();)
+					it.next().preferred_links.clear();
+				
+				ResultSet rs = moo.db.executeQuery("SELECT * FROM servers");
+				while (rs.next())
+				{
+					String name = rs.getString("name"), pl = rs.getString("preferred_links");
+					Date created = rs.getDate("created");
+					
+					server s = server.findServerAbsolute(name);
+					if (s == null)
+						s = new server(name);
+					s.created = created;
+					for (String l : pl.split(" "))
+						if (l.trim().isEmpty() == false)
+							s.preferred_links.add(l.trim());
+				}
+			}
+			catch (SQLException ex)
+			{
+				database.handleException(ex);
+			}
 		}
 
 		@Override
@@ -242,6 +292,29 @@ public class server
 			catch (SQLException ex)
 			{
 				System.out.println("Error saving splits");
+				ex.printStackTrace();
+			}
+			
+			try
+			{
+				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `preferred_links`) VALUES(?, ?)"); 
+				
+				for (server s : server.getServers())
+				{
+					statement.setString(1, s.getName());
+					String links = "";
+					for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
+						links += it.next() + " ";
+					links = links.trim();
+					statement.setString(2, links);
+					
+					moo.db.executeUpdate();
+				}
+				
+			}
+			catch (SQLException ex)
+			{
+				System.out.println("Error saving servers");
 				ex.printStackTrace();
 			}
 		}
