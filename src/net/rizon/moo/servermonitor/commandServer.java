@@ -122,7 +122,7 @@ class commandServerBase extends command
 			boolean all = params.length > 1 && params[1].equalsIgnoreCase("ALL");
 			String match = params.length > 1 && all == false ? params[1] : null;
 			if (match != null)
-				all = params.length > 2 && params[2].equalsIgnoreCase("ALL");
+				all = true;
 			boolean all_output = false;
 			for (server s : server.getServers())
 			{
@@ -174,8 +174,8 @@ class commandServerBase extends command
 					
 					if (link_server != null)
 					{
-						if (s == getUplink(link_server))
-							links += message.COLOR_UNDERLINE + link_server.getName() + message.COLOR_END + " (" + link_server.links.size() + ")";
+						if (link_server == getUplink(s))
+							links += message.COLOR_UNDERLINE + link_server.getName() + message.COLOR_UNDERLINE + " (" + link_server.links.size() + ")";
 						else
 							links += link_server.getName() + " (" + link_server.links.size() + ")";
 					}
@@ -230,7 +230,7 @@ class commandServerBase extends command
 					if (cline_server != null)
 					{
 						if (cline_server == getUplink(s))
-							links += message.COLOR_UNDERLINE + cline_server.getName() + message.COLOR_END + " (" + cline_server.links.size() + ")";
+							links += message.COLOR_UNDERLINE + cline_server.getName() + message.COLOR_UNDERLINE + " (" + cline_server.links.size() + ")";
 						else
 							links += cline_server.getName() + " (" + cline_server.links.size() + ")";
 					}
