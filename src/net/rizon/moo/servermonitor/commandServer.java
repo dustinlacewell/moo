@@ -150,19 +150,27 @@ class commandServerBase extends command
 					server link_server = server.findServerAbsolute(link_name);
 					
 					if (link_server == null)
+					{
 						links += message.COLOR_RED;
+						output = true;
+					}
 					else if (link_server.getSplit() != null)
+					{
 						links += message.COLOR_ORANGE;
+						output = true;
+					}
 					else if (s.clines.contains(link_server.getName()) == false)
+					{
 						links += message.COLOR_YELLOW;
+						output = true;
+					}
 					else if (link_server.frozen)
+					{
 						links += message.COLOR_BRIGHTBLUE;
-					else if (all == false)
-						continue;
+						output = true;
+					}
 					else
 						links += message.COLOR_GREEN;
-					
-					output = true;
 					
 					if (link_server != null)
 					{
