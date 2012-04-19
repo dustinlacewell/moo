@@ -138,7 +138,7 @@ public class reconnector extends timer
 		
 		moo.sock.write("CONNECT " + s.getName() + " " + moo.conf.getSplitReconnectPort() + " " + targ.getName());
 		last_reconnect = System.currentTimeMillis() / 1000L;
-		if (this.tick != 1) // Allow two tries on the first server
+		if (this.tries != 1) // Allow two tries on the first server
 			this.attempted.add(targ.getName());
 	}
 	

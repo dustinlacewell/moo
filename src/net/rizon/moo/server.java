@@ -199,7 +199,7 @@ public class server
 		protected void initDatabases() 
 		{
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
-			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`);");
+			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`, `frozen`);");
 			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `name_idx` on `servers` (`name`);");
 		}
 
@@ -249,6 +249,7 @@ public class server
 				{
 					String name = rs.getString("name"), pl = rs.getString("preferred_links");
 					Date created = rs.getDate("created");
+					boolean frozen = rs.getBoolean("frozen");
 					
 					server s = server.findServerAbsolute(name);
 					if (s == null)
@@ -257,6 +258,7 @@ public class server
 					for (String l : pl.split(" "))
 						if (l.trim().isEmpty() == false)
 							s.preferred_links.add(l.trim());
+					s.frozen = frozen;
 				}
 			}
 			catch (SQLException ex)
@@ -297,7 +299,7 @@ public class server
 			
 			try
 			{
-				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `preferred_links`) VALUES(?, ?)"); 
+				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `preferred_links`, `frozen`) VALUES(?, ?, ?)"); 
 				
 				for (server s : server.getServers())
 				{
@@ -307,6 +309,7 @@ public class server
 						links += it.next() + " ";
 					links = links.trim();
 					statement.setString(2, links);
+					statement.setBoolean(3, s.frozen);
 					
 					moo.db.executeUpdate();
 				}
