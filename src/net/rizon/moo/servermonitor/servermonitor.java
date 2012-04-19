@@ -19,7 +19,8 @@ class mapRequester extends timer
 	{
 		moo.sock.write("MAP");
 		for (server s : server.getServers())
-			moo.sock.write("STATS c " + s.getName());
+			if (s.isServices() == false)
+				moo.sock.write("STATS c " + s.getName());
 	}
 }
 
