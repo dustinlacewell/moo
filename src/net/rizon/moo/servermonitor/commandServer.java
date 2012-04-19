@@ -114,7 +114,7 @@ class commandServerBase extends command
 					s.preferred_links.add(arg.getName());
 				}
 				
-				moo.reply(source, target, "Prefered links for " + s.getName() + " set to " + s.preferred_links.toString());
+				moo.reply(source, target, "Preferred links for " + s.getName() + " set to " + s.preferred_links.toString());
 			}
 		}
 		else
