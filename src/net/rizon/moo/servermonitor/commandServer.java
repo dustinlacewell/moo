@@ -114,7 +114,7 @@ class commandServerBase extends command
 					s.preferred_links.add(arg.getName());
 				}
 				
-				moo.reply(source, target, "Preferred links for " + s.getName() + " set to " + s.preferred_links.toString());
+				moo.reply(source, target, "Prefered links for " + s.getName() + " set to " + s.preferred_links.toString());
 			}
 		}
 		else
@@ -263,11 +263,28 @@ class commandServerBase extends command
 	}
 }
 
+class commandCline extends commandServerBase
+{
+	public commandCline(mpackage pkg)
+	{
+		super(pkg, "!CLINE");
+	}
+	
+	@Override
+	public void execute(String source, String target, String[] params)
+	{
+		if (params.length == 2)
+			super.execute(source, target, params);
+	}
+}
+
 public class commandServer
 {
 	public commandServer(mpackage pkg)
 	{
 		new commandServerBase(pkg, "!SERVER");
 		new commandServerBase(pkg, ".SERVER");
+		
+		new commandCline(pkg);
 	}
 }

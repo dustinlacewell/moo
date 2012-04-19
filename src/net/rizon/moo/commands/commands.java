@@ -9,7 +9,6 @@ public class commands extends mpackage
 		super("Administation Commands", "Common IRC administration commands");
 		
 		new commandClimit(this);
-		new commandCline(this);
 		new commandDnsbl(this);
 		new commandFlood(this);
 		new commandMap(this);
