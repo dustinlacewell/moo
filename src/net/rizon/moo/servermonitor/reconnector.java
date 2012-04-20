@@ -34,10 +34,16 @@ public class reconnector extends timer
 		reconnects.remove(this);
 	}
 	
+	private boolean isGood(server up)
+	{
+		if (up != null && up.getSplit() == null && up.frozen == false && this.attempted.contains(up.getName()) == false)
+			return true;
+		return false;
+	}
+	
 	private server findPreferred()
 	{
-		int delay = this.serv.isHub() ? 3 : 2;
-		if (this.from.getSplit() != null && this.tick <= 2 * delay)
+		if (this.from.getSplit() != null && findValidReconnectorFor(this.from) != null)
 			return this.serv; // Special case.
 		
 		LinkedList<server> candidates = new LinkedList<server>();
@@ -47,9 +53,7 @@ public class reconnector extends timer
 			final String pname = it.next();
 			server pserver = server.findServerAbsolute(pname);
 			
-			if (pserver == null)
-				continue;
-			else if (pserver.getSplit() == null && this.attempted.contains(pserver.getName()) == false && pserver.frozen == false)
+			if (isGood(pserver))
 				candidates.add(pserver);
 		}
 		
@@ -67,8 +71,7 @@ public class reconnector extends timer
 		for (Iterator<String> it = this.serv.clines.iterator(); it.hasNext();)
 		{
 			server altserver = server.findServerAbsolute(it.next());
-			if (altserver != null && altserver.isServices() == false && altserver.getSplit() == null
-					&& this.attempted.contains(altserver.getName()) == false && altserver.frozen == false
+			if (isGood(altserver) && altserver.isHub()
 					&& (lowest == null || altserver.links.size() < lowest.links.size()))
 				lowest = altserver;
 		}
