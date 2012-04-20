@@ -135,6 +135,8 @@ class commandServerBase extends command
 					else
 						continue;
 				}
+				else if (s.isServices())
+					continue;
 				
 				int diff = s.users - s.last_users;
 				String change = String.valueOf(diff);
