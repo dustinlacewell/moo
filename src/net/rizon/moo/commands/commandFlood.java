@@ -271,7 +271,7 @@ public class commandFlood extends command
 					
 					if (tobedeleted.isEmpty())
 					{
-						moo.notice(source, "Nothing to be deleted.");
+						moo.reply(source, target, "Nothing to be deleted.");
 					}
 					else
 					{
@@ -283,7 +283,7 @@ public class commandFlood extends command
 							deleted++;
 						}
 						
-						moo.notice(source, "Deleted " + deleted + " entries");
+						moo.reply(source, target, "Deleted " + deleted + " entries");
 					}
 				}
 				else
@@ -367,10 +367,10 @@ public class commandFlood extends command
 			if (data.isEmpty())
 			{
 				floodManager.removeList(i - 1);
-				moo.notice(source, "All entries removed. Deleted list " + i);
+				moo.reply(source, target, "All entries removed. Deleted list " + i);
 			}
 			else
-				moo.notice(source, "Removed " + deleted + " entries. " + data.size() + " entries remain.");
+				moo.reply(source, target, "Removed " + deleted + " entries, " + data.size() + " entries remain.");
 		}
 	}
 }
