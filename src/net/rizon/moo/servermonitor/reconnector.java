@@ -64,7 +64,7 @@ public class reconnector extends timer
 		else
 			return candidates.getFirst();
 		
-		if (this.from.getSplit() == null && this.attempted.contains(this.from.getName()) == false && this.from.frozen == false)
+		if (isGood(this.from))
 			return this.from;
 		
 		server lowest = null;
