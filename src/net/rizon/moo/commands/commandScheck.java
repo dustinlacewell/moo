@@ -102,6 +102,14 @@ public class commandScheck extends command
 	{
 		super(pkg, "!SCHECK", "Check if a server is online");
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !SCHECK <server> [port]");
+		moo.notice(source, "Attempts to connect to the given server. If no port is given, 6667 is assumed.");
+		moo.notice(source, "Once a connection is established, the global user count, server count and uptime will be shown.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

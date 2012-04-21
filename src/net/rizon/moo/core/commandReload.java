@@ -12,7 +12,14 @@ public class commandReload extends command
 		super(pkg, "!RELOAD", "Reloads the configuration file");
 		this.requireAdmin();
 	}
-
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !RELOAD");
+		moo.notice(source, "!RELOAD reloads the configuration file, moo.properties.");
+	}
+	
 	@Override
 	public void execute(String source, String target, String[] params)
 	{

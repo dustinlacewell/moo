@@ -140,11 +140,18 @@ public class commandWhy extends command
 	}
 
 	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !WHY <ip/host>");
+		moo.notice(source, "Finds out why a certain IP is banned. It is looked for in DNSBLs and k/K/d:lines");
+	}
+	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length <= 1)
 		{
-			moo.reply(source, target, "Syntax: !why ip");
+			moo.reply(source, target, "Syntax: !WHY <ip/host>");
 			return;
 		}
 		

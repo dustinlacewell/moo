@@ -131,6 +131,15 @@ public class commandTime extends command
 	}
 
 	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !TIME");
+		moo.notice(source, "Queries all IRCds about their current time and returns the responses.");
+		moo.notice(source, "If there are significant differences in time between servers (at least");
+		moo.notice(source, "60 seconds), the offset will be shown");
+	}
+	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		for (server s : server.getServers())

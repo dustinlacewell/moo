@@ -32,7 +32,7 @@ class message351 extends message
 		
 		return longest - s.getName().length() + 2;
 	}
-
+	
 	@Override
 	public void run(String source, String[] message)
 	{
@@ -103,6 +103,14 @@ public class commandVersions extends command
 		super(pkg, "!VERSIONS", "View the IRCd versions");
 	}
 
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !VERSIONS [OLD]");
+		moo.notice(source, "This command gets the version of all currently linked IRCds and lists them.");
+		moo.notice(source, "If OLD is given as a parameter, only versions that aren't the latest will be shown.");
+	}
+	
 	@Override
 	public void execute(String source, String target, String[] params)
 	{

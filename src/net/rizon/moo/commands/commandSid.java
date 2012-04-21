@@ -26,7 +26,7 @@ abstract class commandSidBase extends command
 	protected static final Random rand  = new Random();
 
 	protected abstract String getSID();
-
+	
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
@@ -46,6 +46,13 @@ final class commandSidClient extends commandSidBase
 	{
 		super(pkg, "!SID", "Generates a new server ID");
 	}
+
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !SID");
+		moo.notice(source, "Generates a new SID for a client server. It will be checked not to be already in use.");
+	}
 	
 	@Override
 	protected String getSID()
@@ -64,6 +71,13 @@ final class commandSidHub extends commandSidBase
 	public commandSidHub(mpackage pkg)
 	{
 		super(pkg, "!HUBSID", "Generates a new hub server ID");
+	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !HUBSID");
+		moo.notice(source, "Generates a new SID for a hub. It will be checked not to be already in use.");
 	}
 	
 	@Override

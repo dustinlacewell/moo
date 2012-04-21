@@ -58,11 +58,16 @@ public abstract class command extends message
 	
 	public abstract void execute(final String source, final String target, final String[] params);
 	
-	public void onHelp(final String source)
+	public void onHelpList(final String source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
 			moo.notice(source, " " + this.getCommandName() + " - " + this.getDescription());
 		else
 			moo.notice(source, " " + this.getCommandName());
+	}
+	
+	public void onHelp(final String source)
+	{
+		moo.notice(source, "No help available.");
 	}
 }

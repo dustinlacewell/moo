@@ -55,6 +55,17 @@ public class commandVote extends command
 	}
 
 	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax:");
+		moo.notice(source, this.getCommandName() + " ADD <vote info here> -- add a new vote");
+		moo.notice(source, this.getCommandName() + " CLOSE <num> -- close a vote. This cannot be undone!");
+		moo.notice(source, this.getCommandName() + " INFO <num> -- show info about a certain vote (date added, who added, votes)");
+		moo.notice(source, this.getCommandName() + " LIST [ALL] -- list known votes. If ALL is given, closed votes will also be shown");
+		moo.notice(source, this.getCommandName() + " <num> yes/no -- vote on a certain vote");
+	}
+	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		int e = source.indexOf('!');
@@ -219,12 +230,7 @@ public class commandVote extends command
 		}
 		else
 		{
-			moo.reply(source, target, "Syntax:");
-			moo.reply(source, target, params[0] + " add vote info here");
-
-			moo.reply(source, target, params[0] + " info num");
-			moo.reply(source, target, params[0] + " close num");
-			moo.reply(source, target, params[0] + " num yes/no");
+			this.onHelp(source);
 		}
 	}
 }

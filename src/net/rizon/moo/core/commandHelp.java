@@ -12,6 +12,13 @@ public class commandHelp extends command
 	{
 		super(pkg, "!MOO-HELP", "Shows this list");
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !MOO-HELP [command]");
+		moo.notice(source, "!MOO-HELP lists all available commands or gives more verbose information on a command.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)
@@ -28,13 +35,21 @@ public class commandHelp extends command
 				if (c.requiresAdmin() && moo.conf.isAdminChannel(target) == false)
 					continue;
 				
-				if (show_header == false)
+				if (params.length == 1)
 				{
-					moo.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
-					show_header = true;
+					if (show_header == false)
+					{
+						moo.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
+						show_header = true;
+					}
+					
+					c.onHelpList(source);
 				}
-				
-				c.onHelp(source);
+				else if ((c.getCommandName().length() > 1 && c.getCommandName().substring(1).equalsIgnoreCase(params[1]))
+						|| c.getCommandName().equalsIgnoreCase(params[1]))
+				{
+					c.onHelp(source);
+				}
 			}
 		}
 	}

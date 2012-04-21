@@ -49,6 +49,15 @@ public class commandStatus extends command
 		long mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		return this.convertBytes(mem);
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !STATUS");
+		moo.notice(source, "!STATUS prints misc info on " + moo.conf.getNick() + ".");
+		moo.notice(source, "This includes the version, the date when " + moo.conf.getNick() + " was started,");
+		moo.notice(source, "the amount of currently running threads and memory usage.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

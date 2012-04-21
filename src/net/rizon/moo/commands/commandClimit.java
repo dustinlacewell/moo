@@ -73,6 +73,13 @@ public class commandClimit extends command
 	{
 		super(pkg, "!CLIMIT", "View server channel limits"); 
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !CLIMIT");
+		moo.notice(source, "Shows how many channels clients may join for all servers.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

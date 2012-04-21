@@ -166,16 +166,22 @@ public class commandFlood extends command
 		this.requireAdmin();
 	}
 
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax:");
+		moo.notice(source, "!FLOOD <flood list number> LIST -- Displays all entries in a flood list");
+		moo.notice(source, "!FLOOD <flood list number> DEL [host/range] -- Deletes selected entries from a flood list or the entire list");
+		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
+		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
+		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");		
+	}
+	
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
 		{
-			moo.notice(source, "Flood commands:");
-			moo.notice(source, "!flood <flood list number> list -- Displays all entries in a flood list");
-			moo.notice(source, "!flood <flood list number> del [host/range] -- Deletes selected entries from a flood list or the entire list");
-			moo.notice(source, "!flood <flood list number> akill [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
-			moo.notice(source, "!flood <flood list number> apply <regex> -- Delete all entries that don't match the given regex matched against nick");
-			moo.notice(source, "!flood list -- Lists all available flood lists");
+			this.onHelp(source);
 			return;
 		}
 		else if (params[1].equalsIgnoreCase("LIST"))

@@ -129,6 +129,13 @@ public class commandSlackers extends command
 	{
 		super(pkg, "!SLACKERS", "Find opers online but not in the channel");
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !SLACKERS");
+		moo.notice(source, "Searches for all online opers who are not in this channel.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

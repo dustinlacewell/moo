@@ -45,6 +45,14 @@ public class commandShell extends command
 		super(pkg, "!SHELL", "Execute a shell command");
 		this.requireAdmin();
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "!SHELL <command>");
+		moo.notice(source, "!SHELL executes a single shell command from the configured shell base directory.");
+		moo.notice(source, "This command is currently " + (moo.conf.getShell() ? "enabled" : "disabled") + ".");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

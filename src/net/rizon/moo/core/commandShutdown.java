@@ -14,6 +14,15 @@ public class commandShutdown extends command
 	}
 
 	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !SHUTDOWN");
+		moo.notice(source, "!SHUTDOWN shuts " + moo.conf.getNick() + " down.");
+		moo.notice(source, "Please note that this will show the nick!user@host of the user");
+		moo.notice(source, "issuing this command in the quit message.");
+	}
+	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		moo.reply(source, target, "Shutting down");
