@@ -49,6 +49,7 @@ public class commandHelp extends command
 						|| c.getCommandName().equalsIgnoreCase(params[1]))
 				{
 					c.onHelp(source);
+					return;
 				}
 			}
 		}

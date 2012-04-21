@@ -70,6 +70,16 @@ public class commandSplit extends command
 		
 		return buffer;
 	}
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: " + this.getCommandName() + " [recent|del|freeze|unfreeze|server.name]");
+		moo.notice(source, " ");
+		moo.notice(source, "With no arguments shows currently split servers. With recent or server.name only");
+		moo.notice(source, "recent splits or splits from that server are shown. Freeze and unfreeze can be used");
+		moo.notice(source, "to globally freeze and unfreeze all servers, including past and future ones. Del");
+		moo.notice(source, "(or stop) will disable a reconnect for a server.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

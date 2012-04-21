@@ -263,6 +263,31 @@ class commandServerBase extends command
 				moo.reply(source, target, "Total Users: " + server.cur_total_users + change);
 		}
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: " + this.getCommandName() + " [freeze|unfreeze|delete] server.name [all|preferred clines]");
+		moo.notice(source, " ");
+		moo.notice(source, this.getCommandName() + " is used to view C-Lines between servers and configure preferred clines,");
+		moo.notice(source, "which are C-Lines that have preference over others. When servers split the auto reconnector will");
+		moo.notice(source, "use this information to determine where to reconnect servers.");
+		moo.notice(source, " ");
+		moo.notice(source, "The output format of this command is as follows: users / preferred C-Lines / all C-Lines");
+		moo.notice(source, "The number in parentheses next to C-Lines are the number of links active on that hub.");
+		moo.notice(source, " ");
+		moo.notice(source, "C-Lines are color coded to determine the state of the C-Line");
+		moo.notice(source, " " + message.COLOR_RED + "red" + message.COLOR_END + " - Represents a C-Line to a nonexistant server");
+		moo.notice(source, " " + message.COLOR_ORANGE + "orange" + message.COLOR_END + " - Represents a C-Line to a split server");
+		moo.notice(source, " " + message.COLOR_YELLOW + "yellow" + message.COLOR_END + " - Represents a broken C-Line with only one direction (no return C-Line)");
+		moo.notice(source, " " + message.COLOR_BRIGHTBLUE + "blue" + message.COLOR_END + " - Represents a C-Line to a frozen server");
+		moo.notice(source, " " + message.COLOR_GREEN + "green" + message.COLOR_END + " - Represents a good C-Line");
+		moo.notice(source, " " + message.COLOR_UNDERLINE + "Underlines" + message.COLOR_UNDERLINE + " are used to show what the current uplink for a server is.");
+		moo.notice(source, "Frozen servers are made using the freeze command. Frozen servers will not be reconnected *nor* connected to.");
+		moo.notice(source, " ");
+		moo.notice(source, "Executing this command with no parameters will only show problem servers and and the problem C-Lines on those servers.");
+		moo.notice(source, "When using ALL or searching for a specific name all C-Lines will be shown.");
+	}
 }
 
 class commandCline extends commandServerBase
