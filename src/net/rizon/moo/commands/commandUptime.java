@@ -73,7 +73,7 @@ public class commandUptime extends command
 	{
 		for (server s : server.getServers())
 		{
-			if (s.isServices() == false)
+			if (s.isServices() == false && s.getSplit() == null)
 			{
 				moo.sock.write("STATS u " + s.getName());
 				message242.waiting_for.add(s.getName());
