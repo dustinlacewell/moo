@@ -91,8 +91,16 @@ public class commandUptime extends command
 			server serv = server.findServerAbsolute(sp.from);
 			if (serv == null)
 				continue;
-			if (serv.getSplits().length > 0 && serv.getSplits()[0].when.equals(sp.when))
+			
+			boolean b = false;
+			for (split upsp : serv.getSplits())
+			{
+				if (upsp.when.equals(sp.when))
+					b = true;
+			}
+			if (b == true)
 				continue;
+			
 			return sp;
 		}
 		
