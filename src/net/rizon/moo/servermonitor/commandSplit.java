@@ -70,6 +70,7 @@ public class commandSplit extends command
 		
 		return buffer;
 	}
+	
 	@Override
 	public void onHelp(String source)
 	{
