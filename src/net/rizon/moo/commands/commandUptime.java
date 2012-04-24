@@ -73,8 +73,11 @@ public class commandUptime extends command
 	{
 		for (server s : server.getServers())
 		{
-			moo.sock.write("STATS u " + s.getName());
-			message242.waiting_for.add(s.getName());
+			if (s.isServices() == false)
+			{
+				moo.sock.write("STATS u " + s.getName());
+				message242.waiting_for.add(s.getName());
+			}
 		}
 		
 		message242.target_channel = target;
@@ -85,7 +88,7 @@ public class commandUptime extends command
 	{
 		for (split sp : s.getSplits())
 		{
-			server serv = server.findServer(sp.from);
+			server serv = server.findServerAbsolute(sp.from);
 			if (serv == null)
 				continue;
 			if (serv.getSplits().length > 0 && serv.getSplits()[0].when.equals(sp.when))
@@ -116,6 +119,9 @@ public class commandUptime extends command
 		
 		for (server s : server.getServers())
 		{
+			if (s.isServices())
+				continue;
+			
 			split sp = findLastSplit(s);
 			
 			if (highest == null || s.uptime.before(highest))
@@ -130,6 +136,9 @@ public class commandUptime extends command
 		
 		for (server s : server.getServers())
 		{
+			if (s.isServices())
+				continue;
+			
 			split sp = findLastSplit(s);
 			int dashes = dashesFor(s);
 			
