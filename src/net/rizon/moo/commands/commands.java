@@ -18,6 +18,7 @@ public class commands extends mpackage
 		new commandSlackers(this);
 		new commandSoa(this);
 		new commandTime(this);
+		new commandUptime(this);
 		new commandVersions(this);
 		new commandWhy(this);
 	}

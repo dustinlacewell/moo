@@ -26,6 +26,8 @@ public class server
 	public int users = 0, last_users = 0;
 	public LinkedList<String> preferred_links = new LinkedList<String>();
 	public boolean frozen = false;
+	/* from /stats u */
+	public Date uptime;
 
 	public server(final String name)
 	{
