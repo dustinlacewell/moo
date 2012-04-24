@@ -86,15 +86,19 @@ public class commandUptime extends command
 	
 	private static split findLastSplit(server s)
 	{
-		for (split sp : s.getSplits())
+		for (int i = s.getSplits().length; i > 0; --i)
 		{
+			split sp = s.getSplits()[i - 1];
+			
 			server serv = server.findServerAbsolute(sp.from);
 			if (serv == null)
 				continue;
 			
 			boolean b = false;
-			for (split upsp : serv.getSplits())
+			for (int j = serv.getSplits().length; j > 0; --j)
 			{
+				split upsp = serv.getSplits()[j - 1];
+				
 				if (upsp.when.equals(sp.when))
 					b = true;
 			}
