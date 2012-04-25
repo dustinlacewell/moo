@@ -203,6 +203,20 @@ class commandServerBase extends command
 					msg += message.COLOR_ORANGE;
 					output = true;
 				}
+				else if (s.preferred_links.isEmpty() == false)
+				{
+					boolean good = false;
+					for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
+					{
+						server p_s = server.findServerAbsolute(it.next());
+						if (p_s != null && isLink(s, p_s))
+							good = true;
+					}
+					
+					if (good == false)
+						output = true;
+				}
+				
 				msg += "[Users: " + s.users + change + "] ";
 				msg += s.getName();
 				msg += message.COLOR_END;
