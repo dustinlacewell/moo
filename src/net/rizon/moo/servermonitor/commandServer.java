@@ -193,6 +193,7 @@ class commandServerBase extends command
 					links = "N/A";
 				
 				String msg = "";
+				boolean showAllCLines = false;
 				if (s.getSplit() != null)
 				{
 					msg += message.COLOR_RED;
@@ -224,6 +225,7 @@ class commandServerBase extends command
 					if (good == false)
 					{
 						output = true;
+						showAllCLines = true;
 						why.add("Uplink not a preferred server");
 					}
 				}
@@ -249,7 +251,7 @@ class commandServerBase extends command
 						links += message.COLOR_YELLOW;
 					else if (cline_server.frozen)
 						links += message.COLOR_BRIGHTBLUE;
-					else if (all == false)
+					else if (all == false && showAllCLines == false)
 						continue;
 					else
 						links += message.COLOR_GREEN;
