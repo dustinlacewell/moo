@@ -140,6 +140,7 @@ class commandServerBase extends command
 					change = "";
 				else if (change.startsWith("-") == false)
 					change = "+" + change;
+				boolean bigChange = diff >= 50 || diff <= -50;
 				
 				String links = "";
 				for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
@@ -195,6 +196,11 @@ class commandServerBase extends command
 				else if (s.frozen || moo.conf.getDisableSplitReconnect())
 				{
 					msg += message.COLOR_BRIGHTBLUE;
+					output = true;
+				}
+				else if (bigChange)
+				{
+					msg += message.COLOR_ORANGE;
 					output = true;
 				}
 				msg += "[Users: " + s.users + change + "] ";
