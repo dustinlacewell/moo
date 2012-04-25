@@ -154,19 +154,16 @@ class commandServerBase extends command
 					{
 						links += message.COLOR_RED;
 						output = true;
-						why.add("CLine to dead link");
 					}
 					else if (link_server.getSplit() != null)
 					{
 						links += message.COLOR_ORANGE;
 						output = true;
-						why.add("CLine to split link");
 					}
 					else if (s.clines.contains(link_server.getName()) == false)
 					{
 						links += message.COLOR_YELLOW;
 						output = true;
-						why.add("Broken CLine");
 					}
 					else if (link_server.frozen)
 					{
@@ -198,19 +195,16 @@ class commandServerBase extends command
 				{
 					msg += message.COLOR_RED;
 					output = true;
-					why.add("Split server");
 				}
 				else if (s.frozen || moo.conf.getDisableSplitReconnect())
 				{
 					msg += message.COLOR_BRIGHTBLUE;
 					output = true;
-					why.add("Frozen server");
 				}
 				else if (bigChange)
 				{
 					msg += message.COLOR_ORANGE;
 					output = true;
-					why.add("User change");
 				}
 				else if (s.preferred_links.isEmpty() == false)
 				{
