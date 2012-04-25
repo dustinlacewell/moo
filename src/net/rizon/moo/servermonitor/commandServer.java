@@ -15,21 +15,17 @@ class commandServerBase extends command
 		super(pkg, command, "Views servers");
 	}
 	
-	private static final server getUplink(server s)
+	private static boolean isLink(server s, server targ)
 	{
-		if (s.isHub() || s.isServices())
-			return null;
-		
 		for (Iterator<String> it = s.links.iterator(); it.hasNext();)
 		{
 			server s2 = server.findServerAbsolute(it.next());
-			if (s2 == null)
-				continue;
-			else if (s2.isHub())
-				return s2;
+			
+			if (targ == s2)
+				return true;
 		}
 		
-		return null;
+		return false;
 	}
 
 	@Override
@@ -176,7 +172,7 @@ class commandServerBase extends command
 					
 					if (link_server != null)
 					{
-						if (link_server == getUplink(s))
+						if (isLink(s, link_server))
 							links += message.COLOR_UNDERLINE + link_server.getName() + message.COLOR_UNDERLINE + " (" + link_server.links.size() + ")";
 						else
 							links += link_server.getName() + " (" + link_server.links.size() + ")";
@@ -231,7 +227,7 @@ class commandServerBase extends command
 					
 					if (cline_server != null)
 					{
-						if (cline_server == getUplink(s))
+						if (isLink(s, cline_server))
 							links += message.COLOR_UNDERLINE + cline_server.getName() + message.COLOR_UNDERLINE + " (" + cline_server.links.size() + ")";
 						else
 							links += cline_server.getName() + " (" + cline_server.links.size() + ")";
