@@ -62,7 +62,7 @@ class message391 extends message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(String source, String[] msg)
 	{
 		if (target_channel == null || target_source == null)
 			return;
@@ -76,7 +76,7 @@ class message391 extends message
 		
 		try
 		{
-			String time_buf = message[2];
+			String time_buf = msg[2];
 			int co = time_buf.lastIndexOf(':');
 			if (co == -1)
 				return;
@@ -95,13 +95,13 @@ class message391 extends message
 			if (common_time != 0 && common_time != them)
 			{
 				if (Math.abs(common_time - them) < 60)
-					buf += "\00308";
+					buf += message.COLOR_YELLOW;
 				else
-					buf += "\00304";
-				buf += message[2] + "\003 (off by " + (common_time - them) + " seconds)";
+					buf += message.COLOR_RED;
+				buf += msg[2] + message.COLOR_END + " (off by " + (common_time - them) + " seconds)";
 			}
 			else
-				buf += "\00309" + message[2] + "\003";
+				buf += message.COLOR_BRIGHTGREEN + msg[2] + message.COLOR_END;
 			
 			if (known_times.containsKey(them) == false)
 				known_times.put(them, 1);

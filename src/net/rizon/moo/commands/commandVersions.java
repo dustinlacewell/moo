@@ -34,7 +34,7 @@ class message351 extends message
 	}
 	
 	@Override
-	public void run(String source, String[] message)
+	public void run(String source, String[] msg)
 	{
 		if (target_channel == null || target_source == null)
 			return;
@@ -46,7 +46,7 @@ class message351 extends message
 		if (waiting_for.remove(s.getName()) == false)
 			return;
 
-		String tok = message[1];
+		String tok = msg[1];
 		
 		int pos = 0;
 		for (; pos < tok.length() && tok.charAt(pos) != '('; ++pos);
@@ -71,16 +71,15 @@ class message351 extends message
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
-			buf += " \003";
 			if (ver_num >= 0 && ver_num < max_ver - 4)
-				buf += "04";
+				buf += message.COLOR_RED;
 			else if (ver_num >= 0 && ver_num < max_ver - 1)
-				buf += "08";
+				buf += message.COLOR_YELLOW;
 			else if (ver_num < max_ver)
-				buf += "03";
+				buf += message.COLOR_GREEN;
 			else
-				buf += "09";
-			buf += ver + "\003";
+				buf += message.COLOR_BRIGHTGREEN;
+			buf += ver + message.COLOR_END;
 			
 			moo.reply(target_source, target_channel, buf);
 		}
