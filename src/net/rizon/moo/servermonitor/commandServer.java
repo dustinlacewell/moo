@@ -1,5 +1,6 @@
 package net.rizon.moo.servermonitor;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.rizon.moo.command;
@@ -143,6 +144,7 @@ class commandServerBase extends command
 				boolean bigChange = diff >= 50 || diff <= -50;
 				
 				String links = "";
+				HashSet<String> why = new HashSet<String>();
 				for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
 				{
 					String link_name = it.next();
@@ -152,16 +154,19 @@ class commandServerBase extends command
 					{
 						links += message.COLOR_RED;
 						output = true;
+						why.add("CLine to dead link");
 					}
 					else if (link_server.getSplit() != null)
 					{
 						links += message.COLOR_ORANGE;
 						output = true;
+						why.add("CLine to split link");
 					}
 					else if (s.clines.contains(link_server.getName()) == false)
 					{
 						links += message.COLOR_YELLOW;
 						output = true;
+						why.add("Broken CLine");
 					}
 					else if (link_server.frozen)
 					{
@@ -192,16 +197,19 @@ class commandServerBase extends command
 				{
 					msg += message.COLOR_RED;
 					output = true;
+					why.add("Split server");
 				}
 				else if (s.frozen || moo.conf.getDisableSplitReconnect())
 				{
 					msg += message.COLOR_BRIGHTBLUE;
 					output = true;
+					why.add("Frozen server");
 				}
 				else if (bigChange)
 				{
 					msg += message.COLOR_ORANGE;
 					output = true;
+					why.add("User change");
 				}
 				else if (s.preferred_links.isEmpty() == false)
 				{
@@ -214,7 +222,10 @@ class commandServerBase extends command
 					}
 					
 					if (good == false)
+					{
 						output = true;
+						why.add("Uplink not a preferred server");
+					}
 				}
 				
 				msg += "[Users: " + s.users + change + "] ";
@@ -262,6 +273,9 @@ class commandServerBase extends command
 					links = "N/A";
 				
 				msg += " / " + links;
+				
+				if (why.isEmpty() == false)
+					msg += " / " + why.toString();
 				
 				if (output || all)
 				{
