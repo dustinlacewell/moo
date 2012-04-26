@@ -71,6 +71,7 @@ class message351 extends message
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
+			buf += " ";
 			if (ver_num >= 0 && ver_num < max_ver - 4)
 				buf += message.COLOR_RED;
 			else if (ver_num >= 0 && ver_num < max_ver - 1)
