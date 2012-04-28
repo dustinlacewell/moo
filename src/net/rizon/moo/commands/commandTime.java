@@ -150,6 +150,8 @@ class checkTimesTimer extends timer
 		
 		for (server s : server.getServers())
 		{
+			if (s.isServices())
+				continue;
 			moo.sock.write("TIME " + s.getName());
 			message391.waiting_for.add(s.getName());
 		}
@@ -184,6 +186,8 @@ public class commandTime extends command
 	{
 		for (server s : server.getServers())
 		{
+			if (s.isServices())
+				continue;
 			moo.sock.write("TIME " + s.getName());
 			message391.waiting_for.add(s.getName());
 		}
