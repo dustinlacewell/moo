@@ -141,7 +141,6 @@ public class server
 			return;
 		
 		moo.sock.write("STATS c " + this.getName());
-		this.clines.clear();
 
 		moo.sock.write("STATS o " + this.getName());
 		this.olines.clear();
