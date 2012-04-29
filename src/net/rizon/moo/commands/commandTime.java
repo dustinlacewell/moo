@@ -139,7 +139,7 @@ class checkTimesTimer extends timer
 {
 	public checkTimesTimer()
 	{
-		super(60, true);
+		super(60 * 15, true);
 	}
 	
 	@Override

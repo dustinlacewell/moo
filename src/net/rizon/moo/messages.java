@@ -329,7 +329,7 @@ class messageNotice extends message
 			if (message.length > 1 && message[1].indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
 				moo.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());
 		}
-		else if (source != null && source.indexOf('.') != -1 && message.length > 1)
+		else if (source.indexOf('.') != -1 && message.length > 1)
 		{
 			if (message[1].indexOf("being introduced by") != -1)
 			{
