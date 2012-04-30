@@ -93,7 +93,7 @@ public class server
 			return true;
 		else if (this.getSID() != null && this.getSID().endsWith("PY"))
 			return true;
-		else if (this.getName().equals("acid.rizon.net")) // ???
+		else if (this.getName().endsWith(".rizon.net"))
 			return true;
 		return false;
 	}
