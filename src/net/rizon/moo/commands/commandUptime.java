@@ -67,10 +67,46 @@ public class commandUptime extends command
 	{
 		super(pkg, "!UPTIME", "View server uptimes");
 	}
+	
+	public static boolean only_extremes;
+	public static String single_server;
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
+		single_server = null;
+		
+		if (params.length > 1)
+		{
+			if (params[1].equalsIgnoreCase("ALL"))
+				only_extremes = false;
+			else
+			{
+				only_extremes = false;
+				
+				server s = server.findServer(params[1]);
+				if (s == null)
+				{
+					moo.reply(source, target, "Server not found.");
+					return;
+				}
+				if (s.isServices())
+				{
+					moo.reply(source, target, "Server is services, aborting.");
+					return;
+				}
+				if (s.getSplit() != null)
+				{
+					moo.reply(source, target, "Server is split, aborting.");
+					return;
+				}
+				
+				single_server = s.getName();
+			}
+		}
+		else
+			only_extremes = true;
+		
 		for (server s : server.getServers())
 		{
 			if (s.isServices() == false && s.getSplit() == null)
@@ -192,6 +228,11 @@ public class commandUptime extends command
 			if (s.isServices() || s.uptime == null)
 				continue;
 			
+			if (commandUptime.single_server != null && !commandUptime.single_server.equals(s.getName()))
+				continue;
+
+			boolean is_extreme = false;
+			
 			split sp = findLastSplit(s);
 			int dashes = dashesFor(s);
 			
@@ -199,10 +240,17 @@ public class commandUptime extends command
 			for (int i = 0; i < dashes; ++i)
 				buffer += "-";
 			buffer += " ";
+			
 			if (s.uptime == highest)
+			{
 				buffer += message.COLOR_GREEN;
+				is_extreme = true;
+			}
 			else if (s.uptime == lowest)
+			{
 				buffer += message.COLOR_RED;
+				is_extreme = true;
+			}
 			buffer += s.uptime.toString();
 			buffer += message.COLOR_END;
 			
@@ -210,14 +258,26 @@ public class commandUptime extends command
 			{
 				buffer += " - ";
 				if (sp == highest_sp)
+				{
 					buffer += message.COLOR_GREEN;
+					is_extreme = true;
+				}
 				else if (sp == lowest_sp)
+				{
 					buffer += message.COLOR_RED;
+					is_extreme = true;
+				}
 				buffer += difference(now, sp.when);
 				buffer += message.COLOR_END;
 			}
 			
-			moo.reply(source, target, buffer);
+			if (commandUptime.only_extremes)
+			{
+				if (is_extreme)
+					moo.reply(source, target, buffer);
+			}
+			else
+				moo.reply(source, target, buffer);
 		}
 	}
 }
