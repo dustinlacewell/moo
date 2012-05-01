@@ -68,12 +68,13 @@ public class commandUptime extends command
 		super(pkg, "!UPTIME", "View server uptimes");
 	}
 	
-	public static boolean only_extremes;
+	private static boolean only_extremes;
+	private static String want_server;
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		String want_server = null;
+		want_server = null;
 		
 		if (params.length > 1)
 		{
@@ -197,6 +198,8 @@ public class commandUptime extends command
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
+			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*"))
+				continue;
 			
 			split sp = findLastSplit(s);
 			
@@ -213,6 +216,8 @@ public class commandUptime extends command
 		for (server s : server.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
+				continue;
+			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*"))
 				continue;
 
 			boolean is_extreme = false;
