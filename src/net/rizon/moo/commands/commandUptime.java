@@ -88,20 +88,13 @@ public class commandUptime extends command
 		else
 			only_extremes = true;
 		
-		boolean sent = false;
 		for (server s : server.getServers())
 		{
-			if (s.isServices() == false && s.getSplit() == null && (want_server == null || moo.match(s.getName(), "*" + want_server + "*")))
+			if (s.isServices() == false && s.getSplit() == null)
 			{
 				moo.sock.write("STATS u " + s.getName());
 				message242.waiting_for.add(s.getName());
-				sent = true;
 			}
-		}
-		if (sent == false)
-		{
-			moo.reply(source, target, "No servers match " + params[1]);
-			return;
 		}
 		
 		message242.target_channel = target;
@@ -198,8 +191,6 @@ public class commandUptime extends command
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*") == false)
-				continue;
 			
 			split sp = findLastSplit(s);
 			
@@ -213,6 +204,7 @@ public class commandUptime extends command
 				lowest_sp = sp;
 		}
 		
+		boolean shown = false;
 		for (server s : server.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
@@ -263,10 +255,24 @@ public class commandUptime extends command
 			if (commandUptime.only_extremes)
 			{
 				if (is_extreme)
+				{
 					moo.reply(source, target, buffer);
+					shown = true;
+				}
 			}
 			else
+			{
 				moo.reply(source, target, buffer);
+				shown = true;
+			}
+		}
+		
+		if (shown == false)
+		{
+			if (want_server != null)
+				moo.reply(source, target, "No servers match " + want_server);
+			else
+				moo.reply(source, target, "You have managed to execute a command with no servers on the network, congrats");
 		}
 	}
 }
