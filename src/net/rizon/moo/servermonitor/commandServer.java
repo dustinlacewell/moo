@@ -223,6 +223,12 @@ class commandServerBase extends command
 						why.add("Uplink not a preferred server");
 					}
 				}
+				if (s.clines.size() == 1)
+				{
+					output = true;
+					showAllCLines = true;
+					why.add("Only one CLine");
+				}
 				
 				msg += "[Users: " + s.users + change + "] ";
 				msg += s.getName();
