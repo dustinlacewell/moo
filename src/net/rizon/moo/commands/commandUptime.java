@@ -198,7 +198,7 @@ public class commandUptime extends command
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*"))
+			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*") == false)
 				continue;
 			
 			split sp = findLastSplit(s);
@@ -217,7 +217,7 @@ public class commandUptime extends command
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*"))
+			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*") == false)
 				continue;
 
 			boolean is_extreme = false;
