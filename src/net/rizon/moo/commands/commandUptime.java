@@ -90,7 +90,7 @@ public class commandUptime extends command
 		boolean sent = false;
 		for (server s : server.getServers())
 		{
-			if (s.isServices() == false && s.getSplit() == null && (want_server == null || moo.match(s.getName(), want_server)))
+			if (s.isServices() == false && s.getSplit() == null && (want_server == null || moo.match(s.getName(), "*" + want_server + "*")))
 			{
 				moo.sock.write("STATS u " + s.getName());
 				message242.waiting_for.add(s.getName());
