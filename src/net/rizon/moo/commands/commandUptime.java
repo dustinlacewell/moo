@@ -69,44 +69,38 @@ public class commandUptime extends command
 	}
 	
 	public static boolean only_extremes;
-	public static String want_server;
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		want_server = null;
+		String want_server = null;
 		
 		if (params.length > 1)
 		{
 			only_extremes = false;
 			
 			if (!params[1].equalsIgnoreCase("ALL"))
-			{	
-				server s = server.findServer(params[1]);
-				if (s == null)
-				{
-					moo.reply(source, target, "Server not found.");
-					return;
-				}
-				else if (s.isServices() || s.getSplit() != null)
-				{
-					moo.reply(source, target, "Invalid server");
-					return;
-				}
-				
-				want_server = s.getName();
+			{
+				want_server = params[1];
 			}
 		}
 		else
 			only_extremes = true;
 		
+		boolean sent = false;
 		for (server s : server.getServers())
 		{
-			if (s.isServices() == false && s.getSplit() == null)
+			if (s.isServices() == false && s.getSplit() == null && (want_server == null || moo.match(s.getName(), want_server)))
 			{
 				moo.sock.write("STATS u " + s.getName());
 				message242.waiting_for.add(s.getName());
+				sent = true;
 			}
+		}
+		if (sent == false)
+		{
+			moo.reply(source, target, "No servers match " + params[1]);
+			return;
 		}
 		
 		message242.target_channel = target;
@@ -219,9 +213,6 @@ public class commandUptime extends command
 		for (server s : server.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
-				continue;
-			
-			if (commandUptime.want_server != null && moo.match(s.getName(), commandUptime.want_server) == false)
 				continue;
 
 			boolean is_extreme = false;
