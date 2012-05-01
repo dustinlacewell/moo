@@ -157,7 +157,7 @@ public class commandSplit extends command
 				}
 			}
 		}
-		else if (params.length > 2 && (params[1].equalsIgnoreCase("stop") || params[1].equalsIgnoreCase("del")))
+		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
@@ -166,9 +166,22 @@ public class commandSplit extends command
 				moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
 			else
 			{
-				moo.reply(source, target, "[SPLIT] Removed reconnect for server " + s.getName());
+				moo.reply(source, target, "Deleted server " + s.getName());
 				reconnector.removeReconnectsFor(s);
+				s.destroy();
 			}
+		}
+		else if (params.length > 2 && params[1].equalsIgnoreCase("stop"))
+		{
+			server s = server.findServer(params[2]);
+			if (s == null)
+				moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
+			else if (s.getSplit() == null)
+				moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+			else if (reconnector.removeReconnectsFor(s))
+				moo.reply(source, target, "[SPLIT] Removed reconnect for server " + s.getName());
+			else
+				moo.reply(source, target, "[SPLIT] There are no pending reconnects for " + s.getName());
 		}
 		else if (params[1].equalsIgnoreCase("freeze"))
 		{

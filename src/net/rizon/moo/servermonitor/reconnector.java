@@ -158,8 +158,9 @@ public class reconnector extends timer
 	
 	private static LinkedList<reconnector> reconnects = new LinkedList<reconnector>();
 	
-	public static void removeReconnectsFor(server s)
+	public static boolean removeReconnectsFor(server s)
 	{
+		boolean ret = false;
 		for (Iterator<reconnector> it = reconnects.iterator(); it.hasNext();)
 		{
 			reconnector r = it.next();
@@ -167,8 +168,10 @@ public class reconnector extends timer
 			{
 				r.stop();
 				it.remove();
+				ret = true;
 			}
 		}
+		return ret;
 	}
 	
 	public static reconnector findValidReconnectorFor(server s)

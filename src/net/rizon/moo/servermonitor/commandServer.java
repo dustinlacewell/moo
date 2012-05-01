@@ -58,7 +58,7 @@ class commandServerBase extends command
 				moo.reply(source, target, "Unfroze server " + s.getName());
 			}
 		}
-		else if (params.length >= 3 && params[1].equalsIgnoreCase("DELETE"))
+		else if (params.length >= 3 && (params[1].equalsIgnoreCase("DELETE") || params[1].equalsIgnoreCase("DEL")))
 		{
 			server s = server.findServer(params[2]);
 			if (s == null)
