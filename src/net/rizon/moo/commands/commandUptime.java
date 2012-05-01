@@ -69,39 +69,32 @@ public class commandUptime extends command
 	}
 	
 	public static boolean only_extremes;
-	public static String single_server;
+	public static String want_server;
 
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		single_server = null;
+		want_server = null;
 		
 		if (params.length > 1)
 		{
-			if (params[1].equalsIgnoreCase("ALL"))
-				only_extremes = false;
-			else
-			{
-				only_extremes = false;
-				
+			only_extremes = false;
+			
+			if (!params[1].equalsIgnoreCase("ALL"))
+			{	
 				server s = server.findServer(params[1]);
 				if (s == null)
 				{
 					moo.reply(source, target, "Server not found.");
 					return;
 				}
-				if (s.isServices())
+				else if (s.isServices() || s.getSplit() != null)
 				{
-					moo.reply(source, target, "Server is services, aborting.");
-					return;
-				}
-				if (s.getSplit() != null)
-				{
-					moo.reply(source, target, "Server is split, aborting.");
+					moo.reply(source, target, "Invalid server");
 					return;
 				}
 				
-				single_server = s.getName();
+				want_server = s.getName();
 			}
 		}
 		else
@@ -228,7 +221,7 @@ public class commandUptime extends command
 			if (s.isServices() || s.uptime == null)
 				continue;
 			
-			if (commandUptime.single_server != null && !commandUptime.single_server.equals(s.getName()))
+			if (commandUptime.want_server != null && moo.match(s.getName(), commandUptime.want_server) == false)
 				continue;
 
 			boolean is_extreme = false;
