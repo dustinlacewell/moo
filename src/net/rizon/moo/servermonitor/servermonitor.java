@@ -11,7 +11,7 @@ class mapRequester extends timer
 {
 	public mapRequester()
 	{
-		super(60, true);
+		super(300, true);
 	}
 
 	@Override
