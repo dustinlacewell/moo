@@ -35,6 +35,8 @@ public class moo
 
 	public static void main(String[] args)
 	{
+		version.load();
+		
 		try
 		{
 			conf = new config();

@@ -3,6 +3,7 @@ package net.rizon.moo.core;
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
+import net.rizon.moo.version;
 
 public class commandStatus extends command
 {
@@ -62,6 +63,6 @@ public class commandStatus extends command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		moo.reply(source, target, "[STATUS] " + moo.conf.getNick() + " version " + moo.conf.getVersion() + ", created on " + moo.getCreated() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		moo.reply(source, target, "[STATUS] " + moo.conf.getNick() + " version " + moo.conf.getVersion() + ", created on " + moo.getCreated() + ". Revision " + version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }
