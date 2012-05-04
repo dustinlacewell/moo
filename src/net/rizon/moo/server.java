@@ -200,7 +200,7 @@ public class server
 		{
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`, `frozen`);");
-			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `name_idx` on `servers` (`name`);");
+			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
 
 		@Override
