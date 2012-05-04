@@ -50,7 +50,6 @@ public class logSearch extends command
 					--limit;
 					++shown;
 					
-					System.out.println(d.toString());
 					if (lsource != null && lsource.isEmpty() == false)
 						moo.reply(source, target, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget + " - Reason: " + reason);
 					else
