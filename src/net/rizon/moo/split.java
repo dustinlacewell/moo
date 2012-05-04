@@ -6,4 +6,5 @@ public class split
 {
 	public String me, from, to;
 	public Date when, end;
+	public boolean saved;
 }

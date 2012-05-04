@@ -126,7 +126,14 @@ public class commandSplit extends command
 					ts.add(splits[i - 1]);
 			}
 			
-			while (ts.size() > 10)
+			int count = 10;
+			try
+			{
+				count = Integer.parseInt(params[2]);
+			}
+			catch (Exception ex) { }
+			
+			while (ts.size() > count)
 				ts.remove(ts.first());
 			
 			if (ts.size() == 0)
@@ -211,7 +218,15 @@ public class commandSplit extends command
 				else
 				{
 					moo.reply(source, target, "Recent splits for " + s.getName() + ":");
-					for (int i = splits.length; i > 0; --i)
+					
+					int count = 10;
+					try
+					{
+						count = Integer.parseInt(params[2]);
+					}
+					catch (Exception ex) { }
+					
+					for (int i = splits.length; i > 0 && count > 0; --i, --count)
 					{
 						split sp = splits[i - 1];
 						

@@ -114,9 +114,8 @@ public class server
 		s.me = this.getName();
 		s.from = from;
 		s.when = now;
+		s.saved = false;
 		this.splits.addLast(s);
-		if (this.splits.size() > 10)
-			this.splits.removeFirst();
 		
 		lastSplit = System.currentTimeMillis() / 1000L;
 	}
@@ -228,6 +227,7 @@ public class server
 					sp.to = to;
 					sp.when = when;
 					sp.end = end;
+					sp.saved = true;
 					s.splits.add(sp);
 					
 					++count;
@@ -273,21 +273,25 @@ public class server
 		{
 			try
 			{
-				moo.db.executeUpdate("DELETE FROM splits");
-				
 				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`) VALUES(?, ?, ?, ?, ?)"); 
 				
 				for (server s : server.getServers())
 				{
 					split[] splits = s.getSplits();
-					
-					for (split sp : splits)
+				
+					for (int i = splits.length; i > 0; --i)
 					{
+						split sp = splits[i - 1];
+						
+						if (sp.saved)
+							break;
+						
 						statement.setString(1, sp.me);
 						statement.setString(2, sp.from);
 						statement.setString(3, sp.to);
 						statement.setDate(4, new java.sql.Date(sp.when.getTime()));
 						statement.setDate(5, (sp.end != null ? new java.sql.Date(sp.end.getTime()) : null));
+						sp.saved = true;
 						moo.db.executeUpdate();
 					}
 				}
