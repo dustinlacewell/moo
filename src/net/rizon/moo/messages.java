@@ -150,15 +150,20 @@ class message219 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message[1].equals("c") == false)
-			return;
-		
 		server serv = server.findServerAbsolute(source);
 		if (serv == null)
 			serv = new server(source);
 		
-		serv.clines = serv.clines_work;
-		serv.clines_work = new HashSet<String>();
+		if (message[1].equals("c"))
+		{
+			serv.clines = serv.clines_work;
+			serv.clines_work = new HashSet<String>();
+		}
+		else if (message[1].equals("o"))
+		{
+			serv.olines = serv.olines_work;
+			serv.olines_work = new HashSet<String>();
+		}
 	}
 }
 
@@ -214,7 +219,11 @@ class message243 extends message
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			s = new server(source);
-		s.olines.add(oper);
+		s.olines_work.add(oper);
+		
+		if (s.olines.isEmpty() == false && s.olines.contains(oper) == false)
+			for (final String chan : moo.conf.getAdminChannels())
+				moo.privmsg(chan, "[OLINE] " + s.getName() + " has a new OLine for " + oper);
 	}
 }
 
