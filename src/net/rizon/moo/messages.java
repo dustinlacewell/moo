@@ -130,7 +130,13 @@ class message213 extends message
 			serv = new server(source);
 		
 		if (message.length > 4)
+		{
 			serv.clines_work.add(message[4]);
+			
+			if (serv.clines.isEmpty() == false && serv.clines.contains(message[4]) == false)
+				for (final String chan : moo.conf.getAdminChannels())
+					moo.privmsg(chan, "[CLINE] " + serv.getName() + " has a new CLine to " + message[4]);
+		}
 	}
 }
 
