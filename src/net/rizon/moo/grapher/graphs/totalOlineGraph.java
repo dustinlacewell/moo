@@ -15,7 +15,7 @@ public class totalOlineGraph extends graph
 		super("opers", 60);
 		
 		this.addDataSource("opers", dataSourceType.DST_GAUGE, 120, 0, 1000);
-		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
+		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948 * 10); // 10 years
 	}
 
 	@Override
