@@ -134,8 +134,8 @@ class message213 extends message
 			serv.clines_work.add(message[4]);
 			
 			if (serv.clines.isEmpty() == false && serv.clines.contains(message[4]) == false)
-				for (final String chan : moo.conf.getAdminChannels())
-					moo.privmsg(chan, "[CLINE] " + serv.getName() + " has a new CLine to " + message[4]);
+				for (event e : event.getEvents())
+					e.OnXLineAdd(serv, 'C', message[4]);
 		}
 	}
 }
@@ -222,8 +222,8 @@ class message243 extends message
 		s.olines_work.add(oper);
 		
 		if (s.olines.isEmpty() == false && s.olines.contains(oper) == false)
-			for (final String chan : moo.conf.getAdminChannels())
-				moo.privmsg(chan, "[OLINE] " + s.getName() + " has a new OLine for " + oper);
+			for (event e : event.getEvents())
+				e.OnXLineAdd(s, 'O', oper);
 	}
 }
 

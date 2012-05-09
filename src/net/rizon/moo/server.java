@@ -40,12 +40,18 @@ public class server
 		moo.sock.write("STATS c " + this.getName());
 		moo.sock.write("STATS o " + this.getName());
 		moo.sock.write("STATS B " + this.getName());
+		
+		for (event e : event.getEvents())
+			e.onServerCreate(this);
 	}
 	
 	public void destroy()
 	{
 		if (moo.conf.getDebug() > 0)
 			System.out.println("Removing server " + this.getName());
+		
+		for (event e : event.getEvents())
+			e.onServerDestroy(this);
 		
 		try
 		{

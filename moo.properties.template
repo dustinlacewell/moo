@@ -85,7 +85,11 @@ database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 # Data to save to databases.
 database_classes=net.rizon.moo.server$db
 
+# Paths to rrdtool and where graphs should be saved
+rrd_bin=/usr/bin/rrdtool
+rrd_dir=/home/adam/rizon/moo/graphs
+
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher
 
 debug=0

@@ -13,6 +13,11 @@ public abstract class event
 	public void loadDatabases() { }
 	public void saveDatabases() { }
 	
+	public void onServerCreate(server serv) { }
+	public void onServerDestroy(server serv) { }
+	
+	public void OnXLineAdd(server serv, char type, final String value) { }
+	
 	public void onServerLink(server serv, server to) { }
 	public void onServerSplit(server serv, server from) { }
 	

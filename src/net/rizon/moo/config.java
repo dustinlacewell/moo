@@ -35,6 +35,8 @@ public class config
 	private HashMap<String, String> vote_email = new HashMap<String, String>();
 	private String database;
 	private String[] database_classes;
+	private String rrd_bin;
+	private String rrd_dir;
 	private String[] packages;
 	private int debug;
 	
@@ -93,6 +95,8 @@ public class config
 		this.database = this.getProperty(prop, "database");
 		s = this.getProperty(prop, "database_classes");
 		this.database_classes = s.split(",");
+		this.rrd_bin = this.getProperty(prop, "rrd_bin");
+		this.rrd_dir = this.getProperty(prop, "rrd_dir");
 		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
@@ -282,6 +286,16 @@ public class config
 	public final String[] getDatabaseClasses()
 	{
 		return this.database_classes;
+	}
+	
+	public final String getRRDBin()
+	{
+		return this.rrd_bin;
+	}
+	
+	public final String getRRDDir()
+	{
+		return this.rrd_dir;
 	}
 	
 	public final String[] getPackages()

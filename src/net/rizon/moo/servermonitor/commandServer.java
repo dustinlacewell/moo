@@ -66,7 +66,6 @@ class commandServerBase extends command
 			else
 			{
 				moo.reply(source, target, "Deleted server " + s.getName());
-				reconnector.removeReconnectsFor(s);
 				s.destroy();
 			}
 		}

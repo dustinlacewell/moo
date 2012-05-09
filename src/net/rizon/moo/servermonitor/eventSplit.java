@@ -82,4 +82,10 @@ public class eventSplit extends event
 			r.start();
 		}
 	}
+	
+	@Override
+	public void onServerDestroy(server serv)
+	{
+		reconnector.removeReconnectsFor(serv);
+	}
 }
