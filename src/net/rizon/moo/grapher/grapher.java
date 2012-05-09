@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
+import net.rizon.moo.grapher.graphs.totalOlineGraph;
 import net.rizon.moo.grapher.graphs.totalServerGraph;
 import net.rizon.moo.grapher.graphs.totalUserGraph;
 
@@ -15,6 +16,7 @@ public class grapher extends mpackage
 		
 		new eventGraph(this);
 		
+		new totalOlineGraph().start();
 		new totalServerGraph().start();
 		new totalUserGraph().start();
 	}

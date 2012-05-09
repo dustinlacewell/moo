@@ -25,7 +25,10 @@ public class totalOlineGraph extends graph
 		for (server s : server.getServers())
 			olines.addAll(s.olines);
 		
-		final String[] data = { String.valueOf(olines.size()) };
-		this.update(data);
+		if (olines.isEmpty() == false)
+		{
+			final String[] data = { String.valueOf(olines.size()) };
+			this.update(data);
+		}
 	}
 }
