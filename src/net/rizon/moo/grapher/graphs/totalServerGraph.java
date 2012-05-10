@@ -14,7 +14,7 @@ public class totalServerGraph extends graph
 		super("servers", 60);
 		
 		this.addDataSource("servers", dataSourceType.DST_GAUGE, 120, 0, 1000);
-		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948 * 10); // 10 years
+		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
 	}
 
 	@Override

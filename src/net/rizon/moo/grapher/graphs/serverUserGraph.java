@@ -18,7 +18,7 @@ public class serverUserGraph extends graph
 		this.serv = s;
 		
 		this.addDataSource("users", dataSourceType.DST_GAUGE, 120, 0, 200000);
-		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948 * 10); // 10 years
+		this.setRRA(roundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
 	}
 
 	@Override
