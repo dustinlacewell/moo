@@ -58,6 +58,10 @@ public class server
 			PreparedStatement statement = moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
 			statement.setString(1, this.getName());
 			moo.db.executeUpdate();
+			
+			statement = moo.db.prepare("DELETE FROM splits WHERE `name` = ?");
+			statement.setString(1, this.getName());
+			moo.db.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
