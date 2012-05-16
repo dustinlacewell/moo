@@ -57,7 +57,7 @@ public class eventSplit extends event
 			else
 			{
 				for (final String channel : moo.conf.getSplitChannels())
-					moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2");
+					moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
 				for (server s : server.getServers())
 				{
 					if (s.isHub() == true && s.getSplit() == null)
