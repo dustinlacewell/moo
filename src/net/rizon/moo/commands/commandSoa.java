@@ -117,6 +117,14 @@ public class commandSoa extends command
 	{
 		super(pkg, "!SOA", "Check if SOA records for a domain are valid");
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !SOA host.name");
+		moo.notice(source, "Fetches all NS records for host.name and checks if all SOA records");
+		moo.notice(source, "associated with those name servers have the same serial number.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

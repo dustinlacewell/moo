@@ -169,12 +169,14 @@ public class commandFlood extends command
 	@Override
 	public void onHelp(String source)
 	{
+		moo.notice(source, "!FLOOD keeps track of flood lists, which are created when there is a connection");
+		moo.notice(source, "flood from clients.");
 		moo.notice(source, "Syntax:");
 		moo.notice(source, "!FLOOD <flood list number> LIST -- Displays all entries in a flood list");
 		moo.notice(source, "!FLOOD <flood list number> DEL [host/range] -- Deletes selected entries from a flood list or the entire list");
 		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
-		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");		
+		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
 	}
 	
 	public void execute(String source, String target, String[] params)

@@ -13,6 +13,15 @@ public class commandWatch extends command
 	{
 		super(pkg, "!WATCH", "View or modify the watch list");
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax:");
+		moo.notice(source, this.getCommandName() + " LIST -- shows the watch list");
+		moo.notice(source, this.getCommandName() + " ADD <nick> [+expiry] <reason> -- adds an entry to the watch list");
+		moo.notice(source, this.getCommandName() + " DEL <nick> -- deletes an entry from the watch list");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

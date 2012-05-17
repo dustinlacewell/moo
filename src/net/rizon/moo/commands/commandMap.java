@@ -124,6 +124,19 @@ class commandMapBase extends command
 		super(pkg, cmd, "View hub lag and routing information");
 		this.full = full;
 	}
+	
+	@Override
+	public void onHelp(String source) {
+		moo.notice(source, "Syntax: " + this.getCommandName() + " [{ usercount | HUB server.name | FIND mask}]");
+		moo.notice(source, "Searches for information about servers.");
+		moo.notice(source, "Without any further arguments, the sendq (in bytes) of hubs is shown.");
+		if(!this.getCommandName().equalsIgnoreCase("!MAP-"))
+			moo.notice(source, "The sendq output will be hidden unless it exceeds 1023 bytes, use !MAP- to see them.");
+		moo.notice(source, "If a user count is given, only servers and their user count with that amount of");
+		moo.notice(source, "(or more) users will be shown.");
+		moo.notice(source, "HUB server.name shows what other servers server.name is connected to.");
+		moo.notice(source, "FIND mask tries to find all servers matching the given mask.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

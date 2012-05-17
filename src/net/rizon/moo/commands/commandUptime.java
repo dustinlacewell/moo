@@ -70,6 +70,22 @@ public class commandUptime extends command
 	
 	private static boolean only_extremes;
 	private static String want_server;
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !UPTIME [{ ALL | server.name }]");
+		moo.notice(source, "Without any parameters, the highest and lowest uptime and last split times");
+		moo.notice(source, "are sought and shown.");
+		moo.notice(source, "If ALL is given, uptimes and times since the last split for all servers will");
+		moo.notice(source, "be shown.");
+		moo.notice(source, "If a server name is given, the uptime and last split time for that particular");
+		moo.notice(source, "will be shown.");
+		moo.notice(source, "The lowest last split time and the highest uptime will be colored "
+		                   + message.COLOR_GREEN + "green" + message.COLOR_END + ",");
+		moo.notice(source, "the highest last split time will be colored "
+		                   + message.COLOR_RED + "red" + message.COLOR_END + ".");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)

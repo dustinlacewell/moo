@@ -273,6 +273,16 @@ public class commandDnsbl extends command
 	}
 	
 	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !DNSBL [SERVER [server.name]]");
+		moo.notice(source, "Fetches the amount of hits on all configured DNSBLs across the network.");
+		moo.notice(source, "If SERVER is given, the amount of DNSBL hits on the respective servers");
+		moo.notice(source, "will be shown. If a specific server name is appended to SERVER, the");
+		moo.notice(source, "number of hits on each DNSBL will be shown for that specific server.");
+	}
+	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		command_waiting_on.clear();
