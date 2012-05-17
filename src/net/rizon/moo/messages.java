@@ -151,25 +151,28 @@ class message219 extends message
 		
 		if (message[1].equals("c"))
 		{
-			for (Iterator<String> it = serv.clines.iterator(); it.hasNext();)
+			if (serv.clines.isEmpty() == false)
 			{
-				String s = it.next();
-				
-				if (serv.clines_work.contains(s) == false)
+				for (Iterator<String> it = serv.clines.iterator(); it.hasNext();)
 				{
-					for (event e : event.getEvents())
-						e.OnXLineDel(serv, 'C', s);
+					String s = it.next();
+					
+					if (serv.clines_work.contains(s) == false)
+					{
+						for (event e : event.getEvents())
+							e.OnXLineDel(serv, 'C', s);
+					}
 				}
-			}
-			
-			for (Iterator<String> it = serv.clines_work.iterator(); it.hasNext();)
-			{
-				String s = it.next();
 				
-				if (serv.clines.contains(s) == false)
+				for (Iterator<String> it = serv.clines_work.iterator(); it.hasNext();)
 				{
-					for (event e : event.getEvents())
-						e.OnXLineAdd(serv, 'C', s);
+					String s = it.next();
+					
+					if (serv.clines.contains(s) == false)
+					{
+						for (event e : event.getEvents())
+							e.OnXLineAdd(serv, 'C', s);
+					}
 				}
 			}
 			
@@ -178,25 +181,28 @@ class message219 extends message
 		}
 		else if (message[1].equals("o"))
 		{
-			for (Iterator<String> it = serv.olines.iterator(); it.hasNext();)
+			if (serv.olines.isEmpty() == false)
 			{
-				String s = it.next();
-				
-				if (serv.olines_work.contains(s) == false)
+				for (Iterator<String> it = serv.olines.iterator(); it.hasNext();)
 				{
-					for (event e : event.getEvents())
-						e.OnXLineDel(serv, 'O', s);
+					String s = it.next();
+					
+					if (serv.olines_work.contains(s) == false)
+					{
+						for (event e : event.getEvents())
+							e.OnXLineDel(serv, 'O', s);
+					}
 				}
-			}
-			
-			for (Iterator<String> it = serv.olines_work.iterator(); it.hasNext();)
-			{
-				String s = it.next();
 				
-				if (serv.olines.contains(s) == false)
+				for (Iterator<String> it = serv.olines_work.iterator(); it.hasNext();)
 				{
-					for (event e : event.getEvents())
-						e.OnXLineAdd(serv, 'O', s);
+					String s = it.next();
+					
+					if (serv.olines.contains(s) == false)
+					{
+						for (event e : event.getEvents())
+							e.OnXLineAdd(serv, 'O', s);
+					}
 				}
 			}
 			
