@@ -158,7 +158,7 @@ class message219 extends message
 				if (serv.clines_work.contains(s) == false)
 				{
 					for (event e : event.getEvents())
-						e.OnXLineAdd(serv, 'C', s);
+						e.OnXLineDel(serv, 'C', s);
 				}
 			}
 			
@@ -169,7 +169,7 @@ class message219 extends message
 				if (serv.clines.contains(s) == false)
 				{
 					for (event e : event.getEvents())
-						e.OnXLineDel(serv, 'C', s);
+						e.OnXLineAdd(serv, 'C', s);
 				}
 			}
 			
@@ -185,7 +185,7 @@ class message219 extends message
 				if (serv.olines_work.contains(s) == false)
 				{
 					for (event e : event.getEvents())
-						e.OnXLineAdd(serv, 'O', s);
+						e.OnXLineDel(serv, 'O', s);
 				}
 			}
 			
@@ -196,7 +196,7 @@ class message219 extends message
 				if (serv.olines.contains(s) == false)
 				{
 					for (event e : event.getEvents())
-						e.OnXLineDel(serv, 'O', s);
+						e.OnXLineAdd(serv, 'O', s);
 				}
 			}
 			
