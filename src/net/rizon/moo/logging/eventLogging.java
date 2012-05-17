@@ -39,4 +39,11 @@ public class eventLogging extends event
 			ex.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void OnXLineDel(server serv, char type, final String value)
+	{
+		for (final String chan : moo.conf.getAdminChannels())
+			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
+	}
 }

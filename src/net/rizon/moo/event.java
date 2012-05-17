@@ -17,6 +17,7 @@ public abstract class event
 	public void onServerDestroy(server serv) { }
 	
 	public void OnXLineAdd(server serv, char type, final String value) { }
+	public void OnXLineDel(server serv, char type, final String value) { }
 	
 	public void onServerLink(server serv, server to) { }
 	public void onServerSplit(server serv, server from) { }

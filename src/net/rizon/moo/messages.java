@@ -2,6 +2,7 @@ package net.rizon.moo;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 import net.rizon.moo.message;
@@ -130,13 +131,7 @@ class message213 extends message
 			serv = new server(source);
 		
 		if (message.length > 4)
-		{
 			serv.clines_work.add(message[4]);
-			
-			if (serv.clines.isEmpty() == false && serv.clines.contains(message[4]) == false)
-				for (event e : event.getEvents())
-					e.OnXLineAdd(serv, 'C', message[4]);
-		}
 	}
 }
 
@@ -156,11 +151,55 @@ class message219 extends message
 		
 		if (message[1].equals("c"))
 		{
+			for (Iterator<String> it = serv.clines.iterator(); it.hasNext();)
+			{
+				String s = it.next();
+				
+				if (serv.clines_work.contains(s) == false)
+				{
+					for (event e : event.getEvents())
+						e.OnXLineAdd(serv, 'C', s);
+				}
+			}
+			
+			for (Iterator<String> it = serv.clines_work.iterator(); it.hasNext();)
+			{
+				String s = it.next();
+				
+				if (serv.clines.contains(s) == false)
+				{
+					for (event e : event.getEvents())
+						e.OnXLineDel(serv, 'C', s);
+				}
+			}
+			
 			serv.clines = serv.clines_work;
 			serv.clines_work = new HashSet<String>();
 		}
 		else if (message[1].equals("o"))
 		{
+			for (Iterator<String> it = serv.olines.iterator(); it.hasNext();)
+			{
+				String s = it.next();
+				
+				if (serv.olines_work.contains(s) == false)
+				{
+					for (event e : event.getEvents())
+						e.OnXLineAdd(serv, 'O', s);
+				}
+			}
+			
+			for (Iterator<String> it = serv.olines_work.iterator(); it.hasNext();)
+			{
+				String s = it.next();
+				
+				if (serv.olines.contains(s) == false)
+				{
+					for (event e : event.getEvents())
+						e.OnXLineDel(serv, 'O', s);
+				}
+			}
+			
 			serv.olines = serv.olines_work;
 			serv.olines_work = new HashSet<String>();
 		}
@@ -220,10 +259,6 @@ class message243 extends message
 		if (s == null)
 			s = new server(source);
 		s.olines_work.add(oper);
-		
-		if (s.olines.isEmpty() == false && s.olines.contains(oper) == false)
-			for (event e : event.getEvents())
-				e.OnXLineAdd(s, 'O', oper);
 	}
 }
 
