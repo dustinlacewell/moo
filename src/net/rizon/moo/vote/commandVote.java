@@ -57,6 +57,7 @@ public class commandVote extends command
 	@Override
 	public void onHelp(String source)
 	{
+		moo.notice(source, this.getCommandName() + " keeps track of simple yes/no votes for channels.");
 		moo.notice(source, "Syntax:");
 		moo.notice(source, this.getCommandName() + " ADD <vote info here> -- add a new vote");
 		moo.notice(source, this.getCommandName() + " CLOSE <num> -- close a vote. This cannot be undone!");

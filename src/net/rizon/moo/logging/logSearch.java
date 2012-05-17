@@ -14,6 +14,14 @@ public class logSearch extends command
 	{
 		super(pkg, "!LOGSEARCH", "Search through server logs"); 
 	}
+	
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "Syntax: !LOGSEARCH <target> [limit]");
+		moo.notice(source, "Searches through moo's logs, finding all actions that affected the given target.");
+		moo.notice(source, "by default, only 10 items will be shown, unless there is a limit specifying otherwise.");
+	}
 
 	@Override
 	public void execute(String source, String target, String[] params)
