@@ -41,7 +41,7 @@ public class reconnector extends timer
 		return false;
 	}
 	
-	private server findPreferred()
+	public server findPreferred()
 	{
 		if (this.from.getSplit() != null && findValidReconnectorFor(this.from) != null)
 			return this.serv; // Special case.
@@ -123,7 +123,7 @@ public class reconnector extends timer
 			return;
 		}
 		
-		int delay = this.serv.isHub() ? 3 : 2;
+		int delay = this.serv.isHub() && this.tries == 0 ? 3 : 2;
 		
 		if (this.tick % delay != 0)
 		{
