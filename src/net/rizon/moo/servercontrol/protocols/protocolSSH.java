@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import net.rizon.moo.moo;
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
 
@@ -15,16 +16,16 @@ import com.jcraft.jsch.Session;
 
 final class connectionSSH extends connection
 {
-	private static JSch jsch = new JSch();
-	
+	private JSch jsch;
 	private Session session = null;
 	private ChannelExec channel = null;
 	private PrintStream shellStream = null;
 	private BufferedReader reader = null;
 
-	public connectionSSH(protocol proto)
+	public connectionSSH(protocol proto, JSch jsch)
 	{
 		super(proto);
+		this.jsch = jsch;
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ final class connectionSSH extends connection
 	{
 		try
 		{
-			this.session = jsch.getSession(this.getServerInfo().user, this.getServerInfo().host);
+			this.session = this.jsch.getSession(this.getServerInfo().user, this.getServerInfo().host);
 			int port = this.getServerInfo().port;
 			if (port == 0)
 				port = 22;
@@ -111,14 +112,29 @@ final class connectionSSH extends connection
 
 public class protocolSSH extends protocol
 {
+	private static JSch jsch = new JSch();
+	
 	public protocolSSH()
 	{
 		super("SSH");
+		
+		for (final String key : moo.conf.getSSHKeyPaths())
+		{
+			try
+			{
+				jsch.addIdentity(key);
+			}
+			catch (JSchException ex)
+			{
+				System.err.println("Unable to load private key " + key);
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
 	public connection createConnection()
 	{
-		return new connectionSSH(this);
+		return new connectionSSH(this, jsch);
 	}
 }

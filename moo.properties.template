@@ -89,6 +89,9 @@ database_classes=net.rizon.moo.server$db
 rrd_bin=/usr/bin/rrdtool
 rrd_dir=/home/adam/rizon/moo/graphs
 
+# Paths to SSH keys for servercontrol. Separate with ;.
+ssh_key_paths=/home/adam/.ssh/moo
+
 # Packages to use.
 packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher
 

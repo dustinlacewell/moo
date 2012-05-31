@@ -37,6 +37,7 @@ public class config
 	private String[] database_classes;
 	private String rrd_bin;
 	private String rrd_dir;
+	private String[] ssh_key_paths;
 	private String[] packages;
 	private int debug;
 	
@@ -97,6 +98,8 @@ public class config
 		this.database_classes = s.split(",");
 		this.rrd_bin = this.getProperty(prop, "rrd_bin");
 		this.rrd_dir = this.getProperty(prop, "rrd_dir");
+		s = this.getProperty(prop, "ssh_key_paths");
+		this.ssh_key_paths = s.split(";");
 		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
@@ -296,6 +299,11 @@ public class config
 	public final String getRRDDir()
 	{
 		return this.rrd_dir;
+	}
+	
+	public final String[] getSSHKeyPaths()
+	{
+		return this.ssh_key_paths;
 	}
 	
 	public final String[] getPackages()
