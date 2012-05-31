@@ -259,7 +259,7 @@ public class moo
 	
 	public static void kill(final String nick, final String reason)
 	{
-		sock.write("KILL " + nick + " :" + reason);
+		moo.sock.write("KILL " + nick + " :" + reason);
 	}
 	
 	public static void akill(final String host, final String time, final String reason)
@@ -272,5 +272,10 @@ public class moo
 	public static void qakill(final String nick, final String reason)
 	{
 		privmsg("GeoServ", "QAKILL " + nick + " " + reason);
+	}
+	
+	public static void operwall(final String message)
+	{
+		moo.sock.write("WALLOPS :" + message);
 	}
 }

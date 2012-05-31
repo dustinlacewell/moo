@@ -1,6 +1,7 @@
 package net.rizon.moo.logging;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +11,30 @@ import net.rizon.moo.moo;
 
 public class messageWallops extends message
 {
-	private static final Pattern akillPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)\\)?");
+	private static final Pattern akillPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)[)\\]]$");
 	private static final Pattern operPattern = Pattern.compile("\2([^ ]+)\2 is now an IRC operator");
 	private static final Pattern sessionPattern = Pattern.compile("Added a temporary AKILL for \2[^@]+@([^ ]+)\2");
+	
+	private static void checkAkill(final String ip)
+	{
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("SELECT count(*) FROM `log` WHERE `type` = 'AKILL' and `target` = ?");
+			stmt.setString(1, ip);
+			
+			ResultSet rs = moo.db.executeQuery();
+			if (rs.next())
+			{
+				int count = rs.getInt("count(*)");
+				if (count > 0 && count % 50 == 0)
+					moo.operwall(ip + " has been akilled " + count + " times - consider akilling it longer");
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
 	
 	public messageWallops()
 	{
@@ -38,6 +60,8 @@ public class messageWallops extends message
 				stmt.setString(4, m.group(3));
 				
 				moo.db.executeUpdate();
+				
+				checkAkill(m.group(2));
 			}
 			catch (SQLException ex)
 			{
@@ -80,6 +104,8 @@ public class messageWallops extends message
 				stmt.setString(4, "Session limit exceeded");
 				
 				moo.db.executeUpdate();
+				
+				checkAkill(m.group(1));
 			}
 			catch (SQLException ex)
 			{
