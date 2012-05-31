@@ -29,7 +29,7 @@ public class commandWatch extends command
 		if (params.length <= 1 || params[1].equalsIgnoreCase("list"))
 		{
 			if (watch.watches.isEmpty())
-				moo.reply(source, target, "The watch list is empty");
+				moo.notice(source, "The watch list is empty");
 			else
 			{
 				Date now = new Date();
@@ -45,7 +45,7 @@ public class commandWatch extends command
 						continue;
 					}
 					
-					moo.reply(source, target, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
+					moo.notice(source, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
 				}
 			}
 		}
