@@ -205,7 +205,7 @@ public class server
 		@Override
 		protected void initDatabases() 
 		{
-			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date);");
+			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64));");
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`, `frozen`);");
 			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
@@ -222,7 +222,7 @@ public class server
 				ResultSet rs = moo.db.executeQuery("SELECT * FROM splits");
 				while (rs.next())
 				{
-					String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to");
+					String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
 					Date when = rs.getDate("when"), end = rs.getDate("end");
 					
 					server s = server.findServerAbsolute(name);
@@ -234,6 +234,7 @@ public class server
 					sp.to = to;
 					sp.when = when;
 					sp.end = end;
+					sp.reconnectedBy = rBy;
 					sp.saved = true;
 					s.splits.add(sp);
 					
@@ -280,7 +281,7 @@ public class server
 		{
 			try
 			{
-				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`) VALUES(?, ?, ?, ?, ?)"); 
+				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`) VALUES(?, ?, ?, ?, ?, ?)"); 
 				
 				for (server s : server.getServers())
 				{
@@ -298,6 +299,7 @@ public class server
 						statement.setString(3, sp.to);
 						statement.setDate(4, new java.sql.Date(sp.when.getTime()));
 						statement.setDate(5, (sp.end != null ? new java.sql.Date(sp.end.getTime()) : null));
+						statement.setString(6, sp.reconnectedBy);
 						sp.saved = true;
 						moo.db.executeUpdate();
 					}

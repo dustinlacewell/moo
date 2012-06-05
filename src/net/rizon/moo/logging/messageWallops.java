@@ -8,12 +8,14 @@ import java.util.regex.Pattern;
 
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
+import net.rizon.moo.server;
 
 public class messageWallops extends message
 {
 	private static final Pattern akillPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)[)\\]]$");
 	private static final Pattern operPattern = Pattern.compile("\2([^ ]+)\2 is now an IRC operator");
 	private static final Pattern sessionPattern = Pattern.compile("Added a temporary AKILL for \2[^@]+@([^ ]+)\2");
+	private static final Pattern connectPattern = Pattern.compile("Remote CONNECT ([^ ]*) [0-9]* from ([^ ]*)$");
 	
 	private static void checkAkill(final String ip)
 	{
@@ -44,7 +46,7 @@ public class messageWallops extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message[0].startsWith("OPERWALL") == false)
+		if (message[0].startsWith("OPERWALL") == false && source.indexOf('.') == -1)
 			return;
 		
 		Matcher m = akillPattern.matcher(message[0]);
@@ -106,6 +108,31 @@ public class messageWallops extends message
 				moo.db.executeUpdate();
 				
 				checkAkill(m.group(1));
+			}
+			catch (SQLException ex)
+			{
+				ex.printStackTrace();
+			}
+			
+			return;
+		}
+		
+		m = connectPattern.matcher(message[0]);
+		if (m.find())
+		{
+			server s = server.findServer(m.group(1));
+			if (s == null)
+				return;
+			
+			try
+			{
+				PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
+				
+				stmt.setString(1, "CONNECT");
+				stmt.setString(2, m.group(2));
+				stmt.setString(3, s.getName());
+				
+				moo.db.executeUpdate();
 			}
 			catch (SQLException ex)
 			{

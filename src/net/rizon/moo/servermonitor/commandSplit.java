@@ -148,7 +148,12 @@ public class commandSplit extends command
 					
 					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 					if (sp.end != null && sp.to != null)
-						buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
+					{
+						buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later";
+						if (sp.reconnectedBy != null)
+							buf += " by " + sp.reconnectedBy;
+						buf += ".";
+					}
 					else
 					{
 						server s = server.findServerAbsolute(sp.me);
@@ -231,7 +236,12 @@ public class commandSplit extends command
 						
 						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
 						if (sp.end != null && sp.to != null)
-							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later.";
+						{
+							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later";
+							if (sp.reconnectedBy != null)
+								buf += " by " + sp.reconnectedBy;
+							buf += ".";
+						}
 						else
 						{
 							reconnector r = reconnector.findValidReconnectorFor(s);
