@@ -3,6 +3,10 @@ package net.rizon.moo.commands;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 import java.util.Random;
 
 import net.rizon.moo.command;
@@ -15,6 +19,7 @@ class scheck extends Thread
 {
 	private String server;
 	private int port;
+	private boolean ssl;
 	private String source;
 	private String target;
 	private String users;
@@ -40,11 +45,12 @@ class scheck extends Thread
 		return buf;
 	}
 
-	public scheck(final String server, final String source, final String target, int port)
+	public scheck(final String server, final String source, final String target, boolean ssl, int port)
 	{
 		this.server = server;
 		this.source = source;
 		this.target = target;
+		this.ssl = ssl;
 		this.port = port;
 	}
 	
@@ -53,8 +59,15 @@ class scheck extends Thread
 	{
 		try
 		{
-			socket s = socket.create();
-			moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
+			socket s;
+			if (this.ssl == true)
+				s = socket.createSSL();
+			else
+				s = socket.create();
+			if (this.ssl == true || this.port != 6667)
+				moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + ":" + (this.ssl == true ? "+" : "") + this.port);
+			else
+				moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
 			s.connect(this.server, this.port, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
@@ -75,7 +88,40 @@ class scheck extends Thread
 				}
 				else if (token.length > 7 && token[1].equals("242"))
 				{
-					moo.reply(this.source, this.target, "[SCHECK] [" + token[0].substring(1) + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
+					final String servername = token[0].substring(1);
+					
+					if (this.ssl == true)
+					{
+						Certificate[] certs = s.getSSLSocket().getSession().getPeerCertificates();
+						for (Certificate cert : certs)
+						{
+							if (cert instanceof X509Certificate)
+							{
+								X509Certificate x509 = (X509Certificate) cert;
+								
+								try
+								{
+									x509.checkValidity();
+								}
+								catch (CertificateExpiredException e)
+								{
+									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " has EXPIRED X509 SSL certificate!");
+								}
+								catch (CertificateNotYetValidException e)
+								{
+									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " has a NOT VALID YET X509 SSL certificate!");
+								}
+								
+								final String issuerDn = x509.getIssuerDN().getName();
+								moo.reply(this.source, this.target, "[SCHECK] " + servername + " has X509 certificate " + issuerDn);
+								if (issuerDn.contains("O=Rizon IRC Network, CN=irc.rizon.net, L=Rizon, ST=Nowhere, C=RZ") == false)
+									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " does not have a correct issuer DN");
+							}
+							else
+									moo.reply(this.source, this.target, "[SCHECK] " + servername + " has non X509 certificate " + cert.getPublicKey() + " - " + cert.getType());
+						}
+					}
+					moo.reply(this.source, this.target, "[SCHECK] [" + servername + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -106,8 +152,9 @@ public class commandScheck extends command
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !SCHECK <server> [port]");
+		moo.notice(source, "Syntax: !SCHECK <server> [+port]");
 		moo.notice(source, "Attempts to connect to the given server. If no port is given, 6667 is assumed.");
+		moo.notice(source, "If port is prefixed with a +, SSL is used.");
 		moo.notice(source, "Once a connection is established, the global user count, server count and uptime will be shown.");
 	}
 
@@ -124,11 +171,19 @@ public class commandScheck extends command
 			else
 			{
 				int port = 6667;
+				boolean ssl = false;
 				if (params.length > 2)
 				{
+					String port_str = params[2];
+					if (port_str.startsWith("+"))
+					{
+						port_str = port_str.substring(1);
+						ssl = true;
+					}
+					
 					try
 					{
-						port = Integer.parseInt(params[2]);
+						port = Integer.parseInt(port_str);
 						if (port <= 0 || port > 65535)
 							throw new NumberFormatException("Invalid port range");
 					}
@@ -136,7 +191,7 @@ public class commandScheck extends command
 					{
 					}
 				}
-				scheck check = new scheck(serv.getName(), source, target, port);
+				scheck check = new scheck(serv.getName(), source, target, ssl, port);
 				check.start();
 			}
 		}

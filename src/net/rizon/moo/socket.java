@@ -22,6 +22,20 @@ import javax.net.ssl.X509TrustManager;
 
 class TrustingSSLSocketFactory extends SSLSocketFactory
 {
+	public static TrustingSSLSocketFactory sslSocketFactory = null;
+	
+	static
+	{
+		try
+		{
+			sslSocketFactory = new TrustingSSLSocketFactory();
+		}
+		catch (SSLException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
 	private class TrustingX509TrustManager implements X509TrustManager
 	{
 		@Override
@@ -122,6 +136,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 public class socket
 {
 	private Socket sock;
+	private SSLSocket sslsock;
 	private PrintWriter out;
 	private BufferedReader in;
 
@@ -133,20 +148,26 @@ public class socket
 	{
 		socket s = new socket();
 		s.sock = new Socket();
+		s.sslsock = null;
 		return s;
 	}
 	
 	public static socket createSSL() throws IOException
 	{
 		socket s = new socket();
-		TrustingSSLSocketFactory factory = new TrustingSSLSocketFactory();
-		s.sock = factory.createSocket();
+		s.sock = TrustingSSLSocketFactory.sslSocketFactory.createSocket();
+		s.sslsock = (SSLSocket) s.sock;
 		return s;
 	}
 	
 	public Socket getSocket()
 	{
 		return this.sock;
+	}
+	
+	public SSLSocket getSSLSocket()
+	{
+		return this.sslsock;
 	}
 	
 	public void connect(final String addr, int port) throws IOException
