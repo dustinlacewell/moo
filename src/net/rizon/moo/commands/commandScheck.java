@@ -273,7 +273,7 @@ public class commandScheck extends command
 						if (s.isHub() || s.isServices())
 							continue;
 						
-						new scheckTimer(++delay, s.getName(), source, target, ssl, port).start();
+						new scheckTimer(delay++, s.getName(), source, target, ssl, port).start();
 					}
 					
 					new scheckEndTimer(delay + 1, source, target);
