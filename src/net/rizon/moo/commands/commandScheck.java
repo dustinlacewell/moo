@@ -26,6 +26,7 @@ class scheck extends Thread
 	private String target;
 	private String users;
 	private String servers;
+	private boolean quiet;
 	
 	private static final Random rand = new Random();
 	private static final String getRandom()
@@ -47,29 +48,34 @@ class scheck extends Thread
 		return buf;
 	}
 
-	public scheck(final String server, final String source, final String target, boolean ssl, int port)
+	public scheck(final String server, final String source, final String target, boolean ssl, int port, boolean quiet)
 	{
 		this.server = server;
 		this.source = source;
 		this.target = target;
 		this.ssl = ssl;
 		this.port = port;
+		this.quiet = quiet;
 	}
 	
 	@Override
 	public void run()
 	{
+		socket s = null;
+		
 		try
 		{
-			socket s;
 			if (this.ssl == true)
 				s = socket.createSSL();
 			else
 				s = socket.create();
-			if (this.ssl == true || this.port != 6667)
-				moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + ":" + (this.ssl == true ? "+" : "") + this.port);
-			else
-				moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
+			if (this.quiet == false)
+			{
+				if (this.ssl == true || this.port != 6667)
+					moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + ":" + (this.ssl == true ? "+" : "") + this.port);
+				else
+					moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
+			}
 			s.connect(this.server, this.port, 15000);
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
@@ -115,7 +121,8 @@ class scheck extends Thread
 								}
 								
 								final String issuerDn = x509.getIssuerDN().getName();
-								moo.reply(this.source, this.target, "[SCHECK] " + servername + " has X509 certificate " + issuerDn);
+								if (this.quiet == false)
+									moo.reply(this.source, this.target, "[SCHECK] " + servername + " has X509 certificate " + issuerDn);
 								if (issuerDn.contains("O=Rizon IRC Network, CN=irc.rizon.net, L=Rizon, ST=Nowhere, C=RZ") == false)
 									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " does not have a correct issuer DN");
 							}
@@ -123,7 +130,8 @@ class scheck extends Thread
 									moo.reply(this.source, this.target, "[SCHECK] " + servername + " has non X509 certificate " + cert.getPublicKey() + " - " + cert.getType());
 						}
 					}
-					moo.reply(this.source, this.target, "[SCHECK] [" + servername + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
+					if (this.quiet == false)
+						moo.reply(this.source, this.target, "[SCHECK] [" + servername + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -141,12 +149,20 @@ class scheck extends Thread
 		{
 			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
 		}
+		finally
+		{
+			try
+			{
+				s.shutdown();
+			}
+			catch (Exception ex) { }
+		}
 	}
 }
 
 class scheckTimer extends timer
 {
-	protected static final int delay = 10;
+	protected static final int delay = 70;
 	
 	private String server;
 	private int port;
@@ -168,8 +184,28 @@ class scheckTimer extends timer
 	@Override
 	public void run(Date now)
 	{
-		scheck check = new scheck(this.server, this.source, this.target, this.ssl, this.port);
+		scheck check = new scheck(this.server, this.source, this.target, this.ssl, this.port, true);
 		check.start();
+	}
+}
+
+class scheckEndTimer extends timer
+{
+	private String source;
+	private String target;
+	
+	public scheckEndTimer(int delay, final String source, final String target)
+	{
+		super(delay * scheckTimer.delay, false);
+		
+		this.source = source;
+		this.target = target;
+	}
+	
+	@Override
+	public void run(Date now)
+	{
+		moo.reply(this.source, this.target, "[SCHECK] All server checks completed.");
 	}
 }
 
@@ -225,7 +261,7 @@ public class commandScheck extends command
 				
 				if (params[1].equalsIgnoreCase("ALL") == false)
 				{
-					scheck check = new scheck(serv.getName(), source, target, ssl, port);
+					scheck check = new scheck(serv.getName(), source, target, ssl, port, false);
 					check.start();
 				}
 				else
@@ -239,6 +275,8 @@ public class commandScheck extends command
 						
 						new scheckTimer(++delay, s.getName(), source, target, ssl, port).start();
 					}
+					
+					new scheckEndTimer(delay + 1, source, target);
 					
 					moo.reply(source, target, "[SCHECK] Queued " + delay + " checks in the next " + (delay * scheckTimer.delay) + " seconds");
 				}
