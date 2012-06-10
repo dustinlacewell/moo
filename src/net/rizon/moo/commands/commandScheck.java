@@ -7,6 +7,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Random;
 
 import net.rizon.moo.command;
@@ -14,6 +15,7 @@ import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.socket;
+import net.rizon.moo.timer;
 
 class scheck extends Thread
 {
@@ -142,6 +144,35 @@ class scheck extends Thread
 	}
 }
 
+class scheckTimer extends timer
+{
+	protected static final int delay = 10;
+	
+	private String server;
+	private int port;
+	private boolean ssl;
+	private String source;
+	private String target;
+	
+	public scheckTimer(int delay, final String server, final String source, final String target, boolean ssl, int port)
+	{
+		super(delay * scheckTimer.delay, false);
+		
+		this.server = server;
+		this.source = source;
+		this.target = target;
+		this.ssl = ssl;
+		this.port = port;
+	}
+
+	@Override
+	public void run(Date now)
+	{
+		scheck check = new scheck(this.server, this.source, this.target, this.ssl, this.port);
+		check.start();
+	}
+}
+
 public class commandScheck extends command
 {
 	public commandScheck(mpackage pkg)
@@ -166,7 +197,7 @@ public class commandScheck extends command
 		else
 		{
 			server serv = server.findServer(params[1]);
-			if (serv == null)
+			if (serv == null && params[1].equalsIgnoreCase("ALL") == false)
 				moo.reply(source, target, "[SCHECK] Server " + params[1] + " not found");
 			else
 			{
@@ -191,8 +222,26 @@ public class commandScheck extends command
 					{
 					}
 				}
-				scheck check = new scheck(serv.getName(), source, target, ssl, port);
-				check.start();
+				
+				if (params[1].equalsIgnoreCase("ALL") == false)
+				{
+					scheck check = new scheck(serv.getName(), source, target, ssl, port);
+					check.start();
+				}
+				else
+				{
+					int delay = 0;
+					
+					for (server s : server.getServers())
+					{
+						if (s.isHub() || s.isServices())
+							continue;
+						
+						new scheckTimer(++delay, s.getName(), source, target, ssl, port).start();
+					}
+					
+					moo.reply(source, target, "[SCHECK] Queued " + delay + " checks in the next " + (delay * scheckTimer.delay) + " seconds");
+				}
 			}
 		}
 	}
