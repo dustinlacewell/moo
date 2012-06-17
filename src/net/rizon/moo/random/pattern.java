@@ -14,23 +14,21 @@ public class pattern
 	private HashSet<nickData> matches = new HashSet<nickData>();
 	protected LinkedList<Long> last_adds = new LinkedList<Long>();
 	
-	public short length = 0;
-	public short repeat = 0;
+	private short length = 0;
 	
-	public short lower = 0, upper = 0, number = 0, other = 0;
+	private short lower = 0, upper = 0, number = 0, other = 0;
 	
 	/* 0 = lower, 1 = upper */
-	public int lowerUpperMask = 0;
+	private int lowerUpperMask = 0;
 	/* 0 = not, 1 = char */
-	public int charMask = 0;
+	private int charMask = 0;
 	/* 0 = not, 1 = number */
-	public int numberMask = 0;
+	private int numberMask = 0;
 	
 	private pattern(final String s)
 	{
 		this.length = (short) s.length();
 		
-		char last = 0;
 		for (int i = 0; i < this.length; ++i)
 		{
 			char c = s.charAt(i);
@@ -57,18 +55,13 @@ public class pattern
 			{
 				++this.other;
 			}
-			
-			if (last == c)
-				++this.repeat;
-			
-			last = c;
 		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "R:" + this.repeat + "/L:" + this.lower + "/U:" + this.upper + "/N:" + this.number + "/O:" + this.other;
+		return "L:" + this.lower + "/U:" + this.upper + "/N:" + this.number + "/O:" + this.other;
 	}
 	
 	@Override

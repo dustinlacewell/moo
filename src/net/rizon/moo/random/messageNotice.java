@@ -9,7 +9,7 @@ import net.rizon.moo.server;
 
 public class messageNotice extends message
 {
-	private static Pattern connectPattern = Pattern.compile("Client connecting: ([^ ]*) \\(~?([^@]*).*?\\) \\[([^ ]*)\\] \\[([^ ]*).*?\\] \\{.*?\\} \\[([^ ]*)\\]");
+	private static final Pattern connectPattern = Pattern.compile("Client connecting: ([^ ]*) \\(~?([^@]*).*?\\) \\[([^ ]*)\\] \\[([^ ]*).*?\\] \\{.*?\\} \\[([^ ]*)\\]");
 	
 	public messageNotice()
 	{
@@ -33,14 +33,7 @@ public class messageNotice extends message
 		{
 			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), real = m.group(5);
 			
-			pattern nick_p = pattern.getOrCreatePattern(nick), ident_p = pattern.getOrCreatePattern(ident), real_p = pattern.getOrCreatePattern(real);
-			
-			nickData nd = new nickData(nick, ident, real);
-			nd.nick_p = nick_p;
-			nd.user_p = ident_p;
-			nd.realname_p = real_p;
-			nd.ip = ip;
-			
+			nickData nd = new nickData(nick, ident, real, ip);
 			random.addNickData(nd);
 		}
 	}
