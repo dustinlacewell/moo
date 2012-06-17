@@ -13,7 +13,7 @@ public class commandDelServer extends command
 	public commandDelServer(mpackage pkg)
 	{
 		super(pkg, "!DELSERVER", "Deletes a server");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 
 	@Override

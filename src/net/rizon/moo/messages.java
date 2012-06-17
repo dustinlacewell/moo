@@ -34,6 +34,9 @@ class message001 extends message
 
 		moo.sock.write("MAP");
 		moo.sock.write("LINKS"); // This returns numeric 365, we load databases here
+		
+		for (event e : event.getEvents())
+			e.onConnect();
 	}
 }
 

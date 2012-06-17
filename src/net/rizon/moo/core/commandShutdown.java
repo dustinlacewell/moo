@@ -10,7 +10,7 @@ public class commandShutdown extends command
 	public commandShutdown(mpackage pkg)
 	{
 		super(pkg, "!SHUTDOWN", "Shutdown " + moo.conf.getNick());
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 
 	@Override

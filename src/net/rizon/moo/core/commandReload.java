@@ -10,7 +10,7 @@ public class commandReload extends command
 	public commandReload(mpackage pkg)
 	{
 		super(pkg, "!RELOAD", "Reloads the configuration file");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 	
 	@Override

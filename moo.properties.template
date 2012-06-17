@@ -38,13 +38,16 @@ version=moo v2.0
 idle_channels=#adam,#d
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d,#kline
+channels=#opers,#o,#r,#x,#a,#d,#kline,#w
 
 # Comma separated list of developer channels.
 dev_channels=#d
 
 # Comma separated list of spam channels, where non important messages can go
 spam_channels=#kline
+
+# Comma separated list of channels to announce and control floods to
+flood_channels=#w
 
 # Comma separated list of channels to announce splits to
 split_channels=#opers
@@ -93,6 +96,6 @@ rrd_dir=/home/adam/rizon/moo/graphs
 ssh_key_paths=/home/adam/.ssh/moo
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random
 
 debug=0

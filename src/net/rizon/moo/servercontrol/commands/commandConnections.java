@@ -10,7 +10,7 @@ public class commandConnections extends command
 	public commandConnections(mpackage pkg)
 	{
 		super(pkg, "!CONNECTIONS", "View active connections");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 	
 	@Override

@@ -10,7 +10,6 @@ public class commands extends mpackage
 		
 		new commandClimit(this);
 		new commandDnsbl(this);
-		new commandFlood(this);
 		new commandMap(this);
 		new commandOline(this);
 		new commandScheck(this);

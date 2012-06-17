@@ -11,7 +11,7 @@ public class commandServers extends command
 	public commandServers(mpackage pkg)
 	{
 		super(pkg, "!SERVERS", "View server list");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 
 	@Override

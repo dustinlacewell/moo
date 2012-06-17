@@ -14,7 +14,7 @@ public class commandAddServer extends command
 	public commandAddServer(mpackage pkg)
 	{
 		super(pkg, "!ADDSERVER", "Add a server");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 
 	@Override

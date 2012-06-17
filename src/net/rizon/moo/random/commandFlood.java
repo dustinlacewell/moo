@@ -1,0 +1,243 @@
+package net.rizon.moo.random;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import net.rizon.moo.command;
+import net.rizon.moo.moo;
+import net.rizon.moo.mpackage;
+
+public class commandFlood extends command
+{
+	public commandFlood(mpackage pkg)
+	{
+		super(pkg, "!FLOOD", "Manage flood lists");
+		this.requiresChannel(moo.conf.getFloodChannels());
+	}
+
+	@Override
+	public void onHelp(String source)
+	{
+		moo.notice(source, "!FLOOD keeps track of flood lists, which are created when there is a connection");
+		moo.notice(source, "flood from clients.");
+		moo.notice(source, "Syntax:");
+		moo.notice(source, "!FLOOD <flood list number> LIST -- Displays all entries in a flood list");
+		moo.notice(source, "!FLOOD <flood list number> DEL [host/range] -- Deletes selected entries from a flood list or the entire list");
+		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
+		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
+		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
+	}
+	
+	public void execute(String source, String target, String[] params)
+	{
+		if (params.length == 1)
+		{
+			this.onHelp(source);
+			return;
+		}
+		else if (params[1].equalsIgnoreCase("LIST"))
+		{
+			if (random.getFloodLists().isEmpty())
+				moo.privmsg(target, "There are no flood lists.");
+			else
+			{
+				int i = 1;
+				for (Iterator<pattern> it = random.getFloodLists().iterator(); it.hasNext();)
+				{
+					pattern p = it.next();
+					
+					moo.reply(source, target, i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + (new Date(p.last_adds.getLast())) + ", pattern: " + p.toString());
+				}
+			}
+			return;
+		}
+		
+		int i;
+		try
+		{
+			i = Integer.parseInt(params[1]);
+		}
+		catch (NumberFormatException ex)
+		{
+			moo.notice(source, "Invalid flood list number");
+			return;
+		}
+		
+		pattern fl = random.getFloodListAt(i - 1);
+		if (fl == null)
+		{
+			moo.notice(source, "There is no flood list numbered " + i);
+			return;
+		}
+		
+		if (params[2].equalsIgnoreCase("LIST"))
+		{
+			int j = 1;
+			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+			{
+				nickData nd = it.next();
+				moo.notice(source, j++ + ": " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ")");
+			}
+			moo.notice(source, "End of flood list, " + fl.getMatches().size() + " entries");
+		}
+		else if (params[2].equalsIgnoreCase("DEL"))
+		{
+			if (params.length > 3)
+			{
+				if (Character.isDigit(params[3].charAt(0)) && !params[3].contains("."))
+				{
+					// A valid range argument would be 1-5,9,10,15. Duplicates should be allowed.
+					String[] parts = params[3].split(",");
+					TreeSet<Integer> tobedeleted = new TreeSet<Integer>();
+					for (int k = 0; k < parts.length; k++)
+					{
+						int dashpos = parts[k].indexOf('-');
+						
+						if (dashpos == -1) // No range, just a single integer
+						{
+							int tmp;
+							try
+							{
+								tmp = Integer.valueOf(parts[k]);
+							}
+							catch (NumberFormatException ex)
+							{
+								if (moo.conf.getDebug() > 0)
+									System.out.println("Invalid number: " + parts[k]);
+								
+								continue;
+							}
+							tobedeleted.add(tmp - 1);
+						}
+						else
+						{
+							int min, max;
+							String lower = parts[k].substring(0, dashpos), upper = parts[k].substring(dashpos+1, parts[k].length());
+
+							try
+							{
+								min = Integer.valueOf(lower);
+								max = Integer.valueOf(upper);
+							}
+							catch (NumberFormatException ex)
+							{
+								if (moo.conf.getDebug() > 0)
+									System.out.println("Invalid number range: " + lower + " " + upper);
+								
+								continue;
+							}
+							for ( ; min <= max; min++)
+								tobedeleted.add(min - 1);
+						}
+					}
+					
+					if (tobedeleted.isEmpty())
+					{
+						moo.reply(source, target, "Nothing to be deleted.");
+					}
+					else
+					{
+						int deleted = 0;
+						for (Iterator<Integer> ii = tobedeleted.descendingIterator(); ii.hasNext();)
+						{
+							int del = ii.next(); // Required to cast ii.next() to an int to delete from list by position not by object
+							fl.getMatches().remove(del);
+							deleted++;
+						}
+						
+						moo.reply(source, target, "Deleted " + deleted + " entries");
+					}
+				}
+				else
+				{
+					boolean match = false;
+					for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+					{
+						nickData fe = it.next();
+						
+						if (moo.match(fe.ip, params[3]))
+						{
+							moo.notice(source, "Removed flood entry " + fe.ip);
+							it.remove();
+							match = true;
+						}
+					}
+					if (match == false)
+						moo.notice(source, "No match for " + params[3]);
+				}
+			}
+			else
+			{
+				fl.getMatches().clear();
+				moo.reply(source, target, "Removed flood list " + i);
+			}
+
+			if (fl.getMatches().isEmpty() == true)
+				random.removeFloodListAt(i - 1);
+		}
+		else if (params[2].equalsIgnoreCase("AKILL"))
+		{
+			String duration = "2d";
+			if (params.length > 3)
+			{
+				String dur = params[3];
+				if (dur.startsWith("+"))
+					dur = params[3].substring(1);
+				
+				if (dur.isEmpty() == false && (dur.endsWith("d") || dur.endsWith("h")
+						|| dur.endsWith("m") || dur.endsWith("s")
+						|| Character.isDigit(dur.charAt(dur.length() - 1))))
+				{
+					duration = dur;
+				}
+				else
+				{
+					moo.notice(source, "Invalid duration: " + params[3]);
+					return;
+				}
+			}
+			
+			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+			{
+				nickData fe = it.next();
+				moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + ")");
+			}
+
+			moo.reply(source, target, "Akilled " + fl.getMatches().size() + " entries");
+			random.removeFloodListAt(i - 1);
+		}
+		else if (params[2].equalsIgnoreCase("APPLY"))
+		{
+			Pattern regex;
+			try
+			{
+				regex = Pattern.compile(params[3]);
+			}
+			catch (PatternSyntaxException ex)
+			{
+				moo.notice(source, "Invalid regex: " + params[3]);
+				return;
+			}
+			
+			int deleted = 0;
+			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+			{
+				if (regex.matcher(it.next().nick_str).matches())
+					continue;
+				
+				it.remove();
+				deleted++;
+			}
+			if (fl.getMatches().isEmpty() == true)
+			{
+				random.removeFloodListAt(i - 1);
+				moo.reply(source, target, "All entries removed. Deleted list " + i);
+			}
+			else
+				moo.reply(source, target, "Removed " + deleted + " entries, " + fl.getMatches().size() + " entries remain.");
+		}
+	}
+}

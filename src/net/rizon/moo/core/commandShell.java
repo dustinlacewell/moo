@@ -43,7 +43,7 @@ public class commandShell extends command
 	public commandShell(mpackage pkg)
 	{
 		super(pkg, "!SHELL", "Execute a shell command");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 	
 	@Override

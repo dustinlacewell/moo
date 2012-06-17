@@ -14,7 +14,7 @@ public class commandServerControl extends command
 	public commandServerControl(mpackage pkg)
 	{
 		super(pkg, "!EXEC", "Execute commands on remote servers");
-		this.requireAdmin();
+		this.requiresChannel(moo.conf.getAdminChannels());
 	}
 	
 	@Override

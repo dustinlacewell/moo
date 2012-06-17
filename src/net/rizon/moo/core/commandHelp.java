@@ -1,5 +1,6 @@
 package net.rizon.moo.core;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import net.rizon.moo.command;
@@ -32,7 +33,7 @@ public class commandHelp extends command
 			{
 				command c = it2.next();
 				
-				if (c.requiresAdmin() && moo.conf.isAdminChannel(target) == false)
+				if (c.getRequiredChannels() != null && Arrays.asList(c.getRequiredChannels()).contains(target) == false)
 					continue;
 				
 				if (params.length == 1)

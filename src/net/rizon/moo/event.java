@@ -9,6 +9,8 @@ public abstract class event
 		events.add(this);
 	}
 	
+	public void onConnect() { }
+	
 	protected void initDatabases() { }
 	public void loadDatabases() { }
 	public void saveDatabases() { }

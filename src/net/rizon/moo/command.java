@@ -1,11 +1,13 @@
 package net.rizon.moo;
 
+import java.util.Arrays;
+
 public abstract class command extends message
 {
 	private mpackage pkg;
 	private String cmdname;
 	private String description;
-	private boolean requireAdmin;
+	private String[] requiresChannel;
 
 	public command(mpackage pkg, final String cmdname, final String desc)
 	{
@@ -31,14 +33,14 @@ public abstract class command extends message
 		return this.description;
 	}
 	
-	protected void requireAdmin()
+	protected void requiresChannel(final String[] channels)
 	{
-		this.requireAdmin = true;
+		this.requiresChannel = channels;
 	}
 	
-	public final boolean requiresAdmin()
+	public final String[] getRequiredChannels()
 	{
-		return this.requireAdmin;
+		return this.requiresChannel;
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public abstract class command extends message
 			return;
 		else if (moo.conf.isIdleChannel(message[0]))
 			return;
-		else if (this.requiresAdmin() && moo.conf.isAdminChannel(message[0]) == false)
+		else if (this.getRequiredChannels() != null && Arrays.asList(this.getRequiredChannels()).contains(message[0]) == false)
 			return;
 		
 		String tokens[] = message[1].split(" ");
