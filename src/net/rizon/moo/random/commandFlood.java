@@ -45,11 +45,11 @@ public class commandFlood extends command
 			else
 			{
 				int i = 1;
-				for (Iterator<pattern> it = random.getFloodLists().iterator(); it.hasNext();)
+				for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
 				{
-					pattern p = it.next();
+					floodList p = it.next();
 					
-					moo.reply(source, target, i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + (new Date(p.last_adds.getLast())) + ", pattern: " + p.toString());
+					moo.reply(source, target, i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + (new Date(p.getTimes().getLast())) + ", pattern: " + p.toString());
 				}
 			}
 			return;
@@ -66,7 +66,7 @@ public class commandFlood extends command
 			return;
 		}
 		
-		pattern fl = random.getFloodListAt(i - 1);
+		floodList fl = random.getFloodListAt(i - 1);
 		if (fl == null)
 		{
 			moo.notice(source, "There is no flood list numbered " + i);

@@ -18,17 +18,17 @@ class deadListChecker extends timer
 	@Override
 	public void run(Date now)
 	{
-		for (Iterator<pattern> it = random.getFloodLists().iterator(); it.hasNext();)
+		for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
 		{
-			pattern p = it.next();
+			floodList p = it.next();
 			
-			if (p.detached == false && p.last_adds.getLast() + random.timeforMatches < System.currentTimeMillis() / 1000L)
+			if (p.isClosed == false && p.getTimes().getLast() + random.timeforMatches < System.currentTimeMillis() / 1000L)
 			{
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
-				pattern.removePattern(p);
-				p.detached = true;
+				p.onClose();
+				p.isClosed = true;
 			}
 		}
 	}
@@ -36,11 +36,11 @@ class deadListChecker extends timer
 
 public class random extends mpackage
 {
-	protected static final int maxSize = 100, matchesForFlood = 50, timeforMatches = 60;
+	protected static final int maxSize = 100, matchesForFlood = 40, timeforMatches = 60, scoreForRandom = 3;
 	
 	public random()
 	{
-		super("Random", "Detects random nicks");
+		super("Random", "Detects flood and random nicks");
 		
 		new commandFlood(this);
 		new eventRandom();
@@ -49,6 +49,7 @@ public class random extends mpackage
 		new deadListChecker().start();
 	}
 	
+	protected static globalFloodList globalFlood = null;
 	private static LinkedList<nickData> nicks = new LinkedList<nickData>();
 	
 	public static LinkedList<nickData> getNicks()
@@ -66,21 +67,53 @@ public class random extends mpackage
 			nd = nicks.removeFirst();
 			nd.dec();
 		}
+		
+		nd = nicks.getFirst();
+		
+		boolean flood = System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
+		if (globalFlood == null && flood)
+		{
+			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
+				moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Flood from incoming clients (" + nicks.size() + " in " + timeforMatches + " seconds), collecting sufficiently random users...");
+			
+			globalFlood = new globalFloodList();
+			
+			for (Iterator<nickData> it = nicks.iterator(); it.hasNext();)
+			{
+				nd = it.next();
+				
+				if (nd.getScore() >= scoreForRandom)
+				{
+					globalFlood.addMatch(nd);
+					logMatch(nd, null, nd.toString());
+				}
+			}
+			
+			addFloodList(globalFlood);
+		}
+		else if (globalFlood != null && flood)
+		{
+			if (nd.getScore() >= scoreForRandom)
+			{
+				globalFlood.addMatch(nd);
+				logMatch(nd, null, nd.toString());
+			}
+		}
 	}
 	
-	private static LinkedList<pattern> floodLists = new LinkedList<pattern>();
+	private static LinkedList<floodList> floodLists = new LinkedList<floodList>();
 	
-	public static void addFloodPattern(pattern p)
+	public static void addFloodList(floodList fl)
 	{
-		floodLists.add(p);
+		floodLists.add(fl);
 	}
 	
-	public static LinkedList<pattern> getFloodLists()
+	public static LinkedList<floodList> getFloodLists()
 	{
 		return floodLists;
 	}
 	
-	public static pattern getFloodListAt(int i)
+	public static floodList getFloodListAt(int i)
 	{
 		try
 		{
@@ -103,9 +136,9 @@ public class random extends mpackage
 		}
 	}
 	
-	public static void logMatch(nickData nd, pattern p, final String data)
+	public static void logMatch(nickData nd, floodList fl, final String data)
 	{
 		for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + p.toString() + "] for " + data + " on " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl.toString() + "] for " + data + " on " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 }

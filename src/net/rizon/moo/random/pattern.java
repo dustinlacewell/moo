@@ -1,18 +1,13 @@
 package net.rizon.moo.random;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import net.rizon.moo.moo;
 
-public class pattern
+public class pattern extends floodList
 {
 	private boolean isList = false;
-	protected boolean detached = false;
-	private HashSet<nickData> matches = new HashSet<nickData>();
-	protected LinkedList<Long> last_adds = new LinkedList<Long>();
 	
 	private short length = 0;
 	
@@ -92,27 +87,30 @@ public class pattern
 		return true;
 	}
 	
+	@Override
+	public void onClose()
+	{
+		removePattern(this);
+	}
+	
 	public void add(nickData nd, final String data)
 	{
-		this.matches.add(nd);
+		this.addMatch(nd);
 		if (this.isList)
 			random.logMatch(nd, this, data);
 		
-		long now = System.currentTimeMillis() / 1000L;
-		this.last_adds.addLast(now);
-		if (this.last_adds.size() > random.matchesForFlood)
-			this.last_adds.removeFirst();
-		long first = this.last_adds.getFirst();
+		long first = this.getTimes().getFirst();
 		
-		if (this.isList == false && now - first <= random.timeforMatches && this.matches.size() >= random.matchesForFlood && frequency.isRandom(data) && frequency.containsBigrams(data) == false)
+		long now = System.currentTimeMillis() / 1000L;
+		if (this.isList == false && now - first <= random.timeforMatches && this.getMatches().size() >= random.matchesForFlood && frequency.isRandom(data) && frequency.containsBigrams(data) == false)
 		{
 			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 				moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
 				
-			random.addFloodPattern(this);
+			random.addFloodList(this);
 			this.isList = true;
 				
-			for (Iterator<nickData> it = this.matches.iterator(); it.hasNext();)
+			for (Iterator<nickData> it = this.getMatches().iterator(); it.hasNext();)
 				random.logMatch(it.next(), this, data);
 		}
 	}
@@ -122,15 +120,10 @@ public class pattern
 		if (this.isList)
 			return;
 		
-		this.matches.remove(nd);
+		this.delMatch(nd);
 
-		if (this.matches.isEmpty())
+		if (this.getMatches().isEmpty())
 			patterns.remove(this);
-	}
-	
-	public HashSet<nickData> getMatches()
-	{
-		return this.matches;
 	}
 	
 	/* hash map of patterns to itself. used because patterns may be .equal() but not ==, and
