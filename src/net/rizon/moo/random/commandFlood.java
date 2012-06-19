@@ -211,6 +211,12 @@ public class commandFlood extends command
 		}
 		else if (params[2].equalsIgnoreCase("APPLY"))
 		{
+			if (params.length < 4)
+			{
+				moo.notice(source, "Syntax: !FLOOD <flood list number> APPLY <regex>");
+				return;
+			}
+			
 			Pattern regex;
 			try
 			{
