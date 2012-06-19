@@ -43,7 +43,6 @@ public class random extends mpackage
 		super("Random", "Detects flood and random nicks");
 		
 		new commandFlood(this);
-		new eventRandom();
 		new messageNotice();
 		
 		new deadListChecker().start();
