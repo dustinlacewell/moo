@@ -132,6 +132,13 @@ public class pattern extends floodList
 	 */
 	private static HashMap<pattern, pattern> patterns = new HashMap<pattern, pattern>();
 	
+	public static pattern[] getPatterns()
+	{
+		pattern[] a = new pattern[patterns.size()];
+		patterns.keySet().toArray(a);
+		return a;
+	}
+	
 	public static pattern getOrCreatePattern(final String s)
 	{
 		pattern p = new pattern(s);

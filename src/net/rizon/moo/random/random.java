@@ -69,7 +69,7 @@ public class random extends mpackage
 		
 		nd = nicks.getFirst();
 		
-		boolean flood = System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
+		boolean flood = nicks.size() >= matchesForFlood && System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
 		if (globalFlood == null && flood)
 		{
 			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
