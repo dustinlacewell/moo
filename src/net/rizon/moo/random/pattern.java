@@ -7,6 +7,7 @@ import net.rizon.moo.moo;
 
 public class pattern extends floodList
 {
+	private field type;
 	private boolean isList = false;
 	
 	private short length = 0;
@@ -20,8 +21,10 @@ public class pattern extends floodList
 	/* 0 = not, 1 = number */
 	private int numberMask = 0;
 	
-	private pattern(final String s)
+	private pattern(field type, final String s)
 	{
+		this.type = type;
+		
 		this.length = (short) s.length();
 		
 		for (int i = 0; i < this.length; ++i)
@@ -56,7 +59,7 @@ public class pattern extends floodList
 	@Override
 	public String toString()
 	{
-		return "L:" + this.lower + "/U:" + this.upper + "/N:" + this.number + "/O:" + this.other;
+		return this.type.name.substring(0,  1) + "/L:" + this.lower + "/U:" + this.upper + "/N:" + this.number + "/O:" + this.other;
 	}
 	
 	@Override
@@ -73,7 +76,9 @@ public class pattern extends floodList
 		
 		pattern other = (pattern) obj;
 		
-		if (this.length != other.length)
+		if (this.type != other.type)
+				return false;
+		else if (this.length != other.length)
 			return false;
 		else if (this.lower != other.lower)
 			return false;
@@ -139,9 +144,9 @@ public class pattern extends floodList
 		return a;
 	}
 	
-	public static pattern getOrCreatePattern(final String s)
+	public static pattern getOrCreatePattern(final field type, final String s)
 	{
-		pattern p = new pattern(s);
+		pattern p = new pattern(type, s);
 		pattern real = patterns.get(p);
 		if (real != null)
 			return real;

@@ -18,11 +18,13 @@ class deadListChecker extends timer
 	@Override
 	public void run(Date now)
 	{
+		long now_l = System.currentTimeMillis() / 1000L;
+		
 		for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
 		{
 			floodList p = it.next();
 			
-			if (p.isClosed == false && p.getTimes().getLast() + random.timeforMatches < System.currentTimeMillis() / 1000L)
+			if (p.isClosed == false && now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");

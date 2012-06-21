@@ -14,9 +14,9 @@ public class nickData
 		this.ip = ip;
 		this.time = System.currentTimeMillis() / 1000L;
 		
-		this.nick_p = pattern.getOrCreatePattern(nick);
-		this.user_p = pattern.getOrCreatePattern(user);
-		this.realname_p = pattern.getOrCreatePattern(real);
+		this.nick_p = pattern.getOrCreatePattern(field.FIELD_NICK, nick);
+		this.user_p = pattern.getOrCreatePattern(field.FIELD_IDENT, user);
+		this.realname_p = pattern.getOrCreatePattern(field.FIELD_GECOS, real);
 	}
 	
 	@Override
