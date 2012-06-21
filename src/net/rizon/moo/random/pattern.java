@@ -77,7 +77,7 @@ public class pattern extends floodList
 		pattern other = (pattern) obj;
 		
 		if (this.type != other.type)
-				return false;
+			return false;
 		else if (this.length != other.length)
 			return false;
 		else if (this.lower != other.lower)
