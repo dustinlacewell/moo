@@ -9,7 +9,7 @@ import net.rizon.moo.server;
 
 public class messageNotice extends message
 {
-	private static final Pattern connectPattern = Pattern.compile("Client connecting: ([^ ]*) \\(~?([^@]*).*?\\) \\[([^ ]*)\\] \\[([^ ]*).*?\\] \\{.*?\\} \\[([^ ]*)\\]");
+	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([0-9.]*)\\] \\[(.*)\\]");
 	
 	public messageNotice()
 	{
@@ -19,7 +19,7 @@ public class messageNotice extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (source.endsWith(".rizon.net") == false)
+		if (source.indexOf('.') == -1)
 			return;
 		
 		Date then = new Date(System.currentTimeMillis() - (30 * 1000)); // 30 seconds ago
@@ -31,7 +31,7 @@ public class messageNotice extends message
 		Matcher m = connectPattern.matcher(message[1]);
 		if (m.matches())
 		{
-			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), real = m.group(5);
+			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), real = m.group(4);
 			
 			nickData nd = new nickData(nick, ident, real, ip);
 			random.addNickData(nd);

@@ -49,9 +49,20 @@ public class commandFlood extends command
 				{
 					floodList p = it.next();
 					
-					moo.reply(source, target, i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + (new Date(p.getTimes().getLast())) + ", pattern: " + p.toString());
+					moo.reply(source, target, i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + new Date(p.getTimes().getLast() * 1000L) + ", pattern: " + p.toString());
 				}
 			}
+			return;
+		}
+		else if (params[1].equalsIgnoreCase("STATE"))
+		{
+			moo.reply(source, target, "Nicks in history: " + random.getNicks().size());
+			if (random.getNicks().isEmpty() == false)
+				moo.reply(source, target, "  Oldest: " + new Date(random.getNicks().getFirst().time * 1000L) + ", Newest: " + new Date(random.getNicks().getLast().time * 1000L));
+			moo.reply(source, target, "Patterns: " + pattern.getPatterns().length);
+			for (pattern p : pattern.getPatterns())
+				moo.reply(source, target, "  " + p.toString() + ": contains " + p.getMatches().size() + " matches, first at " + new Date(p.getTimes().getFirst() * 1000L) + ", last at " + new Date(p.getTimes().getLast() * 1000L));
+			moo.reply(source, target, "Threshold: " + random.matchesForFlood + " in " + random.timeforMatches + " seconds");
 			return;
 		}
 		
