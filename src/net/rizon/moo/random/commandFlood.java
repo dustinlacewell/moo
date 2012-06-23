@@ -29,6 +29,7 @@ public class commandFlood extends command
 		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
+		moo.notice(source, "!FLOOD STATE -- Show the state of the flood subsystem");
 	}
 	
 	public void execute(String source, String target, String[] params)
