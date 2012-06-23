@@ -19,8 +19,8 @@ public class messageNotice extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		//if (source.indexOf('.') == -1)
-			//return;
+		if (source.indexOf('.') == -1)
+			return;
 		
 		Date then = new Date(System.currentTimeMillis() - (30 * 1000)); // 30 seconds ago
 		if (server.last_link != null && server.last_link.after(then))
