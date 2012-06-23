@@ -28,6 +28,7 @@ public class commandFlood extends command
 		moo.notice(source, "!FLOOD <flood list number> DEL [host/range] -- Deletes selected entries from a flood list or the entire list");
 		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
+		moo.notice(source, "!FLOOD <flood list number> APPLY <number> -- Delete all entries aren't on <number> floodlists");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
 	}
 	
@@ -90,7 +91,7 @@ public class commandFlood extends command
 			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
 			{
 				nickData nd = it.next();
-				moo.notice(source, j++ + ": " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ")");
+				moo.notice(source, j++ + ": " + nd);
 			}
 			moo.notice(source, "End of flood list, " + fl.getMatches().size() + " entries");
 		}
@@ -160,17 +161,17 @@ public class commandFlood extends command
 						int j = 0;
 						for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext(); j++)
 						{
-							it.next();
+							nickData nd = it.next();
+							
 							if(!tobedeleted.contains(j)) // XXX: this is inefficient!
 								continue;
 							
 							it.remove();
+							fl.delMatch(nd);
 							deleted++;
 						}
 						
 						moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
-						if(fl.getMatches().isEmpty())
-							moo.reply(source, target, "Deleted now-empty list " + i);
 					}
 				}
 				else
@@ -184,6 +185,7 @@ public class commandFlood extends command
 						{
 							moo.notice(source, "Removed flood entry " + fe.ip);
 							it.remove();
+							fl.delMatch(fe);
 							match = true;
 						}
 					}
@@ -196,9 +198,6 @@ public class commandFlood extends command
 				fl.getMatches().clear();
 				moo.reply(source, target, "Removed flood list " + i);
 			}
-
-			if (fl.getMatches().isEmpty() == true)
-				random.removeFloodListAt(i - 1);
 		}
 		else if (params[2].equalsIgnoreCase("AKILL"))
 		{
@@ -239,33 +238,60 @@ public class commandFlood extends command
 				return;
 			}
 			
-			Pattern regex;
 			try
 			{
-				regex = Pattern.compile(params[3]);
-			}
-			catch (PatternSyntaxException ex)
-			{
-				moo.notice(source, "Invalid regex: " + params[3]);
+				int fln = Integer.parseInt(params[3]);
+				
+				int deleted = 0;
+				for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+				{
+					nickData nd = it.next();
+					
+					if (nd.getActiveListCount() < fln)
+					{
+						it.remove();
+						fl.delMatch(nd);
+						++deleted;
+					}
+				}
+				
+				moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
+				
 				return;
 			}
+			catch (NumberFormatException nfe)
+			{
 			
-			int deleted = 0;
-			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
-			{
-				if (regex.matcher(it.next().nick_str).matches())
-					continue;
+				Pattern regex;
+				try
+				{
+					regex = Pattern.compile(params[3]);
+				}
+				catch (PatternSyntaxException ex)
+				{
+					moo.notice(source, "Invalid regex: " + params[3]);
+					return;
+				}
 				
-				it.remove();
-				deleted++;
+				int deleted = 0;
+				for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+				{
+					nickData nd = it.next();
+					
+					if (regex.matcher(nd.nick_str).matches())
+						continue;
+					
+					it.remove();
+					fl.delMatch(nd);
+					
+					deleted++;
+				}
+				
+				moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 			}
-			if (fl.getMatches().isEmpty() == true)
-			{
-				random.removeFloodListAt(i - 1);
-				moo.reply(source, target, "All entries removed. Deleted list " + i);
-			}
-			else
-				moo.reply(source, target, "Removed " + deleted + " entries, " + fl.getMatches().size() + " entries remain.");
 		}
+		
+		if (fl.getMatches().isEmpty() == true)
+			random.removeFloodListAt(i - 1);
 	}
 }

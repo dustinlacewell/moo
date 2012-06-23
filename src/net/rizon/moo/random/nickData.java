@@ -1,10 +1,14 @@
 package net.rizon.moo.random;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 public class nickData
 {
 	private pattern nick_p, user_p, realname_p;
 	public String nick_str, user_str, realname_str, ip;
 	public long time;
+	public LinkedList<floodList> lists = new LinkedList<floodList>();
 	
 	public nickData(final String nick, final String user, final String real, final String ip)
 	{
@@ -22,7 +26,10 @@ public class nickData
 	@Override
 	public String toString()
 	{
-		return this.nick_str + "!" + this.user_str + "@" + this.ip + "{" + this.realname_str + "}";
+		if (this.getActiveListCount() == 0)
+			return this.nick_str + " " + this.user_str + "@" + this.ip + " {" + this.realname_str + "}";
+		else
+			return this.nick_str + " " + this.user_str + "@" + this.ip + " {" + this.realname_str + "} (" + this.getActiveListCount() + ")";
 	}
 	
 	public void inc()
@@ -55,5 +62,14 @@ public class nickData
 		if (frequency.containsBigrams(this.realname_str))
 			--s;
 		return s;
+	}
+	
+	public int getActiveListCount()
+	{
+		int activeLists = 0;
+		for (Iterator<floodList> it = this.lists.iterator(); it.hasNext();)
+			if (it.next().isList)
+				++activeLists;
+		return activeLists;
 	}
 }

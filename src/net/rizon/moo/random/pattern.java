@@ -8,7 +8,6 @@ import net.rizon.moo.moo;
 public class pattern extends floodList
 {
 	private field type;
-	private boolean isList = false;
 	
 	private short length = 0;
 	

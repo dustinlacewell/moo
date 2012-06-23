@@ -24,7 +24,7 @@ class deadListChecker extends timer
 		{
 			floodList p = it.next();
 			
-			if (p.isClosed == false && now_l - p.getTimes().getFirst() > random.timeforMatches)
+			if (p.getMatches().isEmpty() || (p.isClosed == false && now_l - p.getTimes().getFirst() > random.timeforMatches))
 			{
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");

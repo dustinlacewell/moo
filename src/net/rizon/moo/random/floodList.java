@@ -8,6 +8,7 @@ public abstract class floodList
 	private HashSet<nickData> matches = new HashSet<nickData>();
 	private LinkedList<Long> times = new LinkedList<Long>();
 	protected boolean isClosed = false;
+	protected boolean isList = false;
 	
 	@Override
 	public abstract String toString();
@@ -16,11 +17,13 @@ public abstract class floodList
 	{
 		this.addTime();
 		matches.add(nd);
+		nd.lists.add(this);
 	}
 	
 	public void delMatch(nickData nd)
 	{
 		matches.remove(nd);
+		nd.lists.remove(this);
 	}
 	
 	public HashSet<nickData> getMatches()
