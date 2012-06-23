@@ -153,19 +153,20 @@ public class commandFlood extends command
 					else
 					{
 						int deleted = 0;
-						//fl.getMatches() is a hashset now; we must iterate over it now.
 						int j = 0;
 						for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext(); j++)
 						{
 							nickData nd = it.next();
-							if(!tobedeleted.contains(j))
+							if(!tobedeleted.contains(j)) // XXX: this is inefficient!
 								continue;
 							
 							it.remove();
 							deleted++;
 						}
 						
-						moo.reply(source, target, "Deleted " + deleted + " entries");
+						moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
+						if(fl.getMatches().isEmpty())
+							moo.reply(source, target, "Deleted now-empty list " + i);
 					}
 				}
 				else
