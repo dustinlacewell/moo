@@ -153,10 +153,15 @@ public class commandFlood extends command
 					else
 					{
 						int deleted = 0;
-						for (Iterator<Integer> ii = tobedeleted.descendingIterator(); ii.hasNext();)
+						//fl.getMatches() is a hashset now; we must iterate over it now.
+						int j = 0;
+						for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext(); j++)
 						{
-							int del = ii.next(); // Required to cast ii.next() to an int to delete from list by position not by object
-							fl.getMatches().remove(del);
+							nickData nd = it.next();
+							if(!tobedeleted.contains(j))
+								continue;
+							
+							it.remove();
 							deleted++;
 						}
 						
