@@ -160,7 +160,7 @@ public class commandFlood extends command
 						int j = 0;
 						for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext(); j++)
 						{
-							nickData nd = it.next();
+							it.next();
 							if(!tobedeleted.contains(j)) // XXX: this is inefficient!
 								continue;
 							

@@ -33,6 +33,9 @@ public class messageNotice extends message
 		{
 			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), real = m.group(4);
 			
+			if (ident.equals("cgiirc") || real.equals("http://www.mibbit.com"))
+				return;
+			
 			nickData nd = new nickData(nick, ident, real, ip);
 			random.addNickData(nd);
 		}
