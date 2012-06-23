@@ -141,6 +141,11 @@ public class commandFlood extends command
 								
 								continue;
 							}
+							
+							// Prevent memory overflow/very slow responses
+							if(max > fl.getMatches().size())
+								max = fl.getMatches().size();
+							
 							for ( ; min <= max; min++)
 								tobedeleted.add(min - 1);
 						}
