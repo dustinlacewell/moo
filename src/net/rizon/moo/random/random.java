@@ -38,7 +38,7 @@ class deadListChecker extends timer
 
 public class random extends mpackage
 {
-	protected static final int maxSize = 100, matchesForFlood = 10, timeforMatches = 60, scoreForRandom = 3;
+	protected static final int maxSize = 100, matchesForFlood = 10, globalConnectsForFlood = 40, timeforMatches = 60, scoreForRandom = 3;
 	
 	public random()
 	{
@@ -71,7 +71,7 @@ public class random extends mpackage
 		
 		nd = nicks.getFirst();
 		
-		boolean flood = nicks.size() >= matchesForFlood && System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
+		boolean flood = nicks.size() == maxSize && System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
 		if (globalFlood == null && flood)
 		{
 			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
@@ -86,7 +86,7 @@ public class random extends mpackage
 				if (nd.getScore() >= scoreForRandom)
 				{
 					globalFlood.addMatch(nd);
-					logMatch(nd, null, nd.toString());
+					logMatch(nd, globalFlood, nd.toString());
 				}
 			}
 			
@@ -98,7 +98,7 @@ public class random extends mpackage
 			if (nd.getScore() >= scoreForRandom)
 			{
 				globalFlood.addMatch(nd);
-				logMatch(nd, null, nd.toString());
+				logMatch(nd, globalFlood, nd.toString());
 			}
 		}
 	}
@@ -113,6 +113,11 @@ public class random extends mpackage
 	public static LinkedList<floodList> getFloodLists()
 	{
 		return floodLists;
+	}
+	
+	public static void clearFloodLists()
+	{
+		floodLists.clear();
 	}
 	
 	public static floodList getFloodListAt(int i)

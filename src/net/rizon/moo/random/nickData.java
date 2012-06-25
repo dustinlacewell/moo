@@ -9,6 +9,7 @@ public class nickData
 	public String nick_str, user_str, realname_str, ip;
 	public long time;
 	public LinkedList<floodList> lists = new LinkedList<floodList>();
+	public boolean akilled = false;
 	
 	public nickData(final String nick, final String user, final String real, final String ip)
 	{

@@ -27,6 +27,7 @@ public class commandFlood extends command
 		moo.notice(source, "!FLOOD <flood list number> LIST -- Displays all entries in a flood list");
 		moo.notice(source, "!FLOOD <flood list number> DEL [host/range] -- Deletes selected entries from a flood list or the entire list");
 		moo.notice(source, "!FLOOD <flood list number> AKILL [duration] --  Akills the entire list. If no duration is given, 2d will be assumed");
+		moo.notice(source, "!FLOOD DESTROY <number> --  Akills everything on at least <number> lists");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <number> -- Delete all entries aren't on <number> floodlists");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
@@ -64,6 +65,51 @@ public class commandFlood extends command
 			for (pattern p : pattern.getPatterns())
 				moo.reply(source, target, "  " + p.toString() + ": contains " + p.getMatches().size() + " matches, first at " + new Date(p.getTimes().getFirst() * 1000L) + ", last at " + new Date(p.getTimes().getLast() * 1000L));
 			moo.reply(source, target, "Threshold: " + random.matchesForFlood + " in " + random.timeforMatches + " seconds");
+			return;
+		}
+		else if (params[1].equalsIgnoreCase("DESTROY"))
+		{
+			int min = 0;
+			
+			try
+			{
+				min = Integer.parseInt(params[2]);
+			}
+			catch (Exception ex)
+			{
+			}
+			
+			int lists = random.getFloodLists().size(), count = 0, dupes = 0;
+			
+			for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
+			{
+				floodList fl = it.next();
+				
+				for (Iterator<nickData> it2 = fl.getMatches().iterator(); it2.hasNext();)
+				{
+					nickData nd = it2.next();
+					
+					if (nd.getActiveListCount() < min)
+						continue;
+					
+					if (nd.akilled)
+					{
+						++dupes;
+						continue;
+					}
+					
+					nd.akilled = true;
+					++count;
+					
+					moo.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + ")");
+				}
+			}
+			
+			random.clearFloodLists();
+			
+			moo.operwall(source + " used AKILL for " + count + " flood entries");
+			
+			moo.reply(source, target, "Akilled " + count + " entries from " + lists + " lists (" + dupes + " duplicates).");
 			return;
 		}
 		
@@ -221,13 +267,22 @@ public class commandFlood extends command
 				}
 			}
 			
+			int count = 0;
 			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
 			{
 				nickData fe = it.next();
+				
+				if (fe.akilled)
+					continue;
+				
+				fe.akilled = true;
+				++count;
+				
 				moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + ")");
 			}
 
-			moo.reply(source, target, "Akilled " + fl.getMatches().size() + " entries");
+			moo.operwall(source + " used AKILL for " + count + " flood entries");
+			moo.reply(source, target, "Akilled " + count + " entries (" + (fl.getMatches().size() - count) + " duplicates)");
 			random.removeFloodListAt(i - 1);
 		}
 		else if (params[2].equalsIgnoreCase("APPLY"))
