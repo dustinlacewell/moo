@@ -38,7 +38,7 @@ class deadListChecker extends timer
 
 public class random extends mpackage
 {
-	protected static final int maxSize = 100, matchesForFlood = 10, timeforMatches = 60, scoreForRandom = 3;
+	protected static final int maxSize = 100, matchesForFlood = 20, timeforMatches = 60, scoreForRandom = 3;
 	
 	public random()
 	{
