@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar moo.jar >moo.log 2>&1 &
+java -XX:+HeapDumpOnOutOfMemoryError -Xmx16M -jar moo.jar >moo.log 2>&1 &
