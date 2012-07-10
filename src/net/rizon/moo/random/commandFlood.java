@@ -347,6 +347,9 @@ public class commandFlood extends command
 		}
 		
 		if (fl.getMatches().isEmpty() == true)
+		{
+			fl.onClose();
 			random.removeFloodListAt(i - 1);
+		}
 	}
 }
