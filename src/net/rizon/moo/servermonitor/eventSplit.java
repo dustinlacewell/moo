@@ -76,7 +76,7 @@ public class eventSplit extends event
 		if (moo.conf.getSplitEmail().isEmpty() == false && pypsd == false)
 			mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + from.getName());
 		
-		if (moo.conf.getDisableSplitReconnect() == false && serv.isServices() == false && serv.frozen == false)
+		if (moo.conf.getDisableSplitReconnect() == false && serv.isServices() == false)
 		{
 			reconnector r = new reconnector(serv, from);
 			r.start();

@@ -94,7 +94,7 @@ public class reconnector extends timer
 			this.setRepeating(false);
 			return;
 		}
-		else if (s.frozen || moo.conf.getDisableSplitReconnect())
+		else if (moo.conf.getDisableSplitReconnect())
 		{
 			for (final String chan : moo.conf.getSplitChannels())
 				moo.privmsg(chan, "Disabling reconnect for frozen server " + s.getName());
