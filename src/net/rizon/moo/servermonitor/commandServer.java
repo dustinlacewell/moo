@@ -74,6 +74,11 @@ class commandServerBase extends command
 			server s = server.findServer(params[1]);
 			if (s == null)
 				moo.reply(source, target, "Server " + params[1] + " not found");
+			else if (params[2].equals("."))
+			{
+				s.preferred_links.clear();
+				moo.reply(source, target, "Prefered links for " + s.getName() + " unset");
+			}
 			else
 			{
 				boolean modified = false;
