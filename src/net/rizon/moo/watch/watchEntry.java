@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.rizon.moo.moo;
 
-public class watchEntry
+class watchEntry
 {
 	public enum registeredState
 	{

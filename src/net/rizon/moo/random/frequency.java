@@ -1,6 +1,6 @@
 package net.rizon.moo.random;
 
-public enum frequency
+enum frequency
 {
 	E('E', (short) 158),
 	T('T', (short) 114),

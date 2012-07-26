@@ -8,7 +8,7 @@ import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 
-public class eventSplit extends event
+class eventSplit extends event
 {
 	@Override
 	public void onServerLink(server serv, server to)

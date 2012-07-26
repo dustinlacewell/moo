@@ -38,7 +38,7 @@ class shellExec extends Thread
 	}
 }
 
-public class commandShell extends command
+class commandShell extends command
 {
 	public commandShell(mpackage pkg)
 	{

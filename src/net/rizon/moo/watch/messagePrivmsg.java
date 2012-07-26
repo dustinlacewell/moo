@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 
-public class messagePrivmsg extends message
+class messagePrivmsg extends message
 {
 	private static final Pattern bopm_pattern = Pattern.compile("^BOPM: Banned (.*?)!");
 	private static final long ban_time = 86400 * 3 * 1000L; // 3d

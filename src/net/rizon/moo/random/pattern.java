@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import net.rizon.moo.moo;
 
-public class pattern extends floodList
+class pattern extends floodList
 {
 	private field type;
 	

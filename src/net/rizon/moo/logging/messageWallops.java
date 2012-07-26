@@ -10,7 +10,7 @@ import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 
-public class messageWallops extends message
+class messageWallops extends message
 {
 	private static final Pattern akillPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)[)\\]]$");
 	private static final Pattern operPattern = Pattern.compile("\2([^ ]+)\2 is now an IRC operator");

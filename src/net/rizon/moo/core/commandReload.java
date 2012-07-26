@@ -5,7 +5,7 @@ import net.rizon.moo.config;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandReload extends command
+class commandReload extends command
 {
 	public commandReload(mpackage pkg)
 	{

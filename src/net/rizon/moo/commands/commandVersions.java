@@ -91,7 +91,7 @@ class message351 extends message
 	}
 }
 
-public class commandVersions extends command
+class commandVersions extends command
 {
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();

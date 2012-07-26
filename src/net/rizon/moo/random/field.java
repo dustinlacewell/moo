@@ -1,6 +1,6 @@
 package net.rizon.moo.random;
 
-public enum field
+enum field
 {
 	FIELD_NICK("Nick"),
 	FIELD_IDENT("Ident"),

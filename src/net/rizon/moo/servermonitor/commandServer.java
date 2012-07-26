@@ -341,7 +341,7 @@ class commandCline extends commandServerBase
 	}
 }
 
-public class commandServer
+class commandServer
 {
 	public commandServer(mpackage pkg)
 	{

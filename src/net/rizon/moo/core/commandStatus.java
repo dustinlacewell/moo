@@ -5,7 +5,7 @@ import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.version;
 
-public class commandStatus extends command
+class commandStatus extends command
 {
 	public commandStatus(mpackage pkg)
 	{

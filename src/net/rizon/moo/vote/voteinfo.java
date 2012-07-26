@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import net.rizon.moo.database;
 import net.rizon.moo.moo;
 
-public class voteinfo
+class voteinfo
 {
 	public int id;
 	public String channel, info, owner;

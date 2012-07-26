@@ -3,7 +3,7 @@ package net.rizon.moo.random;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-public abstract class floodList
+abstract class floodList
 {
 	private HashSet<nickData> matches = new HashSet<nickData>();
 	private LinkedList<Long> times = new LinkedList<Long>();

@@ -122,7 +122,7 @@ class message219_why extends message
 	}
 }
 
-public class commandWhy extends command
+class commandWhy extends command
 {
 	@SuppressWarnings("unused")
 	private static final message_216 message216 = new message_216();

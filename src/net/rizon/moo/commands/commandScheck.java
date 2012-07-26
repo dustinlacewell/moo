@@ -209,7 +209,7 @@ class scheckEndTimer extends timer
 	}
 }
 
-public class commandScheck extends command
+class commandScheck extends command
 {
 	public commandScheck(mpackage pkg)
 	{

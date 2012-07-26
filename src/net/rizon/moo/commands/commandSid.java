@@ -92,7 +92,7 @@ final class commandSidHub extends commandSidBase
 	}
 }
 
-public class commandSid
+class commandSid
 {
 	@SuppressWarnings("unused")
 	private commandSidClient sid_client;

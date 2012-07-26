@@ -24,7 +24,7 @@ class splitComparator implements Comparator<split>
 	}
 }
 
-public class commandSplit extends command
+class commandSplit extends command
 {
 	public commandSplit(mpackage pkg)
 	{

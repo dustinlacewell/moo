@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import net.rizon.moo.database;
 import net.rizon.moo.moo;
 
-public class cast
+class cast
 {
 	public int id;
 	public String channel, voter;

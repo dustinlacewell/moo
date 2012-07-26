@@ -1,6 +1,6 @@
 package net.rizon.moo.random;
 
-public class globalFloodList extends floodList
+class globalFloodList extends floodList
 {
 	public globalFloodList()
 	{

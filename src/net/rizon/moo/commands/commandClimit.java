@@ -62,7 +62,7 @@ class message_limit extends message
 	}
 }
 
-public class commandClimit extends command
+class commandClimit extends command
 {
 	@SuppressWarnings("unused")
 	private static message_limit message_005 = new message_limit("005");

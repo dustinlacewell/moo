@@ -4,7 +4,7 @@ import net.rizon.moo.event;
 import net.rizon.moo.server;
 import net.rizon.moo.grapher.graphs.serverUserGraph;
 
-public class eventGraph extends event
+class eventGraph extends event
 {
 	private grapher pkg;
 	

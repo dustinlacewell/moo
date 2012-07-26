@@ -8,7 +8,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class logSearch extends command
+class logSearch extends command
 {
 	public logSearch(mpackage pkg)
 	{

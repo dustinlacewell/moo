@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import net.rizon.moo.message;
 
-public class messageNotice extends message
+class messageNotice extends message
 {
 	public messageNotice()
 	{

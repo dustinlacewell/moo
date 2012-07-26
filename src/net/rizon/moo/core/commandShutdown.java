@@ -5,7 +5,7 @@ import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
 
-public class commandShutdown extends command
+class commandShutdown extends command
 {
 	public commandShutdown(mpackage pkg)
 	{

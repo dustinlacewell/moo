@@ -45,7 +45,7 @@ final class serverComparator implements Comparator<server>
 	}
 }
 
-public class commandOline extends command
+class commandOline extends command
 {
 	private static final serverComparator servComparator = new serverComparator();
 

@@ -7,7 +7,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandWatch extends command
+class commandWatch extends command
 {
 	public commandWatch(mpackage pkg)
 	{

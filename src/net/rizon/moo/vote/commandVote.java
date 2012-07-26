@@ -7,7 +7,7 @@ import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandVote extends command
+class commandVote extends command
 {
 	public commandVote(mpackage pkg)
 	{

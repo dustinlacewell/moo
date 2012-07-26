@@ -58,7 +58,7 @@ class message242 extends message
 	}
 }
 
-public class commandUptime extends command
+class commandUptime extends command
 {
 	@SuppressWarnings("unused")
 	private static message242 message_242 = new message242();

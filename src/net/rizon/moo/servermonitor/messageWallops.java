@@ -7,7 +7,7 @@ import net.rizon.moo.message;
 import net.rizon.moo.server;
 import net.rizon.moo.split;
 
-public class messageWallops extends message
+class messageWallops extends message
 {
 	private static final Pattern connectPattern = Pattern.compile("Remote CONNECT ([^ ]*) [0-9]* from ([^ ]*)$");
 	

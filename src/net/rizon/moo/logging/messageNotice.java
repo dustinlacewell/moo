@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 
-public class messageNotice extends message
+class messageNotice extends message
 {
 	private static final Pattern killPattern = Pattern.compile("Received KILL message for ([^ ]+)\\. From ([^ ]+) Path: [^ ]+ \\((.*)\\)");
 			

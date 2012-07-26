@@ -10,7 +10,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandFlood extends command
+class commandFlood extends command
 {
 	public commandFlood(mpackage pkg)
 	{

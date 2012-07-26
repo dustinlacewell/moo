@@ -112,7 +112,7 @@ class message366 extends message
 	}
 }
 
-public class commandSlackers extends command
+class commandSlackers extends command
 {	
 	@SuppressWarnings("unused")
 	private static message249 msg_249 = new message249();

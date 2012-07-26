@@ -158,7 +158,7 @@ class checkTimesTimer extends timer
 	}
 }
 
-public class commandTime extends command
+class commandTime extends command
 {
 	@SuppressWarnings("unused")
 	private static message391 message_391 = new message391("391");

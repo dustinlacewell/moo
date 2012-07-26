@@ -252,7 +252,7 @@ class dnsblTimer extends timer
 	}
 }
 
-public class commandDnsbl extends command
+class commandDnsbl extends command
 {
 	@SuppressWarnings("unused")
 	private static message219_dnsbl msg_219 = new message219_dnsbl();

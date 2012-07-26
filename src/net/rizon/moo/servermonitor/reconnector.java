@@ -10,7 +10,7 @@ import net.rizon.moo.server;
 import net.rizon.moo.split;
 import net.rizon.moo.timer;
 
-public class reconnector extends timer
+class reconnector extends timer
 {
 	private server serv, from;
 	private split sp;

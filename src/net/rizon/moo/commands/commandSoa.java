@@ -111,7 +111,7 @@ class soaCheck extends Thread
 	}
 }
 
-public class commandSoa extends command
+class commandSoa extends command
 {
 	public commandSoa(mpackage pkg)
 	{

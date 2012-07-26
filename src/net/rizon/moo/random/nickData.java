@@ -3,7 +3,7 @@ package net.rizon.moo.random;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class nickData
+class nickData
 {
 	private pattern nick_p, user_p, realname_p;
 	public String nick_str, user_str, realname_str, ip;

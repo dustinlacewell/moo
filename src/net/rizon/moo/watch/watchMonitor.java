@@ -44,7 +44,7 @@ class message_303 extends message
 	}
 }
 
-public class watchMonitor extends timer
+class watchMonitor extends timer
 {
 	@SuppressWarnings("unused")
 	private static final message_303 message303 = new message_303();

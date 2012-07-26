@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import net.rizon.moo.message;
 import net.rizon.moo.server;
 
-public class messageNotice extends message
+class messageNotice extends message
 {
 	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([0-9.]*)\\] \\[(.*)\\]");
 	

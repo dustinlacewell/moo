@@ -225,7 +225,7 @@ class commandMapAll extends commandMapBase
 	}
 }
 
-public class commandMap
+class commandMap
 {
 	@SuppressWarnings("unused")
 	private static message211 msg_211 = new message211();

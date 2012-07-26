@@ -7,7 +7,7 @@ import net.rizon.moo.event;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 
-public class eventLogging extends event
+class eventLogging extends event
 {
 	@Override
 	protected void initDatabases()

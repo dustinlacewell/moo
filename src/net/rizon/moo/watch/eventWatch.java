@@ -9,7 +9,7 @@ import java.util.Iterator;
 import net.rizon.moo.event;
 import net.rizon.moo.moo;
 
-public class eventWatch extends event
+class eventWatch extends event
 {
 	@Override
 	protected void initDatabases()

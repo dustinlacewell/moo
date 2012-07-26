@@ -7,7 +7,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandHelp extends command
+class commandHelp extends command
 {
 	public commandHelp(mpackage pkg)
 	{
