@@ -39,6 +39,9 @@ public class config
 	private String rrd_bin;
 	private String rrd_dir;
 	private String[] ssh_key_paths;
+	private String antiidle_channel;
+	private int antiidle_time;
+	private int antiidle_bantime;
 	private String[] packages;
 	private int debug;
 	
@@ -104,6 +107,9 @@ public class config
 		s = this.getProperty(prop, "ssh_key_paths");
 		this.ssh_key_paths = s.split(";");
 		s = this.getProperty(prop, "packages");
+		this.antiidle_channel = this.getProperty(prop, "antiidle.channel");
+		this.antiidle_time = Integer.parseInt(this.getProperty(prop, "antiidle.time"));
+		this.antiidle_bantime = Integer.parseInt(this.getProperty(prop, "antiidle.bantime"));
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
@@ -312,6 +318,21 @@ public class config
 	public final String[] getSSHKeyPaths()
 	{
 		return this.ssh_key_paths;
+	}
+	
+	public final String getAntiIdleChannel()
+	{
+		return this.antiidle_channel;
+	}
+	
+	public final int getAntiIdleTime()
+	{
+		return this.antiidle_time;
+	}
+	
+	public final int getAntiIdleBanTime()
+	{
+		return this.antiidle_bantime;
 	}
 	
 	public final String[] getPackages()

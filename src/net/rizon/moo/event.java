@@ -24,6 +24,12 @@ public abstract class event
 	public void onServerLink(server serv, server to) { }
 	public void onServerSplit(server serv, server from) { }
 	
+	public void onJoin(final String source, final String channel) { }
+	public void onPart(final String source, final String channel) { }
+	public void onKick(final String source, final String target, final String channel) { }
+	public void onMode(final String source, final String channel, final String modes) { }
+	public void onPrivmsg(final String source, final String channel, final String[] message) { }
+	
 	private static LinkedList<event> events = new LinkedList<event>();
 	
 	public static final event[] getEvents()

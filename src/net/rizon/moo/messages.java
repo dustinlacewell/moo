@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -479,6 +480,9 @@ class messagePrivmsg extends message
 	{
 		if (message.length < 2)
 			return;
+		
+		for (event e : event.getEvents())
+			e.onPrivmsg(source, message[0], Arrays.copyOfRange(message, 1, message.length - 1));
 
 		if (message[1].equals("\1VERSION\1"))
 			moo.notice(source, "\1VERSION " + moo.conf.getVersion() + "\1");
@@ -523,6 +527,80 @@ class messagePrivmsg extends message
 	}
 }
 
+class messageJoin extends message
+{
+	public messageJoin()
+	{
+		super("JOIN");
+	}
+
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message.length != 1)
+			return;
+		
+		for (event e : event.getEvents())
+			e.onJoin(source, message[0]);
+	}
+}
+
+class messagePart extends message
+{
+	public messagePart()
+	{
+		super("PART");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message.length < 1)
+			return;
+		
+		for (event e : event.getEvents())
+			e.onPart(source, message[0]);
+	}
+}
+
+class messageKick extends message
+{
+	public messageKick()
+	{
+		super("KICK");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message.length < 2)
+			return;
+		
+		for (event e : event.getEvents())
+			e.onKick(source, message[1], message[0]);
+	}
+}
+
+class messageMode extends message
+{
+	public messageMode()
+	{
+		super("MODE");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		String modes = "";
+		for (int i = 1; i < message.length; ++i)
+			modes += message[i] + " ";
+		modes = modes.trim();
+		
+		for (event e : event.getEvents())
+			e.onMode(source, message[0], modes);
+	}
+}
+
 public class messages
 {
 	public static final void initMessages()
@@ -541,5 +619,9 @@ public class messages
 		new messageNotice();
 		new messagePing();
 		new messagePrivmsg();
+		new messageJoin();
+		new messagePart();
+		new messageKick();
+		new messageMode();
 	}
 }

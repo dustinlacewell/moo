@@ -38,7 +38,7 @@ version=moo v2.0
 idle_channels=#adam,#d
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d,#kline,#w
+channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services
 
 # Comma separated list of developer channels.
 dev_channels=#d
@@ -95,7 +95,14 @@ rrd_dir=/home/adam/rizon/moo/graphs
 # Paths to SSH keys for servercontrol. Separate with ;.
 ssh_key_paths=/home/adam/.ssh/moo
 
+# Antiidle configuration
+antiidle.channel=#services
+# Time to kick in minutes
+antiidle.time=10
+# Time to ban users in minutes
+antiidle.bantime=5
+
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle
 
 debug=0

@@ -257,6 +257,16 @@ public class moo
 		moo.sock.write("JOIN " + target);
 	}
 	
+	public static void kick(final String target, final String channel, final String reason)
+	{
+		moo.sock.write("KICK " + channel + " " + target + " :" + reason);
+	}
+	
+	public static void mode(final String target, final String modes)
+	{
+		moo.sock.write("MODE " + target + " " + modes);
+	}
+	
 	public static void kill(final String nick, final String reason)
 	{
 		moo.sock.write("KILL " + nick + " :" + reason);
