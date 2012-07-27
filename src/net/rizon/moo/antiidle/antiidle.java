@@ -11,5 +11,6 @@ public class antiidle extends mpackage
 		new commandIdle(this);
 		
 		new eventAntiIdle();
+		new messageUserhost();
 	}
 }

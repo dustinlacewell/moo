@@ -11,7 +11,9 @@ class eventAntiIdle extends event
 		if (moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false || moo.conf.getNick().equals(source))
 			return;
 		
-		new antiIdleEntry(source).start();
+		antiIdleEntry ai = new antiIdleEntry(source);
+		moo.sock.write("USERHOST " + ai.nick);
+		ai.start();
 	}
 	
 	@Override
