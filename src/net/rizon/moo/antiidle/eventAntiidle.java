@@ -52,4 +52,10 @@ class eventAntiIdle extends event
 		
 		antiIdleEntry.removeTimerFor(source);
 	}
+	
+	@Override
+	public void onNick(final String source, final String dest)
+	{
+		antiIdleEntry.renameTimerFor(source, dest);
+	}
 }

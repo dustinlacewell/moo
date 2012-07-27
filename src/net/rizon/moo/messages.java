@@ -601,6 +601,24 @@ class messageMode extends message
 	}
 }
 
+class messageNick extends message
+{
+	public messageNick()
+	{
+		super("NICK");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		if (message.length != 1)
+			return;
+		
+		for (event e : event.getEvents())
+			e.onNick(source, message[0]);
+	}
+}
+
 public class messages
 {
 	public static final void initMessages()
@@ -623,5 +641,6 @@ public class messages
 		new messagePart();
 		new messageKick();
 		new messageMode();
+		new messageNick();
 	}
 }

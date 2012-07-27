@@ -10,7 +10,6 @@ class antiIdleEntry extends timer
 {
 	public String nick;
 	public String mask;
-	public long join;
 	
 	public antiIdleEntry(final String mask)
 	{
@@ -23,7 +22,6 @@ class antiIdleEntry extends timer
 		
 		this.nick = nick;
 		this.mask = mask;
-		this.join = System.currentTimeMillis() / 1000L;
 		
 		entries.put(this.nick.toLowerCase(), this);
 		
@@ -62,5 +60,27 @@ class antiIdleEntry extends timer
 		}
 		
 		return false;
+	}
+	
+	public static void renameTimerFor(final String mask, final String to)
+	{
+		String nick = mask;
+		int e = mask.indexOf('!');
+		if (e != -1)
+			nick = mask.substring(0, e);
+		
+		antiIdleEntry a = entries.get(nick.toLowerCase());
+		if (a != null)
+		{
+			entries.remove(nick.toLowerCase());
+			
+			if (moo.conf.getDebug() > 0)
+				System.out.println("antiidle: Renaming antiidle for " + nick + " to " + to);
+			
+			a.nick = to;
+			a.mask = mask;
+			
+			entries.put(to.toLowerCase(), a);
+		}
 	}
 }
