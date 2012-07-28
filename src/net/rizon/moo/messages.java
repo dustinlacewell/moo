@@ -619,6 +619,21 @@ class messageNick extends message
 	}
 }
 
+class messageQuit extends message
+{
+	public messageQuit()
+	{
+		super("QUIT");
+	}
+	
+	@Override
+	public void run(String source, String[] message)
+	{
+		for (event e : event.getEvents())
+			e.onQuit(source, message[0]);
+	}
+}
+
 public class messages
 {
 	public static final void initMessages()
@@ -642,5 +657,6 @@ public class messages
 		new messageKick();
 		new messageMode();
 		new messageNick();
+		new messageQuit();
 	}
 }

@@ -58,4 +58,10 @@ class eventAntiIdle extends event
 	{
 		antiIdleEntry.renameTimerFor(source, dest);
 	}
+	
+	@Override
+	public void onQuit(final String source, final String reason)
+	{
+		antiIdleEntry.removeTimerFor(source);
+	}
 }
