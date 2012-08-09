@@ -64,7 +64,7 @@ class pattern extends floodList
 	@Override
 	public int hashCode()
 	{
-		return this.lowerUpperMask ^ this.charMask ^ this.numberMask;
+		return this.lowerUpperMask ^ this.charMask ^ this.numberMask ^ this.type.toString().hashCode();
 	}
 	
 	@Override
