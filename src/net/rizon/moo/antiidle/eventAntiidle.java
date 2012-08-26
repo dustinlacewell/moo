@@ -1,10 +1,33 @@
 package net.rizon.moo.antiidle;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import net.rizon.moo.event;
 import net.rizon.moo.moo;
+import net.rizon.moo.timer;
 
 class eventAntiIdle extends event
 {
+	private static final ArrayList<antiIdleVoicer> tobevoiced = new ArrayList<antiIdleVoicer>();
+	
+	class antiIdleVoicer extends timer
+	{
+		private final antiIdleEntry ai;
+	
+		private antiIdleVoicer(antiIdleEntry ai)
+		{
+			super(5, false);
+			this.ai = ai;
+		}
+	
+		@Override
+		public void run(Date now)
+		{
+			moo.sock.write("USERHOST " + ai.nick);
+		}
+	}
+	
 	@Override
 	public void onJoin(final String source, final String channel) 
 	{
@@ -12,8 +35,10 @@ class eventAntiIdle extends event
 			return;
 		
 		antiIdleEntry ai = new antiIdleEntry(source);
-		moo.sock.write("USERHOST " + ai.nick);
+		antiIdleVoicer av = new antiIdleVoicer(ai);
+		tobevoiced.add(av);
 		ai.start();
+		av.start();
 	}
 	
 	@Override
@@ -40,8 +65,23 @@ class eventAntiIdle extends event
 		if (moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false)
 			return;
 		
+		Iterator<antiIdleVoicer> i;
 		for (final String s : modes.split(" "))
+		{
 			antiIdleEntry.removeTimerFor(s);
+			i = tobevoiced.iterator();
+			
+			while (i.hasNext())
+			{
+				antiIdleVoicer av = i.next();
+				if (av.ai.nick.equals(s))
+				{
+					av.stop();
+					i.remove();
+					break;
+				}
+			}
+		}
 	}
 	
 	@Override
