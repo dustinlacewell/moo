@@ -228,6 +228,42 @@ public class moo
 		return m.matches();
 	}
 	
+	public static boolean wmatch(String matchtxt, String txt)
+	{
+		String mt = "";
+		
+		for (int x = 0; x < matchtxt.length(); x++)
+			switch (matchtxt.charAt(x))
+			{
+				case '*':
+					mt += ".*";
+					break;
+				case '?':
+					mt += ".";
+					break;
+				case '^':
+				case '$':
+				case '(':
+				case ')':
+				case '[':
+				case ']':
+				case '.':
+				case '|':
+				case '+':
+				case '{':
+				case '}':
+				case '\\':
+					mt += "\\" + matchtxt.charAt(x);
+					break;
+				default:
+					mt += matchtxt.substring(x, x + 1);
+			}
+		
+		Pattern p = Pattern.compile("(?uis)^" + mt + "$");
+		Matcher m = p.matcher(txt);
+		return m.find() == true;
+	}
+	
 	public static void privmsg(String target, final String buffer)
 	{
 		int ex = target.indexOf('!');

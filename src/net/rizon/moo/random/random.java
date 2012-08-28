@@ -136,7 +136,10 @@ public class random extends mpackage
 	{
 		try
 		{
-			floodLists.remove(i);
+			floodList fl = floodLists.get(i);
+			fl.onClose();
+			fl.isClosed = true;
+			floodLists.remove(fl);
 		}
 		catch (IndexOutOfBoundsException ex)
 		{

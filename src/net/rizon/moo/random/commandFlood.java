@@ -345,6 +345,30 @@ class commandFlood extends command
 				moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 			}
 		}
+		else if (params[2].equalsIgnoreCase("APPLYW"))
+		{
+			if (params.length < 4)
+			{
+				moo.notice(source, "Syntax: !FLOOD <flood list number> APPLYW <wildcard match>");
+				return;
+			}
+			
+			int deleted = 0;
+			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+			{
+				nickData nd = it.next();
+				
+				if (moo.wmatch(params[3], nd.nick_str))
+					continue;
+				
+				it.remove();
+				fl.delMatch(nd);
+				
+				deleted++;
+			}
+			
+			moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
+		}
 		
 		if (fl.getMatches().isEmpty() == true)
 		{
