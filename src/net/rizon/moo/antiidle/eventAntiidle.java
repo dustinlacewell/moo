@@ -9,7 +9,7 @@ import net.rizon.moo.timer;
 
 class eventAntiIdle extends event
 {
-	private static final ArrayList<antiIdleVoicer> tobevoiced = new ArrayList<antiIdleVoicer>();
+	protected static final ArrayList<antiIdleVoicer> toBeVoiced = new ArrayList<antiIdleVoicer>();
 	
 	class antiIdleVoicer extends timer
 	{
@@ -24,6 +24,7 @@ class eventAntiIdle extends event
 		@Override
 		public void run(Date now)
 		{
+			toBeVoiced.remove(this);
 			moo.sock.write("USERHOST " + ai.nick);
 		}
 	}
@@ -36,7 +37,7 @@ class eventAntiIdle extends event
 		
 		antiIdleEntry ai = new antiIdleEntry(source);
 		antiIdleVoicer av = new antiIdleVoicer(ai);
-		tobevoiced.add(av);
+		toBeVoiced.add(av);
 		ai.start();
 		av.start();
 	}
@@ -65,19 +66,17 @@ class eventAntiIdle extends event
 		if (moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false)
 			return;
 		
-		Iterator<antiIdleVoicer> i;
 		for (final String s : modes.split(" "))
 		{
 			antiIdleEntry.removeTimerFor(s);
-			i = tobevoiced.iterator();
 			
-			while (i.hasNext())
+			for (Iterator<antiIdleVoicer> it = toBeVoiced.iterator(); it.hasNext();)
 			{
-				antiIdleVoicer av = i.next();
+				antiIdleVoicer av = it.next();
 				if (av.ai.nick.equals(s))
 				{
 					av.stop();
-					i.remove();
+					it.remove();
 					break;
 				}
 			}
