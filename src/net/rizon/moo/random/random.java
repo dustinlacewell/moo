@@ -117,6 +117,13 @@ public class random extends mpackage
 	
 	public static void clearFloodLists()
 	{
+		for (int i = 0; i < floodLists.size(); ++i)
+		{
+			floodList fl = floodLists.get(i);
+			fl.onClose();
+			fl.isClosed = true;
+		}
+		
 		floodLists.clear();
 	}
 	
