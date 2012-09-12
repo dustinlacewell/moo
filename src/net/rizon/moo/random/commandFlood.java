@@ -30,6 +30,7 @@ class commandFlood extends command
 		moo.notice(source, "!FLOOD DESTROY <number> --  Akills everything on at least <number> lists");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <number> -- Delete all entries aren't on <number> floodlists");
+		moo.notice(source, "!FLOOD <flood list number> APPLYW <wildcard match> -- Delete all entries don't match the given wildcard expression (Used wildcards: ? and *)");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
 	}
 	
