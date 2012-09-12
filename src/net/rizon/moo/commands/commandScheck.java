@@ -149,6 +149,11 @@ class scheck extends Thread
 		{
 			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
 		}
+		catch (Exception ex) 
+		{
+			moo.reply(this.source, this.target, "[SCHECK] [EXCEPTION] Unable to connect to " + this.server + ": " + ex);
+			ex.printStackTrace();
+		}
 		finally
 		{
 			try
