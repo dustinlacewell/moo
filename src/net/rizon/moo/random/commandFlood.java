@@ -31,6 +31,7 @@ class commandFlood extends command
 		moo.notice(source, "!FLOOD <flood list number> APPLY <regex> -- Delete all entries that don't match the given regex matched against nick");
 		moo.notice(source, "!FLOOD <flood list number> APPLY <number> -- Delete all entries aren't on <number> floodlists");
 		moo.notice(source, "!FLOOD <flood list number> APPLYW <wildcard match> -- Delete all entries don't match the given wildcard expression (Used wildcards: ? and *)");
+		moo.notice(source, "!FLOOD <flood list number> APPLYF <nick!user@host/gecos regex> -- Delete all entries that don't match the given regex matched against regex");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
 	}
 	
@@ -368,6 +369,41 @@ class commandFlood extends command
 				deleted++;
 			}
 			
+			moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
+		}
+		else if (params[2].equalsIgnoreCase("APPLYF"))
+		{
+			if (params.length < 4)
+			{
+				moo.notice(source, "Syntax: !FLOOD <flood list number> APPLYF <nick!user@host/gecos regex>");
+				return;
+			}
+			
+			Pattern regex;
+			try
+			{
+				regex = Pattern.compile(params[3]);
+			}
+			catch (PatternSyntaxException ex)
+			{
+				moo.notice(source, "Invalid regex: " + params[3]);
+				return;
+			}
+
+			int deleted = 0;
+			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
+			{
+				nickData nd = it.next();
+
+				if (regex.matcher(nd.nick_str + "!" + nd.user_str + "@" +nd.ip + "/" + nd.realname_str).matches())
+					continue;
+
+				it.remove();
+				fl.delMatch(nd);
+
+				deleted++;
+			}
+
 			moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 		}
 		
