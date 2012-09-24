@@ -7,11 +7,11 @@ import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-class commandVote extends command
+class commandVoteBase extends command
 {
-	public commandVote(mpackage pkg)
+	public commandVoteBase(mpackage pkg, final String command)
 	{
-		super(pkg, "!MOO-VOTE", "Vote and manage votes");
+		super(pkg, command, "Vote and manage votes");
 	}
 	
 	private static String difference(Date now, Date then)
@@ -233,5 +233,14 @@ class commandVote extends command
 		{
 			this.onHelp(source);
 		}
+	}
+}
+
+class commandVote
+{
+	public commandVote(mpackage pkg)
+	{
+		new commandVoteBase(pkg, "!MOO-VOTE");
+		new commandVoteBase(pkg, "!VOTE");
 	}
 }
