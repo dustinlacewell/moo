@@ -45,6 +45,9 @@ class message351 extends message
 
 		if (waiting_for.remove(s.getName()) == false)
 			return;
+		
+		if (commandVersionsBase.want_server != null && commandVersionsBase.want_server != s)
+			return;
 
 		String tok = msg[1];
 		
@@ -65,7 +68,7 @@ class message351 extends message
 			}
 			catch (NumberFormatException ex) { }
 			
-			if (commandVersions.onlyOld && ver_num == max_ver)
+			if (commandVersionsBase.onlyOld && ver_num == max_ver)
 				return;
 			
 			String buf = "[VERSION] " + source + " ";
@@ -82,7 +85,7 @@ class message351 extends message
 				buf += message.COLOR_BRIGHTGREEN;
 			buf += ver + message.COLOR_END;
 			
-			int serno_pos1, serno_pos2;
+			int serno_pos1;
 			for (serno_pos1 = 0; serno_pos1 < tok.length() && tok.charAt(serno_pos1) != '('; ++serno_pos1);
 			buf += " (";
 			buf += tok.substring(serno_pos1+1, pos-1);
@@ -97,42 +100,62 @@ class message351 extends message
 	}
 }
 
-class commandVersions extends command
+class commandVersionsBase extends command
 {
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();
+	static server want_server = null;
 	
 	public static boolean onlyOld;
 
-	public commandVersions(mpackage pkg)
+	public commandVersionsBase(mpackage pkg, final String command)
 	{
-		super(pkg, "!VERSIONS", "View the IRCd versions");
+		super(pkg, command, "View the IRCd versions");
 	}
 
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !VERSIONS [OLD]");
-		moo.notice(source, "This command gets the version of all currently linked IRCds and lists them.");
+		moo.notice(source, "Syntax: !VERSIONS [OLD|server]");
+		moo.notice(source, "This command gets the version and serno of all currently linked IRCds and lists them.");
 		moo.notice(source, "If OLD is given as a parameter, only versions that aren't the latest will be shown.");
+		moo.notice(source, "If a server name is given, the version for that server will be shown.");
 	}
 	
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (params.length > 1 && params[1].equalsIgnoreCase("OLD"))
-			onlyOld = true;
-		else
-			onlyOld = false;
+		if (params.length > 1)
+		{
+			if (params[1].equalsIgnoreCase("OLD"))
+				onlyOld = true;
+			else
+			{
+				onlyOld = false;
+				want_server = server.findServer(params[1]);
+			}
+		}
 
 		for (server s : server.getServers())
+		{
 			if (s.isServices() == false)
 			{
 				moo.sock.write("VERSION " + s.getName());
 				message351.waiting_for.add(s.getName());
 			}
+		}
 		
 		message351.target_channel = target;
 		message351.target_source = source;
+	}
+}
+
+class commandVersions
+{
+	public commandVersions(mpackage pkg)
+	{
+		new commandVersionsBase(pkg, "!VERSIONS");
+		// Some people can't type for their life...
+		new commandVersionsBase(pkg, "!VERSION");
 	}
 }
