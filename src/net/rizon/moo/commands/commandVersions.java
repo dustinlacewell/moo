@@ -82,6 +82,12 @@ class message351 extends message
 				buf += message.COLOR_BRIGHTGREEN;
 			buf += ver + message.COLOR_END;
 			
+			int serno_pos1, serno_pos2;
+			for (serno_pos1 = 0; serno_pos1 < tok.length() && tok.charAt(serno_pos1) != '('; ++serno_pos1);
+			buf += " (";
+			buf += tok.substring(serno_pos1+1, pos-1);
+			buf += ")";
+			
 			moo.reply(target_source, target_channel, buf);
 		}
 		catch (Exception ex)
