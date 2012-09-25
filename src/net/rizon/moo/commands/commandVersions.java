@@ -36,15 +36,9 @@ class message351 extends message
 	@Override
 	public void run(String source, String[] msg)
 	{
-		if (target_channel == null || target_source == null)
-			return;
-		
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			s = new server(source);
-
-		if (waiting_for.remove(s.getName()) == false)
-			return;
 		
 		if (commandVersionsBase.want_server != null && commandVersionsBase.want_server != s)
 			return;
@@ -67,6 +61,12 @@ class message351 extends message
 					max_ver = ver_num;
 			}
 			catch (NumberFormatException ex) { }
+			
+			// We might just want to update the max_ver, not run a command
+			if (waiting_for.remove(s.getName()) == false)
+				return;
+			if (target_channel == null || target_source == null)
+				return;
 			
 			if (commandVersionsBase.onlyOld && ver_num == max_ver)
 				return;
