@@ -128,13 +128,18 @@ class commandVersionsBase extends command
 		if (params.length > 1)
 		{
 			if (params[1].equalsIgnoreCase("OLD"))
+			{
 				onlyOld = true;
+				want_server = null;
+			}
 			else
 			{
 				onlyOld = false;
 				want_server = server.findServer(params[1]);
 			}
 		}
+		else
+			want_server = null;
 
 		for (server s : server.getServers())
 		{
