@@ -211,6 +211,13 @@ class commandVoteBase extends command
 				return;
 			}
 			
+			if (v.closed)
+			{
+				// Can't let you do that, Starfox.
+				moo.reply(source, target, "This vote is closed.");
+				return;
+			}
+			
 			cast c = new cast();
 			c.id = v.id;
 			c.channel = v.channel;
