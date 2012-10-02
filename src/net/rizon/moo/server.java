@@ -40,6 +40,8 @@ public class server
 		moo.sock.write("STATS c " + this.getName());
 		moo.sock.write("STATS o " + this.getName());
 		moo.sock.write("STATS B " + this.getName());
+		if (!this.isServices())
+			moo.sock.write("VERSION " + this.getName());
 		
 		for (event e : event.getEvents())
 			e.onServerCreate(this);

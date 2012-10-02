@@ -7,18 +7,18 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-class commandHelp extends command
+class commandHelpBase extends command
 {
-	public commandHelp(mpackage pkg)
+	public commandHelpBase(mpackage pkg, final String command)
 	{
-		super(pkg, "!MOO-HELP", "Shows this list");
+		super(pkg, command, "Shows this list");
 	}
 	
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !MOO-HELP [command]");
-		moo.notice(source, "!MOO-HELP lists all available commands or gives more verbose information on a command.");
+		moo.notice(source, "Syntax: " + this.getCommandName() + " [command]");
+		moo.notice(source, this.getCommandName() + " lists all available commands or gives more verbose information on a command.");
 	}
 
 	@Override
@@ -54,5 +54,14 @@ class commandHelp extends command
 				}
 			}
 		}
+	}
+}
+
+class commandHelp
+{
+	public commandHelp(mpackage pkg)
+	{
+		new commandHelpBase(pkg, "!MOO-HELP");
+		new commandHelpBase(pkg, "!HELP");
 	}
 }
