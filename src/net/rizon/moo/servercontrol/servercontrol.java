@@ -13,6 +13,7 @@ import net.rizon.moo.servercontrol.commands.commandConnections;
 import net.rizon.moo.servercontrol.commands.commandDelServer;
 import net.rizon.moo.servercontrol.commands.commandServerControl;
 import net.rizon.moo.servercontrol.commands.commandServers;
+import net.rizon.moo.servercontrol.commands.commandShortcut;
 import net.rizon.moo.servercontrol.protocols.protocolFTP;
 import net.rizon.moo.servercontrol.protocols.protocolSSH;
 import net.rizon.moo.servercontrol.protocols.protocolTelnet;
@@ -28,12 +29,14 @@ public class servercontrol extends mpackage
 		new commandDelServer(this);
 		new commandServerControl(this);
 		new commandServers(this);
+		new commandShortcut(this);
 		
 		new protocolFTP();
 		new protocolSSH();
 		new protocolTelnet();
 		
 		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
+		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`)");
 	}
 	
 	private static final serverInfo[] processServers(ResultSet rs) throws SQLException

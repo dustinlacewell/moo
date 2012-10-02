@@ -39,17 +39,18 @@ public class database
 		return this.last_statement;
 	}
 	
-	public void executeUpdate(final String statement)
+	public int executeUpdate(final String statement)
 	{
 		try
 		{
 			this.prepare(statement);
-			this.executeUpdate();
+			return this.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
 			System.out.println("Error executing SQL statement: " + statement);
 			ex.printStackTrace();
+			return 0;
 		}
 	}
 	
@@ -59,18 +60,19 @@ public class database
 		return this.executeQuery();
 	}
 	
-	public void executeUpdate()
+	public int executeUpdate()
 	{
 		try
 		{
 			if (moo.conf.getDebug() > 0)
 				System.out.println("Executing query: " + this.last_statement.toString());
-			this.last_statement.executeUpdate();
+			return this.last_statement.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
 			System.out.println("Error executing SQL statement: " + this.last_statement.toString());
 			ex.printStackTrace();
+			return 0;
 		}
 	}
 	
