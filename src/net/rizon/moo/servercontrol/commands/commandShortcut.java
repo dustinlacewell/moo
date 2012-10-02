@@ -104,7 +104,7 @@ public class commandShortcut extends command
 			serverInfo[] server_info = servercontrol.findServers(params[2], proto.getProtocolName());
 			if (server_info == null)
 			{
-				moo.reply(source, target, "No servers found for " + params[1] + " using " + proto.getProtocolName());
+				moo.reply(source, target, "No servers found for " + params[2] + " using " + proto.getProtocolName());
 				return;
 			}
 			
@@ -114,7 +114,8 @@ public class commandShortcut extends command
 				PreparedStatement stmt = moo.db.prepare("SELECT command FROM shortcuts WHERE `name` = ?");
 				stmt.setString(1, params[1]);
 				ResultSet rs = moo.db.executeQuery();
-				command = rs.getString("command");
+				if (rs.next())
+					command = rs.getString("command");
 			}
 			catch (SQLException ex)
 			{
