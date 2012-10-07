@@ -57,7 +57,7 @@ class commandOline extends command
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !OLINE { COUNT [num] | SERVER [num] | <oper> }");
+		moo.notice(source, "Syntax: !OLINE { COUNT [num] | SERVER [num] | <oper> | <server> }");
 		moo.notice(source, "If COUNT is given, all known O:lines will be searched and opers with at least");
 		moo.notice(source, "two (2) O:lines will be returned. If a number is given as well, the minimum");
 		moo.notice(source, "number of O:lines can be changed.");
@@ -65,6 +65,7 @@ class commandOline extends command
 		moo.notice(source, "least two (2) O:lines will be returned. If a number is given as well, the minimum");
 		moo.notice(source, "number of O:lines can be changed.");
 		moo.notice(source, "If an oper name is given, the servers (s)he has an O:line on will be shown.");
+		moo.notice(source, "If a server name is given, the O:lines on that server will be shown.");
 	}
 
 	@Override
