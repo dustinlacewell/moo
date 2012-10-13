@@ -86,7 +86,9 @@ class commandClimit extends command
 	{
 		for (server s : server.getServers())
 		{
-			moo.sock.write("VERSION " + s.getName());
+			if (s.isServices() == false)
+				moo.sock.write("VERSION " + s.getName());
+			
 			message_limit.waiting_for.add(s.getName());
 		}
 		
