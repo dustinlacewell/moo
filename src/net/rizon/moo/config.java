@@ -42,6 +42,8 @@ public class config
 	private String antiidle_channel;
 	private int antiidle_time;
 	private int antiidle_bantime;
+	private int osflood_time;
+	private int osflood_num;
 	private String[] packages;
 	private int debug;
 	
@@ -110,6 +112,8 @@ public class config
 		this.antiidle_channel = this.getProperty(prop, "antiidle.channel");
 		this.antiidle_time = Integer.parseInt(this.getProperty(prop, "antiidle.time"));
 		this.antiidle_bantime = Integer.parseInt(this.getProperty(prop, "antiidle.bantime"));
+		this.osflood_time = Integer.parseInt(this.getProperty(prop, "osflood.time"));
+		this.osflood_num = Integer.parseInt(this.getProperty(prop, "osflood.num"));
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
@@ -333,6 +337,16 @@ public class config
 	public final int getAntiIdleBanTime()
 	{
 		return this.antiidle_bantime;
+	}
+	
+	public final int getOSFloodTime()
+	{
+		return this.osflood_time;
+	}
+	
+	public final int getOSFloodNum()
+	{
+		return this.osflood_num;
 	}
 	
 	public final String[] getPackages()
