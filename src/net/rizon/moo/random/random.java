@@ -50,7 +50,6 @@ public class random extends mpackage
 		new deadListChecker().start();
 	}
 	
-	protected static globalFloodList globalFlood = null;
 	private static LinkedList<nickData> nicks = new LinkedList<nickData>();
 	
 	public static LinkedList<nickData> getNicks()
@@ -67,39 +66,6 @@ public class random extends mpackage
 		{
 			nd = nicks.removeFirst();
 			nd.dec();
-		}
-		
-		nd = nicks.getFirst();
-		
-		boolean flood = nicks.size() == maxSize && System.currentTimeMillis() / 1000L - nd.time <= timeforMatches;
-		if (globalFlood == null && flood)
-		{
-			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-				moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Flood from incoming clients (" + nicks.size() + " in " + timeforMatches + " seconds), collecting sufficiently random users...");
-			
-			globalFlood = new globalFloodList();
-			
-			for (Iterator<nickData> it = nicks.iterator(); it.hasNext();)
-			{
-				nd = it.next();
-				
-				if (nd.getScore() >= scoreForRandom)
-				{
-					globalFlood.addMatch(nd);
-					logMatch(nd, globalFlood, nd.toString());
-				}
-			}
-			
-			if (globalFlood.getMatches().isEmpty() == false)
-				addFloodList(globalFlood);
-		}
-		else if (globalFlood != null && flood)
-		{
-			if (nd.getScore() >= scoreForRandom)
-			{
-				globalFlood.addMatch(nd);
-				logMatch(nd, globalFlood, nd.toString());
-			}
 		}
 	}
 	
