@@ -7,9 +7,9 @@ import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
 import net.rizon.moo.timer;
 
-class mapRequester extends timer
+class requester extends timer
 {
-	public mapRequester()
+	public requester()
 	{
 		super(300, true);
 	}
@@ -29,7 +29,7 @@ class mapRequester extends timer
 		
 		for (server s : server.getServers())
 			if (!s.isHub() && !s.isServices())
-				new pingChecker(s, 20).start();
+				new pingChecker(s, 10).start();
 	}
 }
 
@@ -44,6 +44,6 @@ public class servermonitor extends mpackage
 		new eventSplit();
 		new messageWallops();
 		
-		new mapRequester().start();
+		new requester().start();
 	}
 }
