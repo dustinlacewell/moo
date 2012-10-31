@@ -240,6 +240,14 @@ public class config
 	{
 		return this.oper_channels;
 	}
+	
+	public final boolean isOperChannel(final String channel)
+	{
+		for (int i = 0; i < this.oper_channels.length; ++i)
+			if (this.oper_channels[i].equalsIgnoreCase(channel))
+				return true;
+		return false;
+	}
 
 	public final String[] getAdminChannels()
 	{

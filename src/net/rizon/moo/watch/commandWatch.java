@@ -49,7 +49,7 @@ class commandWatch extends command
 				}
 			}
 		}
-		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && moo.conf.isAdminChannel(target))
+		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (moo.conf.isAdminChannel(target) || moo.conf.isOperChannel(target)))
 		{
 			watchEntry we = null;
 			for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
