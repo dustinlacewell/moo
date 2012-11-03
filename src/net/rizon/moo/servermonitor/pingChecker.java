@@ -3,6 +3,7 @@ package net.rizon.moo.servermonitor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,8 @@ import net.rizon.moo.server;
 public class pingChecker extends Thread
 {
 	private static final Pattern packetLossPattern = Pattern.compile("([0-9])*% packet loss");
+	// server name => error
+	private static final HashMap<String, String> errlist = new HashMap<String, String>();
 	
 	private String s;
 	private int len;
@@ -25,12 +28,13 @@ public class pingChecker extends Thread
 	@Override
 	public void run()
 	{
-		BufferedReader is = null;
+		BufferedReader is = null, es = null;
 		
 		try
 		{
 			Process proc = Runtime.getRuntime().exec(new String[] { "ping", "-c", String.valueOf(this.len), this.s });
 			is = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+			es = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 			
 			for (String i; (i = is.readLine()) != null;)
 			{
@@ -43,6 +47,21 @@ public class pingChecker extends Thread
 							moo.privmsg(chan, "[" + s + "] Packet loss: " + i);
 				}
 			}
+			
+			// All ping error messages are one-liners, woot.
+			String err = es.readLine();
+			if (err != null)
+			{
+				if (errlist.containsKey(s) && errlist.get(s).equals(err))
+					return;
+				
+				for (final String chan : moo.conf.getAdminChannels())
+					moo.privmsg(chan, "[" + s + "] " + err);
+				
+				errlist.put(s, err);
+			}
+			else
+				errlist.remove(s);
 		}
 		catch (IOException ex)
 		{
@@ -51,6 +70,8 @@ public class pingChecker extends Thread
 		finally
 		{
 			try { is.close(); }
+			catch (Exception ex) { }
+			try { es.close(); }
 			catch (Exception ex) { }
 		}
 	}
