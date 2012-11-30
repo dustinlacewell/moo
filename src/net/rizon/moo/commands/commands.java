@@ -12,6 +12,7 @@ public class commands extends mpackage
 		new commandDnsbl(this);
 		new commandMap(this);
 		new commandOline(this);
+		new commandRand(this);
 		new commandScheck(this);
 		new commandSid(this);
 		new commandSlackers(this);
