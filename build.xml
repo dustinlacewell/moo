@@ -3,9 +3,9 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="moo">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="moo">
     <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../Program Files/Eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -13,6 +13,8 @@
         <pathelement location="bin"/>
         <pathelement location="lib/jsch-0.1.45.jar"/>
         <pathelement location="lib/commons-net-3.0.1.jar"/>
+        <pathelement location="lib/gson-2.2.2.jar"/>
+        <pathelement location="lib/sqlitejdbc-v056.jar"/>
     </path>
     <path id="run.moo.classpath">
         <pathelement location="lib/sqlitejdbc-v056.jar"/>
