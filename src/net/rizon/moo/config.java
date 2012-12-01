@@ -44,6 +44,9 @@ public class config
 	private int antiidle_bantime;
 	private int osflood_time;
 	private int osflood_num;
+	private String commits_ip;
+	private int commits_port;
+	private String commits_channel;
 	private String[] packages;
 	private int debug;
 	
@@ -114,6 +117,9 @@ public class config
 		this.antiidle_bantime = Integer.parseInt(this.getProperty(prop, "antiidle.bantime"));
 		this.osflood_time = Integer.parseInt(this.getProperty(prop, "osflood.time"));
 		this.osflood_num = Integer.parseInt(this.getProperty(prop, "osflood.num"));
+		this.commits_ip = this.getProperty(prop, "commits.ip");
+		this.commits_port = Integer.parseInt(this.getProperty(prop, "commits.port"));
+		this.commits_channel = this.getProperty(prop, "commits.channel");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
@@ -355,6 +361,21 @@ public class config
 	public final int getOSFloodNum()
 	{
 		return this.osflood_num;
+	}
+	
+	public final String getCommitsIP()
+	{
+		return this.commits_ip;
+	}
+	
+	public final int getCommitsPort()
+	{
+		return this.commits_port;
+	}
+	
+	public final String getCommitsChannel()
+	{
+		return this.commits_channel;
 	}
 	
 	public final String[] getPackages()
