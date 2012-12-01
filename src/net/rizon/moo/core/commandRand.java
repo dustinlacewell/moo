@@ -1,10 +1,9 @@
-package net.rizon.moo.commands;
+package net.rizon.moo.core;
 
 import java.util.Random;
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
-import net.rizon.moo.server;
 
 public class commandRand extends command
 {
