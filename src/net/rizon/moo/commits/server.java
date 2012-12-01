@@ -34,7 +34,6 @@ class server extends Thread
 			
 			for (Socket client; (client = sock.accept()) != null;)
 			{
-				System.out.println("CLIENT ACCEPT");
 				BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				
 				for (String str; (str = input.readLine()) != null;)
