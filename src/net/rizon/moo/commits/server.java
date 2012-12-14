@@ -50,18 +50,34 @@ class server extends Thread
 				if (str.startsWith("payload="))
 				{
 					final String json = URLDecoder.decode(str.substring(8), "UTF-8");
-					push p = new Gson().fromJson(json, bitbucket.class);
-					
-					for (commit c : p.getCommits())
+					try
 					{
-						if (c.getMessage().length > 1)
+						push p = new Gson().fromJson(json, bitbucket.class);
+					
+						for (commit c : p.getCommits())
 						{
-							moo.privmsg(moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003:");
-							for (final String msg : c.getMessage())
-								moo.privmsg(moo.conf.getCommitsChannel(), msg);
+							if (c.getMessage().length > 1)
+							{
+								moo.privmsg(moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003:");
+								for (final String msg : c.getMessage())
+									moo.privmsg(moo.conf.getCommitsChannel(), msg);
+							}
+							else if (c.getMessage().length == 1)
+								moo.privmsg(moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003: " + c.getMessage()[0]);
 						}
-						else if (c.getMessage().length == 1)
-							moo.privmsg(moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003: " + c.getMessage()[0]);
+					}
+					catch (Exception e)
+					{
+						System.out.println("Exception while parsing json caught. Backtrace:");
+						e.printStackTrace();
+						System.out.println("Payload:");
+						System.out.println(URLDecoder.decode(str.substring(8), "UTF-8"));
+						System.out.println("End of payload.");
+						
+						for (final String channel : moo.conf.getDevChannels())
+							moo.privmsg(channel, "\002Error parsing JSON for commit!\002");
+						
+						// Don't continue; we need to see the fail only once.
 					}
 				}
 				
