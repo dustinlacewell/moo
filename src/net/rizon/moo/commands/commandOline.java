@@ -57,17 +57,28 @@ class commandOline extends command
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !OLINE { COUNT [num] | SERVER [num] | <oper> | <server> }");
+		moo.notice(source, "Syntax: !OLINE { COUNT [num] | SERVER [[{<,<=,>,>=,=}]num] | <oper> | <server> }");
 		moo.notice(source, "If COUNT is given, all known O:lines will be searched and opers with at least");
 		moo.notice(source, "two (2) O:lines will be returned. If a number is given as well, the minimum");
 		moo.notice(source, "number of O:lines can be changed.");
 		moo.notice(source, "If SERVER is given, all servers will be searched for O:lines and servers with at");
-		moo.notice(source, "least two (2) O:lines will be returned. If a number is given as well, the minimum");
-		moo.notice(source, "number of O:lines can be changed.");
+		moo.notice(source, "least two (2) O:lines will be returned by default. If a number is given as well, the minimum");
+		moo.notice(source, "number of O:lines can be changed. If one of <, <=, >, >=, = is supplied, only servers with");
+		moo.notice(source, "less than, less than or equal to, greater than, greater than or equal to, equal to the");
+		moo.notice(source, "number supplied, respectively, will be returned.");
 		moo.notice(source, "If an oper name is given, the servers (s)he has an O:line on will be shown.");
 		moo.notice(source, "If a server name is given, the O:lines on that server will be shown.");
 	}
 
+	enum Type
+	{
+		lt,
+		le,
+		gt,
+		ge,
+		e
+	}
+	
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
@@ -144,12 +155,45 @@ class commandOline extends command
 		}
 		else if (params[1].equalsIgnoreCase("SERVER"))
 		{
-			int min = 2;
+			int count = 2;
+			Type t = Type.ge;
 			if (params.length > 2)
 			{
+				int offset = 0;
+				if (params[2].startsWith("<="))
+				{
+					t = Type.le;
+					offset = 2;
+				}
+				else if (params[2].startsWith("<"))
+				{
+					t = Type.lt;
+					offset = 1;
+				}
+				else if (params[2].startsWith(">="))
+				{
+					t = Type.ge;
+					offset = 2;
+				}
+				else if (params[2].startsWith(">"))
+				{
+					t = Type.gt;
+					offset = 1;
+				}
+				else if (params[2].startsWith("="))
+				{
+					t = Type.e;
+					offset = 1;
+				}
+				else
+				{
+					t = Type.gt;
+					offset = 0;
+				}
+				
 				try
 				{
-					min = Integer.parseInt(params[2]);
+					count = Integer.parseInt(params[2].substring(offset));
 				}
 				catch (NumberFormatException ex) { }
 			}
@@ -157,14 +201,38 @@ class commandOline extends command
 			server servers[] = server.getServers();
 			Arrays.sort(servers, servComparator);
 			
-			moo.reply(source, target, "Servers with a least " + min +  " o:lines:");
+			moo.reply(source, target, "Servers with " + (params.length > 2 ? (Character.isDigit(params[2].charAt(0)) ? ">=" + count : params[2]) : ">=" + count) + " o:lines:");
 			
 			for (int i = servers.length; i > 0; --i)
 			{
 				server s = servers[i - 1];
 
-				if (s.isServices() || s.olines.size() < min)
+				if (s.isServices())
 					continue;
+				
+				switch (t)
+				{
+					case e:
+						if (s.olines.size() != count)
+							continue;
+						break;
+					case lt:
+						if (!(s.olines.size() < count))
+							continue;
+						break;
+					case le:
+						if (!(s.olines.size() <= count))
+							continue;
+						break;
+					case gt:
+						if (!(s.olines.size() > count))
+							continue;
+						break;
+					case ge:
+						if (!(s.olines.size() >= count))
+							continue;
+						break;
+				}
 				
 				String olines = s.olines.toString();
 				olines = olines.substring(1, olines.length() - 1);
