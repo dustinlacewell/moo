@@ -59,7 +59,12 @@ class logSearch extends command
 					++shown;
 					
 					if (lsource != null && lsource.isEmpty() == false)
-						moo.reply(source, target, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget + " - Reason: " + reason);
+					{
+						if (reason != null && reason.isEmpty() == false)
+							moo.reply(source, target, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget + " - Reason: " + reason);
+						else
+							moo.reply(source, target, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget);
+					}
 					else
 						moo.reply(source, target, "#" + count + " on " + d + " - " + type + " - For " + ltarget);
 				}

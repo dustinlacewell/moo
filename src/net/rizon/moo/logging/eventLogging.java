@@ -46,4 +46,42 @@ class eventLogging extends event
 		for (final String chan : moo.conf.getAdminChannels())
 			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
 	}
+	
+	@Override
+	public void onServerLink(server serv, server to)
+	{
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
+			
+			stmt.setString(1, "LINK");
+			stmt.setString(2, serv.getName());
+			stmt.setString(3, to.getName());
+			
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onServerSplit(server serv, server from)
+	{
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
+			
+			stmt.setString(1, "SPLIT");
+			stmt.setString(2, serv.getName());
+			stmt.setString(3, from.getName());
+			
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
 }

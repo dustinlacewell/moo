@@ -524,6 +524,12 @@ class messagePrivmsg extends message
 			String nick = source.substring(0, e != -1 ? e : source.length());
 			moo.privmsg(message[0], "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
 		}
+		else if (message[1].startsWith("\1ACTION slaughters " + moo.conf.getNick()))
+		{
+			int e = source.indexOf('!');
+			String nick = source.substring(0, e != -1 ? e : source.length());
+			moo.privmsg(message[0], "\1ACTION runs " + nick + " through a food processor and proceeds to eat them\1");
+		}
 	}
 }
 
