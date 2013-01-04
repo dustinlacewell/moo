@@ -223,7 +223,7 @@ class commandSplit extends command
 				{
 					moo.reply(source, target, "Recent splits for " + s.getName() + ":");
 					
-					int count = 10;
+					int count = 3;
 					try
 					{
 						count = Integer.parseInt(params[2]);
