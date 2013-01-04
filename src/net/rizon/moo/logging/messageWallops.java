@@ -87,8 +87,6 @@ class messageWallops extends message
 				stmt.setString(4, m.group(3));
 				
 				moo.db.executeUpdate();
-				
-				checkAkill(m.group(2));
 			}
 			catch (SQLException ex)
 			{
