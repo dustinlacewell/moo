@@ -41,15 +41,44 @@ class server extends Thread
 				BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 				
 				try
-				{	
-					for (String str; (str = input.readLine()) != null;)
-						if (str.isEmpty())
+				{
+					String str;
+					int len = -1;
+					int bytesread = 0;
+					for (; (str = input.readLine()) != null; str = null)
+						if (str.startsWith("Content-Length: "))
+						{
+							try
+							{
+								len = Integer.parseInt(str.substring(16));
+							}
+							catch (NumberFormatException ex)
+							{
+								System.err.println("Invalid content length ("
+										+ str + ")");
+								str = null;
+								break;
+							}
+							
+							if (len > 4096)
+							{
+								System.err.println("Content length is huge! ("
+										+ len + " > 4096)");
+								str = null;
+								break;
+							}
+						}
+						else if (str.isEmpty())
 							break;
 					
-					char[] payload = new char[4096];
-					int len = input.read(payload);
+					if (str == null || len == -1)
+						continue;
 					
-					final String str = new String(payload, 0, len);
+					char[] payload = new char[len];
+					while (bytesread < len)
+						bytesread += input.read(payload);
+					
+					str = new String(payload, 0, len);
 					if (str.startsWith("payload="))
 					{
 						final String json = URLDecoder.decode(str.substring(8), "UTF-8");
