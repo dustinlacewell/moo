@@ -18,7 +18,7 @@
 		</manifest>
 
 		<mkdir dir="bin" />
-		<javac srcdir="src" destdir="bin" classpathref="cp" debug="on" source="1.7" />
+		<javac srcdir="src" destdir="bin" classpathref="cp" debug="on" source="1.6" />
 
 		<jar destfile="bin/moo.jar" manifest="MANIFEST.MF" compress="true">
 			<fileset dir="bin">
