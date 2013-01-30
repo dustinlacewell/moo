@@ -59,7 +59,7 @@ class dnsChecker extends Thread
 						serial = soa_serial;
 					else if (serial != soa_serial)
 						for (final String s : moo.conf.getAdminChannels())
-							moo.privmsg(s, "DNS: SOA mismatch for " + ns + ": Excepted " + serial + " but got " + soa_serial);
+							moo.privmsg(s, "DNS: SOA mismatch for " + ns + ": Expected " + serial + " but got " + soa_serial);
 				}
 				catch (NamingException ex)
 				{
