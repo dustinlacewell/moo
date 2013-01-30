@@ -3,6 +3,7 @@ package net.rizon.moo;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -146,6 +147,39 @@ class message219 extends message
 		super("219");
 	}
 	
+	private static String generateFlagDiff(final String oldflags, final String newflags)
+	{
+		String del = null, add = null;
+		
+		for (char c : oldflags.toCharArray())
+		{
+			if (newflags.indexOf(c) == -1)
+			{
+				if (del == null)
+					del = "-" + c;
+				else
+					del += c;
+			}
+		}
+		if (del == null)
+			del = "";
+
+		for (char c : newflags.toCharArray())
+		{
+			if (oldflags.indexOf(c) == -1)
+			{
+				if (add == null)
+					add = "+" + c;
+				else
+					add += c;
+			}
+		}
+		if (add == null)
+			add = "";
+		
+		return add + del;
+	}
+	
 	@Override
 	public void run(String source, String[] message)
 	{
@@ -187,31 +221,45 @@ class message219 extends message
 		{
 			if (serv.olines.isEmpty() == false)
 			{
-				for (Iterator<String> it = serv.olines.iterator(); it.hasNext();)
+				for (Iterator<String> it = serv.olines.keySet().iterator(); it.hasNext();)
 				{
 					String s = it.next();
 					
-					if (serv.olines_work.contains(s) == false)
+					if (serv.olines_work.keySet().contains(s) == false)
 					{
 						for (event e : event.getEvents())
+						{
 							e.OnXLineDel(serv, 'O', s);
+						}
+					}
+					else
+					{
+						String oldflags = serv.olines.get(s);
+						String newflags = serv.olines_work.get(s);
+						if (oldflags != null && !newflags.equals(oldflags))
+						{
+							for (event e : event.getEvents())
+								e.OnOLineChange(serv, s, generateFlagDiff(oldflags, newflags));
+						}
 					}
 				}
 				
-				for (Iterator<String> it = serv.olines_work.iterator(); it.hasNext();)
+				for (Iterator<String> it = serv.olines_work.keySet().iterator(); it.hasNext();)
 				{
 					String s = it.next();
 					
-					if (serv.olines.contains(s) == false)
+					if (serv.olines.keySet().contains(s) == false)
 					{
 						for (event e : event.getEvents())
+						{
 							e.OnXLineAdd(serv, 'O', s);
+						}
 					}
 				}
 			}
 			
 			serv.olines = serv.olines_work;
-			serv.olines_work = new HashSet<String>();
+			serv.olines_work = new HashMap<String, String>();
 		}
 	}
 }
@@ -260,7 +308,7 @@ class message243 extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length < 5)
+		if (message.length < 6)
 			return;
 		
 		String oper = message[4];
@@ -268,7 +316,7 @@ class message243 extends message
 		server s = server.findServerAbsolute(source);
 		if (s == null)
 			s = new server(source);
-		s.olines_work.add(oper);
+		s.olines_work.put(oper, message[5]);
 	}
 }
 

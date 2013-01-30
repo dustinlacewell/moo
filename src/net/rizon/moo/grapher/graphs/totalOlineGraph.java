@@ -23,7 +23,7 @@ public class totalOlineGraph extends graph
 	{
 		HashSet<String> olines = new HashSet<String>();
 		for (server s : server.getServers())
-			olines.addAll(s.olines);
+			olines.addAll(s.olines.keySet());
 		
 		if (olines.isEmpty() == false)
 		{

@@ -103,7 +103,7 @@ class commandOline extends command
 				if (s.isServices())
 					continue;
 				
-				for (Iterator<String> it2 = s.olines.iterator(); it2.hasNext();)
+				for (Iterator<String> it2 = s.olines.keySet().iterator(); it2.hasNext();)
 				{
 					String oline = it2.next();
 					
@@ -251,7 +251,7 @@ class commandOline extends command
 					buffer += "none";
 				else
 				{
-					for (Iterator<String> it = s.olines.iterator(); it.hasNext();)
+					for (Iterator<String> it = s.olines.keySet().iterator(); it.hasNext();)
 					{
 						String oline = it.next();
 						buffer += oline + ", ";
@@ -269,7 +269,7 @@ class commandOline extends command
 				if (s2.isServices())
 					continue;
 				
-				if (s2.olines.contains(params[1]))
+				if (s2.olines.keySet().contains(params[1]))
 					servers += s2.getName() +  ", ";
 			}
 			if (!servers.isEmpty())

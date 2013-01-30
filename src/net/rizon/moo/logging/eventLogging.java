@@ -22,7 +22,7 @@ class eventLogging extends event
 	public void OnXLineAdd(server serv, char type, final String value)
 	{
 		for (final String chan : moo.conf.getAdminChannels())
-			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " has a new " + type + "-Line for " + value);
+			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " has a new " + type + "-Line for " + value + (type == 'O' ? " with flags " + serv.olines_work.get(value) : ""));
 		
 		try
 		{
@@ -45,6 +45,13 @@ class eventLogging extends event
 	{
 		for (final String chan : moo.conf.getAdminChannels())
 			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
+	}
+	
+	@Override
+	public void OnOLineChange(final server serv, final String oper, final String diff)
+	{
+		for (final String chan : moo.conf.getAdminChannels())
+			moo.privmsg(chan, "[O-LINE] " + serv.getName() + " changed flags for " + oper + ": " + diff);
 	}
 	
 	@Override
