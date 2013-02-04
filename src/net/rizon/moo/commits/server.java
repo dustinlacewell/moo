@@ -125,6 +125,7 @@ class server extends Thread
 				}
 				finally
 				{
+					input.close();
 					output.close();
 					client.close();
 				}
