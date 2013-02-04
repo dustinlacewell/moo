@@ -1,6 +1,7 @@
 package net.rizon.moo;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -59,7 +60,8 @@ public class config
 	public void load() throws Exception
 	{
 		Properties prop = new Properties();
-		prop.load(new FileInputStream("moo.properties"));
+		FileInputStream fis = new FileInputStream("moo.properties");
+		prop.load(fis);
 		
 		this.server = this.getProperty(prop, "server");
 		this.port = Integer.parseInt(this.getProperty(prop, "port"));
@@ -124,6 +126,15 @@ public class config
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
 		this.check();
+		
+		try
+		{
+			fis.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void check() throws Exception

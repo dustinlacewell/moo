@@ -50,6 +50,8 @@ class soaCheck extends Thread
 					moo.reply(this.source, this.target, this.domain + " has nameserver " + tokens[4]);
 			}
 			
+			in.close();
+			
 			for (Iterator<String> it = nameservers.keySet().iterator(); it.hasNext();)
 			{
 				String nameserver = it.next();
@@ -72,6 +74,7 @@ class soaCheck extends Thread
 					if (this.debug)
 						moo.reply(this.source, this.target, "Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
 				}
+				in.close();
 			}
 			
 			if (nameservers.size() == 1)

@@ -30,6 +30,8 @@ class shellExec extends Thread
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
 				moo.reply(this.source, this.target, line);
+			
+			in.close();
 		}
 		catch (IOException ex)
 		{
