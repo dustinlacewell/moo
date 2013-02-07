@@ -29,7 +29,17 @@ class shellExec extends Thread
 			Process proc = Runtime.getRuntime().exec(this.command, null, new File(moo.conf.getShellBase()));
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
+			{
+				if (line.startsWith("!MOO!SHUTDOWN "))
+				{
+					in.close();
+					moo.reply(this.source, this.target, "Caught shutdown signal.");
+					moo.sock.write("QUIT :" + line.substring(14));
+					moo.sock.shutdown();
+					moo.quitting = true;
+				}
 				moo.reply(this.source, this.target, line);
+			}
 			
 			in.close();
 		}
