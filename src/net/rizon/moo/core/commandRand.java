@@ -5,7 +5,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-public class commandRand extends command
+class commandRand extends command
 {
 	public commandRand(mpackage pkg)
 	{
