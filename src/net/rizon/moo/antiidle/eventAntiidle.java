@@ -84,7 +84,7 @@ class eventAntiIdle extends event
 	}
 	
 	@Override
-	public void onPrivmsg(final String source, final String channel, final String[] message)
+	public void onPrivmsg(final String source, final String channel, final String message)
 	{
 		if (moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false)
 			return;

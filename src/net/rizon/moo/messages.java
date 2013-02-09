@@ -1,11 +1,9 @@
 package net.rizon.moo;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
 
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
@@ -530,54 +528,12 @@ class messagePrivmsg extends message
 			return;
 		
 		for (event e : event.getEvents())
-			e.onPrivmsg(source, message[0], Arrays.copyOfRange(message, 1, message.length - 1));
+			e.onPrivmsg(source, message[0], message[1]);
 
 		if (message[1].equals("\1VERSION\1"))
 			moo.notice(source, "\1VERSION " + moo.conf.getVersion() + "\1");
 		else if (message[1].equals("\1TIME\1"))
 			moo.notice(source, "\1TIME " + (new Date().toString()) + "\1");
-		else if (message[1].startsWith("\1ACTION pets " + moo.conf.getNick()))
-			moo.privmsg(message[0], "\1ACTION moos\1");
-		else if (message[1].startsWith("\1ACTION milks " + moo.conf.getNick()))
-		{
-			int e = source.indexOf('!');
-			String nick = source.substring(0, e != -1 ? e : source.length());
-			moo.privmsg(message[0], "\1ACTION kicks " + nick + " in the face\1");
-		}
-		else if (message[1].startsWith("\1ACTION feeds " + moo.conf.getNick()))
-			moo.privmsg(message[0], "\1ACTION eats happily\1");
-		else if (message[1].startsWith("\1ACTION kicks " + moo.conf.getNick()))
-		{
-			int e = source.indexOf('!');
-			String nick = source.substring(0, e != -1 ? e : source.length());
-			moo.privmsg(message[0], "\1ACTION body slams " + nick + "\1");
-		}
-		else if (message[1].startsWith("\1ACTION brands " + moo.conf.getNick()))
-		{
-			int e = source.indexOf('!');
-			String nick = source.substring(0, e != -1 ? e : source.length());
-			boolean kill = new Random().nextInt(100) == 0;
-			
-			if (kill == false)
-				moo.privmsg(message[0], "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
-			else
-			{
-				moo.privmsg(message[0], "FEEL THE WRATH OF " + moo.conf.getNick().toUpperCase());
-				moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + moo.conf.getNick().toUpperCase());
-			}
-		}
-		else if (message[1].startsWith("\1ACTION tips " + moo.conf.getNick()))
-		{
-			int e = source.indexOf('!');
-			String nick = source.substring(0, e != -1 ? e : source.length());
-			moo.privmsg(message[0], "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
-		}
-		else if (message[1].startsWith("\1ACTION slaughters " + moo.conf.getNick()))
-		{
-			int e = source.indexOf('!');
-			String nick = source.substring(0, e != -1 ? e : source.length());
-			moo.privmsg(message[0], "\1ACTION runs " + nick + " through a food processor and proceeds to eat them\1");
-		}
 	}
 }
 

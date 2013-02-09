@@ -29,7 +29,7 @@ public abstract class event
 	public void onPart(final String source, final String channel) { }
 	public void onKick(final String source, final String target, final String channel) { }
 	public void onMode(final String source, final String channel, final String modes) { }
-	public void onPrivmsg(final String source, final String channel, final String[] message) { }
+	public void onPrivmsg(final String source, final String channel, final String message) { }
 	public void onNick(final String source, final String dest) { }
 	public void onQuit(final String source, final String reason) { }
 	

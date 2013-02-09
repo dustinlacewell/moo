@@ -114,7 +114,7 @@ commits.port=8081
 commits.channel=#d
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commit
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commit,fun
 
 debug=0
 
