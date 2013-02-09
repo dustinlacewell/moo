@@ -8,9 +8,9 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 
-class logSearch extends command
+class commandLogSearch extends command
 {
-	public logSearch(mpackage pkg)
+	public commandLogSearch(mpackage pkg)
 	{
 		super(pkg, "!LOGSEARCH", "Search through server logs"); 
 	}

@@ -83,6 +83,11 @@ public class database
 		return this.last_statement.executeQuery();
 	}
 	
+	public void setAutoCommit(boolean state) throws SQLException
+	{
+		this.con.setAutoCommit(state);
+	}
+	
 	public static void handleException(SQLException ex)
 	{
 		ex.printStackTrace();

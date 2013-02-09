@@ -8,8 +8,9 @@ public class logging extends mpackage
 	{
 		super("Logging", "Search server logs");
 		
+		new commandLogSearch(this);
+		new commandSLogSearch(this);
 		new eventLogging();
-		new logSearch(this);
 		new messageNotice();
 		new messageWallops();
 	}

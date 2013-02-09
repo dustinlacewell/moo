@@ -42,6 +42,8 @@ class commandRizonTime extends command
 					time *= num * 32140800 * (r.nextFloat() + 1.0f) * (r.nextInt(2) + 1);
 				else if (params[i].indexOf("month") > -1)
 					time *= num * 2678400 * (r.nextFloat() + 1.0f) * (r.nextInt(5) + 1);
+				else if (params[i].indexOf("week") > -1)
+					time *= num * 604800 * (r.nextFloat() + 1.0f) * (r.nextInt(7) + 3);
 				else if (params[i].indexOf("day") > -1)
 					time *= num * 86400 * (r.nextFloat() + 1.0f) * (r.nextInt(10) + 5);
 				else if (params[i].indexOf("hour") > -1)
