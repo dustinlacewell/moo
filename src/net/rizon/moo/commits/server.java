@@ -125,9 +125,9 @@ class server extends Thread
 				}
 				finally
 				{
-					input.close();
-					output.close();
-					client.close();
+					try { input.close(); } catch (IOException ex) { }
+					try { output.close(); } catch (IOException ex) { }
+					try { client.close(); } catch (IOException ex) { }
 				}
 			}
 			
