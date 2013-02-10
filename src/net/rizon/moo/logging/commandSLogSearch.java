@@ -3,8 +3,6 @@ package net.rizon.moo.logging;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import net.rizon.moo.command;
 import net.rizon.moo.moo;
@@ -24,7 +22,7 @@ class commandSLogSearch extends command
 		if (params.length <= 1)
 			return;
 		
-		int num = 50;
+		int num = 1000;
 		if (params.length >= 3)
 			try
 			{
@@ -36,28 +34,23 @@ class commandSLogSearch extends command
 		
 		try
 		{
-			PreparedStatement stmt = moo.db.prepare("SELECT `id` FROM `services_logs_indexes` WHERE `key` = ?");
-			stmt.setString(1, params[1]);
+			PreparedStatement stmt = moo.db.prepare("SELECT max(id)+1 AS `max` FROM `services_logs`");
 			ResultSet rs = moo.db.executeQuery();
+			int max = rs.getInt("max");
 			
-			ArrayList<Integer> indexes = new ArrayList<Integer>();
+			stmt = moo.db.prepare("SELECT `data` FROM `services_logs` WHERE `id` >= ? AND `data` LIKE ?");
+			stmt.setInt(1, max - num);
+			stmt.setString(2, "%" + params[1] + "%");
+			rs = moo.db.executeQuery();
+			
+			int count = 0;
 			while (rs.next())
-				indexes.add(rs.getInt("id"));
-			
-			int total = indexes.size();
-			while (indexes.size() > num)
-				indexes.remove(0);
-			
-			for (Iterator<Integer> it = indexes.iterator(); it.hasNext();)
 			{
-				stmt = moo.db.prepare("SELECT `data` FROM `services_logs` WHERE `id` = ?");
-				stmt.setInt(1, it.next());
-				rs = moo.db.executeQuery();
-				
+				++count;
 				moo.reply(source, target, "MATCH: " + rs.getString("data"));
 			}
 			
-			moo.reply(source, target, "Done. " + indexes.size() + "/" + total + " shown.");
+			moo.reply(source, target, "Done, " + count + " shown.");
 		}
 		catch (SQLException ex)
 		{
