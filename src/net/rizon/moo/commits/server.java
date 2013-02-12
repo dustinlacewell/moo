@@ -44,7 +44,7 @@ class server extends Thread
 				{
 					String str;
 					int len = -1;
-					int bytesread = 0;
+	
 					for (; (str = input.readLine()) != null; str = null)
 						if (str.startsWith("Content-Length: "))
 						{
@@ -54,16 +54,14 @@ class server extends Thread
 							}
 							catch (NumberFormatException ex)
 							{
-								System.err.println("Invalid content length ("
-										+ str + ")");
+								System.err.println("Invalid content length (" + str + ")");
 								str = null;
 								break;
 							}
 							
 							if (len > 4096)
 							{
-								System.err.println("Content length is huge! ("
-										+ len + " > 4096)");
+								System.err.println("Content length is huge! (" + len + " > 4096)");
 								str = null;
 								break;
 							}
@@ -75,8 +73,14 @@ class server extends Thread
 						continue;
 					
 					char[] payload = new char[len];
+					int bytesread = 0;
 					while (bytesread < len)
-						bytesread += input.read(payload);
+					{
+						int i = input.read(payload, bytesread, len - bytesread);
+						if (i <= 0)
+							throw new IOException("End of stream");
+						bytesread += i;
+					}
 					
 					str = new String(payload, 0, len);
 					if (str.startsWith("payload="))
