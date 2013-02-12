@@ -18,6 +18,8 @@ import com.google.gson.JsonSyntaxException;
 
 class server extends Thread
 {
+	private ServerSocket sock;
+	
 	private String ip;
 	private int port;
 	
@@ -32,10 +34,10 @@ class server extends Thread
 	{
 		try
 		{
-			ServerSocket sock = new ServerSocket();
-			sock.bind(new InetSocketAddress(this.ip, this.port));
+			this.sock = new ServerSocket();
+			this.sock.bind(new InetSocketAddress(this.ip, this.port));
 			
-			for (Socket client; (client = sock.accept()) != null;)
+			for (Socket client; (client = this.sock.accept()) != null;)
 			{
 				BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -135,11 +137,23 @@ class server extends Thread
 				}
 			}
 			
-			sock.close();
+			this.sock.close();
 		}
 		catch (IOException ex)
 		{
 			ex.printStackTrace();
+		}
+	}
+	
+	protected void shutdown()
+	{
+		try
+		{
+			this.sock.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

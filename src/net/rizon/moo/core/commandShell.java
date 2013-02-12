@@ -32,12 +32,12 @@ class shellExec extends Thread
 			{
 				if (line.startsWith("!MOO!SHUTDOWN "))
 				{
-					in.close();
 					moo.reply(this.source, this.target, "Caught shutdown signal.");
 					moo.sock.write("QUIT :" + line.substring(14));
-					moo.sock.shutdown();
 					moo.quitting = true;
+					break;
 				}
+				
 				moo.reply(this.source, this.target, line);
 			}
 			

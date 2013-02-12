@@ -52,7 +52,7 @@ fi
 echo "!MOO!SHUTDOWN Upgrade in progress..."
 
 # Give the process a couple of seconds to properly die and close connections.
-sleep 6
+sleep 10
 
 exec ./run.sh
 
