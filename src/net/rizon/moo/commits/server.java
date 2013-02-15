@@ -124,6 +124,7 @@ class server extends Thread
 					output.write("Server: moo\r\n");
 					output.write("Connection: close\r\n");
 					output.write("Content-Length: 2\r\n\r\nOK");
+					output.flush();
 				}
 				catch (Exception ex)
 				{
