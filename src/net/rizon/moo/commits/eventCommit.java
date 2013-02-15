@@ -5,7 +5,7 @@ import net.rizon.moo.event;
 class eventCommit extends event
 {
 	@Override
-	public void saveDatabases()
+	public void onShutdown()
 	{
 		commits.s.shutdown();
 	}

@@ -187,6 +187,9 @@ public class moo
 				ex.printStackTrace();
 			}
 			
+			for (event e : event.getEvents())
+				e.onShutdown();
+			
 			if (moo.sock != null)
 			{
 				moo.sock.shutdown();

@@ -10,6 +10,7 @@ public abstract class event
 	}
 	
 	public void onConnect() { }
+	public void onShutdown() { }
 	
 	protected void initDatabases() { }
 	public void loadDatabases() { }
