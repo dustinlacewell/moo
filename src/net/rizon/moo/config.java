@@ -49,6 +49,8 @@ public class config
 	private String commits_ip;
 	private int commits_port;
 	private String commits_channel;
+	private String servermonitor_domain;
+	private String[] servermonitor_check;
 	private String[] packages;
 	private int debug;
 	
@@ -125,6 +127,8 @@ public class config
 		this.commits_ip = this.getProperty(prop, "commits.ip");
 		this.commits_port = Integer.parseInt(this.getProperty(prop, "commits.port"));
 		this.commits_channel = this.getProperty(prop, "commits.channel");
+		this.servermonitor_domain = this.getProperty(prop, "servermonitor.domain");
+		this.servermonitor_check = this.getProperty(prop, "servermonitor.check").split(" ");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
@@ -398,6 +402,16 @@ public class config
 	public final String getCommitsChannel()
 	{
 		return this.commits_channel;
+	}
+	
+	public final String getServermonitorDomain()
+	{
+		return this.servermonitor_domain;
+	}
+	
+	public final String[] getServermonitorCheck()
+	{
+		return this.servermonitor_check;
 	}
 	
 	public final String[] getPackages()

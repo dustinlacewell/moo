@@ -14,9 +14,6 @@ import net.rizon.moo.moo;
 
 class dnsChecker extends Thread
 {
-	private static final String[] regions = { "na", "eu", "us", "ca", "nl", "fr", "de" };
-	private static final String domain = "rizon.net";
-	
 	@Override
 	public void run()
 	{
@@ -30,7 +27,7 @@ class dnsChecker extends Thread
 			String what = "NS";
 			String[] what_array = { what };
 			
-			Attributes attributes = idir.getAttributes(domain, what_array);
+			Attributes attributes = idir.getAttributes(moo.conf.getServermonitorDomain(), what_array);
 			Attribute attr = attributes.get(what);
 			
 			long serial = -1;
@@ -47,7 +44,7 @@ class dnsChecker extends Thread
 					what = "SOA";
 					what_array[0] = what;
 					
-					Attributes nameserver_attributes = idir.getAttributes(domain, what_array);
+					Attributes nameserver_attributes = idir.getAttributes(moo.conf.getServermonitorDomain(), what_array);
 					Attribute nameserver_attr = nameserver_attributes.get(what);
 					
 					final String soa = nameserver_attr.get(0).toString();
@@ -88,16 +85,16 @@ class dnsChecker extends Thread
 			ex.printStackTrace();
 		}
 		
-		for (final String r : regions)
+		for (final String r : moo.conf.getServermonitorCheck())
 		{
 			try
 			{
-				InetAddress.getByName(r + ".iso." + domain);
+				InetAddress.getByName(r);
 			}
 			catch (UnknownHostException e)
 			{
 				for (final String s : moo.conf.getAdminChannels())
-					moo.privmsg(s, "DNS: Unable to resolve " + r + ".iso." + domain + ": " + e.getMessage());
+					moo.privmsg(s, "DNS: Unable to resolve " + r + ": " + e.getMessage());
 			}
 		}
 	}
