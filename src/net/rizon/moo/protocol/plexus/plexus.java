@@ -46,6 +46,7 @@ public class plexus extends mpackage
 		new message015();
 		new message017();
 		new message227();
-		new messageNotice();
+		
+		new eventPlexus();
 	}
 }

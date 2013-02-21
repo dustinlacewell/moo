@@ -1,30 +1,24 @@
 package net.rizon.moo.protocol.plexus;
 
 import net.rizon.moo.event;
-import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 
-class messageNotice extends message
+class eventPlexus extends event
 {
-	public messageNotice()
-	{
-		super("NOTICE");
-	}
-
 	@Override
-	public void run(String source, String[] message)
+	public void onNotice(final String source, final String channel, final String message)
 	{
 		if (source.equals(moo.conf.getNickServHost()))
 		{
-			if (message.length > 1 && message[1].indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
+			if (message.indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
 				moo.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());
 		}
-		else if (source.indexOf('.') != -1 && message.length > 1)
+		else if (source.indexOf('.') != -1)
 		{
-			if (message[1].indexOf("being introduced by") != -1)
+			if (message.indexOf("being introduced by") != -1)
 			{
-				String[] tokens = message[1].split(" ");
+				String[] tokens = message.split(" ");
 				
 				server serv = server.findServerAbsolute(tokens[4]);
 				if (serv == null)
@@ -44,9 +38,9 @@ class messageNotice extends message
 				for (event e : event.getEvents())
 					e.onServerLink(serv, to);
 			}
-			else if (message[1].indexOf("End of burst from") != -1)
+			else if (message.indexOf("End of burst from") != -1)
 			{
-				String[] tokens = message[1].split(" ");
+				String[] tokens = message.split(" ");
 				server serv = server.findServerAbsolute(tokens[7]);
 				if (serv == null)
 				{
@@ -65,9 +59,9 @@ class messageNotice extends message
 				for (event e : event.getEvents())
 					e.onServerLink(serv, to);
 			}
-			else if (message[1].indexOf("split from") != -1)
+			else if (message.indexOf("split from") != -1)
 			{
-				String[] tokens = message[1].split(" ");
+				String[] tokens = message.split(" ");
 				server from = server.findServerAbsolute(tokens[7]);
 				if (from != null)
 					from.links.remove(tokens[4]);

@@ -4,20 +4,15 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rizon.moo.message;
+import net.rizon.moo.event;
 import net.rizon.moo.server;
 
-class messageNotice extends message
+class eventRandom extends event
 {
 	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([0-9.]*)\\] \\[(.*)\\]");
-	
-	public messageNotice()
-	{
-		super("NOTICE");
-	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void onNotice(final String source, final String channel, final String message)
 	{
 		if (source.indexOf('.') == -1)
 			return;
@@ -28,7 +23,7 @@ class messageNotice extends message
 		else if (server.last_split != null && server.last_split.after(then))
 			return;
 		
-		Matcher m = connectPattern.matcher(message[1]);
+		Matcher m = connectPattern.matcher(message);
 		if (m.matches())
 		{
 			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), real = m.group(4);

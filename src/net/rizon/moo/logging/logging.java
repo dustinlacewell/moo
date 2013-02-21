@@ -10,8 +10,9 @@ public class logging extends mpackage
 		
 		new commandLogSearch(this);
 		new commandSLogSearch(this);
+		
 		new eventLogging();
-		new messageNotice();
+		
 		new messageWallops();
 	}
 }
