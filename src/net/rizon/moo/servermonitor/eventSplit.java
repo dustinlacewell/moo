@@ -2,11 +2,14 @@ package net.rizon.moo.servermonitor;
 
 import java.util.Iterator;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.rizon.moo.event;
 import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
+import net.rizon.moo.split;
 
 class eventSplit extends event
 {
@@ -87,5 +90,28 @@ class eventSplit extends event
 	public void onServerDestroy(server serv)
 	{
 		reconnector.removeReconnectsFor(serv);
+	}
+	
+	private static final Pattern connectPattern = Pattern.compile("Remote CONNECT ([^ ]*) [0-9]* from ([^ ]*)$");
+	
+	@Override
+	public void onWallops(final String source, final String message)
+	{
+		if (source.indexOf('.') == -1)
+			return;
+		
+		Matcher m = connectPattern.matcher(message);
+		if (m.find())
+		{
+			server s = server.findServer(m.group(1));
+			if (s == null)
+				return;
+			
+			split sp = s.getSplit();
+			if (sp == null)
+				return;
+			
+			sp.reconnectedBy = m.group(2);
+		}
 	}
 }

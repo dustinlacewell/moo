@@ -12,7 +12,5 @@ public class logging extends mpackage
 		new commandSLogSearch(this);
 		
 		new eventLogging();
-		
-		new messageWallops();
 	}
 }

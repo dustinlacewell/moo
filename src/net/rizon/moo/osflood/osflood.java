@@ -8,7 +8,7 @@ public class osflood extends mpackage
 	{
 		super("OSFlood", "Detects and akills users flooding OperServ");
 		
-		new messageWallops();
+		new eventOSFlood();
 	}
 	
 }

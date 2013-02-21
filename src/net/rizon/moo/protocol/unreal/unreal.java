@@ -13,10 +13,12 @@ import net.rizon.moo.protocol.messageJoin;
 import net.rizon.moo.protocol.messageKick;
 import net.rizon.moo.protocol.messageMode;
 import net.rizon.moo.protocol.messageNick;
+import net.rizon.moo.protocol.messageNotice;
 import net.rizon.moo.protocol.messagePart;
 import net.rizon.moo.protocol.messagePing;
 import net.rizon.moo.protocol.messagePrivmsg;
 import net.rizon.moo.protocol.messageQuit;
+import net.rizon.moo.protocol.messageWallops;
 
 public class unreal extends mpackage
 {
@@ -40,7 +42,9 @@ public class unreal extends mpackage
 		new messageKick();
 		new messageMode();
 		new messageNick();
+		new messageNotice();
 		new messageQuit();
+		new messageWallops();
 		
 		/* Unreal */
 		new message006();

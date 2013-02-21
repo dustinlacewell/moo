@@ -34,6 +34,7 @@ public abstract class event
 	public void onNotice(final String source, final String channel, final String message) { }
 	public void onNick(final String source, final String dest) { }
 	public void onQuit(final String source, final String reason) { }
+	public void onWallops(final String source, final String message) { }
 	
 	private static LinkedList<event> events = new LinkedList<event>();
 	

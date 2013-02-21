@@ -42,7 +42,6 @@ public class servermonitor extends mpackage
 		new commandServer(this);
 		new commandSplit(this);
 		new eventSplit();
-		new messageWallops();
 		
 		new requester().start();
 	}
