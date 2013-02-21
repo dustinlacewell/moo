@@ -430,7 +430,7 @@ class messageNotice extends message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (source.equals("NickServ!service@rizon.net"))
+		if (source.equals(moo.conf.getNickServHost()))
 		{
 			if (message.length > 1 && message[1].indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
 				moo.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());

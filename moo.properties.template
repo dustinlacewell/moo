@@ -27,6 +27,9 @@ version=moo v2.0
 
 # NickServ password (optional)
 #nickserv_pass=moo
+#
+# NickServ host (optional)
+nickserv_host=NickServ!service@rizon.net
 
 # GeoServ password (optional)
 #geoserv_pass=moo
