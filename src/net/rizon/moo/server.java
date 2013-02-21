@@ -97,7 +97,7 @@ public class server
 
 	public final boolean isHub()
 	{
-		return (this.getSID() != null && this.getSID().endsWith("H")) || this.getName().endsWith(".hub");
+		return (this.getSID() != null && this.getSID().endsWith("H")) || this.getName().endsWith(".hub") || this.getName().startsWith("hub.");
 	}
 	
 	public final boolean isServices()
@@ -108,6 +108,9 @@ public class server
 			return true;
 		else if (this.getName().endsWith(".rizon.net"))
 			return true;
+		else if (this.getName().startsWith("services."))
+			return true;
+		
 		return false;
 	}
 	

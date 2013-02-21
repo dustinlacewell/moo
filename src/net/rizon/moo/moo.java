@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 class databaseTimer extends timer
 {
 	public databaseTimer()
@@ -72,10 +73,14 @@ public class moo
 			for (final String db_class : conf.getDatabaseClasses())
 				Class.forName(db_class);
 			
+			Class<?> c = Class.forName("net.rizon.moo.protocol." + moo.conf.getProtocol() + "." + moo.conf.getProtocol());
+			Constructor<?>[] cons = c.getConstructors();
+			cons[0].newInstance();
+			
 			for (final String pkg : conf.getPackages())
 			{
-				Class<?> c = Class.forName("net.rizon.moo." + pkg + "." + pkg);
-				Constructor<?>[] cons = c.getConstructors();
+				c = Class.forName("net.rizon.moo." + pkg + "." + pkg);
+				cons = c.getConstructors();
 				cons[0].newInstance();
 			}
 		}
@@ -87,8 +92,6 @@ public class moo
 		}
 
 		System.out.println("Starting up " + conf.getNick());
-		
-		messages.initMessages();
 
 		for (event e : event.getEvents())
 			e.initDatabases();

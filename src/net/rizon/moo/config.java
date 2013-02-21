@@ -52,6 +52,7 @@ public class config
 	private String commits_channel;
 	private String servermonitor_domain;
 	private String[] servermonitor_check;
+	private String protocol;
 	private String[] packages;
 	private int debug;
 	
@@ -120,7 +121,6 @@ public class config
 		this.rrd_dir = this.getProperty(prop, "rrd_dir");
 		s = this.getProperty(prop, "ssh_key_paths");
 		this.ssh_key_paths = s.split(";");
-		s = this.getProperty(prop, "packages");
 		this.antiidle_channel = this.getProperty(prop, "antiidle.channel");
 		this.antiidle_time = Integer.parseInt(this.getProperty(prop, "antiidle.time"));
 		this.antiidle_bantime = Integer.parseInt(this.getProperty(prop, "antiidle.bantime"));
@@ -131,6 +131,8 @@ public class config
 		this.commits_channel = this.getProperty(prop, "commits.channel");
 		this.servermonitor_domain = this.getProperty(prop, "servermonitor.domain");
 		this.servermonitor_check = this.getProperty(prop, "servermonitor.check").split(" ");
+		this.protocol = this.getProperty(prop, "protocol");
+		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
 		this.debug = Integer.parseInt(this.getProperty(prop, "debug"));
 		
@@ -419,6 +421,11 @@ public class config
 	public final String[] getServermonitorCheck()
 	{
 		return this.servermonitor_check;
+	}
+	
+	public final String getProtocol()
+	{
+		return this.protocol;
 	}
 	
 	public final String[] getPackages()

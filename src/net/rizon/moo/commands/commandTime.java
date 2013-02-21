@@ -50,7 +50,8 @@ class message391 extends message
 		return highest_ts;
 	}
 	
-	private static DateFormat format = new SimpleDateFormat("EEEE MMMM dd yyyy -- HH:mm:ss Z");
+	private static DateFormat format1 = new SimpleDateFormat("EEEE MMMM dd yyyy -- HH:mm:ss Z");
+	private static DateFormat format2 = new SimpleDateFormat("EEEE MMMM dd yyyy -- HH:mm Z");
 	
 	public static HashSet<String> waiting_for = new HashSet<String>();
 	public static HashMap<Long, Integer> known_times = new HashMap<Long, Integer>();
@@ -84,7 +85,15 @@ class message391 extends message
 				return;
 			time_buf = time_buf.substring(0, co) + time_buf.substring(co + 1);
 
-			Date st = format.parse(time_buf);
+			Date st;
+			try
+			{
+				st = format1.parse(time_buf);
+			}
+			catch (ParseException ex)
+			{
+				st = format2.parse(time_buf);
+			}
 			long them = st.getTime() / 1000L;
 			
 			String buf = "[TIME] " + s.getName() + " ";
