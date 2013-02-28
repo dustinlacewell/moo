@@ -21,6 +21,7 @@ class eventLogging extends event
 		moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `log_target_idx` on `log` (`target`)");
 		
 		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `services_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` datetime default current_timestamp, `data` collate nocase)");
+		moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
 	}
 	
 	@Override
