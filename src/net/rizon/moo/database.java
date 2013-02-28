@@ -88,6 +88,11 @@ public class database
 		this.con.setAutoCommit(state);
 	}
 	
+	public Connection getConnection()
+	{
+		return this.con;
+	}
+	
 	public static void handleException(SQLException ex)
 	{
 		ex.printStackTrace();
