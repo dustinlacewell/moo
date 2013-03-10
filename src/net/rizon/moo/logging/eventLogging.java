@@ -24,6 +24,18 @@ class eventLogging extends event
 		moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
 	}
 	
+	private int count = 0;
+	
+	@Override
+	public void saveDatabases()
+	{
+		if (++count == 144)
+		{
+			moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
+			count = 0;
+		}
+	}
+	
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
