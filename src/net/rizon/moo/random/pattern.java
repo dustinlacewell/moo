@@ -1,9 +1,6 @@
 package net.rizon.moo.random;
 
 import java.util.HashMap;
-import java.util.Iterator;
-
-import net.rizon.moo.moo;
 
 class pattern extends floodList
 {
@@ -95,39 +92,6 @@ class pattern extends floodList
 	public void onClose()
 	{
 		removePattern(this);
-	}
-	
-	public void add(nickData nd, final String data)
-	{
-		this.addMatch(nd);
-		if (this.isList)
-			random.logMatch(nd, this, data);
-		
-		long first = this.getTimes().getFirst();
-		
-		long now = System.currentTimeMillis() / 1000L;
-		if (this.isList == false && now - first <= random.timeforMatches && this.getMatches().size() >= random.matchesForFlood && frequency.isRandom(data) && frequency.containsBigrams(data) == false)
-		{
-			for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-				moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
-				
-			random.addFloodList(this);
-			this.isList = true;
-				
-			for (Iterator<nickData> it = this.getMatches().iterator(); it.hasNext();)
-				random.logMatch(it.next(), this, data);
-		}
-	}
-	
-	public void del(nickData nd)
-	{
-		if (this.isList)
-			return;
-		
-		this.delMatch(nd);
-
-		if (this.getMatches().isEmpty())
-			patterns.remove(this);
 	}
 	
 	/* hash map of patterns to itself. used because patterns may be .equal() but not ==, and

@@ -20,17 +20,16 @@ class deadListChecker extends timer
 	{
 		long now_l = System.currentTimeMillis() / 1000L;
 		
-		for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
+		for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
 		{
 			floodList p = it.next();
 			
-			if (p.getMatches().isEmpty() || (p.isClosed == false && now_l - p.getTimes().getFirst() > random.timeforMatches))
+			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
-				p.onClose();
-				p.isClosed = true;
+				p.close();
 			}
 		}
 	}
@@ -61,68 +60,18 @@ public class random extends mpackage
 	public static void addNickData(nickData nd)
 	{	
 		nicks.addLast(nd);
-		nd.inc();
+		nd.addToLists();
 		
 		if (nicks.size() > maxSize)
 		{
 			nd = nicks.removeFirst();
-			nd.dec();
+			nd.delFromLists();
 		}
 	}
 	
-	private static LinkedList<floodList> floodLists = new LinkedList<floodList>();
-	
-	public static void addFloodList(floodList fl)
-	{
-		floodLists.add(fl);
-	}
-	
-	public static LinkedList<floodList> getFloodLists()
-	{
-		return floodLists;
-	}
-	
-	public static void clearFloodLists()
-	{
-		for (int i = 0; i < floodLists.size(); ++i)
-		{
-			floodList fl = floodLists.get(i);
-			fl.onClose();
-			fl.isClosed = true;
-		}
-		
-		floodLists.clear();
-	}
-	
-	public static floodList getFloodListAt(int i)
-	{
-		try
-		{
-			return floodLists.get(i);
-		}
-		catch (IndexOutOfBoundsException ex)
-		{
-			return null;
-		}
-	}
-	
-	public static void removeFloodListAt(int i)
-	{
-		try
-		{
-			floodList fl = floodLists.get(i);
-			fl.onClose();
-			fl.isClosed = true;
-			floodLists.remove(fl);
-		}
-		catch (IndexOutOfBoundsException ex)
-		{
-		}
-	}
-	
-	public static void logMatch(nickData nd, floodList fl, final String data)
+	public static void logMatch(nickData nd, floodList fl)
 	{
 		for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl.toString() + "] for " + data + " on " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 }

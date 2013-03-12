@@ -44,12 +44,12 @@ class commandFlood extends command
 		}
 		else if (params[1].equalsIgnoreCase("LIST"))
 		{
-			if (random.getFloodLists().isEmpty())
+			if (floodList.getActiveLists().isEmpty())
 				moo.privmsg(target, "There are no flood lists.");
 			else
 			{
 				int i = 1;
-				for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
+				for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
 				{
 					floodList p = it.next();
 					
@@ -81,9 +81,9 @@ class commandFlood extends command
 			{
 			}
 			
-			int lists = random.getFloodLists().size(), count = 0, dupes = 0;
+			int lists = floodList.getActiveLists().size(), count = 0, dupes = 0;
 			
-			for (Iterator<floodList> it = random.getFloodLists().iterator(); it.hasNext();)
+			for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
 			{
 				floodList fl = it.next();
 				
@@ -107,7 +107,7 @@ class commandFlood extends command
 				}
 			}
 			
-			random.clearFloodLists();
+			floodList.clearFloodLists();
 			
 			moo.operwall(source + " used AKILL for " + count + " flood entries");
 			
@@ -126,7 +126,7 @@ class commandFlood extends command
 			return;
 		}
 		
-		floodList fl = random.getFloodListAt(i - 1);
+		floodList fl = floodList.getFloodListAt(i - 1);
 		if (fl == null)
 		{
 			moo.notice(source, "There is no flood list numbered " + i);
@@ -285,7 +285,7 @@ class commandFlood extends command
 
 			moo.operwall(source + " used AKILL for " + count + " flood entries");
 			moo.reply(source, target, "Akilled " + count + " entries (" + (fl.getMatches().size() - count) + " duplicates)");
-			random.removeFloodListAt(i - 1);
+			floodList.removeFloodListAt(i - 1);
 		}
 		else if (params[2].equalsIgnoreCase("APPLY"))
 		{
@@ -408,9 +408,6 @@ class commandFlood extends command
 		}
 		
 		if (fl.getMatches().isEmpty() == true)
-		{
-			fl.onClose();
-			random.removeFloodListAt(i - 1);
-		}
+			floodList.removeFloodListAt(i - 1);
 	}
 }
