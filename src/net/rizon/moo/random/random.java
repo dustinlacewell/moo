@@ -29,7 +29,8 @@ class deadListChecker extends timer
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
-				p.close();
+				/* Don't really close this, we want the list to persist forever. Call onClose to detach the pattern */
+				p.onClose();
 			}
 		}
 	}
