@@ -24,12 +24,16 @@ class deadListChecker extends timer
 		{
 			floodList p = it.next();
 			
+			if (p.isClosed)
+				continue;
+			
 			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
 				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
 				/* Don't really close this, we want the list to persist forever. Call onClose to detach the pattern */
+				p.isClosed = true;
 				p.onClose();
 			}
 		}

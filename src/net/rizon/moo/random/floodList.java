@@ -11,6 +11,7 @@ abstract class floodList
 	private HashSet<nickData> matches = new HashSet<nickData>();
 	private LinkedList<Long> times = new LinkedList<Long>();
 	protected boolean isList = false;
+	protected boolean isClosed = false;
 	
 	public floodList()
 	{
@@ -71,6 +72,7 @@ abstract class floodList
 	
 	protected void close()
 	{
+		this.isClosed = true;
 		lists.remove(this);
 		this.onClose();
 	}
