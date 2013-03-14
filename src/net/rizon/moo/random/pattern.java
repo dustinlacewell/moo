@@ -113,11 +113,12 @@ class pattern extends floodList
 		pattern real = patterns.get(p);
 		if (real != null)
 			return real;
+		p.open();
 		patterns.put(p, p);
 		return p;
 	}
 	
-	public static void removePattern(pattern p)
+	private static void removePattern(pattern p)
 	{
 		patterns.remove(p);
 	}

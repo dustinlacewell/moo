@@ -13,11 +13,6 @@ abstract class floodList
 	protected boolean isList = false;
 	protected boolean isClosed = false;
 	
-	public floodList()
-	{
-		lists.add(this);
-	}
-	
 	@Override
 	public abstract String toString();
 	
@@ -68,7 +63,12 @@ abstract class floodList
 		return this.times;
 	}
 	
-	protected void onClose() { }
+	abstract protected void onClose();
+	
+	protected void open()
+	{
+		lists.add(this);
+	}
 	
 	protected void close()
 	{
