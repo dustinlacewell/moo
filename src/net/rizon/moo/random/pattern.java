@@ -1,6 +1,22 @@
 package net.rizon.moo.random;
 
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
+class patternComparator implements Comparator<pattern>
+{
+	@Override
+	public int compare(pattern arg0, pattern arg1)
+	{
+		if (arg0.lessThan(arg1))
+			return -1;
+		else if (arg1.lessThan(arg0))
+			return 1;
+		else
+			return 0;
+	}
+}
 
 class pattern extends floodList
 {
@@ -64,41 +80,31 @@ class pattern extends floodList
 		return this.lowerUpperMask ^ this.charMask ^ this.numberMask ^ this.type.toString().hashCode();
 	}
 	
-	@Override
-	public boolean equals(Object obj)
+	protected boolean lessThan(pattern other)
 	{
-		if (!(obj instanceof pattern))
-			return false;
+		if (this.type.ordinal() < other.type.ordinal())
+			return true;
+		else if (this.length < other.length)
+			return true;
+		else if (this.lower < other.lower)
+			return true;
+		else if (this.upper < other.upper)
+			return true;
+		else if (this.number < other.number)
+			return true;
+		else if (this.other < other.other)
+			return true;
 		
-		pattern other = (pattern) obj;
-		
-		if (this.type != other.type)
-			return false;
-		else if (this.length != other.length)
-			return false;
-		else if (this.lower != other.lower)
-			return false;
-		else if (this.upper != other.upper)
-			return false;
-		else if (this.number != other.number)
-			return false;
-		else if (this.other != other.other)
-			return false;
-		
-		return true;
+		return false;
 	}
 	
 	@Override
 	public void onClose()
 	{
-		removePattern(this);
+		patterns.remove(this);
 	}
 	
-	/* hash map of patterns to itself. used because patterns may be .equal() but not ==, and
-	 * we need the same reference for each specific pattern to keep a refcount. (and it lowers
-	 * memory)
-	 */
-	private static HashMap<pattern, pattern> patterns = new HashMap<pattern, pattern>();
+	private static Map<pattern, pattern> patterns = new TreeMap<pattern, pattern>(new patternComparator());
 	
 	public static pattern[] getPatterns()
 	{
@@ -116,10 +122,5 @@ class pattern extends floodList
 		p.open();
 		patterns.put(p, p);
 		return p;
-	}
-	
-	private static void removePattern(pattern p)
-	{
-		patterns.remove(p);
 	}
 }

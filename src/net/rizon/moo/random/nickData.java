@@ -41,7 +41,7 @@ class nickData
 	public void delFromLists()
 	{
 		for (int i = 0; i < this.lists.size(); ++i)
-			this.lists.get(i).delMatch(this);;
+			this.lists.get(i).delMatch(this);
 	}
 	
 	public int getActiveListCount()

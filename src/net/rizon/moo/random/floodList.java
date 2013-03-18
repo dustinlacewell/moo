@@ -65,6 +65,8 @@ abstract class floodList
 	
 	abstract protected void onClose();
 	
+	/* the following assumes two flood lists are never .equal() unless == */
+	
 	protected void open()
 	{
 		lists.add(this);
@@ -78,11 +80,6 @@ abstract class floodList
 	}
 	
 	private static LinkedList<floodList> lists = new LinkedList<floodList>();
-	
-	protected static LinkedList<floodList> getAllLists()
-	{
-		return lists;
-	}
 	
 	protected static LinkedList<floodList> getActiveLists()
 	{
