@@ -1,22 +1,6 @@
 package net.rizon.moo.random;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-
-class patternComparator implements Comparator<pattern>
-{
-	@Override
-	public int compare(pattern arg0, pattern arg1)
-	{
-		if (arg0.lessThan(arg1))
-			return -1;
-		else if (arg1.lessThan(arg0))
-			return 1;
-		else
-			return 0;
-	}
-}
+import java.util.Iterator;
 
 class pattern extends floodList
 {
@@ -73,54 +57,50 @@ class pattern extends floodList
 	{
 		return this.type.name.substring(0,  1) + "/L:" + this.lower + "/U:" + this.upper + "/N:" + this.number + "/O:" + this.other;
 	}
-	
-	@Override
-	public int hashCode()
+
+	protected boolean equalTo(pattern other)
 	{
-		return this.lowerUpperMask ^ this.charMask ^ this.numberMask ^ this.type.toString().hashCode();
-	}
-	
-	protected boolean lessThan(pattern other)
-	{
-		if (this.type.ordinal() < other.type.ordinal())
-			return true;
-		else if (this.length < other.length)
-			return true;
-		else if (this.lower < other.lower)
-			return true;
-		else if (this.upper < other.upper)
-			return true;
-		else if (this.number < other.number)
-			return true;
-		else if (this.other < other.other)
-			return true;
+		if (this.type.ordinal() != other.type.ordinal())
+			return false;
+		else if (this.length != other.length)
+			return false;
+		else if (this.lower != other.lower)
+			return false;
+		else if (this.upper != other.upper)
+			return false;
+		else if (this.lowerUpperMask != other.lowerUpperMask)
+			return false;
+		else if (this.charMask != other.charMask)
+			return false;
+		else if (this.numberMask != other.numberMask)
+			return false;
+		else if (this.number != other.number)
+			return false;
+		else if (this.other != other.other)
+			return false;
 		
-		return false;
-	}
-	
-	@Override
-	public void onClose()
-	{
-		patterns.remove(this);
-	}
-	
-	private static Map<pattern, pattern> patterns = new TreeMap<pattern, pattern>(new patternComparator());
-	
-	public static pattern[] getPatterns()
-	{
-		pattern[] a = new pattern[patterns.size()];
-		patterns.keySet().toArray(a);
-		return a;
+		return true;
 	}
 	
 	public static pattern getOrCreatePattern(final field type, final String s)
 	{
 		pattern p = new pattern(type, s);
-		pattern real = patterns.get(p);
-		if (real != null)
-			return real;
+		for (Iterator<floodList> it = floodList.getLists().iterator(); it.hasNext();)
+		{
+			floodList fl = it.next();
+			
+			// Currently these can only be patterns
+			//if (fl instanceof pattern)
+			{
+				pattern pfl = (pattern) fl;
+				
+				if (pfl.equalTo(p))
+					return pfl;
+			}
+		}
+		
+		floodList.getLists().add(p);
 		p.open();
-		patterns.put(p, p);
 		return p;
 	}
 }

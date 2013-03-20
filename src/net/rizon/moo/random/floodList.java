@@ -63,8 +63,6 @@ abstract class floodList
 		return this.times;
 	}
 	
-	abstract protected void onClose();
-	
 	/* the following assumes two flood lists are never .equal() unless == */
 	
 	protected void open()
@@ -76,10 +74,14 @@ abstract class floodList
 	{
 		this.isClosed = true;
 		lists.remove(this);
-		this.onClose();
 	}
 	
 	private static LinkedList<floodList> lists = new LinkedList<floodList>();
+	
+	protected static LinkedList<floodList> getLists()
+	{
+		return lists;
+	}
 	
 	protected static LinkedList<floodList> getActiveLists()
 	{
