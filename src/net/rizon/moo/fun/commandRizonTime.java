@@ -39,19 +39,19 @@ class commandRizonTime extends command
 				
 				buf += params[i] + " ";
 				if (params[i].indexOf("year") > -1)
-					time *= num * 32140800 * (r.nextFloat() + 1.0f) * (r.nextInt(2) + 1);
+					time += num * 32140800 * (r.nextFloat() + 1.0f) * (r.nextInt(2) + 1);
 				else if (params[i].indexOf("month") > -1)
-					time *= num * 2678400 * (r.nextFloat() + 1.0f) * (r.nextInt(5) + 1);
+					time += num * 2678400 * (r.nextFloat() + 1.0f) * (r.nextInt(5) + 1);
 				else if (params[i].indexOf("week") > -1)
-					time *= num * 604800 * (r.nextFloat() + 1.0f) * (r.nextInt(7) + 3);
+					time += num * 604800 * (r.nextFloat() + 1.0f) * (r.nextInt(7) + 3);
 				else if (params[i].indexOf("day") > -1)
-					time *= num * 86400 * (r.nextFloat() + 1.0f) * (r.nextInt(10) + 5);
+					time += num * 86400 * (r.nextFloat() + 1.0f) * (r.nextInt(10) + 5);
 				else if (params[i].indexOf("hour") > -1)
-					time *= num * 3600 * (r.nextFloat() + 1.0f) * (r.nextInt(50) + 24);
+					time += num * 3600 * (r.nextFloat() + 1.0f) * (r.nextInt(50) + 24);
 				else if (params[i].indexOf("min") > -1)
-					time *= num * 60 * (r.nextFloat() + 1.0f) * (r.nextInt(100) + 300);
+					time += num * 60 * (r.nextFloat() + 1.0f) * (r.nextInt(100) + 300);
 				else
-					time *= num * (r.nextFloat() + 1.0f) * r.nextInt(200);
+					time += num * (r.nextFloat() + 1.0f) * r.nextInt(200);
 			}
 		}
 		
