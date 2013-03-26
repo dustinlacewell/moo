@@ -35,6 +35,33 @@ class commandFlood extends command
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
 	}
 	
+	private int purge()
+	{
+		int removed = 0;
+		
+		for (Iterator<floodList> it = floodList.getLists().iterator(); it.hasNext();)
+		{
+			floodList fl = it.next();
+			
+			for (Iterator<nickData> it2 = fl.getMatches().iterator(); it2.hasNext();)
+			{
+				nickData nd = it2.next();
+				
+				if (nd.akilled)
+				{
+					fl.delMatch(nd);
+					it2.remove();
+					++removed;
+				}
+			}
+			
+			if (fl.getMatches().isEmpty())
+				it.remove();
+		}
+		
+		return removed;
+	}
+	
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
@@ -110,11 +137,9 @@ class commandFlood extends command
 				}
 			}
 			
-			floodList.clearFloodLists();
-			
 			moo.operwall(source + " used AKILL for " + count + " flood entries");
 			
-			moo.reply(source, target, "Akilled " + count + " entries from " + lists + " lists (" + dupes + " duplicates).");
+			moo.reply(source, target, "Akilled " + count + " entries from " + lists + " lists with " + dupes + " duplicates. Removed " + purge() + " entries.");
 			return;
 		}
 		
@@ -272,13 +297,16 @@ class commandFlood extends command
 				}
 			}
 			
-			int count = 0;
+			int count = 0, duplicates = 0;
 			for (Iterator<nickData> it = fl.getMatches().iterator(); it.hasNext();)
 			{
 				nickData fe = it.next();
 				
 				if (fe.akilled)
+				{
+					++duplicates;
 					continue;
+				}
 				
 				fe.akilled = true;
 				++count;
@@ -287,8 +315,9 @@ class commandFlood extends command
 			}
 
 			moo.operwall(source + " used AKILL for " + count + " flood entries");
-			moo.reply(source, target, "Akilled " + count + " entries (" + (fl.getMatches().size() - count) + " duplicates)");
-			floodList.removeFloodListAt(i - 1);
+			moo.reply(source, target, "Akilled " + count + " entries with " + duplicates + " duplicates. Removed " + purge() + " entries.");
+			/* purge() is guaranteed to eat this list */
+			fl = null;
 		}
 		else if (params[2].equalsIgnoreCase("APPLY"))
 		{
@@ -410,7 +439,7 @@ class commandFlood extends command
 			moo.reply(source, target, "Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 		}
 		
-		if (fl.getMatches().isEmpty() == true)
+		if (fl != null && fl.getMatches().isEmpty() == true)
 			floodList.removeFloodListAt(i - 1);
 	}
 }
