@@ -27,6 +27,9 @@ class eventRandom extends event
 		Matcher m = akillAddPattern.matcher(message);
 		if (m.matches())
 		{
+			if (message.contains("hopm") || message.contains("open proxies") || message.contains("open proxy"))
+				return;
+			
 			final String ip = m.group(1);
 			random.akill(ip);
 			return;
