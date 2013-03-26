@@ -7,7 +7,7 @@ class nurPattern extends floodList
 	@Override
 	public String toString()
 	{
-		return "NUH";
+		return "NUR";
 	}
 	
 	protected static floodList matches(nickData nd)
