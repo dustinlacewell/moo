@@ -12,7 +12,6 @@ public class watch extends mpackage
 		
 		new eventWatch();
 		new messageNotice();
-		new messagePrivmsg();
 		new commandWatch(this);
 		new watchMonitor();
 	}

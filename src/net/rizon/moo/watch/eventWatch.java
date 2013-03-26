@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import net.rizon.moo.event;
 import net.rizon.moo.moo;
+import net.rizon.moo.random.nickData;
+import net.rizon.moo.random.random;
 
 class eventWatch extends event
 {
@@ -71,6 +73,47 @@ class eventWatch extends event
 		{
 			System.out.println("Error saving watches");
 			ex.printStackTrace();
+		}
+	}
+	
+	private static final String opmMatch = "Using or hosting open proxies is not permitted";
+	private static final long ban_time = 86400 * 3 * 1000L; // 3d
+	
+	@Override
+	public void onAkillAdd(final String setter, final String ip, final String reason)
+	{
+		if (reason.contains(opmMatch))
+		{
+			for (Iterator<nickData> it = random.getNicks().iterator(); it.hasNext();)
+			{
+				nickData nd = it.next();
+				
+				if (ip.equals(nd.ip))
+				{	
+					for (Iterator<watchEntry> it2 = watch.watches.iterator(); it2.hasNext();)
+					{
+						watchEntry e = it2.next();
+						
+						if (e.nick.equalsIgnoreCase(nd.nick_str))
+							return;
+					}
+
+					watchEntry we = new watchEntry();
+					we.nick = nd.nick_str;
+					we.creator = moo.conf.getNick();
+					we.reason = "Suspected open proxy (" + reason + ")";
+					we.created = new Date();
+					we.expires = new Date(System.currentTimeMillis() + ban_time);
+					we.registered = watchEntry.registeredState.RS_UNKNOWN;
+						
+					watch.watches.add(we);
+					
+					for (int i = 0; i < moo.conf.getSpamChannels().length; ++i)
+						moo.privmsg(moo.conf.getSpamChannels()[i], "Added watch for " + nd.nick_str + " due to hitting the OPM.");
+					
+					return;
+				}
+			}
 		}
 	}
 }

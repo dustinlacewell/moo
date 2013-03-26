@@ -36,6 +36,10 @@ public abstract class event
 	public void onQuit(final String source, final String reason) { }
 	public void onWallops(final String source, final String message) { }
 	
+	public void onClientConnect(final String nick, final String ident, final String ip, final String realname) { }
+	public void onAkillAdd(final String setter, final String ip, final String reason) { }
+	public void onAkillDel(final String setter, final String ip, final String reason) { }
+	
 	private static LinkedList<event> events = new LinkedList<event>();
 	
 	public static final event[] getEvents()
