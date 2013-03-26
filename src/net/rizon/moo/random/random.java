@@ -1,5 +1,7 @@
 package net.rizon.moo.random;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -77,5 +79,39 @@ public class random extends mpackage
 	{
 		for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+	}
+	
+	protected static void akill(final String ip)
+	{
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("INSERT OR IGNORE INTO `akills` (`ip`, `count`) VALUES(?, 0)");
+			stmt.setString(1, ip);
+			moo.db.executeUpdate();
+			
+			stmt = moo.db.prepare("UPDATE AKILLS SET `count` = `count` + 1 WHERE `ip` = ?");
+			stmt.setString(1, ip);
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	protected static boolean remove(final String ip)
+	{
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("DELETE FROM `akills` WHERE `ip` = ?");
+			stmt.setString(1, ip);
+			return moo.db.executeUpdate() == 1;
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		return false;
 	}
 }

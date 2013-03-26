@@ -39,6 +39,11 @@ public class database
 		return this.last_statement;
 	}
 	
+	public void detach()
+	{
+		this.last_statement = null;
+	}
+	
 	public int executeUpdate(final String statement)
 	{
 		try
