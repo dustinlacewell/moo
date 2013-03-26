@@ -326,6 +326,11 @@ public class moo
 		privmsg("GeoServ", "QAKILL " + nick + " " + reason);
 	}
 	
+	public static void capture(final String nick)
+	{
+		privmsg("RootServ", "CAPTURE " + nick);
+	}
+	
 	public static void operwall(final String message)
 	{
 		moo.sock.write("WALLOPS :" + message);

@@ -19,7 +19,7 @@ class commandWatch extends command
 	{
 		moo.notice(source, "Syntax:");
 		moo.notice(source, this.getCommandName() + " LIST -- shows the watch list");
-		moo.notice(source, this.getCommandName() + " ADD <nick> [+expiry] <reason> -- adds an entry to the watch list");
+		moo.notice(source, this.getCommandName() + " ADD <nick> [+expiry] [+C] <reason> -- adds an entry to the watch list");
 		moo.notice(source, this.getCommandName() + " DEL <nick> -- deletes an entry from the watch list");
 	}
 
@@ -68,6 +68,7 @@ class commandWatch extends command
 				watch.watches.push(we);
 			}
 			
+			watchEntry.registeredState state = watchEntry.registeredState.RS_MANUAL_AKILL;
 			int reason_start = 4;
 			String expires = params[3];
 			long expires_len = 3 * 86400;
@@ -94,6 +95,12 @@ class commandWatch extends command
 					moo.reply(source, target, "Expiry " + expires + " is not valid");
 					return;
 				}
+				
+				if (reason_start < params.length && params[reason_start].equalsIgnoreCase("+C"))
+				{
+					++reason_start;
+					state = watchEntry.registeredState.RS_MANUAL_CAPTURE;
+				}
 			}
 			else
 				reason_start = 3;
@@ -109,7 +116,7 @@ class commandWatch extends command
 			we.reason = reason;
 			we.created = new Date();
 			we.expires = new Date(System.currentTimeMillis() + (expires_len * 1000L));
-			we.registered = watchEntry.registeredState.RS_MANUAL;
+			we.registered = state;
 			
 			moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
 		}

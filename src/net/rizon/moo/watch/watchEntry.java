@@ -9,7 +9,8 @@ class watchEntry
 	public enum registeredState
 	{
 		RS_UNKNOWN,
-		RS_MANUAL,
+		RS_MANUAL_AKILL,
+		RS_MANUAL_CAPTURE,
 		RS_NOT_REGISTERED,
 		RS_REGISTERED
 	}
@@ -64,14 +65,16 @@ class watchEntry
 	{
 		this.handled = true;
 
-		if (this.registered == watchEntry.registeredState.RS_UNKNOWN && this.requested_registered == false)
+		if (this.registered == registeredState.RS_UNKNOWN && this.requested_registered == false)
 		{
 			moo.privmsg("NickServ", "INFO " + this.nick);
 			this.requested_registered = true;
 		}
-		else if (this.registered == watchEntry.registeredState.RS_NOT_REGISTERED || this.registered == watchEntry.registeredState.RS_MANUAL)
+		else if (this.registered == registeredState.RS_NOT_REGISTERED || this.registered == registeredState.RS_MANUAL_AKILL)
 			moo.qakill(this.nick, this.reason);
-		else if (this.registered == watchEntry.registeredState.RS_REGISTERED && this.warned == false)
+		else if (this.registered == registeredState.RS_MANUAL_CAPTURE)
+			moo.capture(this.nick);
+		else if (this.registered == registeredState.RS_REGISTERED && this.warned == false)
 		{
 			for (final String chan : moo.conf.getSpamChannels())
 				moo.privmsg(chan, "PROXY: " + this.nick + " was detected on an open proxy on " + this.created + ", which was " + difference(new Date(), this.created) + " ago.");
