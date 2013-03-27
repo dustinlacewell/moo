@@ -97,7 +97,7 @@ class eventSplit extends event
 	@Override
 	public void onWallops(final String source, final String message)
 	{
-		if (source.indexOf('.') == -1)
+		if (source.indexOf('@') != -1)
 			return;
 		
 		Matcher m = connectPattern.matcher(message);

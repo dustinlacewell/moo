@@ -189,7 +189,7 @@ class eventLogging extends event
 	@Override
 	public void onWallops(final String source, final String message)
 	{
-		if (message.startsWith("OPERWALL") == false && source.indexOf('.') == -1)
+		if (message.startsWith("OPERWALL") == false && source.indexOf('@') != -1)
 			return;
 		
 		Matcher m = akillAddPattern.matcher(message);

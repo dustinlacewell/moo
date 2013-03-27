@@ -21,7 +21,14 @@ public class nickData
 		this.lists.add(pattern.getOrCreatePattern(field.FIELD_NICK, nick));
 		this.lists.add(pattern.getOrCreatePattern(field.FIELD_IDENT, user));
 		this.lists.add(pattern.getOrCreatePattern(field.FIELD_GECOS, real));
-		this.lists.add(nurPattern.matches(this));
+		
+		floodList p = nurPattern.matches(this);
+		if (p != null)
+			this.lists.add(nurPattern.matches(this));
+
+		p = previous.matches(this);
+		if (p != null)
+			this.lists.add(nurPattern.matches(this));
 	}
 	
 	@Override
