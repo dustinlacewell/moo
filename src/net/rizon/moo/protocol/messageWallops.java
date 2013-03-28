@@ -8,8 +8,8 @@ import net.rizon.moo.message;
 
 public class messageWallops extends message
 {
-	private static final Pattern akillAddPattern = Pattern.compile("([^ ]*) added an AKILL for \\*@([0-9A-Fa-f:.]*) ([^)]*)"),
-			akillRemovePattern = Pattern.compile("([^ ]*) removed an AKILL for \\*@([0-9A-Fa-f:.]*) ([^)]*)");
+	private static final Pattern akillAddPattern = Pattern.compile(".* ([^ ]*) added an AKILL for \\*@([0-9A-Fa-f:.]*) \\(([^)]*)\\).*"),
+			akillRemovePattern = Pattern.compile(".* ([^ ]*) removed an AKILL for \\*@([0-9A-Fa-f:.]*) \\(([^)]*)\\).*");
 	
 	public messageWallops()
 	{

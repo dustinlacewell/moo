@@ -27,7 +27,7 @@ public class messageNotice extends message
 		Matcher m = connectPattern.matcher(message[1]);
 		if (m.matches())
 		{
-			if (source.indexOf('.') == -1)
+			if (source.indexOf('@') != -1)
 				return;
 			
 			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), realname = m.group(4);

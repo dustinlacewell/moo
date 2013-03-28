@@ -14,7 +14,7 @@ class eventPlexus extends event
 			if (message.indexOf("This nickname is registered") != -1 && moo.conf.getNickServPass() != null && moo.conf.getNickServPass().isEmpty() == false)
 				moo.privmsg(source, "IDENTIFY " + moo.conf.getNickServPass());
 		}
-		else if (source.indexOf('.') != -1)
+		else if (source.indexOf('@') == -1)
 		{
 			if (message.indexOf("being introduced by") != -1)
 			{
