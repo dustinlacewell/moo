@@ -93,7 +93,7 @@ class commandFlood extends command
 			moo.reply(source, target, "Patterns: " + floodList.getLists().size());
 			for (Iterator<floodList> it = floodList.getLists().iterator(); it.hasNext();)
 			{
-				pattern p = (pattern) it.next();
+				floodList p = it.next();
 				moo.reply(source, target, "  " + p.toString() + ": contains " + p.getMatches().size() + " matches, first at " + new Date(p.getTimes().getFirst() * 1000L) + ", last at " + new Date(p.getTimes().getLast() * 1000L));
 			}
 			moo.reply(source, target, "Threshold: " + random.matchesForFlood + " in " + random.timeforMatches + " seconds");

@@ -89,8 +89,7 @@ class pattern extends floodList
 		{
 			floodList fl = it.next();
 			
-			// Currently these can only be patterns
-			//if (fl instanceof pattern)
+			if (fl instanceof pattern)
 			{
 				pattern pfl = (pattern) fl;
 				
@@ -99,7 +98,6 @@ class pattern extends floodList
 			}
 		}
 		
-		floodList.getLists().add(p);
 		p.open();
 		return p;
 	}

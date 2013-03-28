@@ -9,7 +9,7 @@ import net.rizon.moo.moo;
 class previous extends floodList
 {
 	private static PreparedStatement stmt;
-	private static previous self = new previous();
+	private static previous self;
 	
 	static
 	{
@@ -32,18 +32,21 @@ class previous extends floodList
 	
 	protected static floodList matches(nickData nd)
 	{
-		if (self.isClosed)
-		{
-			/* My list has been closed (and thus detached from everything), so start a new list. */
-			self = new previous();
-		}
-
 		try
 		{
 			stmt.setString(1, nd.ip);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next())
+			{
+				if (self.isClosed)
+				{
+					/* My list has been closed (and thus detached from everything), so start a new list. */
+					self = new previous();
+					self.open();
+				}
+
 				return self;
+			}
 		}
 		catch (SQLException ex)
 		{
