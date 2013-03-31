@@ -129,6 +129,9 @@ class eventWatch extends event
 			if (!e.reason.startsWith("Suspected open proxy") || !e.reason.endsWith(ip))
 				continue;
 			
+			for (int i = 0; i < moo.conf.getSpamChannels().length; ++i)
+				moo.privmsg(moo.conf.getSpamChannels()[i], "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
+			
 			it.remove();
 		}
 	}
