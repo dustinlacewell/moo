@@ -14,7 +14,7 @@ class nurPattern extends floodList
 	{	
 		if (nd.realname_str.startsWith(nd.nick_str) && nd.nick_str.startsWith(nd.user_str))
 		{
-			if (self.isClosed)
+			if (self == null || self.isClosed)
 			{
 				/* My list has been closed (and thus detached from everything), so start a new list. */
 				self = new nurPattern();

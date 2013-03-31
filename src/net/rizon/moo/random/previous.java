@@ -38,7 +38,7 @@ class previous extends floodList
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next())
 			{
-				if (self.isClosed)
+				if (self == null || self.isClosed)
 				{
 					/* My list has been closed (and thus detached from everything), so start a new list. */
 					self = new previous();
