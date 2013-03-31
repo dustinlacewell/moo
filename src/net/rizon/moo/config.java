@@ -18,7 +18,6 @@ public class config
 	private String version;
 	private String nickserv_pass;
 	private String nickserv_host;
-	private String geoserv_pass;
 	private String oper;
 	private String[] idle_channels;
 	private String[] channels;
@@ -79,7 +78,6 @@ public class config
 		this.version = this.getProperty(prop, "version");
 		this.nickserv_pass = this.getProperty(prop, "nickserv_pass");
 		this.nickserv_host = this.getProperty(prop, "nickserv_host");
-		this.geoserv_pass = this.getProperty(prop, "geoserv_pass");
 		this.oper = this.getProperty(prop, "oper");
 		String s;
 		s = this.getProperty(prop, "idle_channels");
@@ -219,11 +217,6 @@ public class config
 	public final String getNickServHost()
 	{
 		return this.nickserv_host;
-	}
-	
-	public final String getGeoServPass()
-	{
-		return this.geoserv_pass;
 	}
 	
 	public final String getOper()
