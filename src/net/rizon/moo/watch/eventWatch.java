@@ -101,7 +101,8 @@ class eventWatch extends event
 					watchEntry we = new watchEntry();
 					we.nick = nd.nick_str;
 					we.creator = moo.conf.getNick();
-					we.reason = "Suspected open proxy (" + reason + ")";
+					// Do not move IP from the end of the reason
+					we.reason = "Suspected open proxy (" + reason + ") on " + ip;
 					we.created = new Date();
 					we.expires = new Date(System.currentTimeMillis() + ban_time);
 					we.registered = watchEntry.registeredState.RS_UNKNOWN;
@@ -114,6 +115,21 @@ class eventWatch extends event
 					return;
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void onAkillDel(final String setter, final String ip, final String reason)
+	{
+		for (Iterator<watchEntry> it = watch.watches.iterator(); it.hasNext();)
+		{
+			watchEntry e = it.next();
+			
+			// NOTE: This relies on the fact that the IP comes at the end of the reason
+			if (!e.reason.startsWith("Suspected open proxy") || !e.reason.endsWith(ip))
+				continue;
+			
+			it.remove();
 		}
 	}
 }
