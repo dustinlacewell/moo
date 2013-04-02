@@ -49,7 +49,6 @@ class commandFlood extends command
 				
 				if (nd.akilled)
 				{
-					fl.delMatch(nd);
 					it2.remove();
 					++removed;
 				}
