@@ -33,6 +33,7 @@ class commandFlood extends command
 		moo.notice(source, "!FLOOD <flood list number> APPLYW <wildcard match> -- Delete all entries don't match the given wildcard expression (Used wildcards: ? and *)");
 		moo.notice(source, "!FLOOD <flood list number> APPLYF <nick!user@host/gecos regex> -- Delete all entries that don't match the given regex matched against regex");
 		moo.notice(source, "!FLOOD LIST -- Lists all available flood lists");
+		moo.notice(source, "!FLOOD DELALL -- Deletes all available flood lists");
 	}
 	
 	private int purge()
@@ -139,6 +140,15 @@ class commandFlood extends command
 			moo.operwall(source + " used AKILL for " + count + " flood entries");
 			
 			moo.reply(source, target, "Akilled " + count + " entries from " + lists + " lists with " + dupes + " duplicates. Removed " + purge() + " entries.");
+			return;
+		}
+		else if (params[1].equalsIgnoreCase("DELALL"))
+		{
+			int count = floodList.getActiveLists().size();
+			for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
+				it.remove();
+			
+			moo.reply(source, target, "Deleted " + count + " lists.");
 			return;
 		}
 		
