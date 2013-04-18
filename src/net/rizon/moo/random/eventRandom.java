@@ -41,7 +41,7 @@ class eventRandom extends event
 		else if (server.last_split != null && server.last_split.after(then))
 			return;
 		
-		if (ident.equals("qwebirc") || ident.equals("cgiirc") || real.equals("http://www.mibbit.com") || real.equals("...") || nick.startsWith("bRO-"))
+		if (ident.equals("qwebirc") || ident.equals("cgiirc") || real.equals("http://www.mibbit.com") || real.equals("...") || nick.startsWith("bRO-") || real.equals("realname"))
 			return;
 			
 		nickData nd = new nickData(nick, ident, real, ip);
