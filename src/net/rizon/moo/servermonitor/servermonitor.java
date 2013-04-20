@@ -1,7 +1,11 @@
 package net.rizon.moo.servermonitor;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
+import net.rizon.moo.database;
+import net.rizon.moo.event;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.server;
@@ -33,6 +37,37 @@ class requester extends timer
 	}
 }
 
+class servermonitorevent extends event
+{
+	@Override
+	protected void initDatabases()
+	{
+		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `sdesc` (`name` VARCHAR(64) NOT NULL, `desc` VARCHAR(255) NOT NULL)");
+	}
+	
+	@Override
+	public void loadDatabases()
+	{
+		try
+		{
+			moo.db.executeQuery("SELECT `name`, `desc` FROM `sdesc`");
+			ResultSet rs = moo.db.executeQuery();
+			while (rs.next())
+			{
+				server s = server.findServerAbsolute(rs.getString("name"));
+				if (s == null)
+					continue;
+				
+				s.setDesc(rs.getString("desc"), false);
+			}
+		}
+		catch (SQLException ex)
+		{
+			database.handleException(ex);
+		}
+	}
+}
+
 public class servermonitor extends mpackage
 {
 	public servermonitor()
@@ -42,6 +77,8 @@ public class servermonitor extends mpackage
 		new commandServer(this);
 		new commandSplit(this);
 		new eventSplit();
+		
+		new servermonitorevent();
 		
 		new requester().start();
 	}

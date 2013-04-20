@@ -29,6 +29,8 @@ public class server
 	public boolean frozen = false;
 	/* from /stats u */
 	public Date uptime;
+	// not null!
+	private String desc = "";
 
 	public server(final String name)
 	{
@@ -162,6 +164,29 @@ public class server
 		split s = this.getSplit();
 		s.to = to;
 		s.end = new Date();
+	}
+	
+	public void setDesc(String desc, boolean do_write)
+	{
+		this.desc = desc;
+		
+		if (do_write)
+			try
+			{
+				PreparedStatement stmt = moo.db.prepare("INSERT INTO `sdesc`(`name`, `desc`) VALUES(?, ?)");
+				stmt.setString(1, this.name);
+				stmt.setString(2, desc);
+				moo.db.executeUpdate();
+			}
+			catch (SQLException ex)
+			{
+				database.handleException(ex);
+			}
+	}
+	
+	public String getDesc()
+	{
+		return this.desc;
 	}
 	
 	private static LinkedList<server> servers = new LinkedList<server>();

@@ -69,6 +69,24 @@ class commandServerBase extends command
 				s.destroy();
 			}
 		}
+		else if (params.length >= 3 && params[1].equalsIgnoreCase("DESC"))
+		{
+			server s = server.findServer(params[2]);
+			if (s == null)
+			{
+				moo.reply(source, target, "No such server " + params[2] + ", full name required");
+				return;
+			}
+			
+			String desc = "";
+			if (params.length > 3)
+				for (int i = 3; i < params.length; ++i)
+					desc += params[i] + ((i == params.length - 1) ? "" : " ");
+			
+			s.setDesc(desc, true);
+			
+			moo.reply(source, target, "Set description for " + s.getName() + " to " + desc + ".");
+		}
 		else if (params.length >= 3)
 		{
 			server s = server.findServer(params[1]);
@@ -236,6 +254,8 @@ class commandServerBase extends command
 				
 				msg += "[Users: " + s.users + change + "] ";
 				msg += s.getName();
+				if (!s.getDesc().isEmpty())
+					msg += " (" + s.getDesc() + ")";
 				msg += message.COLOR_END;
 				msg += " / " + links;
 				
