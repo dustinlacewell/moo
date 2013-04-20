@@ -60,13 +60,32 @@ class commandServerBase extends command
 		}
 		else if (params.length >= 3 && (params[1].equalsIgnoreCase("DELETE") || params[1].equalsIgnoreCase("DEL")))
 		{
-			server s = server.findServer(params[2]);
+			server s = server.findServerAbsolute(params[2]);
 			if (s == null)
 				moo.reply(source, target, "No such server " + params[2] + ", full name required");
 			else
 			{
 				moo.reply(source, target, "Deleted server " + s.getName());
 				s.destroy();
+			}
+		}
+		else if (params.length >= 3 && params[1].equalsIgnoreCase("DESC"))
+		{
+			server s = server.findServer(params[2]);
+			if (s == null)
+				moo.reply(source, target, "No such server " + params[2]);
+			else if (params.length == 3)
+			{
+				s.setDesc("");
+				moo.reply(source, target, "Description for " + s.getName() + " unset");
+			}
+			else
+			{
+				String desc = params[3];
+				for (int i = 4; i < params.length; ++i)
+					desc += " " + params[i];
+				s.setDesc(desc);
+				moo.reply(source, target, "Description for " + s.getName() + " updated");
 			}
 		}
 		else if (params.length >= 3)
@@ -303,6 +322,12 @@ class commandServerBase extends command
 				
 				if (why.isEmpty() == false)
 					msg += " / " + why.toString();
+				
+				if (s.getDesc().isEmpty() == false)
+				{
+					msg += " / " + s.getDesc();
+					output = true;
+				}
 				
 				if (output || all)
 				{

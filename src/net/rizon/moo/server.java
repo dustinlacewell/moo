@@ -16,6 +16,7 @@ public class server
 	
 	private String name;
 	private Date created;
+	private String desc = "";
 	private String sid = null;
 	public HashSet<String> clines = new HashSet<String>(), clines_work = new HashSet<String>();
 	// oper name -> flags
@@ -164,6 +165,16 @@ public class server
 		s.end = new Date();
 	}
 	
+	public String getDesc()
+	{
+		return this.desc;
+	}
+	
+	public void setDesc(final String d)
+	{
+		this.desc = d;
+	}
+	
 	private static LinkedList<server> servers = new LinkedList<server>();
 	public static Date last_link = null, last_split = null;
 	
@@ -212,7 +223,7 @@ public class server
 		protected void initDatabases() 
 		{
 			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64));");
-			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `preferred_links`, `frozen`);");
+			moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `desc`, `preferred_links`, `frozen`);");
 			moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
 
@@ -262,13 +273,14 @@ public class server
 				ResultSet rs = moo.db.executeQuery("SELECT * FROM servers");
 				while (rs.next())
 				{
-					String name = rs.getString("name"), pl = rs.getString("preferred_links");
+					String name = rs.getString("name"), desc = rs.getString("desc"), pl = rs.getString("preferred_links");
 					Date created = rs.getDate("created");
 					boolean frozen = rs.getBoolean("frozen");
 					
 					server s = server.findServerAbsolute(name);
 					if (s == null)
 						s = new server(name);
+					s.desc = desc;
 					s.created = created;
 					for (String l : pl.split(" "))
 						if (l.trim().isEmpty() == false)
@@ -319,17 +331,18 @@ public class server
 			
 			try
 			{
-				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `preferred_links`, `frozen`) VALUES(?, ?, ?)"); 
+				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)"); 
 				
 				for (server s : server.getServers())
 				{
 					statement.setString(1, s.getName());
+					statement.setString(2, s.desc);
 					String links = "";
 					for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
 						links += it.next() + " ";
 					links = links.trim();
-					statement.setString(2, links);
-					statement.setBoolean(3, s.frozen);
+					statement.setString(3, links);
+					statement.setBoolean(4, s.frozen);
 					
 					moo.db.executeUpdate();
 				}
