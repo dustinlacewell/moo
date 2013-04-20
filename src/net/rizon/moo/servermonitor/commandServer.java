@@ -252,6 +252,27 @@ class commandServerBase extends command
 					why.add("Only one CLine");
 				}
 				
+				if (s.clines.size() > 0)
+				{
+					int frzcount = 0;
+					for (String linkname : s.clines)
+					{
+						server link = server.findServerAbsolute(linkname);
+						if (link == null)
+							continue;
+						
+						if (link.frozen)
+							frzcount += 1;
+					}
+					
+					if (frzcount == s.clines.size())
+					{
+						output = true;
+						showAllCLines = true;
+						why.add("All CLines frozen");
+					}
+				}
+				
 				msg += "[Users: " + s.users + change + "] ";
 				msg += s.getName();
 				if (!s.getDesc().isEmpty())
