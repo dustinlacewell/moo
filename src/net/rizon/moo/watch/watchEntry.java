@@ -72,8 +72,11 @@ class watchEntry
 		}
 		else if (this.registered == registeredState.RS_NOT_REGISTERED || this.registered == registeredState.RS_MANUAL_AKILL)
 			moo.qakill(this.nick, this.reason);
-		else if (this.registered == registeredState.RS_MANUAL_CAPTURE)
+		else if (this.registered == registeredState.RS_MANUAL_CAPTURE && this.warned == false)
+		{
 			moo.capture(this.nick);
+			this.warned = true;
+		}
 		else if (this.registered == registeredState.RS_REGISTERED && this.warned == false)
 		{
 			for (final String chan : moo.conf.getSpamChannels())
