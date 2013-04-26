@@ -145,8 +145,7 @@ class commandFlood extends command
 		else if (params[1].equalsIgnoreCase("CLEAR"))
 		{
 			int count = floodList.getActiveLists().size();
-			for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
-				it.remove();
+			floodList.clearFloodLists();
 			
 			moo.reply(source, target, "Deleted " + count + " lists.");
 			return;
