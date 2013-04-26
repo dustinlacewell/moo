@@ -24,11 +24,11 @@ public class nickData
 		
 		floodList p = nurPattern.matches(this);
 		if (p != null)
-			this.lists.add(nurPattern.matches(this));
+			this.lists.add(p);
 
 		p = previous.matches(this);
 		if (p != null)
-			this.lists.add(nurPattern.matches(this));
+			this.lists.add(p);
 	}
 	
 	@Override
