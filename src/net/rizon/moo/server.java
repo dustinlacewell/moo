@@ -280,7 +280,8 @@ public class server
 					server s = server.findServerAbsolute(name);
 					if (s == null)
 						s = new server(name);
-					s.desc = desc;
+					if (desc != null)
+						s.desc = desc;
 					s.created = created;
 					for (String l : pl.split(" "))
 						if (l.trim().isEmpty() == false)
