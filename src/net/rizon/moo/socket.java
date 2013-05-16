@@ -172,12 +172,30 @@ public class socket
 	
 	public void connect(final String addr, int port) throws IOException
 	{
-		this.connect(addr, port, 0);
+		this.connect(addr, port, 0, false);
 	}
 	
 	public void connect(final String addr, int port, int timeout) throws IOException
 	{
-		this.sock.connect(new InetSocketAddress(addr, port), timeout);
+		this.connect(addr,port, 0, false);
+	}
+	
+	public void connect(final String addr, int port, int timeout, boolean use_v6) throws IOException
+	{
+		InetSocketAddress target = null;
+		for (InetAddress ia : InetAddress.getAllByName(addr))
+		{
+			if ((!use_v6 && ia.getAddress().length != 4) ||
+					(use_v6 && ia.getAddress().length != 16))
+				continue;
+			
+			target = new InetSocketAddress(ia, port);
+		}
+		
+		if (target == null)
+			throw new UnknownHostException();
+		
+		this.sock.connect(target, timeout);
 		this.out = new PrintWriter(this.sock.getOutputStream(), true);
 		this.in = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
 	}

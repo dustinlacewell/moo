@@ -3,6 +3,7 @@ package net.rizon.moo.commands;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -27,6 +28,7 @@ class scheck extends Thread
 	private String users;
 	private String servers;
 	private boolean quiet;
+	private boolean use_v6;
 	
 	private static final Random rand = new Random();
 	private static final String getRandom()
@@ -48,7 +50,7 @@ class scheck extends Thread
 		return buf;
 	}
 
-	public scheck(final String server, final String source, final String target, boolean ssl, int port, boolean quiet)
+	public scheck(final String server, final String source, final String target, boolean ssl, int port, boolean quiet, boolean use_v6)
 	{
 		this.server = server;
 		this.source = source;
@@ -56,6 +58,7 @@ class scheck extends Thread
 		this.ssl = ssl;
 		this.port = port;
 		this.quiet = quiet;
+		this.use_v6 = use_v6;
 	}
 	
 	@Override
@@ -76,7 +79,16 @@ class scheck extends Thread
 				else
 					moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
 			}
-			s.connect(this.server, this.port, 15000);
+			
+			try
+			{
+				s.connect(this.server, this.port, 15000, this.use_v6);
+			}
+			catch (UnknownHostException ex)
+			{
+				moo.reply(this.source, this.target, "[SCHECK] No IPv" + (this.use_v6 ? "6" : "4") + " records found for " + this.server + ".");
+				return;
+			}
 
 			s.write("USER " + moo.conf.getIdent() + " . . :" + moo.conf.getRealname());
 			s.write("NICK " + moo.conf.getNick() + "-" + getRandom());
@@ -174,8 +186,9 @@ class scheckTimer extends timer
 	private boolean ssl;
 	private String source;
 	private String target;
+	private boolean use_v6;
 	
-	public scheckTimer(int delay, final String server, final String source, final String target, boolean ssl, int port)
+	public scheckTimer(int delay, final String server, final String source, final String target, boolean ssl, int port, boolean use_v6)
 	{
 		super(delay * scheckTimer.delay, false);
 		
@@ -184,12 +197,13 @@ class scheckTimer extends timer
 		this.target = target;
 		this.ssl = ssl;
 		this.port = port;
+		this.use_v6 = use_v6;
 	}
 
 	@Override
 	public void run(Date now)
 	{
-		scheck check = new scheck(this.server, this.source, this.target, this.ssl, this.port, true);
+		scheck check = new scheck(this.server, this.source, this.target, this.ssl, this.port, true, this.use_v6);
 		check.start();
 	}
 }
@@ -224,9 +238,9 @@ class commandScheck extends command
 	@Override
 	public void onHelp(String source)
 	{
-		moo.notice(source, "Syntax: !SCHECK <server> [+port]");
+		moo.notice(source, "Syntax: !SCHECK <server> [+port] [+6]");
 		moo.notice(source, "Attempts to connect to the given server. If no port is given, 6667 is assumed.");
-		moo.notice(source, "If port is prefixed with a +, SSL is used.");
+		moo.notice(source, "If port is prefixed with a +, SSL is used. If +6 is given, IPv6 instead of IPv4 will be used.");
 		moo.notice(source, "Once a connection is established, the global user count, server count and uptime will be shown.");
 	}
 
@@ -234,7 +248,7 @@ class commandScheck extends command
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)
-			moo.reply(source, target, "Syntax: !scheck <server> [port]");
+			moo.reply(source, target, "Syntax: !scheck <server> [port] [+6]");
 		else
 		{
 			server serv = server.findServer(params[1]);
@@ -243,10 +257,18 @@ class commandScheck extends command
 			else
 			{
 				int port = 6667;
-				boolean ssl = false;
+				boolean ssl = false, use_v6 = false;
+				int port_pos = 0;
+				
 				if (params.length > 2)
 				{
-					String port_str = params[2];
+					if (params[2].equals("+6") || (params.length > 3 && params[3].equals("+6")))
+					{
+						use_v6 = true;
+						port_pos = (params.length > 3) ? 2 : 3;
+					}
+					
+					String port_str = params[port_pos];
 					if (port_str.startsWith("+"))
 					{
 						port_str = port_str.substring(1);
@@ -266,7 +288,7 @@ class commandScheck extends command
 				
 				if (params[1].equalsIgnoreCase("ALL") == false)
 				{
-					scheck check = new scheck(serv.getName(), source, target, ssl, port, false);
+					scheck check = new scheck(serv.getName(), source, target, ssl, port, false, use_v6);
 					check.start();
 				}
 				else
@@ -278,7 +300,7 @@ class commandScheck extends command
 						if (s.isHub() || s.isServices())
 							continue;
 						
-						new scheckTimer(delay++, s.getName(), source, target, ssl, port).start();
+						new scheckTimer(delay++, s.getName(), source, target, ssl, port, use_v6).start();
 					}
 					
 					new scheckEndTimer(delay + 1, source, target);
