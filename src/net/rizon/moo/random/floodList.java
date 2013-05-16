@@ -73,6 +73,8 @@ abstract class floodList
 	protected void close()
 	{
 		this.isClosed = true;
+		this.isList = false;
+		this.matches.clear();
 		lists.remove(this);
 	}
 	
