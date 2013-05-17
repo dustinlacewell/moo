@@ -190,6 +190,7 @@ public class socket
 				continue;
 			
 			target = new InetSocketAddress(ia, port);
+			break;
 		}
 		
 		if (target == null)

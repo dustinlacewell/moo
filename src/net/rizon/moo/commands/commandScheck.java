@@ -265,24 +265,27 @@ class commandScheck extends command
 					if (params[2].equals("+6") || (params.length > 3 && params[3].equals("+6")))
 					{
 						use_v6 = true;
-						port_pos = (params.length > 3) ? 2 : 3;
+						port_pos = (params[2].equals("+6")) ? 3 : 2;
 					}
 					
-					String port_str = params[port_pos];
-					if (port_str.startsWith("+"))
+					if (port_pos > 0 && port_pos < params.length)
 					{
-						port_str = port_str.substring(1);
-						ssl = true;
-					}
-					
-					try
-					{
-						port = Integer.parseInt(port_str);
-						if (port <= 0 || port > 65535)
-							throw new NumberFormatException("Invalid port range");
-					}
-					catch (NumberFormatException ex)
-					{
+						String port_str = params[port_pos];
+						if (port_str.startsWith("+"))
+						{
+							port_str = port_str.substring(1);
+							ssl = true;
+						}
+						
+						try
+						{
+							port = Integer.parseInt(port_str);
+							if (port <= 0 || port > 65535)
+								throw new NumberFormatException("Invalid port range");
+						}
+						catch (NumberFormatException ex)
+						{
+						}
 					}
 				}
 				
