@@ -51,6 +51,7 @@ public class config
 	private String commits_channel;
 	private String servermonitor_domain;
 	private String[] servermonitor_check;
+	private String[] random_dnsbls;
 	private String protocol;
 	private String[] packages;
 	private int debug;
@@ -129,6 +130,7 @@ public class config
 		this.commits_channel = this.getProperty(prop, "commits.channel");
 		this.servermonitor_domain = this.getProperty(prop, "servermonitor.domain");
 		this.servermonitor_check = this.getProperty(prop, "servermonitor.check").split(" ");
+		this.random_dnsbls = this.getProperty(prop, "random.dnsbl").split(" ");
 		this.protocol = this.getProperty(prop, "protocol");
 		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
@@ -414,6 +416,11 @@ public class config
 	public final String[] getServermonitorCheck()
 	{
 		return this.servermonitor_check;
+	}
+	
+	public final String[] getDnsbls()
+	{
+		return this.random_dnsbls;
 	}
 	
 	public final String getProtocol()

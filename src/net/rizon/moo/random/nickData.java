@@ -8,7 +8,7 @@ public class nickData
 	public String nick_str, user_str, realname_str, ip;
 	public long time;
 	private LinkedList<floodList> lists = new LinkedList<floodList>();
-	public boolean akilled = false;
+	public boolean dead = false, akilled = false;
 	
 	public nickData(final String nick, final String user, final String real, final String ip)
 	{
@@ -50,6 +50,15 @@ public class nickData
 	{
 		for (int i = 0; i < this.lists.size(); ++i)
 			this.lists.get(i).delMatch(this);
+		dead = true;
+	}
+	
+	public void addList(floodList l)
+	{
+		if (dead)
+			return;
+		this.lists.addLast(l);
+		l.addMatch(this);
 	}
 	
 	public int getActiveListCount()
