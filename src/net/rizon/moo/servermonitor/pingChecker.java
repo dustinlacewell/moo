@@ -28,11 +28,12 @@ public class pingChecker extends Thread
 	@Override
 	public void run()
 	{
+		Process proc = null;
 		BufferedReader is = null, es = null;
 		
 		try
 		{
-			Process proc = Runtime.getRuntime().exec(new String[] { "ping", "-c", String.valueOf(this.len), this.s });
+			proc = Runtime.getRuntime().exec(new String[] { "ping", "-c", String.valueOf(this.len), this.s });
 			is = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			es = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 			
@@ -72,6 +73,8 @@ public class pingChecker extends Thread
 			try { is.close(); }
 			catch (Exception ex) { }
 			try { es.close(); }
+			catch (Exception ex) { }
+			try { proc.destroy(); }
 			catch (Exception ex) { }
 		}
 	}
