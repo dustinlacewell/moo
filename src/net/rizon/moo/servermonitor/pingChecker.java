@@ -70,6 +70,8 @@ public class pingChecker extends Thread
 		}
 		finally
 		{
+			try { proc.getOutputStream().close(); }
+			catch (Exception ex) { }
 			try { is.close(); }
 			catch (Exception ex) { }
 			try { es.close(); }
