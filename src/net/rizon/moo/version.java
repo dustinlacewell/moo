@@ -2,7 +2,6 @@ package net.rizon.moo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -15,8 +14,8 @@ public class version
 		try
 		{
 			String[] cmd = { "/bin/sh", "-c", "git --no-pager log -n 1 | grep \"^[a-zA-Z]\"" };
-			InputStream is = Runtime.getRuntime().exec(cmd).getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			Process proc = Runtime.getRuntime().exec(cmd);
+			BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			
 			for (String line; (line = br.readLine()) != null;)
 			{
@@ -36,17 +35,21 @@ public class version
 			}
 			
 			br.close();
-			is.close();
+			proc.getOutputStream().close();
+			proc.getErrorStream().close();
+			proc.destroy();
 			
 			String[] cmd2 = { "/bin/sh", "-c", "git --no-pager log | grep \"^commit\" | wc -l" };
-			is = Runtime.getRuntime().exec(cmd2).getInputStream();
-			br = new BufferedReader(new InputStreamReader(is));
+			proc = Runtime.getRuntime().exec(cmd2);
+			br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			
 			for (String line; (line = br.readLine()) != null;)	
 				version.values.put("revision", line);
 					
 			br.close();
-			is.close();
+			proc.getOutputStream().close();
+			proc.getErrorStream().close();
+			proc.destroy();
 		}
 		catch (IOException ex)
 		{
