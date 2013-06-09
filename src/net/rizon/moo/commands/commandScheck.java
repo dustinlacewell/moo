@@ -269,6 +269,8 @@ class commandScheck extends command
 						use_v6 = true;
 						port_pos = (params[2].equals("+6")) ? 3 : 2;
 					}
+					else
+						port_pos = 2;
 					
 					if (port_pos > 0 && port_pos < params.length)
 					{
