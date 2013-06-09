@@ -29,6 +29,7 @@ class scheck extends Thread
 	private String servers;
 	private boolean quiet;
 	private boolean use_v6;
+	private final String prefix;
 	
 	private static final Random rand = new Random();
 	private static final String getRandom()
@@ -59,6 +60,7 @@ class scheck extends Thread
 		this.port = port;
 		this.quiet = quiet;
 		this.use_v6 = use_v6;
+		this.prefix = use_v6 ? "[SCHECK6] " : "[SCHECK] ";
 	}
 	
 	@Override
@@ -75,9 +77,9 @@ class scheck extends Thread
 			if (this.quiet == false)
 			{
 				if (this.ssl == true || this.port != 6667)
-					moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + ":" + (this.ssl == true ? "+" : "") + this.port);
+					moo.reply(this.source, this.target, this.prefix + "Connecting to " + this.server + ":" + (this.ssl == true ? "+" : "") + this.port);
 				else
-					moo.reply(this.source, this.target, "[SCHECK] Connecting to " + this.server + "...");
+					moo.reply(this.source, this.target, this.prefix + "Connecting to " + this.server + "...");
 			}
 			
 			try
@@ -86,7 +88,7 @@ class scheck extends Thread
 			}
 			catch (UnknownHostException ex)
 			{
-				moo.reply(this.source, this.target, "[SCHECK] No IPv" + (this.use_v6 ? "6" : "4") + " records found for " + this.server + ".");
+				moo.reply(this.source, this.target, this.prefix + "No IPv" + (this.use_v6 ? "6" : "4") + " records found for " + this.server + ".");
 				return;
 			}
 
@@ -125,25 +127,25 @@ class scheck extends Thread
 								}
 								catch (CertificateExpiredException e)
 								{
-									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " has EXPIRED X509 SSL certificate!");
+									moo.reply(this.source, this.target, this.prefix + "[WARNING] " + servername + " has EXPIRED X509 SSL certificate!");
 								}
 								catch (CertificateNotYetValidException e)
 								{
-									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " has a NOT VALID YET X509 SSL certificate!");
+									moo.reply(this.source, this.target, this.prefix + "[WARNING] " + servername + " has a NOT VALID YET X509 SSL certificate!");
 								}
 								
 								final String issuerDn = x509.getIssuerDN().getName();
 								if (this.quiet == false)
-									moo.reply(this.source, this.target, "[SCHECK] " + servername + " has X509 certificate " + issuerDn);
+									moo.reply(this.source, this.target, this.prefix + servername + " has X509 certificate " + issuerDn);
 								if (issuerDn.contains("O=Rizon IRC Network, CN=irc.rizon.net, L=Rizon, ST=Nowhere, C=RZ") == false)
-									moo.reply(this.source, this.target, "[SCHECK] [WARNING] " + servername + " does not have a correct issuer DN");
+									moo.reply(this.source, this.target, this.prefix + "[WARNING] " + servername + " does not have a correct issuer DN");
 							}
 							else
-									moo.reply(this.source, this.target, "[SCHECK] " + servername + " has non X509 certificate " + cert.getPublicKey() + " - " + cert.getType());
+									moo.reply(this.source, this.target, this.prefix + servername + " has non X509 certificate " + cert.getPublicKey() + " - " + cert.getType());
 						}
 					}
 					if (this.quiet == false)
-						moo.reply(this.source, this.target, "[SCHECK] [" + servername + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
+						moo.reply(this.source, this.target, this.prefix + "[" + servername + "] Global users: " + this.users + ", Servers: " + this.servers + ", Uptime: " + token[5] + " days " + token[7]);
 					s.shutdown();
 					break;
 				}
@@ -151,19 +153,19 @@ class scheck extends Thread
 		}
 		catch (NoRouteToHostException ex)
 		{
-			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", no route to host");
+			moo.reply(this.source, this.target, this.prefix + "Unable to connect to " + this.server + ", no route to host");
 		}
 		catch (SocketTimeoutException ex)
 		{
-			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server + ", connection timeout");
+			moo.reply(this.source, this.target, this.prefix + "Unable to connect to " + this.server + ", connection timeout");
 		}
 		catch (IOException ex)
 		{
-			moo.reply(this.source, this.target, "[SCHECK] Unable to connect to " + this.server);
+			moo.reply(this.source, this.target, this.prefix + "Unable to connect to " + this.server);
 		}
 		catch (Exception ex) 
 		{
-			moo.reply(this.source, this.target, "[SCHECK] [EXCEPTION] Unable to connect to " + this.server + ": " + ex);
+			moo.reply(this.source, this.target, this.prefix + "[EXCEPTION] Unable to connect to " + this.server + ": " + ex);
 			ex.printStackTrace();
 		}
 		finally
