@@ -42,6 +42,8 @@ class shellExec extends Thread
 			}
 			
 			in.close();
+			proc.getOutputStream().close();
+			proc.getErrorStream().close();
 		}
 		catch (IOException ex)
 		{

@@ -20,9 +20,10 @@ class dnsChecker extends Thread
 		Properties env = new Properties();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
 
+		InitialDirContext idir = null;
 		try
 		{
-			InitialDirContext idir = new InitialDirContext(env);
+			idir = new InitialDirContext(env);
 			
 			String what = "NS";
 			String[] what_array = { what };
@@ -36,15 +37,16 @@ class dnsChecker extends Thread
 			{
 				final String ns = attr.get(i).toString();
 				
+				InitialDirContext idir2 = null;
 				try
 				{
 					env.put(Context.PROVIDER_URL, "dns://" + ns);
-					idir = new InitialDirContext(env);
+					idir2 = new InitialDirContext(env);
 					
 					what = "SOA";
 					what_array[0] = what;
 					
-					Attributes nameserver_attributes = idir.getAttributes(moo.conf.getServermonitorDomain(), what_array);
+					Attributes nameserver_attributes = idir2.getAttributes(moo.conf.getServermonitorDomain(), what_array);
 					Attribute nameserver_attr = nameserver_attributes.get(what);
 					
 					final String soa = nameserver_attr.get(0).toString();
@@ -70,6 +72,10 @@ class dnsChecker extends Thread
 						moo.privmsg(s, "DNS: Error checking serial for " + ns + ": " + ex);
 					ex.printStackTrace();
 				}
+				finally
+				{
+					try { idir2.close(); } catch (Exception ex) { }
+				}
 			}
 		}
 		catch (NamingException ex)
@@ -83,6 +89,10 @@ class dnsChecker extends Thread
 			for (final String s : moo.conf.getAdminChannels())
 				moo.privmsg(s, "DNS: Error checking nameserver serials: " + ex);
 			ex.printStackTrace();
+		}
+		finally
+		{
+			try { idir.close(); } catch (Exception ex) { }
 		}
 		
 		for (final String r : moo.conf.getServermonitorCheck())

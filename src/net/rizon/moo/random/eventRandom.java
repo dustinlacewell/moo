@@ -46,5 +46,9 @@ class eventRandom extends event
 			
 		nickData nd = new nickData(nick, ident, real, ip);
 		random.addNickData(nd);
+		
+		if (ip.indexOf('.') != -1)
+			for (final String dnsbl : moo.conf.getDnsbls())
+				new dnsblChecker(dnsbl, nd).start();
 	}
 }

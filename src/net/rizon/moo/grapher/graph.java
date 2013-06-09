@@ -93,7 +93,10 @@ public abstract class graph extends timer
 			
 			try
 			{
-				rt.exec(rrd_bin.getAbsolutePath() + " " + create_command);
+				Process p = rt.exec(rrd_bin.getAbsolutePath() + " " + create_command);
+				p.getInputStream().close();
+				p.getOutputStream().close();
+				p.getErrorStream().close();
 			}
 			catch (IOException ex)
 			{
@@ -106,7 +109,10 @@ public abstract class graph extends timer
 		
 		try
 		{
-			rt.exec(rrd_bin.getAbsolutePath() + " " + command);
+			Process p = rt.exec(rrd_bin.getAbsolutePath() + " " + command);
+			p.getInputStream().close();
+			p.getOutputStream().close();
+			p.getErrorStream().close();
 		}
 		catch (IOException ex)
 		{

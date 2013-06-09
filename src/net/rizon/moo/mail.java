@@ -48,6 +48,8 @@ class mailThread extends Thread
 			out.write(".");
 			
 			out.close();
+			proc.getInputStream().close();
+			proc.getErrorStream().close();
 			
 			if (moo.conf.getDebug() > 0)
 				System.out.println("Successfully sent message");
