@@ -11,15 +11,16 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
+import net.rizon.moo.servercontrol.serverInfo;
 
 final class connectionFTP extends connection
 {
 	private FTPClient client = null;
 	private LinkedList<String> replies = new LinkedList<String>();
 
-	public connectionFTP(protocol proto)
+	public connectionFTP(protocol proto, serverInfo si)
 	{
-		super(proto);
+		super(proto, si);
 	}
 	
 	@Override
@@ -108,8 +109,8 @@ public class protocolFTP extends protocol
 	}
 	
 	@Override
-	public connection createConnection()
+	public connection createConnection(serverInfo si)
 	{
-		return new connectionFTP(this);
+		return new connectionFTP(this, si);
 	}
 }

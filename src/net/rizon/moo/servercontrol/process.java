@@ -1,17 +1,13 @@
 package net.rizon.moo.servercontrol;
 
-import net.rizon.moo.moo;
-
-public class process extends Thread
+public abstract class process extends Thread
 {
-	private connection con;
-	private String source, target, command;
+	protected connection con;
+	private String command;
 
-	public process(connection con, final String source, final String target, final String command)
+	public process(connection con, final String command)
 	{
 		this.con = con;
-		this.source = source;
-		this.target = target;
 		this.command = command;
 		
 		this.con.processes.add(this);
@@ -22,6 +18,8 @@ public class process extends Thread
 	{
 		try
 		{
+			this.con.lock.lock();
+			
 			if (this.con.isConnected() == false)
 				this.con.connect();
 			
@@ -29,16 +27,23 @@ public class process extends Thread
 			
 			for (String in; (in = this.con.readLine()) != null;)
 				if (in.trim().isEmpty() == false)
-					moo.reply(this.source, this.target, "[" + this.con.getServerInfo().name + ":" + this.con.getProtocol().getProtocolName() + "] " + in);
+					this.onLine(in);
 		}
 		catch (Exception ex)
 		{
-			moo.reply(this.source, this.target, "Error running command on " + this.con.getServerInfo().name + ": " + this.con.getProtocol().getProtocolName() + ": " + ex.getMessage());
+			this.onError(ex);
 			ex.printStackTrace();
 		}
 		finally
 		{
+			this.con.lock.unlock();
 			this.con.processes.remove(this);
 		}
+		
+		this.onFinish();
 	}
+	
+	public abstract void onLine(String in);
+	public void onError(Exception e) { }
+	public void onFinish() { }
 }

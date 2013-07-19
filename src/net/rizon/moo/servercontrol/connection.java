@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import net.rizon.moo.mutex;
 import net.rizon.moo.timer;
 
 final class connectionTimer extends timer
@@ -38,10 +39,13 @@ public abstract class connection
 	private protocol proto;
 	public LinkedList<process> processes = new LinkedList<process>();
 	private serverInfo info = null;
+	public mutex lock = new mutex();
 
-	public connection(protocol proto)
+	public connection(protocol proto, serverInfo si)
 	{
 		this.proto = proto;
+		this.info = si;
+		
 		connections.add(this);
 		
 		if (connectionTimer.timer == null)
@@ -61,11 +65,6 @@ public abstract class connection
 		return this.proto;
 	}
 	
-	public void setServerInfo(serverInfo info)
-	{
-		this.info = info;
-	}
-	
 	public serverInfo getServerInfo()
 	{
 		return this.info;
@@ -78,16 +77,26 @@ public abstract class connection
 	
 	private static LinkedList<connection> connections = new LinkedList<connection>();
 	
-	public static connection findProcess(final String name, final String protocol)
+	public static connection findConnection(serverInfo si)
 	{
 		for (Iterator<connection> it = connections.iterator(); it.hasNext();)
 		{
 			connection con = it.next();
-			if (con.getServerInfo().name.equalsIgnoreCase(name) && con.getProtocol().getProtocolName().equalsIgnoreCase(protocol))
+			if (con.getServerInfo().name.equalsIgnoreCase(si.name) && con.getProtocol().getProtocolName().equalsIgnoreCase(si.protocol))
 				return con;
 		}
 		
 		return null;
+	}
+	
+	public static connection findOrCreateConncetion(serverInfo si)
+	{
+		connection c = findConnection(si);
+		if (c != null)
+			return c;
+		
+		protocol p = protocol.findProtocol(si.protocol);
+		return p.createConnection(si);
 	}
 	
 	public static final connection[] getConnections()

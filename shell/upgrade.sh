@@ -42,9 +42,9 @@ if [ $? -ne 0 ]; then
 	abort "git pull"
 fi
 
-ant
+sh build.sh
 if [ $? -ne 0 ]; then
-	abort "ant"
+	abort "build.sh"
 fi
 
 # We can't kill the process because it's important that we send a proper QUIT

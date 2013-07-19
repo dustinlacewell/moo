@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import net.rizon.moo.moo;
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
+import net.rizon.moo.servercontrol.serverInfo;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -22,9 +23,9 @@ final class connectionSSH extends connection
 	private PrintStream shellStream = null;
 	private BufferedReader reader = null;
 
-	public connectionSSH(protocol proto, JSch jsch)
+	public connectionSSH(protocol proto, serverInfo si, JSch jsch)
 	{
-		super(proto);
+		super(proto, si);
 		this.jsch = jsch;
 	}
 	
@@ -32,10 +33,7 @@ final class connectionSSH extends connection
 	public void destroy()
 	{
 		super.destroy();
-		try { this.reader.close(); }
-		catch (IOException ex) { }
-		this.shellStream.close();
-		this.channel.disconnect();
+		this.cleanUp();
 		this.session.disconnect();
 	}
 	
@@ -133,8 +131,8 @@ public class protocolSSH extends protocol
 	}
 	
 	@Override
-	public connection createConnection()
+	public connection createConnection(serverInfo si)
 	{
-		return new connectionSSH(this, jsch);
+		return new connectionSSH(this, si, jsch);
 	}
 }

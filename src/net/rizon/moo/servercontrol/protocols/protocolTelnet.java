@@ -9,6 +9,7 @@ import org.apache.commons.net.telnet.TelnetClient;
 
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
+import net.rizon.moo.servercontrol.serverInfo;
 
 final class connectionTelnet extends connection
 {
@@ -16,9 +17,9 @@ final class connectionTelnet extends connection
 	private PrintStream shellStream = null;
 	private BufferedReader reader = null;
 
-	public connectionTelnet(protocol proto)
+	public connectionTelnet(protocol proto, serverInfo si)
 	{
-		super(proto);
+		super(proto, si);
 	}
 	
 	@Override
@@ -133,8 +134,8 @@ public class protocolTelnet extends protocol
 	}
 	
 	@Override
-	public connection createConnection()
+	public connection createConnection(serverInfo si)
 	{
-		return new connectionTelnet(this);
+		return new connectionTelnet(this, si);
 	}
 }

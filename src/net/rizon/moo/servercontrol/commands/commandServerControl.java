@@ -4,6 +4,7 @@ import net.rizon.moo.command;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 import net.rizon.moo.servercontrol.connection;
+import net.rizon.moo.servercontrol.echoProcess;
 import net.rizon.moo.servercontrol.process;
 import net.rizon.moo.servercontrol.protocol;
 import net.rizon.moo.servercontrol.serverInfo;
@@ -46,22 +47,9 @@ public class commandServerControl extends command
 		
 		for (serverInfo si : server_info)
 		{
-			try
-			{
-				connection con = connection.findProcess(si.name, si.protocol);
-				if (con == null)
-				{
-					con = proto.createConnection();
-					con.setServerInfo(si);
-				}
-			
-				process proc = new process(con, source, target, command);
-				proc.start();
-			}
-			catch (Exception ex)
-			{
-				moo.reply(source, target, "Error executing command on " + si.host + ": " + ex.getMessage());
-			}
+			connection con = connection.findOrCreateConncetion(si);
+			process proc = new echoProcess(con, source, target, command);
+			proc.start();
 		}
 	}
 }

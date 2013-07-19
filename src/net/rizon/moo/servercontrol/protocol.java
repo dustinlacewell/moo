@@ -17,7 +17,7 @@ public abstract class protocol
 		return this.name;
 	}
 	
-	public abstract connection createConnection();
+	public abstract connection createConnection(serverInfo si);
 	
 	private static HashMap<String, protocol> protocols = new HashMap<String, protocol>();
 	
