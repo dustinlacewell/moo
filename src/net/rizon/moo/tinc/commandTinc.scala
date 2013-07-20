@@ -73,7 +73,7 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 				var nodes: LinkedList[node] = node.getNodesForLayer(layer)
 				for (n <- nodes)
 				{
-					if (!n.name.isEmpty() && (search == null || moo.matches(n.name, "*" + search + "*")))
+					if (!n.name.isEmpty() && (search == null || moo.matches(n.getServer().getName(), "*" + search + "*")))
 					{
 						var links = ""
 						for (link <- n.connectTo)
