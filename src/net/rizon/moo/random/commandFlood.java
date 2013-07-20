@@ -265,7 +265,7 @@ class commandFlood extends command
 					{
 						nickData fe = it.next();
 						
-						if (moo.match(fe.ip, params[3]))
+						if (moo.matches(fe.ip, params[3]))
 						{
 							moo.notice(source, "Removed flood entry " + fe.ip);
 							it.remove();

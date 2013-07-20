@@ -225,7 +225,7 @@ class commandUptime extends command
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			else if (want_server != null && moo.match(s.getName(), "*" + want_server + "*") == false)
+			else if (want_server != null && moo.matches(s.getName(), "*" + want_server + "*") == false)
 				continue;
 
 			boolean is_extreme = false;

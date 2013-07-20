@@ -60,6 +60,10 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 		}
 		else
 		{
+			var search: String = null
+			if (params.size > 1)
+				search = params(1)
+			
 			var shown = false
 			
 			for (layer <- tinc.layers)
@@ -69,7 +73,7 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 				var nodes: LinkedList[node] = node.getNodesForLayer(layer)
 				for (n <- nodes)
 				{
-					if (!n.name.isEmpty())
+					if (!n.name.isEmpty() && (search == null || moo.matches(n.name, "*" + search + "*")))
 					{
 						var links = ""
 						for (link <- n.connectTo)
@@ -86,6 +90,10 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 						moo.reply(source, target, " Server: " + n.getServer.getName() + " Node: " + n.name + " Links: " + links)
 						shown = true
 						
+						if (n.getHost(n.name) == null)
+							moo.reply(source, target, "  " + n.name + " has no self configuration")
+						
+						var invalidConnectTos = ""
 						for (link <- n.connectTo)
 						{
 							var found = false
@@ -100,10 +108,16 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 							
 							if (!found)
 							{
-								moo.reply(source, target, "  " + n.name + " has ConnectTo for " + link + " but no host file")
+								invalidConnectTos += " " + link
 							}
 						}
+						invalidConnectTos = invalidConnectTos.trim.replaceAll(" ", ", ")
+						if (!invalidConnectTos.isEmpty)
+							moo.reply(source, target, "  " + n.name + " has ConnectTo but no host file for: " + invalidConnectTos)
 						
+						var missingConnectTos = "";
+						var unknownHosts = ""
+						var outOfDate = ""
 						for (host <- n.hosts)
 						{
 							var found = false
@@ -118,22 +132,39 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 							
 							if (!found)
 							{
-								moo.reply(source, target, "  " + n.name + " has host file for " + host.name + " but no ConnectTo")
+								missingConnectTos += " " + host.name
 							}
 							
-							if (!host.hasKnownHost(n))
+							var target_node = node.getNodeWithConfigName(n.getLayer(), host.name)
+							if (target_node == null)
 							{
-								moo.reply(source, target, "  " + n.name + " has host file for unknown host " + host.name)
+								unknownHosts += " " + host.name
 							}
-							else if (!host.hasSelfConfiguration(n))
+							
+							var target_host = target_node.getHost(host.name)
+							if (target_host != null)
 							{
-								moo.reply(source, target, "  " + n.name + " has no self configuration")
-							}
-							else if (!host.isUpToDate(n))
-							{
-								moo.reply(source, target, "  " + n.name + " has out of date host file for " + host.name)
+								// if target_host is null then target has no host configuration for itself, and this
+								// will be warned about later
+								
+								if (!target_host.equals(host))
+								{
+									outOfDate += " " + host.name
+								}
 							}
 						}
+						
+						missingConnectTos = missingConnectTos.trim.replaceAll(" ", ", ")
+						if (!missingConnectTos.isEmpty)
+							moo.reply(source, target, "  " + n.name + " has host file but no ConnectTo for: " + missingConnectTos)
+							
+						unknownHosts = unknownHosts.trim.replaceAll(" ", ", ")
+						if (!unknownHosts.isEmpty)
+							moo.reply(source, target, "  " + n.name + " has host file for unknown host(s): " + unknownHosts)
+						
+						outOfDate = outOfDate.trim.replaceAll(" ", ", ")
+						if (!outOfDate.isEmpty)
+							moo.reply(source, target, "  " + n.name + " has out of date host file for: " + outOfDate)
 					}
 				}
 			}

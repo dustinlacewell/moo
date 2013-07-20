@@ -150,7 +150,7 @@ class commandServerBase extends command
 				
 				if (match != null)
 				{
-					if (moo.match(s.getName(), "*" + match + "*"))
+					if (moo.matches(s.getName(), "*" + match + "*"))
 						output = true;
 					else
 						continue;

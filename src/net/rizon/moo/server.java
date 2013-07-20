@@ -183,7 +183,7 @@ public class server
 		for (Iterator<server> it = servers.iterator(); it.hasNext();)
 		{
 			server s = it.next();
-			if (moo.match(s.getName(), "*" + name + "*"))
+			if (moo.matches(s.getName(), "*" + name + "*"))
 				return s;
 		}
 		return null;

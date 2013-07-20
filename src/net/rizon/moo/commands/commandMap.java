@@ -169,7 +169,7 @@ class commandMapBase extends command
 				int count = 0;
 				for (server s : server.getServers())
 				{
-					if (moo.match(s.getName(), "*" + params[2] + "*"))
+					if (moo.matches(s.getName(), "*" + params[2] + "*"))
 					{
 						moo.reply(source, target, "[MAP] Server " + s.getName() + " matches " + params[2]);
 						++count;

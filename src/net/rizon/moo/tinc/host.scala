@@ -32,35 +32,4 @@ class host
 				
 		return true
 	}
-
-	/* node is the node this host is on */
-	def isUpToDate(no: node): Boolean =
-	{
-		var n = node.getNodeWithConfigName(no.getLayer(), name)
-		if (n == null) // no node with this configured name (in tinc.conf) exists
-			return false
-		var other: host = n.getHost(name)
-		if (other == null) // target node has no host for itself
-			return false
-		return this.equals(other)
-	}
-	
-	def hasSelfConfiguration(no: node): Boolean =
-	{
-		var n = node.getNodeWithConfigName(no.getLayer(), name)
-		if (n == null)
-			return false
-		var other: host = n.getHost(name)
-		if (other == null)
-			return false
-		return true
-	}
-	
-	def hasKnownHost(no: node): Boolean =
-	{
-		var n = node.getNodeWithConfigName(no.getLayer(), name)
-		if (n == null)
-			return false
-		return true
-	}
 }

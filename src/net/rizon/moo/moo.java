@@ -222,7 +222,7 @@ public class moo
 		return created.toString();
 	}
 	
-	public static boolean match(String text, String pattern)
+	public static boolean matches(String text, String pattern)
 	{
 		text = text.toLowerCase();
 		pattern = pattern.toLowerCase();
