@@ -130,8 +130,9 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 								}
 							}
 							
-							if (!found)
+							if (!found && !n.name.equals(host.name))
 							{
+								// Nodes are supposed to have hosts for themselves with no ConnectTo
 								missingConnectTos += " " + host.name
 							}
 							
