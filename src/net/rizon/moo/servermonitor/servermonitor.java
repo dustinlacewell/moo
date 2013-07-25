@@ -11,7 +11,7 @@ class requester extends timer
 {
 	public requester()
 	{
-		super(/*300*/ 15, true);
+		super(300, true);
 	}
 
 	@Override

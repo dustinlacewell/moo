@@ -8,6 +8,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import net.rizon.moo.moo;
@@ -131,7 +133,20 @@ class scheck extends Thread
 								
 							try
 							{
-								x509.checkValidity();
+								Date now = new Date();
+								x509.checkValidity(now);
+								
+								try
+								{
+									Calendar c = Calendar.getInstance();
+									c.setTime(now);
+									c.add(Calendar.DATE, 1);
+									x509.checkValidity(c.getTime());
+								}
+								catch (CertificateExpiredException e)
+								{
+									reply(this.prefix + "[WARNING] SSL certificate for " + server.getName() + " expires on " + server.cert.getNotAfter() + ", which is " + moo.difference(now, server.cert.getNotAfter()) + " from now");
+								}
 							}
 							catch (CertificateExpiredException e)
 							{
