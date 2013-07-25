@@ -50,6 +50,9 @@ class message351 extends message
 		for (; pos < tok.length() && tok.charAt(pos) != '-'; ++pos);
 		++pos;
 		
+		if (pos >= tok.length())
+			return;
+		
 		try
 		{
 			String ver = tok.substring(pos, tok.length() - 2);

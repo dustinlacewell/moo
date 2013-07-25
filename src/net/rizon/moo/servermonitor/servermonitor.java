@@ -11,7 +11,7 @@ class requester extends timer
 {
 	public requester()
 	{
-		super(300, true);
+		super(/*300*/ 15, true);
 	}
 
 	@Override
@@ -30,6 +30,8 @@ class requester extends timer
 		for (server s : server.getServers())
 			if (!s.isHub() && !s.isServices())
 				new pingChecker(s, 10).start();
+		
+		certChecker.run();
 	}
 }
 
@@ -39,6 +41,7 @@ public class servermonitor extends mpackage
 	{
 		super("Server Monitor", "Monitor servers");
 		
+		new commandScheck(this);
 		new commandServer(this);
 		new commandSplit(this);
 		new eventSplit();

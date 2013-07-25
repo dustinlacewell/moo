@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import java.security.cert.X509Certificate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +31,8 @@ public class server
 	public boolean frozen = false;
 	/* from /stats u */
 	public Date uptime;
+	/* public cert for the ircd */
+	public X509Certificate cert;
 
 	public server(final String name)
 	{

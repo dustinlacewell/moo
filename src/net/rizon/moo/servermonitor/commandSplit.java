@@ -31,46 +31,6 @@ class commandSplit extends command
 		super(pkg, "!SPLIT", "Views split servers");
 	}
 	
-	private static String difference(Date now, Date then)
-	{
-		long lnow = now.getTime() / 1000L, lthen = then.getTime() / 1000L;
-		
-		long ldiff = now.compareTo(then) > 0 ? lnow - lthen : lthen - lnow;
-		int days = 0, hours = 0, minutes = 0;
-		
-		if (ldiff == 0)
-			return "0 seconds";
-		
-		while (ldiff > 86400)
-		{
-			++days;
-			ldiff -= 86400;
-		}
-		while (ldiff > 3600)
-		{
-			++hours;
-			ldiff -= 3600;
-		}
-		while (ldiff > 60)
-		{
-			++minutes;
-			ldiff -= 60;
-		}
-		
-		String buffer = "";
-		if (days > 0)
-			buffer += days + " day" + (days == 1 ? "" : "s") + " ";
-		if (hours > 0)
-			buffer += hours + " hour" + (hours == 1 ? "" : "s") + " ";
-		if (minutes > 0)
-			buffer += minutes + " minute" + (minutes == 1 ? "" : "s") + " ";
-		if (ldiff > 0)
-			buffer += ldiff + " second" + (ldiff == 1 ? "" : "s") + " ";
-		buffer = buffer.trim();
-		
-		return buffer;
-	}
-	
 	@Override
 	public void onHelp(String source)
 	{
@@ -103,10 +63,10 @@ class commandSplit extends command
 						s_name = message.COLOR_BRIGHTBLUE + s.getName() + message.COLOR_END;
 					else
 						s_name = s.getName();
-					String buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
+					String buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + moo.difference(now, sp.when) + " ago.";
 					reconnector r = reconnector.findValidReconnectorFor(s);
 					if (r != null)
-						buffer += " Will reconnect in " + difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+						buffer += " Will reconnect in " + moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 					moo.reply(source, target, buffer);
 				}
 			}
@@ -146,10 +106,10 @@ class commandSplit extends command
 				{
 					split sp = it.next();
 					
-					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
+					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + moo.difference(now, sp.when) + " ago.";
 					if (sp.end != null && sp.to != null)
 					{
-						buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later";
+						buf += " Reconnected to " + sp.to + " " + moo.difference(sp.end, sp.when) + " later";
 						if (sp.reconnectedBy != null)
 							buf += " by " + sp.reconnectedBy;
 						buf += ".";
@@ -161,7 +121,7 @@ class commandSplit extends command
 						{
 							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
-								buf += " Will reconnect in " + difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+								buf += " Will reconnect in " + moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 						}
 					}
 					
@@ -234,10 +194,10 @@ class commandSplit extends command
 					{
 						split sp = splits[i - 1];
 						
-						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + difference(now, sp.when) + " ago.";
+						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + moo.difference(now, sp.when) + " ago.";
 						if (sp.end != null && sp.to != null)
 						{
-							buf += " Reconnected to " + sp.to + " " + difference(sp.end, sp.when) + " later";
+							buf += " Reconnected to " + sp.to + " " + moo.difference(sp.end, sp.when) + " later";
 							if (sp.reconnectedBy != null)
 								buf += " by " + sp.reconnectedBy;
 							buf += ".";
@@ -246,7 +206,7 @@ class commandSplit extends command
 						{
 							reconnector r = reconnector.findValidReconnectorFor(s);
 							if (r != null)
-								buf += " Will reconnect in " + difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+								buf += " Will reconnect in " + moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 						}
 						
 						moo.reply(source, target, buf);

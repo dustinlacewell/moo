@@ -16,7 +16,6 @@ public class commands extends mpackage
 			new commandMap(this);
 			new commandOline(this);
 		}
-		new commandScheck(this);
 		if (moo.conf.getProtocol().equals("plexus"))
 		{
 			new commandSid(this);
