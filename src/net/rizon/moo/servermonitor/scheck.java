@@ -125,10 +125,14 @@ class scheck extends Thread
 							
 							if (this.server.cert == null)
 								this.server.cert = x509;
-							else if (!this.server.cert.equals(cert))
+							else if (!this.server.cert.equals(x509))
 							{
 								final String oldDN = this.server.cert.getIssuerDN().getName(), newDN = x509.getIssuerDN().getName();
-								reply(this.prefix + "[INFO] SSL certificate for " + this.server.getName() + " has changed from \"" + oldDN + "\" to \"" + newDN + "\"");
+								if (!oldDN.equals(newDN))
+									reply(this.prefix + "[INFO] SSL certificate for " + this.server.getName() + " has changed from \"" + oldDN + "\" to \"" + newDN + "\"");
+								else
+									reply(this.prefix + "[INFO] SSL certificate for " + this.server.getName() + " has changed");
+								this.server.cert = x509;
 							}
 								
 							try
