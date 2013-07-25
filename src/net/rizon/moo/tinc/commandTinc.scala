@@ -141,16 +141,18 @@ class commandTinc (pkg: mpackage) extends command(pkg, ".TINC", "Manages tinc co
 							{
 								unknownHosts += " " + host.name
 							}
-							
-							var target_host = target_node.getHost(host.name)
-							if (target_host != null)
+							else
 							{
-								// if target_host is null then target has no host configuration for itself, and this
-								// will be warned about later
-								
-								if (!target_host.equals(host))
+								var target_host = target_node.getHost(host.name)
+								if (target_host != null)
 								{
-									outOfDate += " " + host.name
+									// if target_host is null then target has no host configuration for itself, and this
+									// will be warned about later
+									
+									if (!target_host.equals(host))
+									{
+										outOfDate += " " + host.name
+									}
 								}
 							}
 						}
