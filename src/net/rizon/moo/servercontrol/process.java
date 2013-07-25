@@ -18,8 +18,6 @@ public abstract class process extends Thread
 	{
 		try
 		{
-			this.con.lock.lock();
-			
 			if (this.con.isConnected() == false)
 				this.con.connect();
 			
@@ -36,7 +34,6 @@ public abstract class process extends Thread
 		}
 		finally
 		{
-			this.con.lock.unlock();
 			this.con.processes.remove(this);
 		}
 		

@@ -56,7 +56,7 @@ final class connectionSSH extends connection
 	}
 	
 	@Override
-	public void connect() throws IOException
+	public synchronized void connect() throws IOException
 	{
 		try
 		{
@@ -76,7 +76,7 @@ final class connectionSSH extends connection
 	}
 	
 	@Override
-	public void execute(final String command) throws IOException
+	public synchronized void execute(final String command) throws IOException
 	{
 		this.cleanUp();
 
@@ -95,7 +95,7 @@ final class connectionSSH extends connection
 	}
 	
 	@Override
-	public String readLine()
+	public synchronized String readLine()
 	{
 		try
 		{

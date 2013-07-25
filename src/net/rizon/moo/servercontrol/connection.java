@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import net.rizon.moo.mutex;
 import net.rizon.moo.timer;
 
 final class connectionTimer extends timer
@@ -39,7 +38,6 @@ public abstract class connection
 	private protocol proto;
 	public LinkedList<process> processes = new LinkedList<process>();
 	private serverInfo info = null;
-	public mutex lock = new mutex();
 
 	public connection(protocol proto, serverInfo si)
 	{
