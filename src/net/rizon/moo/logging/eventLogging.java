@@ -93,11 +93,12 @@ class eventLogging extends event
 		
 		try
 		{
-			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
+			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
 			
 			stmt.setString(1, type + "LINE");
 			stmt.setString(2, serv.getName());
 			stmt.setString(3, value);
+			stmt.setString(4, "Added");
 			
 			moo.db.executeUpdate();
 		}
@@ -112,6 +113,22 @@ class eventLogging extends event
 	{
 		for (final String chan : moo.conf.getAdminChannels())
 			moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
+
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
+			
+			stmt.setString(1, type + "LINE");
+			stmt.setString(2, serv.getName());
+			stmt.setString(3, value);
+			stmt.setString(4, "Removed");
+			
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -119,6 +136,22 @@ class eventLogging extends event
 	{
 		for (final String chan : moo.conf.getAdminChannels())
 			moo.privmsg(chan, "[O-LINE] " + serv.getName() + " changed flags for " + oper + ": " + diff);
+
+		try
+		{
+			PreparedStatement stmt = moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
+			
+			stmt.setString(1, "OLINE");
+			stmt.setString(2, serv.getName());
+			stmt.setString(3, oper);
+			stmt.setString(4, "Changed: " + diff);
+			
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	@Override
