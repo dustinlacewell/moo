@@ -27,8 +27,9 @@ class eventSplit extends event
 				for (final String channel : moo.conf.getSplitChannels())
 					moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 		}
-		if (moo.conf.getSplitEmail().isEmpty() == false && pypsd == false)
-			mail.send(moo.conf.getSplitEmail(), "Server introduced", serv.getName() + " introduced by " + to.getName());
+		if (!pypsd)
+			for (String email : moo.conf.getSplitEmails())
+				mail.send(email, "Server introduced", serv.getName() + " introduced by " + to.getName());
 	}
 	
 	private static final String[] pypsdMockery = new String[]{
@@ -76,8 +77,9 @@ class eventSplit extends event
 			}
 		}
 		
-		if (moo.conf.getSplitEmail().isEmpty() == false && pypsd == false)
-			mail.send(moo.conf.getSplitEmail(), "Server split", serv.getName() + " split from " + from.getName());
+		if (!pypsd)
+			for (String email : moo.conf.getSplitEmails())
+				mail.send(email, "Server split", serv.getName() + " split from " + from.getName());
 		
 		if (moo.conf.getDisableSplitReconnect() == false && serv.isServices() == false)
 		{

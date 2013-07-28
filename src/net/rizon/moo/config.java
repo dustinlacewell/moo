@@ -34,7 +34,7 @@ public class config
 	private boolean disable_split_reconnect;
 	private int split_reconnect_port;
 	private String sendmail_path;
-	private String split_email;
+	private String[] split_emails;
 	private HashMap<String, String> vote_email = new HashMap<String, String>();
 	private String database;
 	private String[] database_classes;
@@ -105,7 +105,7 @@ public class config
 		this.disable_split_reconnect = Boolean.parseBoolean(this.getProperty(prop, "disable_split_reconnect"));
 		this.split_reconnect_port = Integer.parseInt(this.getProperty(prop, "split_reconnect_port"));
 		this.sendmail_path = this.getProperty(prop, "sendmail_path");
-		this.split_email = this.getProperty(prop, "split_email");
+		this.split_emails = this.getProperty(prop, "split_email").split(",");
 		s = this.getProperty(prop, "vote_email");
 		for (final String ce : s.split(","))
 		{
@@ -333,9 +333,9 @@ public class config
 		return this.sendmail_path;
 	}
 	
-	public final String getSplitEmail()
+	public final String[] getSplitEmails()
 	{
-		return this.split_email;
+		return this.split_emails;
 	}
 	
 	public final String getVoteEmailFor(final String channel)
