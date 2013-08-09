@@ -139,7 +139,7 @@ class message391 extends message
 		}
 		catch (ParseException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 }

@@ -33,7 +33,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 		}
 		catch (SSLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	

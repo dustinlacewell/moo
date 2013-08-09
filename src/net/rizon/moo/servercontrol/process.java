@@ -30,7 +30,7 @@ public abstract class process extends Thread
 		catch (Exception ex)
 		{
 			this.onError(ex);
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		finally
 		{

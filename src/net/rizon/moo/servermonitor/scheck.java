@@ -192,7 +192,7 @@ class scheck extends Thread
 		catch (Exception ex) 
 		{
 			reply(this.prefix + "[EXCEPTION] Unable to connect to " + this.server.getName() + ": " + ex);
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		finally
 		{

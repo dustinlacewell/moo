@@ -98,7 +98,7 @@ class message351 extends message
 		}
 		catch (Exception ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 }

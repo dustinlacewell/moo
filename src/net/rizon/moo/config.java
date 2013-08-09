@@ -147,7 +147,7 @@ public class config
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	

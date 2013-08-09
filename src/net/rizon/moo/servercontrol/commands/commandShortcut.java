@@ -43,7 +43,7 @@ public class commandShortcut extends command
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 		}
 		else if (params.length > 3 && params[1].equalsIgnoreCase("add"))
@@ -66,7 +66,7 @@ public class commandShortcut extends command
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 		}
 		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
@@ -90,7 +90,7 @@ public class commandShortcut extends command
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 		}
 		else if (params.length > 2)
@@ -120,7 +120,7 @@ public class commandShortcut extends command
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 				return;
 			}
 			

@@ -129,7 +129,7 @@ class server extends Thread
 				}
 				catch (Exception ex)
 				{
-					ex.printStackTrace(System.err);
+					logger.getGlobalLogger().log(ex);stem.err);
 				}
 				finally
 				{
@@ -143,7 +143,7 @@ class server extends Thread
 		}
 		catch (IOException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -155,7 +155,7 @@ class server extends Thread
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 }

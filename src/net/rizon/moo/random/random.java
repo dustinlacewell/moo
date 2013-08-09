@@ -95,7 +95,7 @@ public class random extends mpackage
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -109,7 +109,7 @@ public class random extends mpackage
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		
 		return false;

@@ -183,7 +183,7 @@ public class moo
 			}
 			catch (IOException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			for (event e : event.getEvents())

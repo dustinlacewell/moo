@@ -64,13 +64,13 @@ class dnsChecker extends Thread
 				{
 					for (final String s : moo.conf.getAdminChannels())
 						moo.privmsg(s, "DNS: NamingError checking serial for " + ns + ": " + ex);
-					ex.printStackTrace();
+					logger.getGlobalLogger().log(ex);
 				}
 				catch (Exception ex)
 				{
 					for (final String s : moo.conf.getAdminChannels())
 						moo.privmsg(s, "DNS: Error checking serial for " + ns + ": " + ex);
-					ex.printStackTrace();
+					logger.getGlobalLogger().log(ex);
 				}
 				finally
 				{
@@ -82,13 +82,13 @@ class dnsChecker extends Thread
 		{
 			for (final String s : moo.conf.getAdminChannels())
 				moo.privmsg(s, "DNS: NamingError checking nameserver serials: " + ex);
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		catch (Exception ex)
 		{
 			for (final String s : moo.conf.getAdminChannels())
 				moo.privmsg(s, "DNS: Error checking nameserver serials: " + ex);
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		finally
 		{

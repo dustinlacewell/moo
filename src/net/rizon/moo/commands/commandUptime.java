@@ -42,7 +42,7 @@ class message242 extends message
 		}
 		catch (NumberFormatException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 			return;
 		}
 		

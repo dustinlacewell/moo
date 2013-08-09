@@ -52,7 +52,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -79,7 +79,7 @@ class eventLogging extends event
 				}
 				catch (SQLException ex)
 				{
-					ex.printStackTrace();
+					logger.getGlobalLogger().log(ex);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -127,7 +127,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -150,7 +150,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -169,7 +169,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -188,7 +188,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -215,7 +215,7 @@ class eventLogging extends event
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -243,7 +243,7 @@ class eventLogging extends event
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			return;
@@ -265,7 +265,7 @@ class eventLogging extends event
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			return;
@@ -285,7 +285,7 @@ class eventLogging extends event
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			return;
@@ -309,7 +309,7 @@ class eventLogging extends event
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			return;
@@ -334,7 +334,7 @@ class eventLogging extends event
 			}
 			catch (SQLException ex)
 			{
-				ex.printStackTrace();
+				logger.getGlobalLogger().log(ex);
 			}
 			
 			return;

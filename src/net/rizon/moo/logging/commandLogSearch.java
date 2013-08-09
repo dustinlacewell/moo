@@ -76,7 +76,7 @@ class commandLogSearch extends command
 		catch (SQLException ex)
 		{
 			moo.reply(source, target, "Error processing request");
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 }

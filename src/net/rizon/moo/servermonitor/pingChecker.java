@@ -66,7 +66,7 @@ public class pingChecker extends Thread
 		}
 		catch (IOException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		finally
 		{

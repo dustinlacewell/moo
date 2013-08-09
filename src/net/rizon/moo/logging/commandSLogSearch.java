@@ -66,7 +66,7 @@ class logSearcher extends Thread
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 		finally
 		{

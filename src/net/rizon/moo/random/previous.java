@@ -20,7 +20,7 @@ class previous extends floodList
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -50,7 +50,7 @@ class previous extends floodList
 		}
 		catch (SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 
 		return null;

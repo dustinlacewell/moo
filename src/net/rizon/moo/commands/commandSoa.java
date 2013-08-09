@@ -114,7 +114,7 @@ class soaCheck extends Thread
 		}
 		catch (Exception ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 		}
 	}
 }

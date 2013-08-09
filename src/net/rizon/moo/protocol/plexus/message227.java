@@ -26,7 +26,7 @@ class message227 extends message
 		}
 		catch (Exception ex)
 		{
-			ex.printStackTrace();
+			logger.getGlobalLogger().log(ex);
 			return;
 		}
 		

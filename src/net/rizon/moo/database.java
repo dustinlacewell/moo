@@ -99,6 +99,6 @@ public class database
 	
 	public static void handleException(SQLException ex)
 	{
-		ex.printStackTrace();
+		logger.getGlobalLogger().log(ex);
 	}
 }
