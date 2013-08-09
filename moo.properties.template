@@ -119,7 +119,7 @@ commits.channel=#d
 servermonitor.domain=rizon.net
 servermonitor.check=na.iso.rizon.net eu.iso.rizon.net us.iso.rizon.net ca.iso.rizon.net nl.iso.rizon.net fr.iso.rizon.net de.iso.rizon.net
 
-# Comma separated list of dnsbls for random to use
+# Space separated list of dnsbls for random to use
 #random.dnsbl=
 
 # Protocol to use.
