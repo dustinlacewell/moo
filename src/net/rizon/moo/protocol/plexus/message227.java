@@ -1,5 +1,6 @@
 package net.rizon.moo.protocol.plexus;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.message;
 import net.rizon.moo.server;
 

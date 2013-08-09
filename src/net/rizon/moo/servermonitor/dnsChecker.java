@@ -10,6 +10,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 
 class dnsChecker extends Thread

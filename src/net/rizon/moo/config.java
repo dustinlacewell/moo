@@ -147,7 +147,7 @@ public class config
 		}
 		catch (IOException e)
 		{
-			logger.getGlobalLogger().log(ex);
+			logger.getGlobalLogger().log(e);
 		}
 	}
 	

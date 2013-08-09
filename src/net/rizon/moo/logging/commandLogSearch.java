@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.rizon.moo.command;
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;
 

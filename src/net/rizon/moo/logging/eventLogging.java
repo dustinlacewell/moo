@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.event;
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 

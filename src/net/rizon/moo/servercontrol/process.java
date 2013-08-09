@@ -1,5 +1,7 @@
 package net.rizon.moo.servercontrol;
 
+import net.rizon.moo.logger;
+
 public abstract class process extends Thread
 {
 	protected connection con;

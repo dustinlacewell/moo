@@ -3,6 +3,7 @@ package net.rizon.moo.commands;
 import java.util.HashSet;
 
 import net.rizon.moo.command;
+import net.rizon.moo.logger;
 import net.rizon.moo.message;
 import net.rizon.moo.moo;
 import net.rizon.moo.mpackage;

@@ -129,7 +129,7 @@ class server extends Thread
 				}
 				catch (Exception ex)
 				{
-					logger.getGlobalLogger().log(ex);stem.err);
+					logger.getGlobalLogger().log(ex);
 				}
 				finally
 				{
@@ -155,7 +155,7 @@ class server extends Thread
 		}
 		catch (IOException e)
 		{
-			logger.getGlobalLogger().log(ex);
+			logger.getGlobalLogger().log(e);
 		}
 	}
 }

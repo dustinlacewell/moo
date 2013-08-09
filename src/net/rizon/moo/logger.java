@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 final class loggerHandler extends Handler
 {
@@ -57,7 +58,7 @@ final class loggerHandler extends Handler
 	}
 }
 
-public class logger extends java.util.logging.Logger
+public class logger extends Logger
 {
 	private static HashMap<String, logger> loggers = new HashMap<String, logger>();
 	private static final loggerHandler handler = new loggerHandler();
@@ -79,6 +80,11 @@ public class logger extends java.util.logging.Logger
 		l.setLevel(Level.ALL);
 		l.addHandler(handler);
 		return l;
+	}
+	
+	public static logger getGlobalLogger()
+	{
+		return getLogger(Logger.GLOBAL_LOGGER_NAME);
 	}
 	
 	public void log(Exception ex)
