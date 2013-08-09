@@ -24,7 +24,6 @@ public class server
 	public HashMap<String, String> olines = new HashMap<String, String>(), olines_work = new HashMap<String, String>();
 	public HashSet<String> links = new HashSet<String>();
 	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
-	private LinkedList<split> splits = new LinkedList<split>();
 	public long bytes = 0;
 	public int users = 0, last_users = 0;
 	public LinkedList<String> preferred_links = new LinkedList<String>();
@@ -134,38 +133,119 @@ public class server
 		s.me = this.getName();
 		s.from = from;
 		s.when = now;
-		s.saved = false;
-		this.splits.addLast(s);
+		
+		try
+		{
+			PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`) VALUES(?, ?, ?, ?, ?, ?)");
+			statement.setString(1, s.me);
+			statement.setString(2, s.from);
+			statement.setString(3, s.to);
+			statement.setDate(4, new java.sql.Date(s.when.getTime()));
+			statement.setDate(5, (s.end != null ? new java.sql.Date(s.end.getTime()) : null));
+			statement.setString(6, s.reconnectedBy);
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			database.handleException(ex);
+		}
 		
 		lastSplit = System.currentTimeMillis() / 1000L;
 	}
 	
 	public split getSplit()
 	{
-		if (this.links.isEmpty() && this.splits.isEmpty() == false && this.splits.getLast().end == null)
-			return this.splits.getLast();
+		if (this.links.isEmpty())
+		{
+			try
+			{
+				PreparedStatement statement = moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ? ORDER BY `when` DESC LIMIT 1");
+				statement.setString(1, this.getName());
+				ResultSet rs = moo.db.executeQuery();
+				if (rs.next())
+				{
+					String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
+					Date when = rs.getDate("when"), end = rs.getDate("end");
+	
+					split sp = new split();
+					sp.me = name;
+					sp.from = from;
+					sp.to = to;
+					sp.when = when;
+					sp.end = end;
+					sp.reconnectedBy = rBy;
+					
+					if (sp.end == null)
+						return sp;
+				}
+			}
+			catch (SQLException ex)
+			{
+				database.handleException(ex);
+			}
+		}
 		return null;
 	}
 	
 	public split[] getSplits()
 	{
-		split[] splits = new split[this.splits.size()];
-		this.splits.toArray(splits);
-		return splits;
+		try
+		{
+			LinkedList<split> splits = new LinkedList<split>();
+			PreparedStatement stmt = moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ?");
+			stmt.setString(1, this.getName());
+			ResultSet rs = moo.db.executeQuery();
+			while (rs.next())
+			{
+				split sp = new split();
+				sp.me = rs.getString("name");
+				sp.from = rs.getString("from");
+				sp.to = rs.getString("to");
+				sp.when = rs.getDate("when");
+				sp.end = rs.getDate("end");
+				sp.reconnectedBy = rs.getString("reconnectedBy");
+				splits.add(sp);
+			}
+			
+			split[] s = new split[splits.size()];
+			splits.toArray(s);
+			return s;
+		}
+		catch (SQLException ex)
+		{
+			database.handleException(ex);
+			return null;
+		}
 	}
 	
 	public void splitDel(final String to)
 	{
-		if (this.getSplit() == null)
+		split s = this.getSplit();
+		if (s == null)
 			return;
 		
 		moo.sock.write("STATS c " + this.getName());
 		moo.sock.write("STATS o " + this.getName());
 		moo.sock.write("STATS B " + this.getName());
 
-		split s = this.getSplit();
 		s.to = to;
 		s.end = new Date();
+		
+		try
+		{
+			PreparedStatement statement = moo.db.prepare("UPDATE `splits` SET `to` = ?, `end` = ?, `reconnectedBy` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
+			statement.setString(1, s.to);
+			statement.setDate(2, new java.sql.Date(s.end.getTime()));
+			statement.setString(3, s.reconnectedBy);
+			statement.setString(4, s.me);
+			statement.setString(5, s.from);
+			statement.setDate(6, new java.sql.Date(s.when.getTime()));
+			moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			database.handleException(ex);
+		}
 	}
 	
 	public String getDesc()
@@ -236,41 +316,6 @@ public class server
 			try
 			{
 				for (Iterator<server> it = servers.iterator(); it.hasNext();)
-					it.next().splits.clear();
-
-				int count = 0;
-				ResultSet rs = moo.db.executeQuery("SELECT * FROM splits");
-				while (rs.next())
-				{
-					String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
-					Date when = rs.getDate("when"), end = rs.getDate("end");
-					
-					server s = server.findServerAbsolute(name);
-					if (s == null)
-						s = new server(name);
-					split sp = new split();
-					sp.me = name;
-					sp.from = from;
-					sp.to = to;
-					sp.when = when;
-					sp.end = end;
-					sp.reconnectedBy = rBy;
-					sp.saved = true;
-					s.splits.add(sp);
-					
-					++count;
-				}
-				
-				System.out.println("Loaded " + count + " splits");
-			}
-			catch (SQLException ex)
-			{
-				database.handleException(ex);
-			}
-			
-			try
-			{
-				for (Iterator<server> it = servers.iterator(); it.hasNext();)
 					it.next().preferred_links.clear();
 				
 				ResultSet rs = moo.db.executeQuery("SELECT * FROM servers");
@@ -301,38 +346,6 @@ public class server
 		@Override
 		public void saveDatabases()
 		{
-			try
-			{
-				PreparedStatement statement = moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`) VALUES(?, ?, ?, ?, ?, ?)"); 
-				
-				for (server s : server.getServers())
-				{
-					split[] splits = s.getSplits();
-				
-					for (int i = splits.length; i > 0; --i)
-					{
-						split sp = splits[i - 1];
-						
-						if (sp.saved)
-							break;
-						
-						statement.setString(1, sp.me);
-						statement.setString(2, sp.from);
-						statement.setString(3, sp.to);
-						statement.setDate(4, new java.sql.Date(sp.when.getTime()));
-						statement.setDate(5, (sp.end != null ? new java.sql.Date(sp.end.getTime()) : null));
-						statement.setString(6, sp.reconnectedBy);
-						sp.saved = true;
-						moo.db.executeUpdate();
-					}
-				}
-			}
-			catch (SQLException ex)
-			{
-				System.out.println("Error saving splits");
-				ex.printStackTrace();
-			}
-			
 			try
 			{
 				PreparedStatement statement = moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)"); 

@@ -88,7 +88,7 @@ class reconnector extends timer
 		++this.tick;
 		
 		server s = server.findServerAbsolute(this.serv.getName());
-		if (s == null || s.getSplit() != this.sp)
+		if (s == null || this.sp == null || !this.sp.equals(s.getSplit()))
 		{
 			this.destroy();
 			this.setRepeating(false);
@@ -181,7 +181,7 @@ class reconnector extends timer
 		for (Iterator<reconnector> it = reconnects.iterator(); it.hasNext();)
 		{
 			reconnector r = it.next();
-			if (r.serv == s && r.sp == s.getSplit())
+			if (r.serv == s && r.sp != null && r.sp.equals(s.getSplit()))
 				return r;
 		}
 		
