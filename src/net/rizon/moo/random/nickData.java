@@ -9,6 +9,7 @@ public class nickData
 	public long time;
 	private LinkedList<floodList> lists = new LinkedList<floodList>();
 	public boolean dead = false, akilled = false;
+	protected int hits;
 	
 	public nickData(final String nick, final String user, final String real, final String ip)
 	{
@@ -38,6 +39,11 @@ public class nickData
 			return this.nick_str + " " + this.user_str + "@" + this.ip + " {" + this.realname_str + "}";
 		else
 			return this.nick_str + " " + this.user_str + "@" + this.ip + " {" + this.realname_str + "} (" + this.getActiveListCount() + ")";
+	}
+	
+	public boolean isEqual(nickData nd)
+	{
+		return this.nick_str.equals(nd.nick_str) && this.user_str.equals(nd.user_str) && this.realname_str.equals(nd.realname_str) && this.ip.equals(nd.ip);
 	}
 	
 	public void addToLists()

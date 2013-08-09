@@ -89,6 +89,9 @@ class pattern extends floodList
 		{
 			floodList fl = it.next();
 			
+			if (fl.isClosed)
+				continue;
+			
 			if (fl instanceof pattern)
 			{
 				pattern pfl = (pattern) fl;

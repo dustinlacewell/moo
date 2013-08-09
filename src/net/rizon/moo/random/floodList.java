@@ -18,6 +18,18 @@ abstract class floodList
 	
 	protected final void addMatch(nickData nd)
 	{
+		for (nickData n : this.matches)
+			if (n.isEqual(nd))
+			{
+				++n.hits;
+				if (n.hits > 10)
+				{
+					for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
+						moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
+					return;
+				}
+			}
+		
 		this.times.addLast(System.currentTimeMillis() / 1000L);
 		if (this.times.size() > random.matchesForFlood)
 			this.times.removeFirst();

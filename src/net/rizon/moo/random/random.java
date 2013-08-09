@@ -64,7 +64,7 @@ public class random extends mpackage
 	}
 	
 	public static void addNickData(nickData nd)
-	{	
+	{
 		nicks.addLast(nd);
 		nd.addToLists();
 		
