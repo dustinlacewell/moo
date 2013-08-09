@@ -28,6 +28,7 @@ public class config
 	private String[] oper_channels;
 	private String[] admin_channels;
 	private String[] log_channels;
+	private String[] moo_log_channels;
 	private boolean shell;
 	private String shell_base;
 	private boolean disable_split_message;
@@ -98,7 +99,9 @@ public class config
 		s = this.getProperty(prop, "admin_channels");
 		this.admin_channels = s.split(",");
 		s = this.getProperty(prop, "log_channels");
-		this.log_channels = s.split(" ");
+		this.log_channels = s.split(",");
+		s = this.getProperty(prop, "moo_log_channels");
+		this.moo_log_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
 		this.shell_base = this.getProperty(prop, "shell_base");
 		this.disable_split_message = Boolean.parseBoolean(this.getProperty(prop, "disable_split_message"));
@@ -296,6 +299,11 @@ public class config
 			if (this.log_channels[i].equalsIgnoreCase(channel))
 				return true;
 		return false;
+	}
+	
+	public final String[] getMooLogChannels()
+	{
+		return this.moo_log_channels;
 	}
 	
 	public boolean getShell()

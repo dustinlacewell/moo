@@ -2,12 +2,16 @@ package net.rizon.moo.antiidle;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.logging.Level;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.timer;
 
 class antiIdleEntry extends timer
 {
+	private static final logger log = logger.getLogger(antiIdleEntry.class.getName());
+	
 	public String nick;
 	public String mask;
 	
@@ -25,8 +29,7 @@ class antiIdleEntry extends timer
 		
 		entries.put(this.nick.toLowerCase(), this);
 		
-		if (moo.conf.getDebug() > 0)
-			System.out.println("antiidle: Adding antiidle for " + this.nick);
+		log.log(Level.FINER, "Adding antiidle for " + this.nick);
 	}
 
 	@Override
@@ -51,8 +54,7 @@ class antiIdleEntry extends timer
 		antiIdleEntry a = entries.get(nick.toLowerCase());
 		if (a != null)
 		{
-			if (moo.conf.getDebug() > 0)
-				System.out.println("antiidle: Removing antiidle for " + nick);
+			log.log(Level.FINER, "Removing antiidle for " + nick);
 			
 			a.stop();
 			entries.remove(nick.toLowerCase());
@@ -74,8 +76,7 @@ class antiIdleEntry extends timer
 		{
 			entries.remove(nick.toLowerCase());
 			
-			if (moo.conf.getDebug() > 0)
-				System.out.println("antiidle: Renaming antiidle for " + nick + " to " + to);
+			log.log(Level.FINER, "Renaming antiidle for " + nick + " to " + to);
 			
 			a.nick = to;
 			a.mask = mask;

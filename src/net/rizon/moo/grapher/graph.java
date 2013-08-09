@@ -3,12 +3,16 @@ package net.rizon.moo.grapher;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.timer;
 
 public abstract class graph extends timer
 {
+	private static final logger log = logger.getLogger(graph.class.getName());
+	
 	private static File rrd_bin = new File(moo.conf.getRRDBin()),
 			rrd_graphdir = new File(moo.conf.getRRDDir());
 	private static Runtime rt = Runtime.getRuntime();
@@ -40,7 +44,7 @@ public abstract class graph extends timer
 	{
 		if (rrd_bin.exists() == false || rrd_bin.canExecute() == false)
 		{
-			System.err.println("RRDTool binary does not exist or is not executable");
+			log.log(Level.WARNING, "RRDTool binary does not exist or is not executable");
 			return;
 		}
 		
@@ -68,7 +72,7 @@ public abstract class graph extends timer
 				
 				if (ds_type == null)
 				{
-					System.err.println("Unknown DataSourceType");
+					log.log(Level.WARNING, "Unknown DataSourceType");
 					continue;
 				}
 
@@ -85,7 +89,7 @@ public abstract class graph extends timer
 			
 			if (rra_type == null)
 			{
-				System.err.println("Unknown RoundRobinArchiveType");
+				log.log(Level.WARNING, "Unknown RoundRobinArchiveType");
 				return;
 			}
 
@@ -100,8 +104,7 @@ public abstract class graph extends timer
 			}
 			catch (IOException ex)
 			{
-				System.err.println("Error executing RRDTool with \"" + create_command + "\"");
-				ex.printStackTrace();
+				log.log(Level.WARNING, "Error executing RRDTool with \"" + create_command + "\"", ex);
 			}
 		}
 		
@@ -116,8 +119,7 @@ public abstract class graph extends timer
 		}
 		catch (IOException ex)
 		{
-			System.err.println("Error executing RRDTool with \"" + command + "\"");
-			ex.printStackTrace();
+			log.log(Level.WARNING, "Error executing RRDTool with \"" + command + "\"", ex);
 		}
 	}
 	

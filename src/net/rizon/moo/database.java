@@ -5,9 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class database
 {
+	private static final logger log = logger.getLogger(database.class.getName());
+	
 	private Connection con = null;
 	
 	public database() throws ClassNotFoundException, SQLException
@@ -53,8 +56,7 @@ public class database
 		}
 		catch (SQLException ex)
 		{
-			System.out.println("Error executing SQL statement: " + statement);
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error executing SQL statement: " + statement, ex);
 			return 0;
 		}
 	}
@@ -69,22 +71,19 @@ public class database
 	{
 		try
 		{
-			if (moo.conf.getDebug() > 0)
-				System.out.println("Executing query: " + this.last_statement.toString());
+			log.log(Level.FINE, "Executing query: " + this.last_statement.toString());
 			return this.last_statement.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
-			System.out.println("Error executing SQL statement: " + this.last_statement.toString());
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error executing SQL statement: " + this.last_statement.toString(), ex);
 			return 0;
 		}
 	}
 	
 	public ResultSet executeQuery() throws SQLException
 	{
-		if (moo.conf.getDebug() > 0)
-			System.out.println("Executing query: " + this.last_statement.toString());
+		log.log(Level.FINE, "Executing query: " + this.last_statement.toString());
 		return this.last_statement.executeQuery();
 	}
 	

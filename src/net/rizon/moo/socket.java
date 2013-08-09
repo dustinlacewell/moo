@@ -12,6 +12,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.logging.Level;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -135,6 +136,8 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 
 public class socket
 {
+	private static final logger log = logger.getLogger(socket.class.getName());
+
 	private Socket sock;
 	private SSLSocket sslsock;
 	private PrintWriter out;
@@ -215,16 +218,14 @@ public class socket
 	
 	public void write(final String buf)
 	{
-		if (moo.conf.getDebug() > 0)
-			System.out.println("-> " + buf);
+		log.log(Level.FINE, "-> " + buf);
 		this.out.println(buf);
 	}
 	
 	public final String read() throws IOException
 	{
 		String in = this.in.readLine();
-		if (moo.conf.getDebug() > 0)
-			System.out.println("<- " + in);
+		log.log(Level.FINE, "<- " + in);
 		return in;
 	}
 }

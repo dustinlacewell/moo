@@ -7,12 +7,15 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.event;
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.random.nickData;
 import net.rizon.moo.random.random;
 
 class eventWatch extends event
 {
+	private static final logger log = logger.getLogger(eventWatch.class.getName());
+	
 	@Override
 	protected void initDatabases()
 	{
@@ -41,8 +44,7 @@ class eventWatch extends event
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Error loading watches");
-			ex.printStackTrace();
+			log.log(ex);
 		}
 	}
 	
@@ -71,8 +73,7 @@ class eventWatch extends event
 		}
 		catch (SQLException ex)
 		{
-			System.out.println("Error saving watches");
-			ex.printStackTrace();
+			log.log(ex);
 		}
 	}
 	

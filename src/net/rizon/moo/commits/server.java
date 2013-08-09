@@ -9,7 +9,9 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.util.logging.Level;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.commits.api.bitbucket.bitbucket;
 
@@ -18,6 +20,8 @@ import com.google.gson.JsonSyntaxException;
 
 class server extends Thread
 {
+	private static final logger log = logger.getLogger(server.class.getName());
+	
 	private ServerSocket sock;
 	
 	private String ip;
@@ -56,14 +60,14 @@ class server extends Thread
 							}
 							catch (NumberFormatException ex)
 							{
-								System.err.println("Invalid content length (" + str + ")");
+								log.log(Level.WARNING, "Invalid content length (" + str + ")");
 								str = null;
 								break;
 							}
 							
 							if (len > 4096)
 							{
-								System.err.println("Content length is huge! (" + len + " > 4096)");
+								log.log(Level.WARNING, "Content length is huge! (" + len + " > 4096)");
 								str = null;
 								break;
 							}
@@ -106,11 +110,8 @@ class server extends Thread
 						}
 						catch (JsonSyntaxException e)
 						{
-							System.err.println("Exception while parsing json caught. Backtrace:");
-							e.printStackTrace(System.err);
-							System.err.println("Payload:");
-							System.err.println(json);
-							System.err.println("End of payload.");
+							log.log(Level.WARNING, "Exception while parsing json", e);
+							log.log(Level.WARNING, "Payload: " + json);
 							
 							for (final String channel : moo.conf.getDevChannels())
 								moo.privmsg(channel, "\002Error parsing JSON from commit!\002");

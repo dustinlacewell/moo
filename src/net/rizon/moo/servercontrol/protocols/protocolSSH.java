@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.logging.Level;
 
+import net.rizon.moo.logger;
 import net.rizon.moo.moo;
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
@@ -110,6 +112,8 @@ final class connectionSSH extends connection
 
 public class protocolSSH extends protocol
 {
+	private static final logger log = logger.getLogger(protocolSSH.class.getName());
+	
 	private static JSch jsch = new JSch();
 	
 	public protocolSSH()
@@ -124,8 +128,7 @@ public class protocolSSH extends protocol
 			}
 			catch (JSchException ex)
 			{
-				System.err.println("Unable to load private key " + key);
-				ex.printStackTrace();
+				log.log(Level.WARNING, "Unable to load private key " + key, ex);
 			}
 		}
 	}

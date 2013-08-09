@@ -201,9 +201,6 @@ class commandFlood extends command
 							}
 							catch (NumberFormatException ex)
 							{
-								if (moo.conf.getDebug() > 0)
-									System.out.println("Invalid number: " + parts[k]);
-								
 								continue;
 							}
 							tobedeleted.add(tmp - 1);
@@ -219,10 +216,7 @@ class commandFlood extends command
 								max = Integer.valueOf(upper);
 							}
 							catch (NumberFormatException ex)
-							{
-								if (moo.conf.getDebug() > 0)
-									System.out.println("Invalid number range: " + lower + " " + upper);
-								
+							{		
 								continue;
 							}
 							

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.logging.Level;
 
 class outputWriter extends OutputStreamWriter
 {
@@ -20,6 +21,8 @@ class outputWriter extends OutputStreamWriter
 
 class mailThread extends Thread
 {
+	private static final logger log = logger.getLogger(mailThread.class.getName());
+	
 	private String path;
 	private String to;
 	private String subject;
@@ -51,8 +54,7 @@ class mailThread extends Thread
 			proc.getInputStream().close();
 			proc.getErrorStream().close();
 			
-			if (moo.conf.getDebug() > 0)
-				System.out.println("Successfully sent message");
+			log.log(Level.FINER, "Successfully sent message to " + this.to);
 		}
 		catch (IOException ex)
 		{

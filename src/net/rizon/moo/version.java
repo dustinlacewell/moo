@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class version
 {
+	private static final logger log = logger.getLogger(version.class.getName());
 	private static HashMap<String, String> values = new HashMap<String, String>();
 	
 	public static void load()
@@ -53,8 +55,7 @@ public class version
 		}
 		catch (IOException ex)
 		{
-			System.out.println("Unable to load GIT version data");
-			ex.printStackTrace();
+			log.log(Level.INFO, "Unable to load GIT version data", ex);
 		}
 	}
 	

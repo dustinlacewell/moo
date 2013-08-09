@@ -9,9 +9,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 public class server
 {
+	private static final logger log = logger.getLogger(server.class.getName());
 	public static long lastSplit = 0;
 	public static int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
 	
@@ -38,8 +40,7 @@ public class server
 		this.name = name;
 		servers.push(this);
 		
-		if (moo.conf.getDebug() > 0)
-			System.out.println("Adding server " + this.getName());
+		log.log(Level.FINE, "Adding server " + this.getName());
 		
 		moo.sock.write("STATS c " + this.getName());
 		moo.sock.write("STATS o " + this.getName());
@@ -53,8 +54,7 @@ public class server
 	
 	public void destroy()
 	{
-		if (moo.conf.getDebug() > 0)
-			System.out.println("Removing server " + this.getName());
+		log.log(Level.FINE, "Removing server " + this.getName());
 		
 		for (event e : event.getEvents())
 			e.onServerDestroy(this);
@@ -71,8 +71,7 @@ public class server
 		}
 		catch (SQLException ex)
 		{
-			System.err.print("Error removing server from database");
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error removing server from database", ex);
 		}
 		
 		servers.remove(this);
@@ -367,8 +366,7 @@ public class server
 			}
 			catch (SQLException ex)
 			{
-				System.out.println("Error saving servers");
-				ex.printStackTrace();
+				log.log(Level.WARNING, "Error saving servers", ex);
 			}
 		}
 	}

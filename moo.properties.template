@@ -61,6 +61,9 @@ admin_channels=#r,#x
 # Comma separated list of services log channels
 log_channels=#services
 
+# Comma separated list of moo log channels
+moo_log_channels=#w
+
 # Set to true to enable !shell
 enable_shell=false
 

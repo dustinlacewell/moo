@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +28,7 @@ class databaseTimer extends timer
 
 public class moo
 {
+	private static final logger log = logger.getLogger(moo.class.getName());
 	private static Date created = new Date();
 
 	public static config conf = null;
@@ -45,8 +47,7 @@ public class moo
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Error loading configuration");
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error loading configuration", ex);
 			System.exit(-1);
 		}
 		
@@ -57,14 +58,12 @@ public class moo
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println("Error loading database driver");
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error loading database driver", ex);
 			System.exit(-1);
 		}
 		catch (SQLException ex)
 		{
-			System.out.println("Error initializing database");
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error initializing database", ex);
 			System.exit(-1);
 		}
 		
@@ -86,12 +85,11 @@ public class moo
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Error loading resources");
-			ex.printStackTrace();
+			log.log(Level.SEVERE, "Error loading resources", ex);
 			System.exit(-1);
 		}
 
-		System.out.println("Starting up " + conf.getNick());
+		log.log(Level.INFO, "moo v" + version.getFullVersion() + " starting up");
 
 		for (event e : event.getEvents())
 			e.initDatabases();
@@ -133,8 +131,7 @@ public class moo
 					}
 					catch (Exception ex)
 					{
-						System.out.println("Error processing timers");
-						ex.printStackTrace();
+						log.log(Level.SEVERE, "Error processing timers", ex);
 					}
 					
 					try
@@ -170,18 +167,17 @@ public class moo
 						
 						if (moo.conf.getDebug() > 2)
 						{
-							System.out.println("  Source: " + source);
-							System.out.println("  Message: " + message_name);
+							log.log(Level.FINEST, "  Source: " + source);
+							log.log(Level.FINEST, "  Message: " + message_name);
 							for (int i = 0; i < buffer.length; ++i)
-								System.out.println("    " + i + ": " + buffer[i]);
+								log.log(Level.FINEST, "    " + i + ": " + buffer[i]);
 						}
 
 						message.runMessage(source, message_name, buffer);
 					}
 					catch (Exception ex)
 					{
-						System.out.println("Error running message: " + in);
-						ex.printStackTrace();
+						log.log(Level.WARNING, "Error running message: " + in, ex);
 					}
 				}
 			}

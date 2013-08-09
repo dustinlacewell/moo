@@ -1,5 +1,8 @@
 package net.rizon.moo.protocol.unreal;
 
+import java.util.logging.Level;
+
+import net.rizon.moo.logger;
 import net.rizon.moo.message;
 import net.rizon.moo.server;
 
@@ -8,6 +11,8 @@ import net.rizon.moo.server;
  */
 class message006 extends message
 {
+	private static final logger log = logger.getLogger(message006.class.getName());
+	
 	public message006()
 	{
 		super("006");
@@ -50,7 +55,7 @@ class message006 extends message
 			}
 			catch (NumberFormatException ex)
 			{
-				System.err.println("Invalid user count in map 015: " + s);
+				log.log(Level.WARNING, "Invalid user count in map 015: " + s);
 			}
 		}
 		

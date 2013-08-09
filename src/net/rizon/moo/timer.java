@@ -2,9 +2,11 @@ package net.rizon.moo;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 public abstract class timer
 {
+	private static final logger log = logger.getLogger(timer.class.getName());
 	private static ArrayList<timer> timers = new ArrayList<timer>();
 
 	private Date tick;
@@ -56,8 +58,7 @@ public abstract class timer
 				}
 				catch (Exception ex)
 				{
-					System.out.println("Error running timer " + t.toString());
-					ex.printStackTrace();
+					log.log(Level.WARNING, "Error running timer " + t.toString(), ex);
 				}
 				
 				if (t.repeating == false)
