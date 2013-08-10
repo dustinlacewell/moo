@@ -42,6 +42,10 @@ if [ $? -ne 0 ]; then
 	abort "git pull"
 fi
 
+echo "Replaying log..."
+git log ORIG_HEAD..
+echo "Done"
+
 sh build.sh
 if [ $? -ne 0 ]; then
 	abort "build.sh"
