@@ -22,7 +22,7 @@ abstract class floodList
 			if (n.isEqual(nd))
 			{
 				++n.hits;
-				if (n.hits > 10)
+				if (n.hits > 30)
 				{
 					for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
 						moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
