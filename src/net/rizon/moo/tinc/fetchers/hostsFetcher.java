@@ -41,6 +41,7 @@ public class hostsFetcher extends process
 	{
 		while (in.indexOf("  ") != -1)
 			in = in.replaceAll("  ", " ");
+		in = in.replaceAll("	", " "); // tab
 
 		String[] tokens = in.split(" ");
 		if (tokens.length <= 5)
