@@ -1,6 +1,8 @@
 package net.rizon.moo.servermonitor;
 
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +12,38 @@ import net.rizon.moo.mail;
 import net.rizon.moo.moo;
 import net.rizon.moo.server;
 import net.rizon.moo.split;
+import net.rizon.moo.timer;
+
+class textDelay extends timer
+{
+	public textDelay()
+	{
+		super(5, false);
+	}
+
+	@Override
+	public void run(Date now)
+	{
+		String buf = "";
+		for (String s : messages)
+		{
+			if (!buf.isEmpty())
+				buf += " / ";
+			buf += s;
+		}
+		for (String email : moo.conf.getSplitEmails())
+			mail.send(email, "Split", buf);
+		
+		eventSplit.texts = null;
+	}
+	
+	protected LinkedList<String> messages = new LinkedList<String>();
+}
 
 class eventSplit extends event
 {
+	protected static textDelay texts;
+	
 	@Override
 	public void onServerLink(server serv, server to)
 	{
@@ -28,8 +59,14 @@ class eventSplit extends event
 					moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 		}
 		if (!pypsd)
-			for (String email : moo.conf.getSplitEmails())
-				mail.send(email, "Server introduced", serv.getName() + " introduced by " + to.getName());
+		{
+			if (texts == null)
+			{
+				texts = new textDelay();
+				texts.start();
+			}
+			texts.messages.add(serv.getName() + " introduced by " + to.getName());
+		}
 	}
 	
 	private static final String[] pypsdMockery = new String[]{
@@ -78,8 +115,14 @@ class eventSplit extends event
 		}
 		
 		if (!pypsd)
-			for (String email : moo.conf.getSplitEmails())
-				mail.send(email, "Server split", serv.getName() + " split from " + from.getName());
+		{
+			if (texts == null)
+			{
+				texts = new textDelay();
+				texts.start();
+			}
+			texts.messages.add(serv.getName() + " split from " + from.getName());
+		}
 		
 		if (moo.conf.getDisableSplitReconnect() == false && serv.isServices() == false)
 		{
