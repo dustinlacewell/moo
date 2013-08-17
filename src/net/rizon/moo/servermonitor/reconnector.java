@@ -46,23 +46,14 @@ class reconnector extends timer
 		if (this.from.getSplit() != null && findValidReconnectorFor(this.from) != null)
 			return this.serv; // Special case.
 		
-		LinkedList<server> candidates = new LinkedList<server>();
-		
 		for (Iterator<String> it = this.serv.preferred_links.iterator(); it.hasNext();)
 		{
 			final String pname = it.next();
 			server pserver = server.findServerAbsolute(pname);
 			
 			if (isGood(pserver))
-				candidates.add(pserver);
+				return pserver;
 		}
-		
-		if (candidates.isEmpty())
-			;
-		else if (candidates.size() >= 2 && candidates.get(0).links.size() > candidates.get(1).links.size() * 2)
-			return candidates.get(1);
-		else
-			return candidates.getFirst();
 		
 		if (isGood(this.from))
 			return this.from;
