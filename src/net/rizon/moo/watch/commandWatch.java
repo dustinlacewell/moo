@@ -62,10 +62,11 @@ class commandWatch extends command
 				}
 			}
 			
+			boolean add = false;
 			if (we == null)
 			{
 				we = new watchEntry();
-				watch.watches.push(we);
+				add = true;
 			}
 			
 			watchEntry.registeredState state = watchEntry.registeredState.RS_MANUAL_AKILL;
@@ -81,7 +82,7 @@ class commandWatch extends command
 					multiplier = 60;
 				
 				expires = expires.substring(1);
-				while (Character.isLetter(expires.charAt(expires.length() - 1)))
+				while (!expires.isEmpty() && Character.isLetter(expires.charAt(expires.length() - 1)))
 					expires = expires.substring(0, expires.length() - 1);
 				
 				int len = 0;
@@ -119,6 +120,9 @@ class commandWatch extends command
 			we.registered = state;
 			
 			moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
+			
+			if (add)
+				watch.watches.push(we);
 		}
 		else if (params[1].equals("del") && params.length > 2)
 		{
