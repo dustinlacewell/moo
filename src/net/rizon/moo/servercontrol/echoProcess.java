@@ -2,7 +2,7 @@ package net.rizon.moo.servercontrol;
 
 import net.rizon.moo.moo;
 
-public class echoProcess extends process
+public class echoProcess extends command
 {
 	private String source, target;
 	

@@ -1,5 +1,6 @@
 package net.rizon.moo.servercontrol;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -71,6 +72,8 @@ public abstract class connection
 	public abstract boolean isConnected();
 	public abstract void connect() throws IOException;
 	public abstract void execute(final String command) throws IOException;
+	public void upload(File file) throws IOException { throw new UnsupportedOperationException(); }
+	public void remove(String file) throws IOException { throw new UnsupportedOperationException(); }
 	public abstract String readLine();
 	
 	private static LinkedList<connection> connections = new LinkedList<connection>();

@@ -31,6 +31,7 @@ public class config
 	private String[] moo_log_channels;
 	private boolean shell;
 	private String shell_base;
+	private String shortcut_base;
 	private boolean disable_split_message;
 	private boolean disable_split_reconnect;
 	private int split_reconnect_port;
@@ -104,6 +105,7 @@ public class config
 		this.moo_log_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
 		this.shell_base = this.getProperty(prop, "shell_base");
+		this.shortcut_base = this.getProperty(prop, "shortcut_base");
 		this.disable_split_message = Boolean.parseBoolean(this.getProperty(prop, "disable_split_message"));
 		this.disable_split_reconnect = Boolean.parseBoolean(this.getProperty(prop, "disable_split_reconnect"));
 		this.split_reconnect_port = Integer.parseInt(this.getProperty(prop, "split_reconnect_port"));
@@ -314,6 +316,11 @@ public class config
 	public final String getShellBase()
 	{
 		return this.shell_base;
+	}
+	
+	public final String getShortcutBase()
+	{
+		return this.shortcut_base;
 	}
 	
 	public final boolean getDisableSplitMessage()

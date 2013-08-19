@@ -1,5 +1,6 @@
 package net.rizon.moo.servercontrol.commands;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import net.rizon.moo.servercontrol.process;
 import net.rizon.moo.servercontrol.protocol;
 import net.rizon.moo.servercontrol.serverInfo;
 import net.rizon.moo.servercontrol.servercontrol;
+import net.rizon.moo.servercontrol.uploadProcess;
 
 public class commandShortcut extends command
 {
@@ -47,15 +49,16 @@ public class commandShortcut extends command
 				logger.getGlobalLogger().log(ex);
 			}
 		}
-		else if (params.length > 3 && params[1].equalsIgnoreCase("add"))
+		else if (params.length > 3 && (params[1].equalsIgnoreCase("addc") || params[1].equalsIgnoreCase("addf")))
 		{
 			try
 			{
+				boolean isFile = params[1].equalsIgnoreCase("addf");
 				PreparedStatement stmt = moo.db.prepare("DELETE FROM shortcuts WHERE `name` = ?");
 				stmt.setString(1, params[2]);
 				boolean replaced = moo.db.executeUpdate() != 0;
 				
-				stmt = moo.db.prepare("INSERT INTO shortcuts (`name`, `command`) VALUES(?, ?)");
+				stmt = moo.db.prepare("INSERT INTO shortcuts (`name`, `" + (isFile ? "file" : "command") + "`) VALUES(?, ?)");
 				stmt.setString(1, params[2]);
 				stmt.setString(2, params[3]);
 				moo.db.executeUpdate();
@@ -96,6 +99,11 @@ public class commandShortcut extends command
 		}
 		else if (params.length > 2)
 		{
+			String sname = params[1], sproto = params[2], args = "";
+			for (int i = 3; i < params.length; ++i)
+				args += params[i] + " ";
+			args = args.trim();
+			
 			protocol proto = protocol.findProtocol("ssh");
 			if (proto == null)
 			{
@@ -103,21 +111,24 @@ public class commandShortcut extends command
 				return;
 			}
 			
-			serverInfo[] server_info = servercontrol.findServers(params[2], proto.getProtocolName());
+			serverInfo[] server_info = servercontrol.findServers(sproto, proto.getProtocolName());
 			if (server_info == null)
 			{
-				moo.reply(source, target, "No servers found for " + params[2] + " using " + proto.getProtocolName());
+				moo.reply(source, target, "No servers found for " + sproto + " using " + proto.getProtocolName());
 				return;
 			}
 			
-			String command = null;
+			String command = null, file = null;
 			try
 			{
-				PreparedStatement stmt = moo.db.prepare("SELECT command FROM shortcuts WHERE `name` = ?");
-				stmt.setString(1, params[1]);
+				PreparedStatement stmt = moo.db.prepare("SELECT command,file FROM shortcuts WHERE `name` = ?");
+				stmt.setString(1, sname);
 				ResultSet rs = moo.db.executeQuery();
 				if (rs.next())
+				{
 					command = rs.getString("command");
+					file = rs.getString("file");
+				}
 			}
 			catch (SQLException ex)
 			{
@@ -125,9 +136,16 @@ public class commandShortcut extends command
 				return;
 			}
 			
-			if (command == null)
+			if (command == null && file == null)
 			{
-				moo.reply(source, target, "No such shortcut " + params[1]);
+				moo.reply(source, target, "No such shortcut " + sname);
+				return;
+			}
+			
+			File f = new File(moo.conf.getShortcutBase(), file);
+			if (!f.exists())
+			{
+				moo.reply(source, target, "File for shortcut " + sname + " (" + file + ") does not exist?");
 				return;
 			}
 			
@@ -136,8 +154,17 @@ public class commandShortcut extends command
 				try
 				{
 					connection con = connection.findOrCreateConncetion(si);
-					process proc = new echoProcess(con, source, target, command);
-					proc.start();
+
+					if (command != null)
+					{
+						process proc = new echoProcess(con, source, target, command);
+						proc.start();
+					}
+					if (file != null)
+					{
+						process proc = new uploadProcess(con, f, source, target, args);
+						proc.start();
+					}
 				}
 				catch (Exception ex)
 				{
@@ -149,9 +176,10 @@ public class commandShortcut extends command
 		{
 			moo.reply(source, target, "Syntax:");
 			moo.reply(source, target, "!s list");
-			moo.reply(source, target, "!s add name command");
+			moo.reply(source, target, "!s addc name command");
+			moo.reply(source, target, "!s addf name file");
 			moo.reply(source, target, "!s del name");
-			moo.reply(source, target, "!s name server");
+			moo.reply(source, target, "!s name server args...");
 		}
 	}
 }

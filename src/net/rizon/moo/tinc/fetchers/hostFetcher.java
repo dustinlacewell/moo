@@ -1,12 +1,13 @@
 package net.rizon.moo.tinc.fetchers;
 
+import net.rizon.moo.servercontrol.command;
 import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.process;
 import net.rizon.moo.tinc.host;
 import net.rizon.moo.tinc.node;
 import net.rizon.moo.tinc.tinc;
 
-public class hostFetcher extends process
+public class hostFetcher extends command
 {
 	public static process create(node n, connection con, host h, String source, String target)
 	{

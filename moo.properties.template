@@ -62,13 +62,16 @@ admin_channels=#r,#x
 log_channels=#services
 
 # Comma separated list of moo log channels
-moo_log_channels=#w
+moo_log_channels=#r-spam
 
 # Set to true to enable !shell
 enable_shell=false
 
 # The base path for shell commands
 shell_base=/home/adam/rizon/moo/shell
+
+# The base path for shortcut commands
+shortcut_base=C:/Users/Adam/git/moo/shortcuts
 
 # Set to true to disable the "server X can connect to Y" message on every split
 disable_split_message=false

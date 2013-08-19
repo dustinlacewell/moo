@@ -1,6 +1,8 @@
 package net.rizon.moo.servercontrol.protocols;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -12,16 +14,19 @@ import net.rizon.moo.servercontrol.connection;
 import net.rizon.moo.servercontrol.protocol;
 import net.rizon.moo.servercontrol.serverInfo;
 
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 final class connectionSSH extends connection
 {
 	private JSch jsch;
 	private Session session = null;
-	private ChannelExec channel = null;
+	private Channel channel = null;
 	private PrintStream shellStream = null;
 	private BufferedReader reader = null;
 
@@ -84,13 +89,61 @@ final class connectionSSH extends connection
 
 		try
 		{
-			this.channel = (ChannelExec) this.session.openChannel("exec");
+			ChannelExec ce = (ChannelExec) this.session.openChannel("exec");
+			this.channel = ce;
 			this.shellStream = new PrintStream(this.channel.getOutputStream());
 			this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
-			this.channel.setCommand(command);
+			ce.setCommand(command);
 			this.channel.connect();
 		}
 		catch (JSchException e)
+		{
+			throw new IOException(e);
+		}
+	}
+	
+	private ChannelSftp openSftpChannel() throws IOException, JSchException
+	{
+		this.cleanUp();
+		
+		ChannelSftp cs = (ChannelSftp) this.session.openChannel("sftp");
+		cs.connect();
+		return cs;
+	}
+	
+	@Override
+	public synchronized void upload(File file) throws IOException
+	{
+		try
+		{
+			ChannelSftp cs = this.openSftpChannel();
+			this.channel = cs;
+			cs.put(new FileInputStream(file), file.getName());
+		}
+		catch (JSchException e)
+		{
+			throw new IOException(e);
+		}
+		catch (SftpException e)
+		{
+			throw new IOException(e);
+		}
+	}
+	
+	@Override
+	public synchronized void remove(String file) throws IOException
+	{
+		try
+		{
+			ChannelSftp cs = this.openSftpChannel();
+			this.channel = cs;
+			cs.rm(file);
+		}
+		catch (JSchException e)
+		{
+			throw new IOException(e);
+		}
+		catch (SftpException e)
 		{
 			throw new IOException(e);
 		}

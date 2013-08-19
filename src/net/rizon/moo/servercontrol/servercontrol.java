@@ -36,7 +36,7 @@ public class servercontrol extends mpackage
 		new protocolTelnet();
 		
 		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
-		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`)");
+		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`, `file`)");
 	}
 	
 	private static final serverInfo[] processServers(ResultSet rs) throws SQLException
