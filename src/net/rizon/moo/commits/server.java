@@ -21,6 +21,7 @@ import com.google.gson.JsonSyntaxException;
 class server extends Thread
 {
 	private static final logger log = logger.getLogger(server.class.getName());
+	private static final int maxPayload = 65535;
 	
 	private ServerSocket sock;
 	
@@ -65,9 +66,9 @@ class server extends Thread
 								break;
 							}
 							
-							if (len > 4096)
+							if (len > maxPayload)
 							{
-								log.log(Level.WARNING, "Content length is huge! (" + len + " > 4096)");
+								log.log(Level.WARNING, "Content length is huge! (" + len + " > " + maxPayload + ")");
 								str = null;
 								break;
 							}
@@ -113,9 +114,6 @@ class server extends Thread
 							log.log(Level.WARNING, "Exception while parsing json", e);
 							log.log(Level.WARNING, "Payload: " + json);
 							
-							for (final String channel : moo.conf.getDevChannels())
-								moo.privmsg(channel, "\002Error parsing JSON from commit!\002");
-							
 							// Don't continue; we need to see the fail only once.
 						}
 					}
@@ -129,7 +127,7 @@ class server extends Thread
 				}
 				catch (Exception ex)
 				{
-					logger.getGlobalLogger().log(ex);
+					log.log(ex);
 				}
 				finally
 				{
@@ -143,7 +141,7 @@ class server extends Thread
 		}
 		catch (IOException ex)
 		{
-			logger.getGlobalLogger().log(ex);
+			log.log(ex);
 		}
 	}
 	
@@ -155,7 +153,7 @@ class server extends Thread
 		}
 		catch (IOException e)
 		{
-			logger.getGlobalLogger().log(e);
+			log.log(e);
 		}
 	}
 }
