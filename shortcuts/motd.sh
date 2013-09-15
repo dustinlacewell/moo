@@ -8,18 +8,18 @@ if [ ! $1 ] ; then
 fi
 
 cat > $MOTD_FILE << 'EOF'
-^B         ^C11oo^C                            ^B
+         11oo                            
 
-^B88d888b. dP d888888b .d8888b. 88d888b. ^B
-^B88'  `88 88    .d8P' 88'  `88 88'  `88 ^B
-^B^C1188       88  .Y8P    88.  .88 88    88 ^C^B
-^B^C11dP       dP d888888P `88888P' dP    dP^C^B
+88d888b. dP d888888b .d8888b. 88d888b. 
+88'  `88 88    .d8P' 88'  `88 88'  `88 
+1188       88  .Y8P    88.  .88 88    88 
+11dP       dP d888888P `88888P' dP    dP
 
-^BRizon Chat Network -- http://rizon.net^B
+Rizon Chat Network -- http://rizon.net
 
 Listening on ports: 6660 - 6669, 7000. SSL: 6697, 9999
 
-^BRules:^B
+Rules:
 o No spamming or flooding
 o No clones or malicious bots
 o No takeovers
@@ -27,11 +27,11 @@ o No distribution of child pornography
 o Clients must respond to VERSION requests
 o Rizon staff may disconnect clients for any or no reason
 
-^BFirst steps:^B
-o To register your nick: ^B/msg NickServ HELP^B
-o To register your channel: ^B/msg ChanServ HELP^B
-o To get a vHost: ^B/msg HostServ HELP REQUEST^B
-o For other help with Rizon: ^B/join #help^B
+First steps:
+o To register your nick: /msg NickServ HELP
+o To register your channel: /msg ChanServ HELP
+o To get a vHost: /msg HostServ HELP REQUEST
+o For other help with Rizon: /join #help
 
 Usage of this network is a privilege, not a right. Rizon is a
 transit provider, therefore no person or entity involved with
