@@ -5,22 +5,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import net.rizon.moo.logger;
-import net.rizon.moo.moo;
-import net.rizon.moo.timer;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Timer;
 
-public abstract class graph extends timer
+public abstract class graph extends Timer
 {
-	private static final logger log = logger.getLogger(graph.class.getName());
+	private static final Logger log = Logger.getLogger(graph.class.getName());
 	
-	private static File rrd_bin = new File(moo.conf.getRRDBin()),
-			rrd_graphdir = new File(moo.conf.getRRDDir());
+	private static File rrd_bin = new File(Moo.conf.getRRDBin()),
+			rrd_graphdir = new File(Moo.conf.getRRDDir());
 	private static Runtime rt = Runtime.getRuntime();
 
 	private class dataSource
 	{
 		String name;
-		dataSourceType type;
+		DataSourceType type;
 		long heartbeat;
 		long min;
 		long max;
@@ -29,7 +29,7 @@ public abstract class graph extends timer
 	private String name;
 	private long step;
 	private ArrayList<dataSource> dataSources = new ArrayList<dataSource>();
-	private roundRobinArchiveType rra_type;
+	private RoundRobinArchiveType rra_type;
 	private long rra_steps;
 	private long rra_rows;
 
@@ -123,7 +123,7 @@ public abstract class graph extends timer
 		}
 	}
 	
-	protected void addDataSource(final String name, dataSourceType type, long heartbeat, long min, long max)
+	protected void addDataSource(final String name, DataSourceType type, long heartbeat, long min, long max)
 	{
 		dataSource ds = new dataSource();
 		ds.name = name;
@@ -134,7 +134,7 @@ public abstract class graph extends timer
 		this.dataSources.add(ds);
 	}
 	
-	protected void setRRA(roundRobinArchiveType rrat, long steps, long rows)
+	protected void setRRA(RoundRobinArchiveType rrat, long steps, long rows)
 	{
 		this.rra_type = rrat;
 		this.rra_steps = steps;

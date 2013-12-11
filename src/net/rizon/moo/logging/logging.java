@@ -1,16 +1,16 @@
 package net.rizon.moo.logging;
 
-import net.rizon.moo.mpackage;
+import net.rizon.moo.MPackage;
 
-public class logging extends mpackage
+public class logging extends MPackage
 {
 	public logging()
 	{
 		super("Logging", "Search server logs");
 		
-		new commandLogSearch(this);
-		new commandSLogSearch(this);
+		new CommandLogSearch(this);
+		new CommandSLogSearch(this);
 		
-		new eventLogging();
+		new EventLogging();
 	}
 }

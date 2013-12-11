@@ -1,19 +1,19 @@
 package net.rizon.moo.commits;
 
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
 
-public class commits extends mpackage
+public class commits extends MPackage
 {
-	protected static server s;
+	protected static Server s;
 	
 	public commits()
 	{
 		super("Commits", "Manages and shows commits made to repositories");
 		
-		s = new server(moo.conf.getCommitsIP(), moo.conf.getCommitsPort());	
+		s = new Server(Moo.conf.getCommitsIP(), Moo.conf.getCommitsPort());	
 		s.start();
 		
-		new eventCommit();
+		new EventCommit();
 	}
 }

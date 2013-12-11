@@ -1,18 +1,18 @@
 package net.rizon.moo.fun;
 
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
 
-public class fun extends mpackage
+public class fun extends MPackage
 {
 	public fun()
 	{
 		super("FUN", "Provides fun features");
 		
-		if (moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getProtocol().equals("plexus"))
 		{
-			new commandRizonTime(this);
-			new eventFun();
+			new CommandRizonTime(this);
+			new EventFun();
 		}
 	}
 }

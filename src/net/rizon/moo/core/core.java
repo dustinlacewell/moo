@@ -1,19 +1,19 @@
 package net.rizon.moo.core;
 
-import net.rizon.moo.mpackage;
+import net.rizon.moo.MPackage;
 
-public class core extends mpackage
+public class core extends MPackage
 {
 	public core()
 	{
 		super("Commands", "Core commands");
 		
-		new commandHelp(this);
-		new commandHost(this);
-		new commandRand(this);
-		new commandReload(this);
-		new commandShell(this);
-		new commandShutdown(this);
-		new commandStatus(this);
+		new CommandHelp(this);
+		new CommandHost(this);
+		new CommandRand(this);
+		new CommandReload(this);
+		new CommandShell(this);
+		new CommandShutdown(this);
+		new CommandStatus(this);
 	}
 }

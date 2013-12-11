@@ -5,46 +5,46 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-import net.rizon.moo.database;
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
-import net.rizon.moo.servercontrol.commands.commandAddServer;
-import net.rizon.moo.servercontrol.commands.commandConnections;
-import net.rizon.moo.servercontrol.commands.commandDelServer;
-import net.rizon.moo.servercontrol.commands.commandServerControl;
-import net.rizon.moo.servercontrol.commands.commandServers;
-import net.rizon.moo.servercontrol.commands.commandShortcut;
-import net.rizon.moo.servercontrol.protocols.protocolFTP;
-import net.rizon.moo.servercontrol.protocols.protocolSSH;
-import net.rizon.moo.servercontrol.protocols.protocolTelnet;
+import net.rizon.moo.Database;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
+import net.rizon.moo.servercontrol.commands.CommandAddServer;
+import net.rizon.moo.servercontrol.commands.CommandConnections;
+import net.rizon.moo.servercontrol.commands.CommandDelServer;
+import net.rizon.moo.servercontrol.commands.CommandServerControl;
+import net.rizon.moo.servercontrol.commands.CommandServers;
+import net.rizon.moo.servercontrol.commands.CommandShortcut;
+import net.rizon.moo.servercontrol.protocols.FTP;
+import net.rizon.moo.servercontrol.protocols.SSH;
+import net.rizon.moo.servercontrol.protocols.Telnet;
 
-public class servercontrol extends mpackage
+public class servercontrol extends MPackage
 {
 	public servercontrol()
 	{
 		super("Server Control", "Manage servers");
 		
-		new commandAddServer(this);
-		new commandConnections(this);
-		new commandDelServer(this);
-		new commandServerControl(this);
-		new commandServers(this);
-		new commandShortcut(this);
+		new CommandAddServer(this);
+		new CommandConnections(this);
+		new CommandDelServer(this);
+		new CommandServerControl(this);
+		new CommandServers(this);
+		new CommandShortcut(this);
 		
-		new protocolFTP();
-		new protocolSSH();
-		new protocolTelnet();
+		new FTP();
+		new SSH();
+		new Telnet();
 		
-		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
-		moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`, `file`)");
+		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
+		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`, `file`)");
 	}
 	
-	private static final serverInfo[] processServers(ResultSet rs) throws SQLException
+	private static final ServerInfo[] processServers(ResultSet rs) throws SQLException
 	{
-		LinkedList<serverInfo> sis = new LinkedList<serverInfo>();
+		LinkedList<ServerInfo> sis = new LinkedList<ServerInfo>();
 		while (rs.next())
 		{
-			serverInfo si = new serverInfo();
+			ServerInfo si = new ServerInfo();
 			si.name = rs.getString("name");
 			si.host = rs.getString("host");
 			si.port = rs.getInt("port");
@@ -57,7 +57,7 @@ public class servercontrol extends mpackage
 		
 		if (sis.size() > 0)
 		{
-			serverInfo[] sis_array = new serverInfo[sis.size()];
+			ServerInfo[] sis_array = new ServerInfo[sis.size()];
 			sis.toArray(sis_array);
 			return sis_array;
 		}
@@ -65,55 +65,55 @@ public class servercontrol extends mpackage
 		return null;
 	}
 	
-	public static final serverInfo[] findServers(final String name, final String protocol)
+	public static final ServerInfo[] findServers(final String name, final String protocol)
 	{
 		try
 		{
-			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?) AND `protocol` = ?");
+			PreparedStatement statement = Moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?) AND `protocol` = ?");
 			statement.setString(1, "%" + name + "%");
 			statement.setString(2, name);
 			statement.setString(3, protocol);
 			
-			ResultSet rs = moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery();
 			return processServers(rs);
 		}
 		catch (SQLException ex)
 		{
-			database.handleException(ex);
+			Database.handleException(ex);
 		}
 		
 		return null;
 	}
 
-	public static final serverInfo[] findServers(final String name)
+	public static final ServerInfo[] findServers(final String name)
 	{
 		try
 		{
-			PreparedStatement statement = moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?)");
+			PreparedStatement statement = Moo.db.prepare("SELECT * FROM servercontrol WHERE (`name` LIKE ? OR `group` = ?)");
 			statement.setString(1, "%" + name + "%");
 			statement.setString(2, name);
 			
-			ResultSet rs = moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery();
 			return processServers(rs);
 		}
 		catch (SQLException ex)
 		{
-			database.handleException(ex);
+			Database.handleException(ex);
 		}
 		
 		return null;
 	}
 	
-	public static final serverInfo[] getServers()
+	public static final ServerInfo[] getServers()
 	{
 		try
 		{
-			ResultSet rs = moo.db.executeQuery("SELECT * FROM servercontrol");
+			ResultSet rs = Moo.db.executeQuery("SELECT * FROM servercontrol");
 			return processServers(rs);
 		}
 		catch (SQLException ex)
 		{
-			database.handleException(ex);
+			Database.handleException(ex);
 		}
 		
 		return null;

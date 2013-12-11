@@ -1,33 +1,33 @@
 package net.rizon.moo.commands;
 
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
 
-public class commands extends mpackage
+public class commands extends MPackage
 {
 	public commands()
 	{
 		super("Administation Commands", "Common IRC administration commands");
 		
-		if (moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getProtocol().equals("plexus"))
 		{
-			new commandClimit(this);
-			new commandDnsbl(this);
-			new commandMap(this);
-			new commandOline(this);
+			new CommandClimit(this);
+			new CommandDnsbl(this);
+			new CommandMap(this);
+			new CommandOline(this);
 		}
-		if (moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getProtocol().equals("plexus"))
 		{
-			new commandSid(this);
-			new commandSlackers(this);
+			new CommandSid(this);
+			new CommandSlackers(this);
 		}
-		new commandSoa(this);
-		new commandTime(this);
-		new commandUptime(this);
-		if (moo.conf.getProtocol().equals("plexus"))
+		new CommandSoa(this);
+		new CommandTime(this);
+		new CommandUptime(this);
+		if (Moo.conf.getProtocol().equals("plexus"))
 		{
-			new commandVersions(this);
-			new commandWhy(this);
+			new CommandVersions(this);
+			new CommandWhy(this);
 		}
 	}
 }

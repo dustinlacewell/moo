@@ -6,12 +6,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import net.rizon.moo.logger;
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
-import net.rizon.moo.timer;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
+import net.rizon.moo.Timer;
 
-class deadListChecker extends timer
+class deadListChecker extends Timer
 {
 	public deadListChecker()
 	{
@@ -23,17 +23,17 @@ class deadListChecker extends timer
 	{
 		long now_l = System.currentTimeMillis() / 1000L;
 		
-		for (Iterator<floodList> it = floodList.getActiveLists().iterator(); it.hasNext();)
+		for (Iterator<FloodList> it = FloodList.getActiveLists().iterator(); it.hasNext();)
 		{
-			floodList p = it.next();
+			FloodList p = it.next();
 			
 			if (p.isClosed)
 				continue;
 			
 			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
-				for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-					moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
+				for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
+					Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
 				/* Don't really close this, we want the list to persist forever. */
 				p.isClosed = true;
@@ -42,7 +42,7 @@ class deadListChecker extends timer
 	}
 }
 
-public class random extends mpackage
+public class random extends MPackage
 {
 	protected static final int maxSize = 100, matchesForFlood = 20, timeforMatches = 60, scoreForRandom = 3, reconnectFloodLimit = 200;
 	
@@ -50,21 +50,21 @@ public class random extends mpackage
 	{
 		super("Random", "Detects flood and random nicks");
 		
-		new commandFlood(this);
+		new CommandFlood(this);
 		
-		new eventRandom();
+		new EventRandom();
 		
 		new deadListChecker().start();
 	}
 	
-	private static LinkedList<nickData> nicks = new LinkedList<nickData>();
+	private static LinkedList<NickData> nicks = new LinkedList<NickData>();
 	
-	public static LinkedList<nickData> getNicks()
+	public static LinkedList<NickData> getNicks()
 	{
 		return nicks;
 	}
 	
-	public static void addNickData(nickData nd)
+	public static void addNickData(NickData nd)
 	{
 		nicks.addLast(nd);
 		nd.addToLists();
@@ -76,27 +76,27 @@ public class random extends mpackage
 		}
 	}
 	
-	public static void logMatch(nickData nd, floodList fl)
+	public static void logMatch(NickData nd, FloodList fl)
 	{
-		for (int c = 0; c < moo.conf.getFloodChannels().length; ++c)
-			moo.privmsg(moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+		for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
+			Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 	
 	protected static void akill(final String ip)
 	{
 		try
 		{
-			PreparedStatement stmt = moo.db.prepare("INSERT OR IGNORE INTO `akills` (`ip`, `count`) VALUES(?, 0)");
+			PreparedStatement stmt = Moo.db.prepare("INSERT OR IGNORE INTO `akills` (`ip`, `count`) VALUES(?, 0)");
 			stmt.setString(1, ip);
-			moo.db.executeUpdate();
+			Moo.db.executeUpdate();
 			
-			stmt = moo.db.prepare("UPDATE AKILLS SET `count` = `count` + 1 WHERE `ip` = ?");
+			stmt = Moo.db.prepare("UPDATE AKILLS SET `count` = `count` + 1 WHERE `ip` = ?");
 			stmt.setString(1, ip);
-			moo.db.executeUpdate();
+			Moo.db.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
-			logger.getGlobalLogger().log(ex);
+			Logger.getGlobalLogger().log(ex);
 		}
 	}
 	
@@ -104,13 +104,13 @@ public class random extends mpackage
 	{
 		try
 		{
-			PreparedStatement stmt = moo.db.prepare("DELETE FROM `akills` WHERE `ip` = ?");
+			PreparedStatement stmt = Moo.db.prepare("DELETE FROM `akills` WHERE `ip` = ?");
 			stmt.setString(1, ip);
-			return moo.db.executeUpdate() == 1;
+			return Moo.db.executeUpdate() == 1;
 		}
 		catch (SQLException ex)
 		{
-			logger.getGlobalLogger().log(ex);
+			Logger.getGlobalLogger().log(ex);
 		}
 		
 		return false;

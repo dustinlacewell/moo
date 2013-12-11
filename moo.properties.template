@@ -95,7 +95,7 @@ vote_email=#o:o@rizon.net,#r:routing.admins@rizon.net,#x:eb@rizon.net
 database=jdbc:sqlite:c:/users/adam/desktop/moo.db
 
 # Data to save to databases.
-database_classes=net.rizon.moo.server$db
+database_classes=net.rizon.moo.Server$db
 
 # Paths to rrdtool and where graphs should be saved
 rrd_bin=/usr/bin/rrdtool

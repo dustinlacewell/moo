@@ -1,53 +1,53 @@
 package net.rizon.moo.protocol.unreal;
 
-import net.rizon.moo.mpackage;
-import net.rizon.moo.protocol.message001;
-import net.rizon.moo.protocol.message213;
-import net.rizon.moo.protocol.message219;
-import net.rizon.moo.protocol.message243;
-import net.rizon.moo.protocol.message364;
-import net.rizon.moo.protocol.message365;
-import net.rizon.moo.protocol.message474;
-import net.rizon.moo.protocol.messageInvite;
-import net.rizon.moo.protocol.messageJoin;
-import net.rizon.moo.protocol.messageKick;
-import net.rizon.moo.protocol.messageMode;
-import net.rizon.moo.protocol.messageNick;
-import net.rizon.moo.protocol.messageNotice;
-import net.rizon.moo.protocol.messagePart;
-import net.rizon.moo.protocol.messagePing;
-import net.rizon.moo.protocol.messagePrivmsg;
-import net.rizon.moo.protocol.messageQuit;
-import net.rizon.moo.protocol.messageWallops;
+import net.rizon.moo.MPackage;
+import net.rizon.moo.protocol.Message001;
+import net.rizon.moo.protocol.Message213;
+import net.rizon.moo.protocol.Message219;
+import net.rizon.moo.protocol.Message243;
+import net.rizon.moo.protocol.Message364;
+import net.rizon.moo.protocol.Message365;
+import net.rizon.moo.protocol.Message474;
+import net.rizon.moo.protocol.MessageInvite;
+import net.rizon.moo.protocol.MessageJoin;
+import net.rizon.moo.protocol.MessageKick;
+import net.rizon.moo.protocol.MessageMode;
+import net.rizon.moo.protocol.MessageNick;
+import net.rizon.moo.protocol.MessageNotice;
+import net.rizon.moo.protocol.MessagePart;
+import net.rizon.moo.protocol.MessagePing;
+import net.rizon.moo.protocol.MessagePrivmsg;
+import net.rizon.moo.protocol.MessageQuit;
+import net.rizon.moo.protocol.MessageWallops;
 
-public class unreal extends mpackage
+public class unreal extends MPackage
 {
 	public unreal()
 	{
 		super("Unreal", "UnrealIRCd protocol functions");
 		
 		/* Core */
-		new message001();
-		new message213();
-		new message219();
-		new message243();
-		new message364();
-		new message365();
-		new message474();
-		new messageInvite();
-		new messagePing();
-		new messagePrivmsg();
-		new messageJoin();
-		new messagePart();
-		new messageKick();
-		new messageMode();
-		new messageNick();
-		new messageNotice();
-		new messageQuit();
-		new messageWallops();
+		new Message001();
+		new Message213();
+		new Message219();
+		new Message243();
+		new Message364();
+		new Message365();
+		new Message474();
+		new MessageInvite();
+		new MessagePing();
+		new MessagePrivmsg();
+		new MessageJoin();
+		new MessagePart();
+		new MessageKick();
+		new MessageMode();
+		new MessageNick();
+		new MessageNotice();
+		new MessageQuit();
+		new MessageWallops();
 		
 		/* Unreal */
-		new message006();
-		new message007();
+		new Message006();
+		new Message007();
 	}
 }

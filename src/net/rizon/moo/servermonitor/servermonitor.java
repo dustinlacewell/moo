@@ -2,12 +2,12 @@ package net.rizon.moo.servermonitor;
 
 import java.util.Date;
 
-import net.rizon.moo.moo;
-import net.rizon.moo.mpackage;
-import net.rizon.moo.server;
-import net.rizon.moo.timer;
+import net.rizon.moo.Moo;
+import net.rizon.moo.MPackage;
+import net.rizon.moo.Server;
+import net.rizon.moo.Timer;
 
-class requester extends timer
+class requester extends Timer
 {
 	public requester()
 	{
@@ -17,34 +17,34 @@ class requester extends timer
 	@Override
 	public void run(Date now)
 	{
-		moo.sock.write("MAP");
-		for (server s : server.getServers())
+		Moo.sock.write("MAP");
+		for (Server s : Server.getServers())
 			if (s.isServices() == false)
 			{
-				moo.sock.write("STATS o " + s.getName());
-				moo.sock.write("STATS c " + s.getName());
+				Moo.sock.write("STATS o " + s.getName());
+				Moo.sock.write("STATS c " + s.getName());
 			}
 		
-		new dnsChecker().start();
+		new DNSChecker().start();
 		
-		for (server s : server.getServers())
+		for (Server s : Server.getServers())
 			if (!s.isHub() && !s.isServices())
-				new pingChecker(s, 10).start();
+				new PingChecker(s, 10).start();
 		
-		certChecker.run();
+		CertChecker.run();
 	}
 }
 
-public class servermonitor extends mpackage
+public class servermonitor extends MPackage
 {
 	public servermonitor()
 	{
 		super("Server Monitor", "Monitor servers");
 		
-		new commandScheck(this);
-		new commandServer(this);
-		new commandSplit(this);
-		new eventSplit();
+		new CommandScheck(this);
+		new CommandServer(this);
+		new CommandSplit(this);
+		new EventSplit();
 		
 		new requester().start();
 	}

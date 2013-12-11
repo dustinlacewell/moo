@@ -2,19 +2,19 @@ package net.rizon.moo.watch;
 
 import java.util.LinkedList;
 
-import net.rizon.moo.mpackage;
+import net.rizon.moo.MPackage;
 
-public class watch extends mpackage
+public class watch extends MPackage
 {
 	public watch()
 	{
 		super("Watch", "Disallows nicks to be used");
 		
-		new eventWatch();
-		new messageNotice();
-		new commandWatch(this);
-		new watchMonitor();
+		new EventWatch();
+		new MessageNotice();
+		new CommandWatch(this);
+		new WatchMonitor();
 	}
 	
-	public static LinkedList<watchEntry> watches = new LinkedList<watchEntry>();
+	public static LinkedList<WatchEntry> watches = new LinkedList<WatchEntry>();
 }
