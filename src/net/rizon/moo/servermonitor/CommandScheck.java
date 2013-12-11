@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Timer;
 
@@ -59,7 +59,7 @@ class scheckEndTimer extends Timer
 
 class CommandScheck extends Command
 {
-	public CommandScheck(MPackage pkg)
+	public CommandScheck(Plugin pkg)
 	{
 		super(pkg, "!SCHECK", "Check if a server is online");
 	}

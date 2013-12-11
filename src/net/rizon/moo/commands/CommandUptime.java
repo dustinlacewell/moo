@@ -7,7 +7,7 @@ import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 
@@ -64,7 +64,7 @@ class CommandUptime extends Command
 	@SuppressWarnings("unused")
 	private static message242 message_242 = new message242();
 	
-	public CommandUptime(MPackage pkg)
+	public CommandUptime(Plugin pkg)
 	{
 		super(pkg, "!UPTIME", "View server uptimes");
 	}

@@ -5,10 +5,10 @@ import java.util.HashSet;
 
 import net.rizon.moo.Server;
 import net.rizon.moo.grapher.DataSourceType;
-import net.rizon.moo.grapher.graph;
+import net.rizon.moo.grapher.Graph;
 import net.rizon.moo.grapher.RoundRobinArchiveType;
 
-public class TotalOlineGraph extends graph
+public class TotalOlineGraph extends Graph
 {
 	public TotalOlineGraph()
 	{

@@ -4,12 +4,12 @@ import java.util.Random;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 abstract class commandSidBase extends Command
 {
-	protected commandSidBase(MPackage pkg, final String name, final String desc)
+	protected commandSidBase(Plugin pkg, final String name, final String desc)
 	{
 		super(pkg, name, desc);
 	}
@@ -42,7 +42,7 @@ abstract class commandSidBase extends Command
 
 final class commandSidClient extends commandSidBase
 {
-	public commandSidClient(MPackage pkg)
+	public commandSidClient(Plugin pkg)
 	{
 		super(pkg, "!SID", "Generates a new server ID");
 	}
@@ -68,7 +68,7 @@ final class commandSidClient extends commandSidBase
 
 final class commandSidHub extends commandSidBase
 {
-	public commandSidHub(MPackage pkg)
+	public commandSidHub(Plugin pkg)
 	{
 		super(pkg, "!HUBSID", "Generates a new hub server ID");
 	}
@@ -94,14 +94,18 @@ final class commandSidHub extends commandSidBase
 
 class CommandSid
 {
-	@SuppressWarnings("unused")
 	private commandSidClient sid_client;
-	@SuppressWarnings("unused")
 	private commandSidHub sid_hub;
 	
-	public CommandSid(MPackage pkg)
+	public CommandSid(Plugin pkg)
 	{
 		this.sid_client = new commandSidClient(pkg);
 		this.sid_hub = new commandSidHub(pkg);
+	}
+	
+	public void remove()
+	{
+		this.sid_client.remove();
+		this.sid_hub.remove();
 	}
 }

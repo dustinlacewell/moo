@@ -6,7 +6,7 @@ import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 class message351 extends Message
@@ -112,7 +112,7 @@ class commandVersionsBase extends Command
 	
 	public static boolean onlyOld;
 
-	public commandVersionsBase(MPackage pkg, final String command)
+	public commandVersionsBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "View the IRCd versions");
 	}
@@ -161,10 +161,18 @@ class commandVersionsBase extends Command
 
 class CommandVersions
 {
-	public CommandVersions(MPackage pkg)
+	private Command vs, v;
+	
+	public CommandVersions(Plugin pkg)
 	{
-		new commandVersionsBase(pkg, "!VERSIONS");
+		vs = new commandVersionsBase(pkg, "!VERSIONS");
 		// Some people can't type for their life...
-		new commandVersionsBase(pkg, "!VERSION");
+		v = new commandVersionsBase(pkg, "!VERSION");
+	}
+	
+	public void remove()
+	{
+		vs.remove();
+		v.remove();
 	}
 }

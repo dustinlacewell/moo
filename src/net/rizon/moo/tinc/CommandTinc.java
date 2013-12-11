@@ -2,7 +2,7 @@ package net.rizon.moo.tinc;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.Connection;
 import net.rizon.moo.servercontrol.Process;
 import net.rizon.moo.servercontrol.ServerInfo;
@@ -12,7 +12,7 @@ import net.rizon.moo.tinc.fetchers.HostsFetcher;
 
 class CommandTinc extends Command
 {
-	protected CommandTinc(MPackage pkg)
+	protected CommandTinc(Plugin pkg)
 	{
 		super(pkg, ".TINC", "Manages tinc configuration");
 		this.requiresChannel(Moo.conf.getAdminChannels());

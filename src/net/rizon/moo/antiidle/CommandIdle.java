@@ -2,11 +2,11 @@ package net.rizon.moo.antiidle;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 public class CommandIdle extends Command
 {
-	public CommandIdle(MPackage pkg)
+	public CommandIdle(Plugin pkg)
 	{
 		super(pkg, "!IDLE", "Excepts people from idle kick");
 	}

@@ -2,13 +2,13 @@ package net.rizon.moo.servercontrol.commands;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.ServerInfo;
 import net.rizon.moo.servercontrol.servercontrol;
 
 public class CommandServers extends Command
 {
-	public CommandServers(MPackage pkg)
+	public CommandServers(Plugin pkg)
 	{
 		super(pkg, "!SERVERS", "View server list");
 		this.requiresChannel(Moo.conf.getAdminChannels());

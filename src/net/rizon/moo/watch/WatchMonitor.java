@@ -46,13 +46,19 @@ class message_303 extends Message
 
 class WatchMonitor extends Timer
 {
-	@SuppressWarnings("unused")
 	private static final message_303 message303 = new message_303();
 	
 	public WatchMonitor()
 	{
 		super(60, true);
 		this.start();
+	}
+	
+	@Override
+	public void stop()
+	{
+		message303.remove();
+		super.stop();
 	}
 	
 	public static int request;

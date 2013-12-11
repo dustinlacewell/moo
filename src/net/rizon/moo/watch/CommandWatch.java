@@ -5,11 +5,11 @@ import java.util.Iterator;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandWatch extends Command
 {
-	public CommandWatch(MPackage pkg)
+	public CommandWatch(Plugin pkg)
 	{
 		super(pkg, "!WATCH", "View or modify the watch list");
 	}

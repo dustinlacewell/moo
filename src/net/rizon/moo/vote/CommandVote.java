@@ -5,11 +5,11 @@ import java.util.Date;
 import net.rizon.moo.Command;
 import net.rizon.moo.Mail;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class commandVoteBase extends Command
 {
-	public commandVoteBase(MPackage pkg, final String command)
+	public commandVoteBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Vote and manage votes");
 	}
@@ -205,9 +205,17 @@ class commandVoteBase extends Command
 
 class CommandVote
 {
-	public CommandVote(MPackage pkg)
+	private Command mv, v;
+	
+	public CommandVote(Plugin pkg)
 	{
-		new commandVoteBase(pkg, "!MOO-VOTE");
-		new commandVoteBase(pkg, "!VOTE");
+		mv = new commandVoteBase(pkg, "!MOO-VOTE");
+		v = new commandVoteBase(pkg, "!VOTE");
+	}
+	
+	public void remove()
+	{
+		mv.remove();
+		v.remove();
 	}
 }

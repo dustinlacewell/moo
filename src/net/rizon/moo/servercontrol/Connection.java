@@ -15,6 +15,7 @@ final class connectionTimer extends Timer
 		super(300, true);
 	}
 	
+	@Override
 	public void run(final Date now)
 	{
 		Connection[] cons = Connection.getConnections();

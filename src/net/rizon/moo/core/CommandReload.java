@@ -3,11 +3,11 @@ package net.rizon.moo.core;
 import net.rizon.moo.Command;
 import net.rizon.moo.Config;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandReload extends Command
 {
-	public CommandReload(MPackage pkg)
+	public CommandReload(Plugin pkg)
 	{
 		super(pkg, "!RELOAD", "Reloads the configuration file");
 		this.requiresChannel(Moo.conf.getAdminChannels());

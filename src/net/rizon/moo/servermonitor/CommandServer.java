@@ -6,12 +6,12 @@ import java.util.Iterator;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 class commandServerBase extends Command
 {
-	public commandServerBase(MPackage pkg, final String command)
+	public commandServerBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Views servers");
 	}
@@ -375,7 +375,7 @@ class commandServerBase extends Command
 
 class commandCline extends commandServerBase
 {
-	public commandCline(MPackage pkg)
+	public commandCline(Plugin pkg)
 	{
 		super(pkg, "!CLINE");
 	}
@@ -390,11 +390,21 @@ class commandCline extends commandServerBase
 
 class CommandServer
 {
-	public CommandServer(MPackage pkg)
+	private Command e, d, c;
+	
+	public CommandServer(Plugin pkg)
 	{
-		new commandServerBase(pkg, "!SERVER");
-		new commandServerBase(pkg, ".SERVER");
+		e = new commandServerBase(pkg, "!SERVER");
+		d = new commandServerBase(pkg, ".SERVER");
 		
-		new commandCline(pkg);
+		c = new commandCline(pkg);
+	}
+	
+	public void remove()
+	{
+		e.remove();
+		d.remove();
+		
+		c.remove();
 	}
 }

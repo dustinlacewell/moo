@@ -12,7 +12,7 @@ import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Timer;
 
@@ -174,7 +174,7 @@ class CommandTime extends Command
 	private static message391 message_391 = new message391("391");
 	private checkTimesTimer check_times_timer;
 
-	public CommandTime(MPackage pkg)
+	public CommandTime(Plugin pkg)
 	{
 		super(pkg, "!TIME", "View server times");
 		

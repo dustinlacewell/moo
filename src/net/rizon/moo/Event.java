@@ -9,6 +9,11 @@ public abstract class Event
 		events.add(this);
 	}
 	
+	public void remove()
+	{
+		events.remove(this);
+	}
+	
 	public void onConnect() { }
 	public void onShutdown() { }
 	

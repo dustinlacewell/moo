@@ -2,7 +2,7 @@ package net.rizon.moo.servercontrol.commands;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.Connection;
 import net.rizon.moo.servercontrol.EchoProcess;
 import net.rizon.moo.servercontrol.Process;
@@ -12,7 +12,7 @@ import net.rizon.moo.servercontrol.servercontrol;
 
 public class CommandServerControl extends Command
 {
-	public CommandServerControl(MPackage pkg)
+	public CommandServerControl(Plugin pkg)
 	{
 		super(pkg, "!EXEC", "Execute commands on remote servers");
 		this.requiresChannel(Moo.conf.getAdminChannels());

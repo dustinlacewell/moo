@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.commands.CommandAddServer;
 import net.rizon.moo.servercontrol.commands.CommandConnections;
 import net.rizon.moo.servercontrol.commands.CommandDelServer;
@@ -18,25 +18,42 @@ import net.rizon.moo.servercontrol.protocols.FTP;
 import net.rizon.moo.servercontrol.protocols.SSH;
 import net.rizon.moo.servercontrol.protocols.Telnet;
 
-public class servercontrol extends MPackage
+public class servercontrol extends Plugin
 {
+	private net.rizon.moo.Command addserver, connections, delserver, sc, servers, s;
+	
 	public servercontrol()
 	{
 		super("Server Control", "Manage servers");
 		
-		new CommandAddServer(this);
-		new CommandConnections(this);
-		new CommandDelServer(this);
-		new CommandServerControl(this);
-		new CommandServers(this);
-		new CommandShortcut(this);
+		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
+		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`, `file`)");
+	}
+	
+	@Override
+	public void start() throws Exception
+	{
+		addserver = new CommandAddServer(this);
+		connections = new CommandConnections(this);
+		delserver = new CommandDelServer(this);
+		sc = new CommandServerControl(this);
+		servers = new CommandServers(this);
+		s = new CommandShortcut(this);
 		
 		new FTP();
 		new SSH();
 		new Telnet();
-		
-		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servercontrol (`name` varchar(64) collate nocase, `host` varchar(64), `port` int(11), `protocol` varchar(64) collate nocase, `user` varchar(64), `pass` varchar(64), `group` varchar(64))");
-		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS shortcuts (`name`, `command`, `file`)");
+	}
+
+	@Override
+	public void stop()
+	{
+		addserver.remove();
+		connections.remove();
+		delserver.remove();
+		sc.remove();
+		servers.remove();
+		s.remove();
 	}
 	
 	private static final ServerInfo[] processServers(ResultSet rs) throws SQLException

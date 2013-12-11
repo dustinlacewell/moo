@@ -1,7 +1,7 @@
 package net.rizon.moo;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
+
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Date;
@@ -72,16 +72,10 @@ public class Moo
 			for (final String db_class : conf.getDatabaseClasses())
 				Class.forName(db_class);
 			
-			Class<?> c = Class.forName("net.rizon.moo.protocol." + Moo.conf.getProtocol() + "." + Moo.conf.getProtocol());
-			Constructor<?>[] cons = c.getConstructors();
-			cons[0].newInstance();
+			Plugin.loadPlugin("net.rizon.moo.protocol.", Moo.conf.getProtocol());
 			
 			for (final String pkg : conf.getPackages())
-			{
-				c = Class.forName("net.rizon.moo." + pkg + "." + pkg);
-				cons = c.getConstructors();
-				cons[0].newInstance();
-			}
+				Plugin.loadPlugin("net.rizon.moo.", pkg);
 		}
 		catch (Exception ex)
 		{

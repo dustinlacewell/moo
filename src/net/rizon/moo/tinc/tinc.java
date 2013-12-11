@@ -1,16 +1,29 @@
 package net.rizon.moo.tinc;
 
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Command;
+import net.rizon.moo.Plugin;
 
-public class tinc extends MPackage
+public class tinc extends Plugin
 {
+	public static final String tincBase = ".tinc";
+	protected static Layer[] Layers = new Layer[] { new Layer("tl"), new Layer("rc"), new Layer("rh") };
+	
+	private Command tinc;
+	
 	public tinc()
 	{
 		super("tinc", "Manages tinc");
-		
-		new CommandTinc(this);
 	}
 	
-	public static final String tincBase = ".tinc";
-	protected static Layer[] Layers = new Layer[] { new Layer("tl"), new Layer("rc"), new Layer("rh") };
+	@Override
+	public void start() throws Exception
+	{
+		tinc = new CommandTinc(this);
+	}
+	
+	@Override
+	public void stop()
+	{
+		tinc.remove();
+	}
 }

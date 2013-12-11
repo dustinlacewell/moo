@@ -2,8 +2,10 @@ package net.rizon.moo.servermonitor;
 
 import java.util.Date;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Timer;
 
@@ -35,17 +37,42 @@ class requester extends Timer
 	}
 }
 
-public class servermonitor extends MPackage
+public class servermonitor extends Plugin
 {
+	private Command scheck;
+	private CommandServer server;
+	private Command split;
+	private Event e;
+	private Timer r;
+	
 	public servermonitor()
 	{
 		super("Server Monitor", "Monitor servers");
+	}
+
+	@Override
+	public void start() throws Exception
+	{
+		scheck = new CommandScheck(this);
+		server = new CommandServer(this);
+		split = new CommandSplit(this);
 		
-		new CommandScheck(this);
-		new CommandServer(this);
-		new CommandSplit(this);
-		new EventSplit();
+		e = new EventSplit();
 		
-		new requester().start();
+		r = new requester();
+		
+		r.start();
+	}
+
+	@Override
+	public void stop()
+	{
+		scheck.remove();
+		server.remove();
+		split.remove();
+		
+		e.remove();
+		
+		r.stop();
 	}
 }

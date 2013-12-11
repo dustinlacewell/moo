@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.Connection;
 import net.rizon.moo.servercontrol.EchoProcess;
 import net.rizon.moo.servercontrol.Process;
@@ -19,7 +19,7 @@ import net.rizon.moo.servercontrol.UploadProcess;
 
 public class CommandShortcut extends Command
 {
-	public CommandShortcut(MPackage pkg)
+	public CommandShortcut(Plugin pkg)
 	{
 		super(pkg, "!S", "Configure and execute shortcuts");
 		this.requiresChannel(Moo.conf.getAdminChannels());

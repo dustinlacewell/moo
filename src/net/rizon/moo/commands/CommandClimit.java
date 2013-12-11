@@ -5,7 +5,7 @@ import java.util.HashSet;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 class message_limit extends Message
@@ -69,7 +69,7 @@ class CommandClimit extends Command
 	@SuppressWarnings("unused")
 	private static message_limit message_105 = new message_limit("105");
 
-	public CommandClimit(MPackage pkg)
+	public CommandClimit(Plugin pkg)
 	{
 		super(pkg, "!CLIMIT", "View server channel limits"); 
 	}

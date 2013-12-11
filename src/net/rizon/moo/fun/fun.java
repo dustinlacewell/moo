@@ -1,18 +1,36 @@
 package net.rizon.moo.fun;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
-public class fun extends MPackage
+public class fun extends Plugin
 {
-	public fun()
+	private Command rt;
+	private Event e;
+	
+	public fun() throws Exception
 	{
 		super("FUN", "Provides fun features");
-		
+	}
+
+	@Override
+	public void start() throws Exception
+	{
 		if (Moo.conf.getProtocol().equals("plexus"))
 		{
-			new CommandRizonTime(this);
-			new EventFun();
+			rt = new CommandRizonTime(this);
+			e = new EventFun();
 		}
+	}
+
+	@Override
+	public void stop()
+	{
+		if (rt != null)
+			rt.remove();
+		if (e != null)
+			e.remove();
 	}
 }

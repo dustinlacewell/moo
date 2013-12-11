@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class logSearcher extends Thread
 {
@@ -79,7 +79,7 @@ class logSearcher extends Thread
 
 class CommandSLogSearch extends Command
 {
-	public CommandSLogSearch(MPackage pkg)
+	public CommandSLogSearch(Plugin pkg)
 	{
 		super(pkg, "!SLOGSEARCH", "Search through services logs");
 		this.requiresChannel(Moo.conf.getAdminChannels());

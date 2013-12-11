@@ -4,21 +4,29 @@ import java.util.Arrays;
 
 public abstract class Command extends Message
 {
-	private MPackage pkg;
+	private Plugin pkg;
 	private String cmdname;
 	private String description;
 	private String[] requiresChannel;
 
-	public Command(MPackage pkg, final String cmdname, final String desc)
+	public Command(Plugin pkg, final String cmdname, final String desc)
 	{
 		super("PRIVMSG");
 		this.pkg = pkg;
 		this.cmdname = cmdname;
 		this.description = desc;
-		pkg.addCommand(this);
+		
+		pkg.commands.add(this);
 	}
 	
-	public MPackage getPackage()
+	@Override
+	public void remove()
+	{
+		pkg.commands.remove(this);
+		super.remove();
+	}
+	
+	public Plugin getPackage()
 	{
 		return this.pkg;
 	}

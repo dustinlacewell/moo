@@ -5,11 +5,11 @@ import java.net.UnknownHostException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandHost extends Command
 {
-	public CommandHost(MPackage pkg)
+	public CommandHost(Plugin pkg)
 	{
 		super(pkg, "!HOST", "Resolve a hostname");
 	}

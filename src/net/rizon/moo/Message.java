@@ -22,6 +22,11 @@ public abstract class Message
 		Message.messages.push(this);
 	}
 	
+	public void remove()
+	{
+		Message.messages.remove(this);
+	}
+	
 	public final String getName()
 	{
 		return this.name;
@@ -33,7 +38,8 @@ public abstract class Message
 	
 	public static void runMessage(final String source, final String message, final String[] buffer)
 	{
-		for (Iterator<Message> it = messages.iterator(); it.hasNext();)
+		int hash = messages.hashCode(); // XXX
+		for (Iterator<Message> it = messages.iterator(); it.hasNext() && hash == messages.hashCode();)
 		{
 			Message m = it.next();
 			if (m.getName().equalsIgnoreCase(message))

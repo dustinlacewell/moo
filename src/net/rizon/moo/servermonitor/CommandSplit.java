@@ -8,12 +8,13 @@ import java.util.TreeSet;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 
 class splitComparator implements Comparator<Split>
 {
+	@Override
 	public int compare(Split arg0, Split arg1)
 	{
 		if (arg0.when.after(arg1.when))
@@ -26,7 +27,7 @@ class splitComparator implements Comparator<Split>
 
 class CommandSplit extends Command
 {
-	public CommandSplit(MPackage pkg)
+	public CommandSplit(Plugin pkg)
 	{
 		super(pkg, "!SPLIT", "Views split servers");
 	}

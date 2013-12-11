@@ -34,6 +34,18 @@ class Server extends Thread
 		this.port = port;
 	}
 	
+	public void stopServer()
+	{
+		try
+		{
+			this.sock.close();
+		}
+		catch (Exception ex)
+		{
+			log.log(Level.SEVERE, "Unable to shutdown commits listener");
+		}
+	}
+	
 	@Override
 	public void run()
 	{

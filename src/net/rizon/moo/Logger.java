@@ -83,7 +83,7 @@ public class Logger extends java.util.logging.Logger
 	
 	public static Logger getGlobalLogger()
 	{
-		return getLogger(Logger.GLOBAL_LOGGER_NAME);
+		return getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 	}
 	
 	public void log(Exception ex)

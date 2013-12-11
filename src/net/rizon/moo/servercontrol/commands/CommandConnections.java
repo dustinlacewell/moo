@@ -2,12 +2,12 @@ package net.rizon.moo.servercontrol.commands;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.Connection;
 
 public class CommandConnections extends Command
 {
-	public CommandConnections(MPackage pkg)
+	public CommandConnections(Plugin pkg)
 	{
 		super(pkg, "!CONNECTIONS", "View active connections");
 		this.requiresChannel(Moo.conf.getAdminChannels());

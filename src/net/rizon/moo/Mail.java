@@ -13,6 +13,7 @@ class outputWriter extends OutputStreamWriter
 		super(out);
 	}
 	
+	@Override
 	public void write(final String str) throws IOException
 	{
 		this.write(str + "\n", 0, str.length() + 1);

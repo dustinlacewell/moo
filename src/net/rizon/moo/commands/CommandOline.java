@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 final class operComparator implements Comparator<String>
@@ -49,7 +49,7 @@ class CommandOline extends Command
 {
 	private static final serverComparator servComparator = new serverComparator();
 
-	public CommandOline(MPackage pkg)
+	public CommandOline(Plugin pkg)
 	{
 		super(pkg, "!OLINE", "View olines");
 	}

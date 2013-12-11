@@ -2,12 +2,12 @@ package net.rizon.moo.core;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Version;
 
 class CommandStatus extends Command
 {
-	public CommandStatus(MPackage pkg)
+	public CommandStatus(Plugin pkg)
 	{
 		super(pkg, "!STATUS", "View " + Moo.conf.getNick() + "'s status");
 	}

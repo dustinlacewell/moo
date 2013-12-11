@@ -10,7 +10,7 @@ import java.util.Iterator;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Timer;
 
@@ -91,7 +91,7 @@ class message219_dnsbl extends Message
 						final String dnsbl_name = dnsbl_names[i - 1];
 						long dnsbl_count = s.dnsbl.get(dnsbl_name);
 						
-						float percent = total > 0 ? ((float) dnsbl_count / (float) total * (float) 100) : 0;
+						float percent = total > 0 ? ((float) dnsbl_count / (float) total * 100) : 0;
 						int percent_i = Math.round(percent);
 						
 						Moo.reply(CommandDnsbl.command_target_source, CommandDnsbl.command_target_chan, dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
@@ -117,7 +117,7 @@ class message219_dnsbl extends Message
 					if (value == 0)
 						continue;
 
-					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
+					float percent = total > 0 ? ((float) value / (float) total * 100) : 0;
 					int percent_i = Math.round(percent);
 					
 					Moo.reply(CommandDnsbl.command_target_source, CommandDnsbl.command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
@@ -154,7 +154,7 @@ class message219_dnsbl extends Message
 					final String name = dnsbl_names[i - 1];
 					long value = dnsbl_counts.get(name);
 					
-					float percent = total > 0 ? ((float) value / (float) total * (float) 100) : 0;
+					float percent = total > 0 ? ((float) value / (float) total * 100) : 0;
 					int percent_i = Math.round(percent);
 					
 					Moo.reply(CommandDnsbl.command_target_source, CommandDnsbl.command_target_chan, name + ": " + value + " (" + percent_i + "%)");
@@ -264,7 +264,7 @@ class CommandDnsbl extends Command
 	
 	private dnsblTimer dnsbl_timer;
 	
-	public CommandDnsbl(MPackage pkg)
+	public CommandDnsbl(Plugin pkg)
 	{
 		super(pkg, "!DNSBL", "Views DNSBL counts");
 		

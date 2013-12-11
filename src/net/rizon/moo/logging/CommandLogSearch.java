@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandLogSearch extends Command
 {
-	public CommandLogSearch(MPackage pkg)
+	public CommandLogSearch(Plugin pkg)
 	{
 		super(pkg, "!LOGSEARCH", "Search through server logs"); 
 	}

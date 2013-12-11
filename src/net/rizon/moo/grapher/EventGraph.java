@@ -6,9 +6,9 @@ import net.rizon.moo.grapher.graphs.ServerUserGraph;
 
 class EventGraph extends Event
 {
-	private Grapher pkg;
+	private grapher pkg;
 	
-	public EventGraph(Grapher pkg)
+	public EventGraph(grapher pkg)
 	{
 		this.pkg = pkg;
 	}
@@ -16,7 +16,7 @@ class EventGraph extends Event
 	@Override
 	public void onServerCreate(Server serv)
 	{
-		graph g = new ServerUserGraph(serv);
+		Graph g = new ServerUserGraph(serv);
 		g.start();
 		this.pkg.serverGraphs.put(serv, g);
 	}

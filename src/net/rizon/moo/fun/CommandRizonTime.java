@@ -5,13 +5,13 @@ import java.util.Random;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandRizonTime extends Command
 {
 	private HashMap<String, String> cache = new HashMap<String, String>();
 	
-	public CommandRizonTime(MPackage pkg)
+	public CommandRizonTime(Plugin pkg)
 	{
 		super(pkg, "!RIZONTIME", "Calculates out a length of time in Rizon Time(tm)");
 	}

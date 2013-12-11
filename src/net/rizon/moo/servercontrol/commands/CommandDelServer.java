@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 public class CommandDelServer extends Command
 {
-	public CommandDelServer(MPackage pkg)
+	public CommandDelServer(Plugin pkg)
 	{
 		super(pkg, "!DELSERVER", "Deletes a server");
 		this.requiresChannel(Moo.conf.getAdminChannels());

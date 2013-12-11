@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class shellExec extends Thread
 {
@@ -22,6 +22,7 @@ class shellExec extends Thread
 		this.command = command;
 	}
 
+	@Override
 	public void run()
 	{
 		try
@@ -54,7 +55,7 @@ class shellExec extends Thread
 
 class CommandShell extends Command
 {
-	public CommandShell(MPackage pkg)
+	public CommandShell(Plugin pkg)
 	{
 		super(pkg, "!SHELL", "Execute a shell command");
 		this.requiresChannel(Moo.conf.getAdminChannels());

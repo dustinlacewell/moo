@@ -4,10 +4,10 @@ import java.util.Date;
 
 import net.rizon.moo.Server;
 import net.rizon.moo.grapher.DataSourceType;
-import net.rizon.moo.grapher.graph;
+import net.rizon.moo.grapher.Graph;
 import net.rizon.moo.grapher.RoundRobinArchiveType;
 
-public class TotalUserGraph extends graph
+public class TotalUserGraph extends Graph
 {
 	public TotalUserGraph()
 	{

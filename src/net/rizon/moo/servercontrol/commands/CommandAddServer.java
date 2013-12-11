@@ -6,12 +6,12 @@ import java.sql.SQLException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.Protocol;
 
 public class CommandAddServer extends Command
 {
-	public CommandAddServer(MPackage pkg)
+	public CommandAddServer(Plugin pkg)
 	{
 		super(pkg, "!ADDSERVER", "Add a server");
 		this.requiresChannel(Moo.conf.getAdminChannels());

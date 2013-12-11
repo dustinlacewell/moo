@@ -8,11 +8,11 @@ import java.util.regex.PatternSyntaxException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandFlood extends Command
 {
-	public CommandFlood(MPackage pkg)
+	public CommandFlood(Plugin pkg)
 	{
 		super(pkg, "!FLOOD", "Manage flood lists");
 		this.requiresChannel(Moo.conf.getFloodChannels());
@@ -62,6 +62,7 @@ class CommandFlood extends Command
 		return removed;
 	}
 	
+	@Override
 	public void execute(String source, String target, String[] params)
 	{
 		if (params.length == 1)

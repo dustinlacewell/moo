@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
 
 class deadListChecker extends Timer
@@ -42,19 +44,36 @@ class deadListChecker extends Timer
 	}
 }
 
-public class random extends MPackage
+public class random extends Plugin
 {
 	protected static final int maxSize = 100, matchesForFlood = 20, timeforMatches = 60, scoreForRandom = 3, reconnectFloodLimit = 200;
+	
+	private Command flood;
+	private Event e;
+	private Timer dl;
 	
 	public random()
 	{
 		super("Random", "Detects flood and random nicks");
+	}
+	
+
+	@Override
+	public void start() throws Exception
+	{
+		flood = new CommandFlood(this);
+		e = new EventRandom();
+		dl = new deadListChecker();
 		
-		new CommandFlood(this);
-		
-		new EventRandom();
-		
-		new deadListChecker().start();
+		dl.start();
+	}
+
+	@Override
+	public void stop()
+	{
+		flood.remove();
+		e.remove();
+		dl.stop();
 	}
 	
 	private static LinkedList<NickData> nicks = new LinkedList<NickData>();

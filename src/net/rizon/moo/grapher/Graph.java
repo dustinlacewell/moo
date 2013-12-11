@@ -9,9 +9,9 @@ import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Timer;
 
-public abstract class graph extends Timer
+public abstract class Graph extends Timer
 {
-	private static final Logger log = Logger.getLogger(graph.class.getName());
+	private static final Logger log = Logger.getLogger(Graph.class.getName());
 	
 	private static File rrd_bin = new File(Moo.conf.getRRDBin()),
 			rrd_graphdir = new File(Moo.conf.getRRDDir());
@@ -33,7 +33,7 @@ public abstract class graph extends Timer
 	private long rra_steps;
 	private long rra_rows;
 
-	public graph(final String name, long step)
+	public Graph(final String name, long step)
 	{
 		super(step, true);
 		this.name = name + ".rrd";

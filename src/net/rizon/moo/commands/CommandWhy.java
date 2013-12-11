@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 class DNSBLChecker extends Thread
@@ -134,7 +134,7 @@ class CommandWhy extends Command
 	public static String message_target, message_source, host_ip = "", host_host = "";
 	public static int requested = 0;
 
-	public CommandWhy(MPackage pkg)
+	public CommandWhy(Plugin pkg)
 	{
 		super(pkg, "!WHY", "Find why an IP is banned");
 	}

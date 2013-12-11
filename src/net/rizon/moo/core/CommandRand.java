@@ -3,11 +3,11 @@ package net.rizon.moo.core;
 import java.util.Random;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class CommandRand extends Command
 {
-	public CommandRand(MPackage pkg)
+	public CommandRand(Plugin pkg)
 	{
 		super(pkg, ".RAND", "Generate a random string");
 	}

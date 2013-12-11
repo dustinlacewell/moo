@@ -1,15 +1,13 @@
 package net.rizon.moo.core;
 
 import java.util.Arrays;
-import java.util.Iterator;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 
 class commandHelpBase extends Command
 {
-	public commandHelpBase(MPackage pkg, final String command)
+	public commandHelpBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Shows this list");
 	}
@@ -24,15 +22,12 @@ class commandHelpBase extends Command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		for (Iterator<MPackage> it = MPackage.getPackages().iterator(); it.hasNext();)
+		for (Plugin pkg : Plugin.getPlugins())
 		{
-			MPackage pkg = it.next();
 			boolean show_header = false;
 			
-			for (Iterator<Command> it2 = pkg.getCommands().iterator(); it2.hasNext();)
-			{
-				Command c = it2.next();
-				
+			for (Command c : pkg.commands)
+			{	
 				if (c.getRequiredChannels() != null && Arrays.asList(c.getRequiredChannels()).contains(target) == false)
 					continue;
 				
@@ -40,7 +35,7 @@ class commandHelpBase extends Command
 				{
 					if (show_header == false)
 					{
-						Moo.notice(source, pkg.getPackageName() + " - " + pkg.getDescription());
+						Moo.notice(source, pkg.getName() + " - " + pkg.getDescription());
 						show_header = true;
 					}
 					
@@ -59,9 +54,17 @@ class commandHelpBase extends Command
 
 class CommandHelp
 {
-	public CommandHelp(MPackage pkg)
+	private Command mo, h;
+	
+	public CommandHelp(Plugin pkg)
 	{
-		new commandHelpBase(pkg, "!MOO-HELP");
-		new commandHelpBase(pkg, "!HELP");
+		mo = new commandHelpBase(pkg, "!MOO-HELP");
+		h = new commandHelpBase(pkg, "!HELP");
+	}
+	
+	public void remove()
+	{
+		mo.remove();
+		h.remove();
 	}
 }

@@ -1,19 +1,41 @@
 package net.rizon.moo.core;
 
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Command;
+import net.rizon.moo.Plugin;
 
-public class core extends MPackage
+public class core extends Plugin
 {
+	private CommandHelp help;
+	private Command host, plugins, rand, reload, shell, shutdown, status;
+	
 	public core()
 	{
 		super("Commands", "Core commands");
-		
-		new CommandHelp(this);
-		new CommandHost(this);
-		new CommandRand(this);
-		new CommandReload(this);
-		new CommandShell(this);
-		new CommandShutdown(this);
-		new CommandStatus(this);
+	}
+
+	@Override
+	public void start() throws Exception
+	{
+		help = new CommandHelp(this);
+		host = new CommandHost(this);
+		plugins = new CommandPlugins(this);
+		rand = new CommandRand(this);
+		reload = new CommandReload(this);
+		shell = new CommandShell(this);
+		shutdown = new CommandShutdown(this);
+		status = new CommandStatus(this);
+	}
+
+	@Override
+	public void stop()
+	{
+		help.remove();
+		host.remove();
+		plugins.remove();
+		rand.remove();
+		reload.remove();
+		shell.remove();
+		shutdown.remove();
+		status.remove();
 	}
 }

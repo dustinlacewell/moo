@@ -5,7 +5,7 @@ import java.util.Iterator;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.MPackage;
+import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
 class message211 extends Message
@@ -119,7 +119,7 @@ class commandMapBase extends Command
 {
 	private boolean full;
 
-	public commandMapBase(MPackage pkg, final String cmd, boolean full)
+	public commandMapBase(Plugin pkg, final String cmd, boolean full)
 	{
 		super(pkg, cmd, "View hub lag and routing information");
 		this.full = full;
@@ -211,7 +211,7 @@ class commandMapBase extends Command
 
 class commandMapRegular extends commandMapBase
 {
-	public commandMapRegular(MPackage pkg)
+	public commandMapRegular(Plugin pkg)
 	{
 		super(pkg, "!MAP", false);
 	}
@@ -219,7 +219,7 @@ class commandMapRegular extends commandMapBase
 
 class commandMapAll extends commandMapBase
 {
-	public commandMapAll(MPackage pkg)
+	public commandMapAll(Plugin pkg)
 	{
 		super(pkg, "!MAP-" , true);
 	}
@@ -227,20 +227,25 @@ class commandMapAll extends commandMapBase
 
 class CommandMap
 {
-	@SuppressWarnings("unused")
-	private static message211 msg_211 = new message211();
-	@SuppressWarnings("unused")
-	private static message219 msg_219 = new message219();
-	@SuppressWarnings("unused")
-	private static message265 msg_265 = new message265();
-	@SuppressWarnings("unused")
+	private message211 msg_211 = new message211();
+	private message219 msg_219 = new message219();
+	private message265 msg_265 = new message265();
 	private commandMapRegular map_reg;
-	@SuppressWarnings("unused")
 	private commandMapAll map_all;
 	
-	public CommandMap(MPackage pkg)
+	public CommandMap(Plugin pkg)
 	{
 		this.map_reg = new commandMapRegular(pkg);
 		this.map_all = new commandMapAll(pkg);
+	}
+	
+	public void remove()
+	{
+		this.msg_211.remove();
+		this.msg_219.remove();
+		this.msg_265.remove();
+		
+		this.map_reg.remove();
+		this.map_all.remove();
 	}
 }
