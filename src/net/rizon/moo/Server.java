@@ -219,6 +219,8 @@ public class Server
 		{
 			Database.handleException(ex);
 		}
+		
+		split = null;
 	}
 	
 	public String getDesc()
