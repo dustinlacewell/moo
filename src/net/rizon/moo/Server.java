@@ -157,7 +157,40 @@ public class Server
 	
 	public Split getSplit()
 	{
-		return split;
+		if (split != null || !this.links.isEmpty())
+			return split;
+		
+		try
+		{
+			PreparedStatement statement = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ? ORDER BY `when` DESC LIMIT 1");
+			statement.setString(1, this.getName());
+			ResultSet rs = Moo.db.executeQuery();
+			if (rs.next())
+			{
+				String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
+				Date when = rs.getDate("when"), end = rs.getDate("end");
+
+				Split sp = new Split();
+				sp.me = name;
+				sp.from = from;
+				sp.to = to;
+				sp.when = when;
+				sp.end = end;
+				sp.reconnectedBy = rBy;
+
+				if (sp.end == null)
+				{
+					split = sp;
+					return sp;
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			Database.handleException(ex);
+		}
+		
+		return null;
 	}
 	
 	public Split[] getSplits()
