@@ -73,7 +73,8 @@ public abstract class Connection
 	public abstract boolean isConnected();
 	public abstract void connect() throws IOException;
 	public abstract void execute(final String command) throws IOException;
-	public void upload(File file) throws IOException { throw new UnsupportedOperationException(); }
+	public void upload(File file, String dest) throws IOException { throw new UnsupportedOperationException(); }
+	public void download(String file, String dest) throws IOException { throw new UnsupportedOperationException(); }
 	public void remove(String file) throws IOException { throw new UnsupportedOperationException(); }
 	public abstract String readLine();
 	

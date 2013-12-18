@@ -3,7 +3,9 @@ package net.rizon.moo.servercontrol.protocols;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.logging.Level;
@@ -112,13 +114,39 @@ final class connectionSSH extends Connection
 	}
 	
 	@Override
-	public synchronized void upload(File file) throws IOException
+	public synchronized void upload(File file, String dest) throws IOException
 	{
 		try
 		{
 			ChannelSftp cs = this.openSftpChannel();
 			this.channel = cs;
-			cs.put(new FileInputStream(file), file.getName());
+			cs.put(new FileInputStream(file), dest);
+		}
+		catch (JSchException e)
+		{
+			throw new IOException(e);
+		}
+		catch (SftpException e)
+		{
+			throw new IOException(e);
+		}
+	}
+	
+	@Override
+	public synchronized void download(String file, String dest) throws IOException
+	{
+		try
+		{
+			ChannelSftp cs = this.openSftpChannel();
+			this.channel = cs;
+			InputStream is = cs.get(file);
+			
+			FileOutputStream fi = new FileOutputStream(dest);
+			for (int i; (i = is.read()) != -1;)
+				fi.write(i);
+			
+			is.close();
+			fi.close();
 		}
 		catch (JSchException e)
 		{

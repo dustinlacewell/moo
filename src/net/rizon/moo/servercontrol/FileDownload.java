@@ -1,23 +1,13 @@
 package net.rizon.moo.servercontrol;
 
-import java.io.File;
-
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
-public abstract class FileUpload extends Process
+public abstract class FileDownload extends Process
 {
-	protected File file;
-	protected String dest;
+	protected String file, dest;
 
-	public FileUpload(Connection con, final File file)
-	{
-		super(con);
-		this.file = file;
-		this.dest = file.getName();
-	}
-	
-	public FileUpload(Connection con, final File file, String dest)
+	public FileDownload(Connection con, String file, String dest)
 	{
 		super(con);
 		this.file = file;
@@ -32,7 +22,7 @@ public abstract class FileUpload extends Process
 			if (this.con.isConnected() == false)
 				this.con.connect();
 
-			this.con.upload(file, dest);
+			this.con.download(file, dest);
 			
 			this.onFinish();
 		}
@@ -48,6 +38,6 @@ public abstract class FileUpload extends Process
 	public void onFinish()
 	{
 		for (String ch : Moo.conf.getMooLogChannels())
-			Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] Successfully uploaded " + file.getName());
+			Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] Successfully downloaded " + file);
 	}
 }

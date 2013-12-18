@@ -20,7 +20,7 @@ class uploadEchoProcess extends EchoProcess
 		super.onFinish();
 		
 		/* now remove the file */
-		new uploadFileRemove(con, file.getName()).start(); 
+		new uploadFileRemove(con, file.getName()).run(); 
 	}
 }
 
@@ -56,8 +56,7 @@ public class UploadProcess extends FileUpload
 	@Override
 	public void onFinish()
 	{
-		for (String ch : Moo.conf.getMooLogChannels())
-			Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] Successfully uploaded " + file.getName());
+		super.onFinish();
 		
 		/* now for the command! */
 		String command = "/bin/sh " + file.getName();
@@ -65,6 +64,6 @@ public class UploadProcess extends FileUpload
 			command += " " + args;
 		
 		Process proc = new uploadEchoProcess(con, source, target, file, command);
-		proc.start();
+		proc.run();
 	}
 }

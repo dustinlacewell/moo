@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.servercontrol.commands.Cert;
 import net.rizon.moo.servercontrol.commands.CommandAddServer;
 import net.rizon.moo.servercontrol.commands.CommandConnections;
 import net.rizon.moo.servercontrol.commands.CommandDelServer;
@@ -20,7 +21,7 @@ import net.rizon.moo.servercontrol.protocols.Telnet;
 
 public class servercontrol extends Plugin
 {
-	private net.rizon.moo.Command addserver, connections, delserver, sc, servers, s;
+	private net.rizon.moo.Command addserver, connections, delserver, sc, servers, s, cert;
 	
 	public servercontrol()
 	{
@@ -39,6 +40,7 @@ public class servercontrol extends Plugin
 		sc = new CommandServerControl(this);
 		servers = new CommandServers(this);
 		s = new CommandShortcut(this);
+		cert = new Cert(this);
 		
 		new FTP();
 		new SSH();
@@ -54,6 +56,7 @@ public class servercontrol extends Plugin
 		sc.remove();
 		servers.remove();
 		s.remove();
+		cert.remove();
 	}
 	
 	private static final ServerInfo[] processServers(ResultSet rs) throws SQLException
