@@ -127,8 +127,11 @@ public class Cert extends Command
 	@Override
 	public void execute(String source, String target, String[] params)
 	{
-		if (params.length != 2)
+		if (params.length < 2)
+		{
+			Moo.reply(source, target, "Syntax: !CERT server.name [revoke]");
 			return;
+		}
 		
 		String server = params[1];
 		
@@ -160,6 +163,41 @@ public class Cert extends Command
 		}
 		
 		ServerInfo si = server_info[0];
+		
+		if (params.length == 3 && params[2].equalsIgnoreCase("revoke"))
+		{
+			try
+			{
+				String cmds[] = new String[3];
+				cmds[0] = "/bin/sh";
+				cmds[1] = "revoke.sh";
+				cmds[2] = server;
+				
+				Process proc = Runtime.getRuntime().exec(cmds, null, new File("ssl"));
+	
+				BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+				for (String s; (s = in.readLine()) != null;)
+					for (String ch : Moo.conf.getMooLogChannels())
+						Moo.privmsg(ch, s);
+				in.close();
+	
+				in = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+				for (String s; (s = in.readLine()) != null;)
+					for (String ch : Moo.conf.getMooLogChannels())
+						Moo.privmsg(ch, s);
+				in.close();
+	
+				proc.getOutputStream().close();
+				
+				Moo.reply(source, target, "Done");
+			}
+			catch (IOException ex)
+			{
+				Logger.getGlobalLogger().log(Level.WARNING, "Error signing certificate request", ex);
+			}
+			
+			return;
+		}
 		
 		try
 		{

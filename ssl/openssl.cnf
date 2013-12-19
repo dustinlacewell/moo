@@ -44,6 +44,9 @@ cert_opt 	= ca_default		# Certificate field options
 # crlnumber must also be commented out to leave a V1 CRL.
 # crl_extensions	= crl_ext
 
+
+x509_extensions = usr_cert
+
 default_days	= 365			# how long to certify for
 default_crl_days= 30			# how long before next CRL
 default_md	= default		# use public key default MD
@@ -112,3 +115,8 @@ commonName_max			= 64
 emailAddress			= Email Address
 emailAddress_default		= routing@rizon.net
 emailAddress_max		= 64
+
+[ usr_cert ]
+
+crlDistributionPoints = URI:http://rizon.net/crl.pem
+
