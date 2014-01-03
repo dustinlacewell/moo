@@ -42,7 +42,11 @@ class commandVoteBase extends Command
 			for (final VoteInfo v : votes)
 				if (all || v.closed == false)
 				{
-					Moo.reply(source, target, "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
+					String msg = "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.";
+					if (all)
+						Moo.notice(target, msg);
+					else
+						Moo.reply(source, target, "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
 					any = true;
 				}
 			
