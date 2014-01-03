@@ -38,7 +38,7 @@ nickserv_host=NickServ!service@rizon.net
 idle_channels=#adam,#d
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services
+channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services,#h
 
 # Comma separated list of developer channels.
 dev_channels=#d
@@ -63,6 +63,9 @@ log_channels=#services
 
 # Comma separated list of moo log channels
 moo_log_channels=#r-spam
+
+# Comma separated list of help channels
+help_channels=#h
 
 # Set to true to enable !shell
 enable_shell=false
@@ -128,11 +131,14 @@ servermonitor.check=na.iso.rizon.net eu.iso.rizon.net us.iso.rizon.net ca.iso.ri
 # Space separated list of dnsbls for random to use
 #random.dnsbl=
 
+# Wiki URL
+wiki.url=http://wiki.rizon.net/index.php?title=Special:RecentChanges&feed=atom
+
 # Protocol to use.
 protocol=plexus
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki
 
 debug=0
 

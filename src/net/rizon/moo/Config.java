@@ -29,6 +29,7 @@ public class Config
 	private String[] admin_channels;
 	private String[] log_channels;
 	private String[] moo_log_channels;
+	private String[] help_channels;
 	private boolean shell;
 	private String shell_base;
 	private String shortcut_base;
@@ -54,6 +55,7 @@ public class Config
 	private String servermonitor_domain;
 	private String[] servermonitor_check;
 	private String[] random_dnsbls;
+	private String wiki_url;
 	private String protocol;
 	private String[] packages;
 	private int debug;
@@ -103,6 +105,8 @@ public class Config
 		this.log_channels = s.split(",");
 		s = this.getProperty(prop, "moo_log_channels");
 		this.moo_log_channels = s.split(",");
+		s = this.getProperty(prop, "help_channels");
+		this.help_channels = s.split(",");
 		this.shell = Boolean.parseBoolean(this.getProperty(prop, "enable_shell"));
 		this.shell_base = this.getProperty(prop, "shell_base");
 		this.shortcut_base = this.getProperty(prop, "shortcut_base");
@@ -136,6 +140,7 @@ public class Config
 		this.servermonitor_domain = this.getProperty(prop, "servermonitor.domain");
 		this.servermonitor_check = this.getProperty(prop, "servermonitor.check").split(" ");
 		this.random_dnsbls = this.getProperty(prop, "random.dnsbl").split(" ");
+		this.wiki_url = this.getProperty(prop, "wiki.url");
 		this.protocol = this.getProperty(prop, "protocol");
 		s = this.getProperty(prop, "packages");
 		this.packages = s.split(",");
@@ -308,6 +313,11 @@ public class Config
 		return this.moo_log_channels;
 	}
 	
+	public final String[] getHelpChannels()
+	{
+		return this.help_channels;
+	}
+	
 	public boolean getShell()
 	{
 		return this.shell;
@@ -436,6 +446,11 @@ public class Config
 	public final String[] getDnsbls()
 	{
 		return this.random_dnsbls;
+	}
+	
+	public final String getWikiUrl()
+	{
+		return this.wiki_url;
 	}
 	
 	public final String getProtocol()
