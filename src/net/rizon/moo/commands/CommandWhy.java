@@ -137,6 +137,10 @@ class CommandWhy extends Command
 	public CommandWhy(Plugin pkg)
 	{
 		super(pkg, "!WHY", "Find why an IP is banned");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

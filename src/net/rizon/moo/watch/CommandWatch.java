@@ -12,6 +12,10 @@ class CommandWatch extends Command
 	public CommandWatch(Plugin pkg)
 	{
 		super(pkg, "!WATCH", "View or modify the watch list");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

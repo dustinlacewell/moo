@@ -14,6 +14,10 @@ class CommandLogSearch extends Command
 	public CommandLogSearch(Plugin pkg)
 	{
 		super(pkg, "!LOGSEARCH", "Search through server logs"); 
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

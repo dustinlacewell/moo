@@ -62,6 +62,10 @@ class CommandScheck extends Command
 	public CommandScheck(Plugin pkg)
 	{
 		super(pkg, "!SCHECK", "Check if a server is online");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

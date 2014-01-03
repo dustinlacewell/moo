@@ -67,6 +67,10 @@ class CommandUptime extends Command
 	public CommandUptime(Plugin pkg)
 	{
 		super(pkg, "!UPTIME", "View server uptimes");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	private static boolean only_extremes;

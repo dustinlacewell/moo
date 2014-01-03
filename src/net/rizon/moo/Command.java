@@ -56,8 +56,6 @@ public abstract class Command extends Message
 	{
 		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
 			return;
-		else if (Moo.conf.listContains("idle_channels", message[0]))
-			return;
 		else if (this.getRequiredChannels() != null && Arrays.asList(this.getRequiredChannels()).contains(message[0]) == false)
 			return;
 		

@@ -71,7 +71,10 @@ class CommandClimit extends Command
 
 	public CommandClimit(Plugin pkg)
 	{
-		super(pkg, "!CLIMIT", "View server channel limits"); 
+		super(pkg, "!CLIMIT", "View server channel limits");
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

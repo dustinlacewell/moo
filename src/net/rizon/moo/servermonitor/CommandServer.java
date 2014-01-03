@@ -14,6 +14,10 @@ class commandServerBase extends Command
 	public commandServerBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Views servers");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	private static boolean isLink(Server s, Server targ)

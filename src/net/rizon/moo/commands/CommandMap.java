@@ -123,6 +123,10 @@ class commandMapBase extends Command
 	{
 		super(pkg, cmd, "View hub lag and routing information");
 		this.full = full;
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override
@@ -234,7 +238,7 @@ class CommandMap
 	private commandMapAll map_all;
 	
 	public CommandMap(Plugin pkg)
-	{
+	{	
 		this.map_reg = new commandMapRegular(pkg);
 		this.map_all = new commandMapAll(pkg);
 	}

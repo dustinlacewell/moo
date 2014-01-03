@@ -52,6 +52,10 @@ class CommandOline extends Command
 	public CommandOline(Plugin pkg)
 	{
 		super(pkg, "!OLINE", "View olines");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

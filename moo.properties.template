@@ -34,9 +34,6 @@ nickserv_host=NickServ!service@rizon.net
 # Oper details (optional)
 #oper=moo somepass
 
-# Comma separated list of channels to do nothing in
-idle_channels=#adam,#d,#h
-
 # Comma separated list of channels to join
 channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services,#h,#adam
 
@@ -51,6 +48,9 @@ flood_channels=#w
 
 # Comma separated list of channels to announce splits to
 split_channels=#opers
+
+# Non SO staff channels
+staff_channels=#opers
 
 # Comma separated list of oper channels
 oper_channels=#o

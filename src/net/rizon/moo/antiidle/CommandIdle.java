@@ -9,6 +9,9 @@ public class CommandIdle extends Command
 	public CommandIdle(Plugin pkg)
 	{
 		super(pkg, "!IDLE", "Excepts people from idle kick");
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

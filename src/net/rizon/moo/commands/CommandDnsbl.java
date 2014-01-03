@@ -268,6 +268,10 @@ class CommandDnsbl extends Command
 	{
 		super(pkg, "!DNSBL", "Views DNSBL counts");
 		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		
 		this.dnsbl_timer = new dnsblTimer();
 		this.dnsbl_timer.start();
 	}

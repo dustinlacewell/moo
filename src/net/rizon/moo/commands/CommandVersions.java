@@ -115,6 +115,10 @@ class commandVersionsBase extends Command
 	public commandVersionsBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "View the IRCd versions");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

@@ -12,6 +12,10 @@ class commandVoteBase extends Command
 	public commandVoteBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Vote and manage votes");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

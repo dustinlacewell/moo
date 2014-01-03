@@ -122,6 +122,7 @@ public class Cert extends Command
 	public Cert(Plugin pkg)
 	{
 		super(pkg, "!CERT", "Generate server SSL certificates");
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

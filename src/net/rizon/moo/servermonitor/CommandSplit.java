@@ -30,6 +30,10 @@ class CommandSplit extends Command
 	public CommandSplit(Plugin pkg)
 	{
 		super(pkg, "!SPLIT", "Views split servers");
+		
+		this.requiresChannel(Moo.conf.getList("staff_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override
