@@ -26,4 +26,16 @@ public class vote extends Plugin
 	{
 		vote.remove();
 	}
+	
+	protected static String getVoteEmailFor(String chan)
+	{
+		for (String s : Moo.conf.getList("vote_email"))
+		{
+			String[] sp = s.split(":");
+			if (sp.length == 2 && sp[0].equalsIgnoreCase(chan))
+				return sp[1];
+		}
+		
+		return null;
+	}
 }

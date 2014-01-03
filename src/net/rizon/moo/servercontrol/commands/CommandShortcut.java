@@ -22,7 +22,7 @@ public class CommandShortcut extends Command
 	public CommandShortcut(Plugin pkg)
 	{
 		super(pkg, "!S", "Configure and execute shortcuts");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class CommandShortcut extends Command
 				return;
 			}
 			
-			File f = new File(Moo.conf.getShortcutBase(), file);
+			File f = new File(Moo.conf.getString("shortcut_base"), file);
 			if (!f.exists())
 			{
 				Moo.reply(source, target, "File for shortcut " + sname + " (" + file + ") does not exist?");

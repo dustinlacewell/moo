@@ -19,7 +19,7 @@ public class commands extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		if (Moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getString("protocol").equals("plexus"))
 		{
 			climit = new CommandClimit(this);
 			dnsbl = new CommandDnsbl(this);
@@ -31,7 +31,7 @@ public class commands extends Plugin
 		soa = new CommandSoa(this);
 		time = new CommandTime(this);
 		uptime = new CommandUptime(this);
-		if (Moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getString("protocol").equals("plexus"))
 		{
 			version = new CommandVersions(this);
 			why = new CommandWhy(this);

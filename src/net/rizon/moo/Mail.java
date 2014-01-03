@@ -68,14 +68,15 @@ public class Mail
 {
 	public static void send(final String to, final String subject, final String message)
 	{
-		if (Moo.conf.getSendmailPath().isEmpty() == true)
+		String smpath = Moo.conf.getString("sendmail_path");
+		if (smpath.isEmpty() == true)
 			return;
 		
-		File sendmail = new File(Moo.conf.getSendmailPath());
+		File sendmail = new File(smpath);
 		if (sendmail.exists() == false || sendmail.isFile() == false)
 			return;
 		
-		mailThread t = new mailThread(Moo.conf.getSendmailPath(), to, subject, message);
+		mailThread t = new mailThread(smpath, to, subject, message);
 		t.start();
 	}
 }

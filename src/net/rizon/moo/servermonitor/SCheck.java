@@ -95,8 +95,8 @@ class SCheck extends Thread
 				return;
 			}
 
-			s.write("USER " + Moo.conf.getIdent() + " . . :" + Moo.conf.getRealname());
-			s.write("NICK " + Moo.conf.getNick() + "-" + getRandom());
+			s.write("USER " + Moo.conf.getString("ident") + " . . :" + Moo.conf.getString("realname"));
+			s.write("NICK " + Moo.conf.getString("nick") + "-" + getRandom());
 			
 			for (String in; (in = s.read()) != null;)
 			{

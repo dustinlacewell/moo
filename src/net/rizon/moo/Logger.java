@@ -32,7 +32,7 @@ final class loggerHandler extends Handler
 
 		if (Moo.conf != null && Moo.sock != null)
 			if (record.getLevel() == Level.INFO || bad)
-				for (final String ch : Moo.conf.getMooLogChannels())
+				for (final String ch : Moo.conf.getList("moo_log_channels"))
 				{
 					if (message != null)
 						Moo.privmsg(ch, message);
@@ -44,7 +44,7 @@ final class loggerHandler extends Handler
 					}
 				}
 
-		if ((Moo.conf != null && Moo.conf.getDebug() > 0) || bad)
+		if ((Moo.conf != null && Moo.conf.getBool("debug")) || bad)
 		{
 			System.out.println(format.format(new Date(record.getMillis())) + " [" + record.getLevel().getName() + "] [" + record.getLoggerName() + "] " + message);
 			if (stes != null)

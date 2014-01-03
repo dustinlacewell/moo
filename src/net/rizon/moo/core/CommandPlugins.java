@@ -12,7 +12,7 @@ class CommandPlugins extends Command
 	public CommandPlugins(Plugin pkg)
 	{
 		super(pkg, "!PLUGINS", "Manage plugnis");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

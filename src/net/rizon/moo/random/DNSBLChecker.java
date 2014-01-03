@@ -39,7 +39,7 @@ class DNSBLChecker extends Thread
 		if (in == null || !in.getHostAddress().startsWith("127.0.0."))
 			return;
 		
-		for (final String chan : Moo.conf.getSpamChannels())
+		for (final String chan : Moo.conf.getList("spam_channels"))
 			Moo.privmsg(chan, nd + " is listed in " + this.bl + " with address " + in.getHostAddress());
 		
 		DNSBL d = DNSBL.getList(this.bl);

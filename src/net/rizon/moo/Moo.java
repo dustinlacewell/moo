@@ -1,7 +1,6 @@
 package net.rizon.moo;
 
 import java.io.IOException;
-
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Date;
@@ -43,7 +42,6 @@ public class Moo
 		try
 		{
 			conf = new Config();
-			conf.load();
 		}
 		catch (Exception ex)
 		{
@@ -53,7 +51,7 @@ public class Moo
 		
 		try
 		{
-			if (Moo.conf.getDatabase().isEmpty() == false)
+			if (Moo.conf.getString("database").isEmpty() == false)
 				db = new Database();
 		}
 		catch (ClassNotFoundException ex)
@@ -69,12 +67,12 @@ public class Moo
 		
 		try
 		{
-			for (final String db_class : conf.getDatabaseClasses())
+			for (final String db_class : conf.getList("database_classes"))
 				Class.forName(db_class);
 			
-			Plugin.loadPlugin("net.rizon.moo.protocol.", Moo.conf.getProtocol());
+			Plugin.loadPlugin("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
 			
-			for (final String pkg : conf.getPackages())
+			for (final String pkg : conf.getList("packages"))
 				Plugin.loadPlugin("net.rizon.moo.", pkg);
 		}
 		catch (Exception ex)
@@ -94,21 +92,21 @@ public class Moo
 		{
 			try
 			{
-				if (Moo.conf.getSSL())
+				if (Moo.conf.getBool("ssl"))
 					sock = Socket.createSSL();
 				else
 					sock = Socket.create();
 				
-				if (conf.getHost().isEmpty() == false)
-					sock.getSocket().bind(new InetSocketAddress(conf.getHost(), 0));
+				if (conf.getString("host").isEmpty() == false)
+					sock.getSocket().bind(new InetSocketAddress(conf.getString("host"), 0));
 				
-				sock.connect(conf.getServer(), conf.getPort());
+				sock.connect(conf.getString("server"), conf.getInt("port"));
 				
-				if (conf.getServerPass().isEmpty() == false)
-					sock.write("PASS :" + conf.getServerPass());
+				if (conf.getString("server_pass").isEmpty() == false)
+					sock.write("PASS :" + conf.getString("server_pass"));
 				
-				sock.write("USER " + conf.getIdent() + " . . :" + conf.getRealname());
-				sock.write("NICK :" + conf.getNick());
+				sock.write("USER " + conf.getString("ident") + " . . :" + conf.getString("realname"));
+				sock.write("NICK :" + conf.getString("nick"));
 				
 				long last_timer_check = System.currentTimeMillis() / 1000L;
 
@@ -159,13 +157,13 @@ public class Moo
 						for (int i = end + 1; i < tokens.length; ++i)
 							buffer[buffer_count] += " " + tokens[i];
 						
-						if (Moo.conf.getDebug() > 2)
+						/*if (Moo.conf.getDebug() > 2)
 						{
 							log.log(Level.FINEST, "  Source: " + source);
 							log.log(Level.FINEST, "  Message: " + message_name);
 							for (int i = 0; i < buffer.length; ++i)
 								log.log(Level.FINEST, "    " + i + ": " + buffer[i]);
-						}
+						}*/
 
 						Message.runMessage(source, message_name, buffer);
 					}
@@ -318,7 +316,7 @@ public class Moo
 	
 	public static void reply(String source, String target, final String buffer)
 	{
-		if (target.equalsIgnoreCase(Moo.conf.getNick()))
+		if (target.equalsIgnoreCase(Moo.conf.getString("nick")))
 			notice(source, buffer);
 		else
 			privmsg(target, buffer);

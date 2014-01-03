@@ -32,7 +32,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onJoin(final String source, final String channel) 
 	{
-		if (Moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false || Moo.conf.getNick().equals(source))
+		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(source))
 			return;
 		
 		AntiIdleEntry ai = new AntiIdleEntry(source);
@@ -45,7 +45,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onPart(final String source, final String channel)
 	{
-		if (Moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false || Moo.conf.getNick().equals(source))
+		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(source))
 			return;
 		
 		AntiIdleEntry.removeTimerFor(source);
@@ -54,7 +54,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onKick(final String source, final String target, final String channel)
 	{
-		if (Moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false || Moo.conf.getNick().equals(target))
+		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(target))
 			return;
 		
 		AntiIdleEntry.removeTimerFor(target);
@@ -63,7 +63,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onMode(final String source, final String channel, final String modes)
 	{
-		if (Moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false)
+		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false)
 			return;
 		
 		for (final String s : modes.split(" "))
@@ -86,7 +86,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
-		if (Moo.conf.getAntiIdleChannel().equalsIgnoreCase(channel) == false)
+		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false)
 			return;
 		
 		AntiIdleEntry.removeTimerFor(source);

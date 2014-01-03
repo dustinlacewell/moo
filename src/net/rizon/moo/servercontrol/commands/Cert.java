@@ -74,13 +74,13 @@ class CSRDownloadProcess extends FileDownload
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String s; (s = in.readLine()) != null;)
-				for (String ch : Moo.conf.getMooLogChannels())
+				for (String ch : Moo.conf.getList("moo_log_channels"))
 					Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] " + s);
 			in.close();
 
 			in = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 			for (String s; (s = in.readLine()) != null;)
-				for (String ch : Moo.conf.getMooLogChannels())
+				for (String ch : Moo.conf.getList("moo_log_channels"))
 					Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] " + s);
 			in.close();
 
@@ -177,13 +177,13 @@ public class Cert extends Command
 	
 				BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				for (String s; (s = in.readLine()) != null;)
-					for (String ch : Moo.conf.getMooLogChannels())
+					for (String ch : Moo.conf.getList("moo_log_channels"))
 						Moo.privmsg(ch, s);
 				in.close();
 	
 				in = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 				for (String s; (s = in.readLine()) != null;)
-					for (String ch : Moo.conf.getMooLogChannels())
+					for (String ch : Moo.conf.getList("moo_log_channels"))
 						Moo.privmsg(ch, s);
 				in.close();
 	

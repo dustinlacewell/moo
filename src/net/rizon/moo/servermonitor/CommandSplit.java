@@ -60,7 +60,7 @@ class CommandSplit extends Command
 				{
 					++split;
 					String s_name;
-					if (s.frozen || Moo.conf.getDisableSplitReconnect())
+					if (s.frozen || Moo.conf.getBool("disable_split_reconnect"))
 						s_name = Message.COLOR_BRIGHTBLUE + s.getName() + Message.COLOR_END;
 					else
 						s_name = s.getName();
@@ -157,14 +157,14 @@ class CommandSplit extends Command
 		}
 		else if (params[1].equalsIgnoreCase("freeze"))
 		{
-			Moo.conf.setDisableSplitReconnect(true);
+			Moo.conf.setBoolean("disable_split_reconnect", true);
 			for (Server s : Server.getServers())
 				Reconnector.removeReconnectsFor(s);
 			Moo.reply(source, target, "[SPLIT] Disabled all reconnects and all future reconnects");
 		}
 		else if (params[1].equalsIgnoreCase("unfreeze"))
 		{
-			Moo.conf.setDisableSplitReconnect(false);
+			Moo.conf.setBoolean("disable_split_reconnect", false);
 			Moo.reply(source, target, "[SPLIT] Reenabled reconnects");
 		}
 		else

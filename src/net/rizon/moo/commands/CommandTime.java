@@ -131,7 +131,7 @@ class message391 extends Message
 			{
 				if (time_is_very_off)
 				{
-					for (String c : Moo.conf.getAdminChannels())
+					for (String c : Moo.conf.getList("admin_channels"))
 						Moo.privmsg(c, buf);
 				}
 			}

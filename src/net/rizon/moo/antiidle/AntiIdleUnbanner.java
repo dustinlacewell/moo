@@ -11,7 +11,7 @@ class AntiIdleUnbanner extends Timer
 	
 	public AntiIdleUnbanner(final String mask)
 	{
-		super(Moo.conf.getAntiIdleBanTime() * 60, false);
+		super(Moo.conf.getInt("antiidle.bantime") * 60, false);
 	
 		String host = mask;
 		int a = mask.indexOf('@');
@@ -19,12 +19,12 @@ class AntiIdleUnbanner extends Timer
 			host = "*!*@" + mask.substring(a + 1);
 		this.host = host;
 		
-		Moo.mode(Moo.conf.getAntiIdleChannel(), "+b " + this.host);
+		Moo.mode(Moo.conf.getString("antiidle.channel"), "+b " + this.host);
 	}
 
 	@Override
 	public void run(Date now)
 	{
-		Moo.mode(Moo.conf.getAntiIdleChannel(), "-b " + this.host);
+		Moo.mode(Moo.conf.getString("antiidle.channel"), "-b " + this.host);
 	}
 }

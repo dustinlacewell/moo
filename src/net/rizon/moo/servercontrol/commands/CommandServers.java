@@ -11,7 +11,7 @@ public class CommandServers extends Command
 	public CommandServers(Plugin pkg)
 	{
 		super(pkg, "!SERVERS", "View server list");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

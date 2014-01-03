@@ -17,7 +17,7 @@ class AntiIdleEntry extends Timer
 	
 	public AntiIdleEntry(final String mask)
 	{
-		super(Moo.conf.getAntiIdleTime() * 60, false);
+		super(Moo.conf.getInt("antiidle.time") * 60, false);
 		
 		String nick = mask;
 		int e = mask.indexOf('!');
@@ -35,9 +35,9 @@ class AntiIdleEntry extends Timer
 	@Override
 	public void run(Date now)
 	{
-		if (Moo.conf.getAntiIdleBanTime() > 0)
+		if (Moo.conf.getInt("antiidle.bantime") > 0)
 			new AntiIdleUnbanner(this.mask).start();
-		Moo.kick(this.nick, Moo.conf.getAntiIdleChannel(), "You may not idle in this channel for more than " + Moo.conf.getAntiIdleTime() + " minutes.");
+		Moo.kick(this.nick, Moo.conf.getString("antiidle.channel"), "You may not idle in this channel for more than " + Moo.conf.getString("antiidle.time") + " minutes.");
 		
 		entries.remove(this.nick.toLowerCase());
 	}

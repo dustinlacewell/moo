@@ -201,7 +201,7 @@ public class SSH extends Protocol
 	{
 		super("SSH");
 		
-		for (final String key : Moo.conf.getSSHKeyPaths())
+		for (final String key : Moo.conf.getList("ssh_key_paths"))
 		{
 			try
 			{

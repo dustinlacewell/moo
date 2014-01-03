@@ -82,7 +82,7 @@ class CommandSLogSearch extends Command
 	public CommandSLogSearch(Plugin pkg)
 	{
 		super(pkg, "!SLOGSEARCH", "Search through services logs");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

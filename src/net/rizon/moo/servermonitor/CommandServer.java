@@ -219,7 +219,7 @@ class commandServerBase extends Command
 					msg += Message.COLOR_RED;
 					output = true;
 				}
-				else if (s.frozen || Moo.conf.getDisableSplitReconnect())
+				else if (s.frozen || Moo.conf.getBool("disable_split_reconnect"))
 				{
 					msg += Message.COLOR_BRIGHTBLUE;
 					output = true;

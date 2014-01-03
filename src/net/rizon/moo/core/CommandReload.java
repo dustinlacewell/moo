@@ -10,7 +10,7 @@ class CommandReload extends Command
 	public CommandReload(Plugin pkg)
 	{
 		super(pkg, "!RELOAD", "Reloads the configuration file");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override
@@ -25,9 +25,7 @@ class CommandReload extends Command
 	{
 		try
 		{
-			Config c = new Config();
-			c.load();
-			Moo.conf = c;
+			Moo.conf = new Config();
 			Moo.reply(source, target, "Successfully reloaded configuration");
 		}
 		catch (Exception ex)

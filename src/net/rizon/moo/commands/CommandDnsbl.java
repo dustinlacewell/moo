@@ -164,7 +164,7 @@ class message219_dnsbl extends Message
 			CommandDnsbl.command_target_chan = CommandDnsbl.command_target_source = null;
 		}
 		
-		if (dnsblTimer.check_waiting_on.isEmpty() && dnsblTimer.check_requested && Moo.conf.getOperChannels().length > 0)
+		if (dnsblTimer.check_waiting_on.isEmpty() && dnsblTimer.check_requested)
 		{
 			long after_total_count = 0;
 			HashMap<String, Long> after_counts = new HashMap<String, Long>();
@@ -206,7 +206,7 @@ class message219_dnsbl extends Message
 			}
 			
 			if (!dnsbl_message.isEmpty())
-				for (final String chan : Moo.conf.getOperChannels())
+				for (final String chan : Moo.conf.getList("oper_channels"))
 					Moo.privmsg(chan, dnsbl_message);
 			
 			dnsblTimer.check_requested = false;

@@ -35,10 +35,10 @@ nickserv_host=NickServ!service@rizon.net
 #oper=moo somepass
 
 # Comma separated list of channels to do nothing in
-idle_channels=#adam,#d
+idle_channels=#adam,#d,#h
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services,#h
+channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services,#h,#adam
 
 # Comma separated list of developer channels.
 dev_channels=#d

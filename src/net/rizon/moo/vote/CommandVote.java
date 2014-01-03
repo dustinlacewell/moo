@@ -78,8 +78,9 @@ class commandVoteBase extends Command
 			
 			Moo.reply(source, target, "Added vote #" + v.id);
 			
-			if (Moo.conf.getVoteEmailFor(target) != null)
-				Mail.send(Moo.conf.getVoteEmailFor(target), "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
+			String email = vote.getVoteEmailFor(target);
+			if (email != null)
+				Mail.send(email, "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
 		}
 		else if (params[1].equalsIgnoreCase("info") && params.length > 2)
 		{

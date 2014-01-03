@@ -14,7 +14,7 @@ public class CommandAddServer extends Command
 	public CommandAddServer(Plugin pkg)
 	{
 		super(pkg, "!ADDSERVER", "Add a server");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 
 	@Override

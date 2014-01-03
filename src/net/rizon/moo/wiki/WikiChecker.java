@@ -21,7 +21,7 @@ class WikiChecker extends Thread
 	private static final SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	
-	private static Date now = new Date(1);
+	private static Date now = new Date();
 
 	@Override
 	public void run()
@@ -30,7 +30,7 @@ class WikiChecker extends Thread
 		
 		try
 		{
-			is = new URL(Moo.conf.getWikiUrl()).openStream();
+			is = new URL(Moo.conf.getString("wiki.url")).openStream();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document document = db.parse(is);
 			
@@ -49,7 +49,7 @@ class WikiChecker extends Thread
 						author = n.getElementsByTagName("author").item(0).getTextContent(),
 						link = n.getElementsByTagName("link").item(0).getAttributes().getNamedItem("href").getTextContent();
 				
-				for (String c : Moo.conf.getHelpChannels())
+				for (String c : Moo.conf.getList("help_channels"))
 					Moo.privmsg(c, title + " modified by " + author + " (" + link + ")");
 			}
 			

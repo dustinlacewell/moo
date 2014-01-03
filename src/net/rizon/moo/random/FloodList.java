@@ -24,8 +24,8 @@ abstract class FloodList
 				++n.hits;
 				if (n.hits > random.reconnectFloodLimit)
 				{
-					for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
-						Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
+					for (String s : Moo.conf.getList("flood_channels"))
+						Moo.privmsg(s, "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
 					return;
 				}
 			}
@@ -44,8 +44,8 @@ abstract class FloodList
 		long now = System.currentTimeMillis() / 1000L;
 		if (this.isList == false && now - first <= random.timeforMatches && this.getMatches().size() >= random.matchesForFlood)
 		{
-			for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
-				Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
+			for (String s : Moo.conf.getList("flood_channels"))
+				Moo.privmsg(s, "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
 				
 			this.isList = true;
 				

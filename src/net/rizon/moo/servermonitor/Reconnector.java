@@ -85,9 +85,9 @@ class Reconnector extends Timer
 			this.setRepeating(false);
 			return;
 		}
-		else if (Moo.conf.getDisableSplitReconnect())
+		else if (Moo.conf.getBool("disable_split_reconnect"))
 		{
-			for (final String chan : Moo.conf.getSplitChannels())
+			for (final String chan : Moo.conf.getList("split_channels"))
 				Moo.privmsg(chan, "Disabling reconnect for frozen server " + s.getName());
 			
 			this.destroy();
@@ -98,14 +98,14 @@ class Reconnector extends Timer
 		Server targ = this.findPreferred();
 		if (targ == this.serv) // Special case, hold due to the split probably being between me and serv
 		{
-			for (final String chan : Moo.conf.getSplitChannels())
+			for (final String chan : Moo.conf.getList("split_channels"))
 				Moo.privmsg(chan, "Delaying reconnect for " + this.serv.getName() + " due to its uplink being split");
 			return;
 		}
 		
 		if (this.tries == 7 || targ == null)
 		{
-			for (final String chan : Moo.conf.getSplitChannels())
+			for (final String chan : Moo.conf.getList("split_channels"))
 				Moo.privmsg(chan, "Giving up reconnecting " + s.getName() + ", tried " + this.tries + " times in " + this.tick + " minutes to " + this.attempted.size() + " servers: " + this.attempted.toString());
 			
 			this.destroy();
@@ -120,18 +120,18 @@ class Reconnector extends Timer
 		{
 			int wait = 0; 
 			for (int i = this.tick; i % delay != 0; ++wait, ++i);
-			for (final String chan : Moo.conf.getSplitChannels())
+			for (final String chan : Moo.conf.getList("split_channels"))
 				Moo.privmsg(chan, "Will reconnect " + s.getName() + " to " + targ.getName() + " in " + wait + " minute" + (wait != 1 ? "s" : ""));
 			return;
 		}
 		
 		++this.tries;
 		
-		for (final String chan : Moo.conf.getSplitChannels())
+		for (final String chan : Moo.conf.getList("split_channels"))
 			Moo.privmsg(chan, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
 		
-		Moo.sock.write("CONNECT " + s.getName() + " " + Moo.conf.getSplitReconnectPort() + " " + targ.getName());
-		this.sp.reconnectedBy = Moo.conf.getNick();
+		Moo.sock.write("CONNECT " + s.getName() + " " + Moo.conf.getInt("split_reconnect_port") + " " + targ.getName());
+		this.sp.reconnectedBy = Moo.conf.getString("nick");
 		
 		last_reconnect = System.currentTimeMillis() / 1000L;
 		if (this.tries != 1) // Allow two tries on the first server

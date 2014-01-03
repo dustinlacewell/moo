@@ -28,8 +28,8 @@ class EventRandom extends Event
 	public void onAkillDel(final String setter, final String ip, final String reason)
 	{
 		if (random.remove(ip))
-			for (int i = 0; i < Moo.conf.getFloodChannels().length; ++i)
-				Moo.privmsg(Moo.conf.getFloodChannels()[i], "Removed IP " + ip + " from akill history.");
+			for (String s : Moo.conf.getList("flood_channels"))
+				Moo.privmsg(s, "Removed IP " + ip + " from akill history.");
 	}
 
 	@Override
@@ -49,7 +49,7 @@ class EventRandom extends Event
 		random.addNickData(nd);
 		
 		if (ip.indexOf('.') != -1)
-			for (final String dnsbl : Moo.conf.getDnsbls())
+			for (final String dnsbl : Moo.conf.getList("random.dnsbl"))
 				new DNSBLChecker(dnsbl, nd).start();
 	}
 }

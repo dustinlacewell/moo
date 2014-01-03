@@ -9,10 +9,10 @@ class EventPlexus extends Event
 	@Override
 	public void onNotice(final String source, final String channel, final String message)
 	{
-		if (source.equals(Moo.conf.getNickServHost()))
+		if (source.equals(Moo.conf.getString("nickserv_host")))
 		{
-			if (message.indexOf("This nickname is registered") != -1 && Moo.conf.getNickServPass() != null && Moo.conf.getNickServPass().isEmpty() == false)
-				Moo.privmsg(source, "IDENTIFY " + Moo.conf.getNickServPass());
+			if (message.indexOf("This nickname is registered") != -1 && Moo.conf.getString("nickserv_pass").isEmpty() == false)
+				Moo.privmsg(source, "IDENTIFY " + Moo.conf.getString("nickserv_pass"));
 		}
 		else if (source.indexOf('@') == -1)
 		{

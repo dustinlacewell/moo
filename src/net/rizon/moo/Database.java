@@ -16,7 +16,7 @@ public class Database
 	public Database() throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
-		this.con = DriverManager.getConnection(Moo.conf.getDatabase());
+		this.con = DriverManager.getConnection(Moo.conf.getString("database"));
 	}
 	
 	public void shutdown()

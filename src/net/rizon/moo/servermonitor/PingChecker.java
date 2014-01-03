@@ -13,7 +13,7 @@ import net.rizon.moo.Server;
 
 public class PingChecker extends Thread
 {
-	private static final Pattern packetLossPattern = Pattern.compile("([0-9])*% packet loss");
+	private static final Pattern packetLossPattern = Pattern.compile("([0-9]*)% packet loss");
 	// server name => error
 	private static final HashMap<String, String> errlist = new HashMap<String, String>();
 	
@@ -45,7 +45,7 @@ public class PingChecker extends Thread
 				{
 					int loss = Integer.parseInt(m.group(1));
 					if (loss != 0)
-						for (final String chan : Moo.conf.getAdminChannels())
+						for (final String chan : Moo.conf.getList("admin_channels"))
 							Moo.privmsg(chan, "[" + s + "] Packet loss: " + i);
 				}
 			}
@@ -57,7 +57,7 @@ public class PingChecker extends Thread
 				if (errlist.containsKey(s) && errlist.get(s).equals(err))
 					return;
 				
-				for (final String chan : Moo.conf.getAdminChannels())
+				for (final String chan : Moo.conf.getList("admin_channels"))
 					Moo.privmsg(chan, "[" + s + "] " + err);
 				
 				errlist.put(s, err);

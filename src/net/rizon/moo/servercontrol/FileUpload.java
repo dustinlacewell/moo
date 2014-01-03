@@ -47,7 +47,7 @@ public abstract class FileUpload extends Process
 	
 	public void onFinish()
 	{
-		for (String ch : Moo.conf.getMooLogChannels())
+		for (String ch : Moo.conf.getList("moo_log_channels"))
 			Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] Successfully uploaded " + file.getName());
 	}
 }

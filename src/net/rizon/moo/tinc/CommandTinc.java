@@ -15,7 +15,7 @@ class CommandTinc extends Command
 	protected CommandTinc(Plugin pkg)
 	{
 		super(pkg, ".TINC", "Manages tinc configuration");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	private void fetchConfiguration(Node n, String source, String target)

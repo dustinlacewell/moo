@@ -113,12 +113,12 @@ class Server extends Thread
 							{
 								if (c.getMessage().length > 1)
 								{
-									Moo.privmsg(Moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003:");
+									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003:");
 									for (final String msg : c.getMessage())
-										Moo.privmsg(Moo.conf.getCommitsChannel(), msg);
+										Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
 								}
 								else if (c.getMessage().length == 1)
-									Moo.privmsg(Moo.conf.getCommitsChannel(), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003: " + c.getMessage()[0]);
+									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003: " + c.getMessage()[0]);
 							}
 						}
 						catch (JsonSyntaxException e)

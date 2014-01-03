@@ -34,8 +34,8 @@ class deadListChecker extends Timer
 			
 			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
-				for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
-					Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
+				for (String s : Moo.conf.getList("flood_channels"))
+					Moo.privmsg(s, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
 				/* Don't really close this, we want the list to persist forever. */
 				p.isClosed = true;
@@ -97,8 +97,8 @@ public class random extends Plugin
 	
 	public static void logMatch(NickData nd, FloodList fl)
 	{
-		for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
-			Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+		for (String s : Moo.conf.getList("flood_channels"))
+			Moo.privmsg(s, "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 	
 	protected static void akill(final String ip)

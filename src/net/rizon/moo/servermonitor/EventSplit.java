@@ -31,7 +31,7 @@ class textDelay extends Timer
 				buf += " / ";
 			buf += s;
 		}
-		for (String email : Moo.conf.getSplitEmails())
+		for (String email : Moo.conf.getList("split_email"))
 			Mail.send(email, "Split", buf);
 		
 		EventSplit.texts = null;
@@ -49,13 +49,13 @@ class EventSplit extends Event
 	{
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 		
-		if (Moo.conf.getDisableSplitMessage() == false)
+		if (Moo.conf.getBool("disable_split_message") == false)
 		{
 			if (pypsd)
-				for (final String channel : Moo.conf.getDevChannels())
+				for (final String channel : Moo.conf.getList("dev_channels"))
 					Moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 			else
-				for (final String channel : Moo.conf.getSplitChannels())
+				for (final String channel : Moo.conf.getList("split_channels"))
 					Moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 		}
 		if (!pypsd)
@@ -87,17 +87,17 @@ class EventSplit extends Event
 	{
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 		
-		if (Moo.conf.getDisableSplitMessage() == false)
+		if (Moo.conf.getBool("disable_split_message") == false)
 		{
 			if (pypsd)
-				for (final String channel : Moo.conf.getDevChannels())
+				for (final String channel : Moo.conf.getList("dev_channels"))
 				{
 					final String insult = pypsdMockery[rand.nextInt(pypsdMockery.length)];
 					Moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2. " + insult);
 				}
 			else
 			{
-				for (final String channel : Moo.conf.getSplitChannels())
+				for (final String channel : Moo.conf.getList("split_channels"))
 					Moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
 				for (Server s : Server.getServers())
 				{
@@ -107,8 +107,8 @@ class EventSplit extends Event
 							String cline = it2.next();
 							
 							if (serv.getName().equalsIgnoreCase(cline))
-								for (int i = 0; i < Moo.conf.getSplitChannels().length; ++i)
-									Moo.privmsg(Moo.conf.getSplitChannels()[i], serv.getName() + " can connect to " + s.getName());
+								for (final String channel : Moo.conf.getList("split_channels"))
+									Moo.privmsg(channel, serv.getName() + " can connect to " + s.getName());
 						}
 				}
 			}
@@ -124,7 +124,7 @@ class EventSplit extends Event
 			texts.messages.add(serv.getName() + " split from " + from.getName());
 		}
 		
-		if (Moo.conf.getDisableSplitReconnect() == false && serv.isServices() == false)
+		if (Moo.conf.getBool("disable_split_reconnect") == false && serv.isServices() == false)
 		{
 			Reconnector r = new Reconnector(serv, from);
 			r.start();

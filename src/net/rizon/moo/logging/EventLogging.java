@@ -40,7 +40,7 @@ class EventLogging extends Event
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
-		if (Moo.conf.isLogChannel(channel) == false)
+		if (Moo.conf.listContains("log_channels", channel) == false)
 			return;
 		
 		try
@@ -89,7 +89,7 @@ class EventLogging extends Event
 	@Override
 	public void OnXLineAdd(Server serv, char type, final String value)
 	{
-		for (final String chan : Moo.conf.getAdminChannels())
+		for (final String chan : Moo.conf.getList("admin_channels"))
 			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " has a new " + type + "-Line for " + value + (type == 'O' ? " with flags " + serv.olines_work.get(value) : ""));
 		
 		try
@@ -112,7 +112,7 @@ class EventLogging extends Event
 	@Override
 	public void OnXLineDel(Server serv, char type, final String value)
 	{
-		for (final String chan : Moo.conf.getAdminChannels())
+		for (final String chan : Moo.conf.getList("admin_channels"))
 			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
 
 		try
@@ -135,7 +135,7 @@ class EventLogging extends Event
 	@Override
 	public void OnOLineChange(final Server serv, final String oper, final String diff)
 	{
-		for (final String chan : Moo.conf.getAdminChannels())
+		for (final String chan : Moo.conf.getList("admin_channels"))
 			Moo.privmsg(chan, "[O-LINE] " + serv.getName() + " changed flags for " + oper + ": " + diff);
 
 		try

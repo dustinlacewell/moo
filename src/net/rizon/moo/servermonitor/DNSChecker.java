@@ -29,7 +29,7 @@ class DNSChecker extends Thread
 			String what = "NS";
 			String[] what_array = { what };
 			
-			Attributes attributes = idir.getAttributes(Moo.conf.getServermonitorDomain(), what_array);
+			Attributes attributes = idir.getAttributes(Moo.conf.getString("servermonitor.domain"), what_array);
 			Attribute attr = attributes.get(what);
 			
 			long serial = -1;
@@ -47,7 +47,7 @@ class DNSChecker extends Thread
 					what = "SOA";
 					what_array[0] = what;
 					
-					Attributes nameserver_attributes = idir2.getAttributes(Moo.conf.getServermonitorDomain(), what_array);
+					Attributes nameserver_attributes = idir2.getAttributes(Moo.conf.getString("servermonitor.domain"), what_array);
 					Attribute nameserver_attr = nameserver_attributes.get(what);
 					
 					final String soa = nameserver_attr.get(0).toString();
@@ -58,18 +58,18 @@ class DNSChecker extends Thread
 					if (serial == -1)
 						serial = soa_serial;
 					else if (serial != soa_serial)
-						for (final String s : Moo.conf.getAdminChannels())
+						for (final String s : Moo.conf.getList("admin_channels"))
 							Moo.privmsg(s, "DNS: SOA mismatch for " + ns + ": Expected " + serial + " but got " + soa_serial);
 				}
 				catch (NamingException ex)
 				{
-					for (final String s : Moo.conf.getAdminChannels())
+					for (final String s : Moo.conf.getList("admin_channels"))
 						Moo.privmsg(s, "DNS: NamingError checking serial for " + ns + ": " + ex);
 					Logger.getGlobalLogger().log(ex);
 				}
 				catch (Exception ex)
 				{
-					for (final String s : Moo.conf.getAdminChannels())
+					for (final String s : Moo.conf.getList("admin_channels"))
 						Moo.privmsg(s, "DNS: Error checking serial for " + ns + ": " + ex);
 					Logger.getGlobalLogger().log(ex);
 				}
@@ -81,13 +81,13 @@ class DNSChecker extends Thread
 		}
 		catch (NamingException ex)
 		{
-			for (final String s : Moo.conf.getAdminChannels())
+			for (final String s : Moo.conf.getList("admin_channels"))
 				Moo.privmsg(s, "DNS: NamingError checking nameserver serials: " + ex);
 			Logger.getGlobalLogger().log(ex);
 		}
 		catch (Exception ex)
 		{
-			for (final String s : Moo.conf.getAdminChannels())
+			for (final String s : Moo.conf.getList("admin_channels"))
 				Moo.privmsg(s, "DNS: Error checking nameserver serials: " + ex);
 			Logger.getGlobalLogger().log(ex);
 		}
@@ -96,7 +96,7 @@ class DNSChecker extends Thread
 			try { idir.close(); } catch (Exception ex) { }
 		}
 		
-		for (final String r : Moo.conf.getServermonitorCheck())
+		for (final String r : Moo.conf.getList("servermonitor.check"))
 		{
 			try
 			{
@@ -104,7 +104,7 @@ class DNSChecker extends Thread
 			}
 			catch (UnknownHostException e)
 			{
-				for (final String s : Moo.conf.getAdminChannels())
+				for (final String s : Moo.conf.getList("admin_channels"))
 					Moo.privmsg(s, "DNS: Unable to resolve " + r + ": " + e.getMessage());
 			}
 		}

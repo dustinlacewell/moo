@@ -18,7 +18,7 @@ public class fun extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		if (Moo.conf.getProtocol().equals("plexus"))
+		if (Moo.conf.getString("protocol").equals("plexus"))
 		{
 			rt = new CommandRizonTime(this);
 			e = new EventFun();

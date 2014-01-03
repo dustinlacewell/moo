@@ -101,7 +101,7 @@ class EventWatch extends Event
 
 					WatchEntry we = new WatchEntry();
 					we.nick = nd.nick_str;
-					we.creator = Moo.conf.getNick();
+					we.creator = Moo.conf.getString("nick");
 					// Do not move IP from the end of the reason
 					we.reason = "Suspected open proxy (" + reason + ") on " + ip;
 					we.created = new Date();
@@ -110,8 +110,8 @@ class EventWatch extends Event
 						
 					watch.watches.add(we);
 					
-					for (int i = 0; i < Moo.conf.getSpamChannels().length; ++i)
-						Moo.privmsg(Moo.conf.getSpamChannels()[i], "Added watch for " + nd.nick_str + " due to hitting the OPM.");
+					for (String s : Moo.conf.getList("spam_channels"))
+						Moo.privmsg(s, "Added watch for " + nd.nick_str + " due to hitting the OPM.");
 					
 					return;
 				}
@@ -130,8 +130,8 @@ class EventWatch extends Event
 			if (!e.reason.startsWith("Suspected open proxy") || !e.reason.endsWith(ip))
 				continue;
 			
-			for (int i = 0; i < Moo.conf.getSpamChannels().length; ++i)
-				Moo.privmsg(Moo.conf.getSpamChannels()[i], "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
+			for (String s : Moo.conf.getList("spam_channels"))
+				Moo.privmsg(s, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
 			
 			it.remove();
 		}

@@ -15,7 +15,7 @@ public class CommandServerControl extends Command
 	public CommandServerControl(Plugin pkg)
 	{
 		super(pkg, "!EXEC", "Execute commands on remote servers");
-		this.requiresChannel(Moo.conf.getAdminChannels());
+		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
 	
 	@Override

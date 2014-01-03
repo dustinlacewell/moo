@@ -15,15 +15,13 @@ public class Message001 extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (Moo.conf.getOper().isEmpty() == false)
-			Moo.sock.write("OPER " + Moo.conf.getOper());
-		if (Moo.conf.getNickServPass().isEmpty() == false)
-			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.getNickServPass());
+		if (Moo.conf.getString("oper").isEmpty() == false)
+			Moo.sock.write("OPER " + Moo.conf.getString("oper"));
+		if (Moo.conf.getString("nickserv_pass").isEmpty() == false)
+			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.getString("nickserv_pass"));
 		
-		for (int i = 0; i < Moo.conf.getChannels().length; ++i)
-			Moo.join(Moo.conf.getChannels()[i]);
-		for (int i = 0; i < Moo.conf.getIdleChannels().length; ++i)
-			Moo.join(Moo.conf.getIdleChannels()[i]);
+		for (String s : Moo.conf.getList("channels"))
+			Moo.join(s);
 		
 		Server.clearServers();
 

@@ -17,7 +17,7 @@ class EventOSFlood extends Event
 	
 	private boolean isExpired(OperServFlood fu)
 	{
-		return fu.start.before(new Date(System.currentTimeMillis() - Moo.conf.getOSFloodTime()*60*1000));
+		return fu.start.before(new Date(System.currentTimeMillis() - Moo.conf.getInt("osflood.time") * 60 * 1000));
 	}
 	
 	@Override
@@ -60,13 +60,13 @@ class EventOSFlood extends Event
 				fu.frequency++;
 			}
 			
-			if (fu.frequency >= Moo.conf.getOSFloodNum())
+			if (fu.frequency >= Moo.conf.getInt("osflood.num"))
 			{
 				Moo.akill(host, "+3d", "Services abuse");
 				osFlooders.remove(host);
 				
-				for (int c = 0; c < Moo.conf.getFloodChannels().length; ++c)
-					Moo.privmsg(Moo.conf.getFloodChannels()[c], "[FLOOD] Akilled *@" + host + " for flooding OperServ.");
+				for (String s : Moo.conf.getList("flood_channels"))
+					Moo.privmsg(s, "[FLOOD] Akilled *@" + host + " for flooding OperServ.");
 			}
 		}
 	}
