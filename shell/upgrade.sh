@@ -46,9 +46,9 @@ echo "Replaying log..."
 git log ORIG_HEAD..
 echo "Done"
 
-sh build.sh
+ant
 if [ $? -ne 0 ]; then
-	abort "build.sh"
+	abort "ant"
 fi
 
 # We can't kill the process because it's important that we send a proper QUIT
