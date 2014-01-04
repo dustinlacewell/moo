@@ -1,11 +1,13 @@
 package net.rizon.moo;
 
+import java.util.ArrayList;
+
 public abstract class Command extends Message
 {
 	private Plugin pkg;
 	private String cmdname;
 	private String description;
-	private String[] requiresChannel;
+	private ArrayList<String> channels = new ArrayList<String>();
 
 	public Command(Plugin pkg, final String cmdname, final String desc)
 	{
@@ -39,20 +41,15 @@ public abstract class Command extends Message
 		return this.description;
 	}
 	
-	protected void requiresChannel(final String[] channels)
+	protected void requiresChannel(final String[] chans)
 	{
-		this.requiresChannel = channels;
+		for (String c : chans)
+			channels.add(c.toLowerCase());
 	}
 	
 	public boolean isRequiredChannel(String channel)
 	{
-		if (this.requiresChannel == null)
-			return true;
-		
-		for (String s : this.requiresChannel)
-			if (s.equalsIgnoreCase(channel))
-				return true;
-		return false;
+		return channels.isEmpty() || channels.contains(channel.toLowerCase());
 	}
 
 	@Override
