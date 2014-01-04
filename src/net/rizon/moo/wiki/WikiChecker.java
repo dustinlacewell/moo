@@ -21,7 +21,7 @@ class WikiChecker extends Thread
 	private static final SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	
-	private static Date last = new Date();
+	private static Date last;
 
 	@Override
 	public void run()
@@ -43,11 +43,14 @@ class WikiChecker extends Thread
 				String up = n.getElementsByTagName("updated").item(0).getTextContent();
 				Date d = sm.parse(up);
 				
-				if (!d.after(last))
+				if (last != null && !d.after(last))
 					continue;
 				
 				if (highest == null || d.after(highest))
 					highest = d;
+				
+				if (last == null)
+					continue;
 				
 				String title = n.getElementsByTagName("title").item(0).getTextContent(),
 						author = n.getElementsByTagName("author").item(0).getTextContent(),
