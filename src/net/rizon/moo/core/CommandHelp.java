@@ -1,6 +1,5 @@
 package net.rizon.moo.core;
 
-import java.util.Arrays;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
@@ -27,8 +26,8 @@ class commandHelpBase extends Command
 			boolean show_header = false;
 			
 			for (Command c : pkg.commands)
-			{	
-				if (c.getRequiredChannels() != null && Arrays.asList(c.getRequiredChannels()).contains(target) == false)
+			{
+				if (!c.isRequiredChannel(target))
 					continue;
 				
 				if (params.length == 1)

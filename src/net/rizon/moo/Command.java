@@ -1,7 +1,5 @@
 package net.rizon.moo;
 
-import java.util.Arrays;
-
 public abstract class Command extends Message
 {
 	private Plugin pkg;
@@ -46,9 +44,15 @@ public abstract class Command extends Message
 		this.requiresChannel = channels;
 	}
 	
-	public final String[] getRequiredChannels()
+	public boolean isRequiredChannel(String channel)
 	{
-		return this.requiresChannel;
+		if (this.requiresChannel == null)
+			return true;
+		
+		for (String s : this.requiresChannel)
+			if (s.equalsIgnoreCase(channel))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -56,7 +60,8 @@ public abstract class Command extends Message
 	{
 		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
 			return;
-		else if (this.getRequiredChannels() != null && Arrays.asList(this.getRequiredChannels()).contains(message[0]) == false)
+		
+		if (!this.isRequiredChannel(message[0]))
 			return;
 		
 		String tokens[] = message[1].split(" ");
