@@ -29,10 +29,6 @@ class requester extends Timer
 		
 		new DNSChecker().start();
 		
-		for (Server s : Server.getServers())
-			if (!s.isHub() && !s.isServices())
-				new PingChecker(s, 10).start();
-		
 		CertChecker.run();
 	}
 }
