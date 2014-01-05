@@ -22,7 +22,7 @@ class CertChecker
 			
 		if (!s.isHub() && !s.isServices())
 		{
-			SCheck sc = new SCheck(s, Moo.conf.getList("admin_channels"), true, CertChecker.sslPort, true, false);
+			SCheck sc = new SCheck(s, Moo.conf.getList("moo_log_channels"), true, CertChecker.sslPort, true, false);
 			sc.start();
 		}
 	}
