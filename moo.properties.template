@@ -134,11 +134,16 @@ servermonitor.check=na.iso.rizon.net eu.iso.rizon.net us.iso.rizon.net ca.iso.ri
 # Wiki URL
 wiki.url=http://wiki.rizon.net/index.php?title=Special:RecentChanges&feed=atom
 
+# Tickets
+tickets.url=http://abuse.rizon.net/index.php/home/login
+tickets.username=
+tickets.password=
+
 # Protocol to use.
 protocol=plexus
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki
+packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki,tickets
 
 debug=0
 
