@@ -82,7 +82,7 @@ class TicketChecker extends Thread
 						if (reminded++ > 0)
 							continue;
 						
-						t.nextReminder = new Date(now.getTime() + (reminder * 60 * 1000));
+						t.nextReminder = new Date(now.getTime() + ((reminder * ++t.reminded) * 60 * 1000));
 						message = "reminder";
 					}
 					

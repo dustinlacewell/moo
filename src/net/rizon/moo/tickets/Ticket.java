@@ -6,4 +6,5 @@ class Ticket
 {
 	public String lastReplier;
 	public Date nextReminder;
+	public int reminded;
 }
