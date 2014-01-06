@@ -2,6 +2,7 @@ package net.rizon.moo.tickets;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.HashMap;
 
 import net.rizon.moo.Plugin;
@@ -18,7 +19,7 @@ public class tickets extends Plugin
 		super("Tickets", "Monitors abuse tickets for changes");
 		
 		// This allows us to store cookies so we can properly login via HTTP POST
-		CookieHandler.setDefault(new CookieManager());
+		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 		
 		tickTimer = new TicketTimer();
 	}
