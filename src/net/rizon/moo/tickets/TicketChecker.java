@@ -92,7 +92,7 @@ class TicketChecker extends Thread
 					message = "#" + id + ": " + message + " (" + date + ") :: " + type + " :: " + ip + " :: " + contact + " :: http://abuse.rizon.net/" + id;
 					
 					if (!firstRun)
-						for (String s : Moo.conf.getList("oper_channels"))
+						for (String s : Moo.conf.getList("kline_channels"))
 							Moo.privmsg(s, message);
 					
 					if (t == null)
@@ -107,7 +107,7 @@ class TicketChecker extends Thread
 			
 			if (!firstRun)
 				if (reminded > 1)
-					for (String s : Moo.conf.getList("oper_channels"))
+					for (String s : Moo.conf.getList("kline_channels"))
 						Moo.privmsg(s, "Remaining tickets: " + (reminded - 1));
 			
 			firstRun = false;

@@ -64,6 +64,9 @@ log_channels=#services
 # Comma separated list of moo log channels
 moo_log_channels=#r-spam
 
+# Comma separated list of kline team channels
+kline_channels=#kline
+
 # Comma separated list of help channels
 help_channels=#h
 
