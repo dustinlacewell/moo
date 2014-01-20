@@ -35,13 +35,13 @@ nickserv_host=NickServ!service@rizon.net
 #oper=moo somepass
 
 # Comma separated list of channels to join
-channels=#opers,#o,#r,#x,#a,#d,#kline,#w,#services,#h,#adam
+channels=#opers,#o,#r,#x,#a,#d,#kline,#kline-spam,#w,#services,#h,#adam
 
 # Comma separated list of developer channels.
 dev_channels=#d
 
 # Comma separated list of spam channels, where non important messages can go
-spam_channels=#kline
+spam_channels=#kline-spam
 
 # Comma separated list of channels to announce and control floods to
 flood_channels=#w
@@ -50,7 +50,7 @@ flood_channels=#w
 split_channels=#opers
 
 # Non SO staff channels
-staff_channels=#opers
+staff_channels=#opers,#kline
 
 # Comma separated list of oper channels
 oper_channels=#o
