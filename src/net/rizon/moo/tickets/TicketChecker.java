@@ -31,6 +31,8 @@ class TicketChecker extends Thread
 			connection = (HttpURLConnection) url.openConnection();
 			
 			connection.setRequestMethod("POST");
+			connection.setConnectTimeout(15 * 1000);
+			connection.setReadTimeout(15 * 1000);
 			connection.setDoOutput(true);
 			
 			String postData = "username=" + URLEncoder.encode(Moo.conf.getString("tickets.username"), "UTF-8") + "&password=" + URLEncoder.encode(Moo.conf.getString("tickets.password"), "UTF-8");
