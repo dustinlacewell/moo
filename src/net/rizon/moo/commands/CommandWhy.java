@@ -177,7 +177,7 @@ class CommandWhy extends Command
 		
 		requested = 0;
 		for (Server s : Server.getServers())
-			if (s.getSplit() == null && !s.isServices())
+			if (s.getSplit() == null && !s.isServices() && !s.isHub())
 			{
 				Moo.sock.write("STATS k " + s.getName());
 				Moo.sock.write("STATS K " + s.getName());
