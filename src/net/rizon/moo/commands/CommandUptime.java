@@ -109,6 +109,7 @@ class CommandUptime extends Command
 		else
 			only_extremes = true;
 		
+		message242.waiting_for.clear();
 		for (Server s : Server.getServers())
 		{
 			if (s.isServices() == false && s.getSplit() == null)
