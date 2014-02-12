@@ -13,6 +13,7 @@ public class Config
 		prop = new Properties();
 		FileInputStream fis = new FileInputStream("moo.properties");
 		prop.load(fis);
+		fis.close();
 	}
 	
 	public String getString(String name)
