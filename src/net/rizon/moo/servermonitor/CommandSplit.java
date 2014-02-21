@@ -71,7 +71,13 @@ class CommandSplit extends Command
 					String buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
 					Reconnector r = Reconnector.findValidReconnectorFor(s);
 					if (r != null)
-						buffer += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+					{
+						Server to = r.findPreferred();
+						if (to == s)
+							buffer += " Delaying due to uplink being split.";
+						else
+							buffer += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+					}
 					Moo.reply(source, target, buffer);
 				}
 			}
