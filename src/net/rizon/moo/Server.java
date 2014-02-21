@@ -198,7 +198,7 @@ public class Server
 		try
 		{
 			LinkedList<Split> splits = new LinkedList<Split>();
-			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ?");
+			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ?  order by `when` asc");
 			stmt.setString(1, this.getName());
 			ResultSet rs = Moo.db.executeQuery();
 			while (rs.next())
@@ -213,6 +213,7 @@ public class Server
 				splits.add(sp);
 			}
 			
+			// Most recent split is at the end
 			Split[] s = new Split[splits.size()];
 			splits.toArray(s);
 			return s;
