@@ -48,10 +48,10 @@ class Reconnector extends Timer
 		// If the two most recent split were from 's' and they were <10 and <20, move the server
 		
 		Split last = splits[splits.length - 1];
-		boolean last1 = last.to.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (10 * 60 * 1000)));
+		boolean last1 = last.from.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (10 * 60 * 1000)));
 		
 		last = splits[splits.length - 2];
-		boolean last2 = last.to.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (20 * 60 * 1000)));
+		boolean last2 = last.from.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (20 * 60 * 1000)));
 		
 		return last1 && last2;
 	}
