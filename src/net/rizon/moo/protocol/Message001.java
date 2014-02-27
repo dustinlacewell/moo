@@ -26,7 +26,16 @@ public class Message001 extends Message
 		Server.clearServers();
 
 		Moo.sock.write("MAP");
-		Moo.sock.write("LINKS"); // This returns numeric 365, we load databases here
+		Moo.sock.write("LINKS");
+		
+		for (Server s : Server.getServers())
+		{
+			Moo.sock.write("STATS c " + s.getName());
+			Moo.sock.write("STATS o " + s.getName());
+			Moo.sock.write("STATS B " + s.getName());
+			if (!s.isServices())
+				Moo.sock.write("VERSION " + s.getName());
+		}
 		
 		for (Event e : Event.getEvents())
 			e.onConnect();

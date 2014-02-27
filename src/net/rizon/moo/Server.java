@@ -44,11 +44,14 @@ public class Server
 		
 		log.log(Level.FINE, "Adding server " + this.getName());
 		
-		Moo.sock.write("STATS c " + this.getName());
-		Moo.sock.write("STATS o " + this.getName());
-		Moo.sock.write("STATS B " + this.getName());
-		if (!this.isServices())
-			Moo.sock.write("VERSION " + this.getName());
+		if (Moo.sock != null)
+		{
+			Moo.sock.write("STATS c " + this.getName());
+			Moo.sock.write("STATS o " + this.getName());
+			Moo.sock.write("STATS B " + this.getName());
+			if (!this.isServices())
+				Moo.sock.write("VERSION " + this.getName());
+		}
 		
 		for (Event e : Event.getEvents())
 			e.onServerCreate(this);

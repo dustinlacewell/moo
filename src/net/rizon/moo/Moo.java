@@ -86,6 +86,9 @@ public class Moo
 		for (Event e : Event.getEvents())
 			e.initDatabases();
 		
+		for (Event e : Event.getEvents())
+			e.loadDatabases();
+		
 		new databaseTimer();
 		
 		while (quitting == false)
@@ -178,9 +181,6 @@ public class Moo
 				Logger.getGlobalLogger().log(ex);
 			}
 			
-			for (Event e : Event.getEvents())
-				e.onShutdown();
-			
 			if (Moo.sock != null)
 			{
 				Moo.sock.shutdown();
@@ -199,6 +199,9 @@ public class Moo
 				quitting = true;
 			}
 		}
+		
+		for (Event e : Event.getEvents())
+			e.onShutdown();
 		
 		db.shutdown();
 		
