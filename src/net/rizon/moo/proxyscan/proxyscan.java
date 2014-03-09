@@ -37,8 +37,12 @@ public class proxyscan extends Plugin
 		if (cache.hit(ip))
 			return;
 		
+		String message = Moo.conf.getString("proxyscan.ban_message").replace("%i", ip).replace("%p", "" + port).replace("%t", type);
+		
 		Moo.privmsg(Moo.conf.getString("proxyscan.channel"), "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
-		Moo.akill(ip, "+3d", Moo.conf.getString("proxyscan.ban_message").replace("%i", ip).
-				replace("%p", "" + port).replace("%t", type));
+		Moo.akill(ip, "+3d", message);
+		
+		if (Moo.conf.getBool("proxyscan.py-opers"))
+			Moo.privmsg("py-opers", "~dnsbl_admin.add " + ip + " 1 " + message); 
 	}
 }

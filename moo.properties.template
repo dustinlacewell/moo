@@ -149,6 +149,7 @@ proxyscan.path=/home/adam/rizon/proxycheck/proxycheck
 proxyscan.channel=#kline-spam
 # Akill message for users with a proxy. %t is the proxy type, %p is the port and %i is the IP address
 proxyscan.ban_message=Using or hosting open proxies is not permitted, detected %t/%p.
+proxyscan.py-opers=false
 proxyscan.scan_notice=For network safety, your client is being scanned for open proxies by proxyscan.siglost.com (188.122.74.139). This scan will not harm your computer.
 
 # Wiki URL
