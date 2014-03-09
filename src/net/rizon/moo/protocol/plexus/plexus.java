@@ -8,6 +8,7 @@ import net.rizon.moo.protocol.Message213;
 import net.rizon.moo.protocol.Message219;
 import net.rizon.moo.protocol.Message243;
 import net.rizon.moo.protocol.Message364;
+import net.rizon.moo.protocol.Message401;
 import net.rizon.moo.protocol.Message474;
 import net.rizon.moo.protocol.MessageInvite;
 import net.rizon.moo.protocol.MessageJoin;
@@ -23,7 +24,7 @@ import net.rizon.moo.protocol.MessageWallops;
 
 public class plexus extends Plugin
 {
-	private Message m001, m213, m219, m243, m364, m474, invite, ping, privmsg, join, part,
+	private Message m001, m213, m219, m243, m364, m401, m474, invite, ping, privmsg, join, part,
 					kick, mode, nick, notice, quit, wallops,
 					m015, m017, m227;
 	
@@ -43,6 +44,7 @@ public class plexus extends Plugin
 		m219 = new Message219();
 		m243 = new Message243();
 		m364 = new Message364();
+		m401 = new Message401();
 		m474 = new Message474();
 		invite = new MessageInvite();
 		ping = new MessagePing();
@@ -72,6 +74,7 @@ public class plexus extends Plugin
 		m219.remove();
 		m243.remove();
 		m364.remove();
+		m401.remove();
 		m474.remove();
 		invite.remove();
 		ping.remove();

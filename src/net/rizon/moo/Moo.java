@@ -34,6 +34,8 @@ public class Moo
 	public static Socket sock = null;
 	public static Database db = null;
 	public static boolean quitting = false;
+	
+	public static String akillServ = "GeoServ";
 
 	public static void main(String[] args)
 	{
@@ -349,12 +351,13 @@ public class Moo
 	{
 		if (host.equals("255.255.255.255"))
 			return;
-		privmsg("GeoServ", "AKILL ADD " + time + " *@" + host + " " + reason);
+		
+		privmsg(akillServ, "AKILL ADD " + time + " *@" + host + " " + reason);
 	}
 	
 	public static void qakill(final String nick, final String reason)
 	{
-		privmsg("GeoServ", "QAKILL " + nick + " " + reason);
+		privmsg(akillServ, "QAKILL " + nick + " " + reason);
 	}
 	
 	public static void capture(final String nick)
