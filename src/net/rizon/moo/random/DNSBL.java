@@ -21,7 +21,7 @@ class DNSBL extends FloodList
 	
 	private static LinkedList<DNSBL> lists = new LinkedList<DNSBL>();
 	
-	public static DNSBL getList(final String name)
+	public static synchronized DNSBL getList(final String name)
 	{
 		for (Iterator<DNSBL> it = lists.iterator(); it.hasNext();)
 		{
