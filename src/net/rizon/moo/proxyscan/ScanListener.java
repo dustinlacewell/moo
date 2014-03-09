@@ -45,11 +45,11 @@ final class ScanListener extends Thread
 					s.flush();
 					log.log(Level.FINE, "Wrote check string.");
 					
-					client.setSoTimeout(10);
+					client.setSoTimeout(10 * 1000);
 					byte[] b = new byte[64];
 					is.read(b);
 					
-					String[] str = new String(b).split(":");
+					String[] str = new String(b).trim().split(":");
 					if (str.length == 3 && str[0].length() < 5)
 					{
 						try
