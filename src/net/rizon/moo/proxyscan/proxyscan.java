@@ -37,7 +37,7 @@ public class proxyscan extends Plugin
 		if (cache.hit(ip))
 			return;
 		
-		Moo.privmsg(Moo.conf.getString("proxyscan.channel"), "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input)");
+		Moo.privmsg(Moo.conf.getString("proxyscan.channel"), "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
 		Moo.akill(ip, "+3d", Moo.conf.getString("proxyscan.ban_message").replace("%i", ip).
 				replace("%p", "" + port).replace("%t", type));
 	}
