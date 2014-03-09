@@ -25,7 +25,7 @@ final class IPCache extends Timer
 	}
 
 	@Override
-	public void run(Date now)
+	public synchronized void run(Date now)
 	{
 		for (Iterator<CacheEntry> it = cacheq.iterator(); it.hasNext();)
 		{
@@ -44,26 +44,26 @@ final class IPCache extends Timer
 		}
 	}
 
-	public void addCacheEntry(final String ip)
+	public synchronized void addCacheEntry(final String ip)
 	{
 		CacheEntry e = new CacheEntry(ip);
 		this.cache.put(ip, e);
 		this.cacheq.addLast(e);
 	}
 
-	public boolean isCached(final String ip)
+	public synchronized boolean isCached(final String ip)
 	{
 		return this.cache.get(ip) != null;
 	}
 	
-	public void hit(String ip)
+	public synchronized void hit(String ip)
 	{
 		CacheEntry e = this.cache.get(ip);
 		if (e != null)
 			e.hit = true;
 	}
 	
-	public boolean isHit(String ip)
+	public synchronized boolean isHit(String ip)
 	{
 		CacheEntry e = this.cache.get(ip);
 		if (e != null)

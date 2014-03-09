@@ -32,7 +32,7 @@ public class proxyscan extends Plugin
 		sc.shutdown();
 	}
 	
-	public synchronized static void akill(String ip, int port, String type, boolean input)
+	public static void akill(String ip, int port, String type, boolean input)
 	{
 		if (cache.isHit(ip))
 			return;
