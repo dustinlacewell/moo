@@ -69,7 +69,8 @@ public final class ClassLoader extends java.lang.ClassLoader
 		}
 		catch (Exception ex)
 		{
-			throw new ClassNotFoundException(ex.getMessage());
+			log.log(Level.SEVERE, "Exception while loading class", ex);
+			throw new ClassNotFoundException();
 		}
 		finally
 		{
