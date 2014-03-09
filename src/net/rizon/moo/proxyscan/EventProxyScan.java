@@ -9,11 +9,10 @@ import net.rizon.moo.Moo;
 class EventProxyScan extends Event
 {
 	private static final Logger log = Logger.getLogger(EventProxyScan.class.getName());
-	private final IPCache cache = new IPCache();
 	
 	EventProxyScan()
 	{
-		this.cache.start();
+		proxyscan.cache.start();
 	}
 	
 	
@@ -21,7 +20,7 @@ class EventProxyScan extends Event
 	public void remove()
 	{
 		super.remove();
-		this.cache.stop();
+		proxyscan.cache.stop();
 	}
 
 	@Override
@@ -30,7 +29,7 @@ class EventProxyScan extends Event
 		log.log(Level.FINE, "Client connection from " + ip);
 		
 		// We only scan IPv4
-		if (ip.indexOf('.') == -1 || this.cache.isCached(ip))
+		if (ip.indexOf('.') == -1 || proxyscan.cache.isCached(ip))
 			return;
 		
 		log.log(Level.FINE, "Scanning " + ip);
@@ -39,7 +38,7 @@ class EventProxyScan extends Event
 		if (!notice.isEmpty())
 			Moo.notice(nick, notice);
 		
-		this.cache.addCacheEntry(ip);
+		proxyscan.cache.addCacheEntry(ip);
 		Connector.connect(ip);
 	}
 }

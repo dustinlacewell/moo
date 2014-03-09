@@ -55,4 +55,19 @@ final class IPCache extends Timer
 	{
 		return this.cache.get(ip) != null;
 	}
+	
+	public void hit(String ip)
+	{
+		CacheEntry e = this.cache.get(ip);
+		if (e != null)
+			e.hit = true;
+	}
+	
+	public boolean isHit(String ip)
+	{
+		CacheEntry e = this.cache.get(ip);
+		if (e != null)
+			return e.hit;
+		return false;
+	}
 }

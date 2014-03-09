@@ -6,6 +6,7 @@ final class CacheEntry
 {
 	public final String ip;
 	public final long added;
+	public boolean hit;
 	
 	public CacheEntry(final String ip)
 	{

@@ -1,6 +1,7 @@
 package net.rizon.moo.proxyscan;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -35,14 +36,36 @@ final class ScanListener extends Thread
 			for (Socket client; (client = this.listener.accept()) != null;)
 			{
 				log.log(Level.FINE, "Accepted client");
+				InputStream is = client.getInputStream();
 				OutputStream s = client.getOutputStream();
 
 				try
 				{
 					s.write((proxyscan.check_string + "\r\n").getBytes());
 					s.flush();
-					s.close();
 					log.log(Level.FINE, "Wrote check string.");
+					
+					client.setSoTimeout(10);
+					byte[] b = new byte[64];
+					is.read(b);
+					
+					String[] str = new String(b).split(":");
+					if (str.length == 3 && str[0].length() < 5)
+					{
+						try
+						{
+							int p = Integer.parseInt(str[2]);
+							if (p > 0 && p < 65535)
+							{
+								InetSocketAddress them = (InetSocketAddress) client.getRemoteSocketAddress();
+								proxyscan.akill(them.getAddress().getHostAddress(), port, str[0], true);
+							}
+						}
+						catch (NumberFormatException ex)
+						{
+							log.log(Level.FINE, "Non numeric port for proxy: " + str[2]);
+						}
+					}
 				}
 				catch (IOException ex)
 				{

@@ -50,13 +50,10 @@ final class ConnectorThread extends Thread
 				 */
 				String[] parts_sp = s.split(" ");
 				String[] parts_colon = parts_sp[1].split(":");
-				String host = parts_sp[0];
 				String port = parts_colon[1];
 				String type = parts_colon[0];
 
-				Moo.privmsg(Moo.conf.getString("proxyscan.channel"), "PROXY FOUND: " + host + ":" + port + " " + type);
-				Moo.akill(this.ip, "+3d", Moo.conf.getString("proxyscan.ban_message").replace("%i", host).
-						replace("%p", port).replace("%t", type));
+				proxyscan.akill(this.ip, Integer.parseInt(port), type, false);
 			}
 
 			try { in.close(); } catch (IOException ex) { }
