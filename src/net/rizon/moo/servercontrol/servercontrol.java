@@ -10,6 +10,7 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.servercontrol.commands.Cert;
 import net.rizon.moo.servercontrol.commands.CommandAddServer;
+import net.rizon.moo.servercontrol.commands.CommandClose;
 import net.rizon.moo.servercontrol.commands.CommandConnections;
 import net.rizon.moo.servercontrol.commands.CommandDelServer;
 import net.rizon.moo.servercontrol.commands.CommandServerControl;
@@ -21,7 +22,7 @@ import net.rizon.moo.servercontrol.protocols.Telnet;
 
 public class servercontrol extends Plugin
 {
-	private net.rizon.moo.Command addserver, connections, delserver, sc, servers, s, cert;
+	private net.rizon.moo.Command addserver, close, connections, delserver, sc, servers, s, cert;
 	
 	public servercontrol()
 	{
@@ -35,6 +36,7 @@ public class servercontrol extends Plugin
 	public void start() throws Exception
 	{
 		addserver = new CommandAddServer(this);
+		close = new CommandClose(this);
 		connections = new CommandConnections(this);
 		delserver = new CommandDelServer(this);
 		sc = new CommandServerControl(this);
@@ -51,6 +53,7 @@ public class servercontrol extends Plugin
 	public void stop()
 	{
 		addserver.remove();
+		close.remove();
 		connections.remove();
 		delserver.remove();
 		sc.remove();
