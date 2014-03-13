@@ -30,7 +30,6 @@ public class Message001 extends Message
 		{
 			Moo.sock.write("STATS c " + s.getName());
 			Moo.sock.write("STATS o " + s.getName());
-			Moo.sock.write("STATS B " + s.getName());
 			if (!s.isServices())
 				Moo.sock.write("VERSION " + s.getName());
 		}

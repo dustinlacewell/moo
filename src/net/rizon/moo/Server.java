@@ -25,7 +25,6 @@ public class Server
 	// oper name -> flags
 	public HashMap<String, String> olines = new HashMap<String, String>(), olines_work = new HashMap<String, String>();
 	public HashSet<Server> links = new HashSet<Server>();
-	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
 	public long bytes = 0;
 	public int users = 0, last_users = 0;
 	public LinkedList<String> preferred_links = new LinkedList<String>();
@@ -233,7 +232,6 @@ public class Server
 		if (s == null)
 			return;
 		
-		/* Be sure dnsbl stats are up to date, prevents long splits from tripping the dnsbl monitor */
 		this.requestStats();
 
 		s.to = to.getName();
@@ -376,7 +374,7 @@ public class Server
 	{
 		Moo.sock.write("STATS c " + this.getName());
 		Moo.sock.write("STATS o " + this.getName());
-		Moo.sock.write("STATS B " + this.getName());
+		//Moo.sock.write("STATS B " + this.getName());
 	}
 	
 	public static void init()

@@ -1,8 +1,9 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import java.util.Iterator;
+import java.util.HashMap;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
@@ -13,6 +14,9 @@ public class dnsbl extends Plugin
 	private Command dnsbl;
 	private Timer requester;
 	private Message n219;
+	private Event e;
+	
+	static HashMap<Server, DnsblInfo> infos = new HashMap<Server, DnsblInfo>();
 	
 	public dnsbl()
 	{
@@ -25,6 +29,7 @@ public class dnsbl extends Plugin
 		dnsbl = new CommandDnsbl(this);
 		requester = new StatsRequester();
 		n219 = new Numeric219();
+		e = new EventDnsbl();
 	}
 
 	@Override
@@ -33,14 +38,17 @@ public class dnsbl extends Plugin
 		dnsbl.remove();
 		requester.stop();
 		n219.remove();
+		e.remove();
 	}
 	
-	
-	public static long getDnsblFor(Server s)
+	static DnsblInfo getDnsblInfoFor(Server s)
 	{
-		long i = 0;
-		for (Iterator<String> it = s.dnsbl.keySet().iterator(); it.hasNext();)
-			i += s.dnsbl.get(it.next());
+		DnsblInfo i = infos.get(s);
+		if (i == null)
+		{
+			i = new DnsblInfo();
+			infos.put(s, i);
+		}
 		return i;
 	}
 }

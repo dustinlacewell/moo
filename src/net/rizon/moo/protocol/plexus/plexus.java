@@ -27,7 +27,7 @@ public class plexus extends Plugin
 {
 	private Message m001, m213, m219, m243, m303, m364, m401, m474, invite, ping, privmsg, join, part,
 					kick, mode, nick, notice, quit, wallops,
-					m015, m017, m227;
+					m015, m017;
 	
 	private Event e;
 	
@@ -63,7 +63,6 @@ public class plexus extends Plugin
 		/* Plexus */
 		m015 = new Message015();
 		m017 = new Message017();
-		m227 = new Message227();
 		
 		e = new EventPlexus();
 	}
@@ -93,7 +92,6 @@ public class plexus extends Plugin
 		
 		m015.remove();
 		m017.remove();
-		m227.remove();
 		
 		e.remove();
 	}

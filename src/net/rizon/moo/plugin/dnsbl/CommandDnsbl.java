@@ -73,19 +73,20 @@ class CommandDnsbl extends Command
 					Moo.reply(command_target_source, command_target_chan, "No servers found for " + do_server_name);
 				else
 				{
-					long total = dnsbl.getDnsblFor(s);
+					DnsblInfo info = dnsbl.getDnsblInfoFor(s);
+					long total = info.getTotal();
 
 					Moo.reply(command_target_source, command_target_chan, "DNSBL counts for " + s.getName() + " (" + total + "):");
 
-					String[] dnsbl_names = new String[s.dnsbl.size()];
-					s.dnsbl.keySet().toArray(dnsbl_names);
-					dnsblCountComparator.counts = s.dnsbl;
+					String[] dnsbl_names = new String[info.hits.size()];
+					info.hits.keySet().toArray(dnsbl_names);
+					dnsblCountComparator.counts = info.hits;
 					Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
 					
 					for (int i = dnsbl_names.length; i > 0; --i)
 					{
 						final String dnsbl_name = dnsbl_names[i - 1];
-						long dnsbl_count = s.dnsbl.get(dnsbl_name);
+						long dnsbl_count = info.hits.get(dnsbl_name);
 						
 						float percent = total > 0 ? ((float) dnsbl_count / (float) total * 100) : 0;
 						int percent_i = Math.round(percent);
@@ -98,7 +99,7 @@ class CommandDnsbl extends Command
 			{
 				long total = 0;
 				for (Server s : Server.getServers())
-					total += dnsbl.getDnsblFor(s);
+					total += dnsbl.getDnsblInfoFor(s).getTotal();
 
 				Moo.reply(CommandDnsbl.command_target_source, command_target_chan, "DNSBL counts by server (" + total + "):");
 
@@ -108,7 +109,7 @@ class CommandDnsbl extends Command
 				for (int i = servers.length; i > 0; --i)
 				{
 					Server s = servers[i - 1];
-					long value = dnsbl.getDnsblFor(s);
+					long value = dnsbl.getDnsblInfoFor(s).getTotal();
 					
 					if (value == 0)
 						continue;
@@ -125,12 +126,13 @@ class CommandDnsbl extends Command
 				long total = 0;
 				for (Server s : Server.getServers())
 				{
-					total += dnsbl.getDnsblFor(s);
+					DnsblInfo info = dnsbl.getDnsblInfoFor(s);
+					total += info.getTotal();
 					
-					for (Iterator<String> it = s.dnsbl.keySet().iterator(); it.hasNext();)
+					for (Iterator<String> it = info.hits.keySet().iterator(); it.hasNext();)
 					{
 						final String dnsbl_name = it.next();
-						long dnsbl_count = s.dnsbl.get(dnsbl_name);
+						long dnsbl_count = info.hits.get(dnsbl_name);
 						
 						long i = dnsbl_counts.containsKey(dnsbl_name) ? dnsbl_counts.get(dnsbl_name) : 0;
 						i += dnsbl_count;
@@ -156,7 +158,7 @@ class CommandDnsbl extends Command
 					Moo.reply(CommandDnsbl.command_target_source, command_target_chan, name + ": " + value + " (" + percent_i + "%)");
 				}
 			}
-				
+
 			command_target_chan = command_target_source = null;
 		}
 	}

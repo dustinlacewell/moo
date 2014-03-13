@@ -1,13 +1,13 @@
-package net.rizon.moo.protocol.plexus;
+package net.rizon.moo.plugin.dnsbl;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Server;
 
 /* /stats b */
-class Message227 extends Message
+class Numeric227 extends Message
 {
-	public Message227()
+	public Numeric227()
 	{
 		super("227");
 	}
@@ -35,6 +35,7 @@ class Message227 extends Message
 		if (s == null)
 			s = new Server(source);
 
-		s.dnsbl.put(name, count);
+		DnsblInfo info = dnsbl.getDnsblInfoFor(s);
+		info.hits.put(name, count);
 	}
 }

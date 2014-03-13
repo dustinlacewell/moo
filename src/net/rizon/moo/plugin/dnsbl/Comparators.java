@@ -12,7 +12,8 @@ class dnsblServerComparator implements Comparator<Server>
 	@Override
 	public int compare(Server arg0, Server arg1)
 	{
-		long val0 = dnsbl.getDnsblFor(arg0), val1 = dnsbl.getDnsblFor(arg1);
+		DnsblInfo i0 = dnsbl.getDnsblInfoFor(arg0), i1 = dnsbl.getDnsblInfoFor(arg1);
+		long val0 = i0 != null ? i0.getTotal() : 0, val1 = i1 != null ? i1.getTotal() : 0;
 		if (val0 < val1)
 			return -1;
 		else if (val0 > val1)
