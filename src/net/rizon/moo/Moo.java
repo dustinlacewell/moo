@@ -75,7 +75,7 @@ public class Moo
 			Plugin.loadPlugin("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
 			
 			for (final String pkg : conf.getList("packages"))
-				Plugin.loadPlugin("net.rizon.moo.", pkg);
+				Plugin.loadPlugin("net.rizon.moo.plugin.", pkg);
 		}
 		catch (Exception ex)
 		{
