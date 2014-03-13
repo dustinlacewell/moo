@@ -44,6 +44,7 @@ public abstract class Event
 	public void onClientConnect(final String nick, final String ident, final String ip, final String realname) { }
 	public void onAkillAdd(final String setter, final String ip, final String reason) { }
 	public void onAkillDel(final String setter, final String ip, final String reason) { }
+	public void onOPMHit(final String nick, final String ip, final String reason) { }
 	
 	private static LinkedList<Event> events = new LinkedList<Event>();
 	

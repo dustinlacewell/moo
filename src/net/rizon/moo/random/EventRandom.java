@@ -1,8 +1,11 @@
 package net.rizon.moo.random;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Level;
 
 import net.rizon.moo.Event;
+import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 
@@ -14,11 +17,29 @@ class EventRandom extends Event
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `akills` (`date` DATE DEFAULT CURRENT_TIMESTAMP, `ip`, `count`)");
 		Moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `akills_ip_idx` on `akills` (`ip`)");
 	}
-	
+
+	private static final String opmMatch = "Using or hosting open proxies is not permitted";
+	private static final Logger log = Logger.getLogger(EventRandom.class.getName());
+
 	@Override
 	public void onAkillAdd(final String setter, final String ip, final String reason)
 	{
-		if (reason.contains("hopm") || reason.contains("open proxies") || reason.contains("open proxy"))
+		if (reason.contains(opmMatch))
+		{
+			for (Iterator<NickData> it = random.getNicks().iterator(); it.hasNext();)
+			{
+				NickData nd = it.next();
+				
+				if (ip.equals(nd.ip))
+				{
+					for (Event e : Event.getEvents())
+						e.onOPMHit(nd.nick_str, ip, reason);
+				}
+			}
+			return;
+		}
+
+		if (reason.contains("open proxies") || reason.contains("open proxy"))
 			return;
 		
 		random.akill(ip);
