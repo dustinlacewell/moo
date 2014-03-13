@@ -60,7 +60,7 @@ class CommandSplit extends Command
 				Split sp = s.getSplit();
 				++count;
 				
-				if (sp != null)
+				if (sp != null || s.links.isEmpty())
 				{
 					++split;
 					String s_name;
@@ -68,7 +68,11 @@ class CommandSplit extends Command
 						s_name = Message.COLOR_BRIGHTBLUE + s.getName() + Message.COLOR_END;
 					else
 						s_name = s.getName();
-					String buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+					String buffer;
+					if (sp != null)
+						buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+					else
+						buffer = "[SPLIT] " + s_name + ".";
 					Reconnector r = Reconnector.findValidReconnectorFor(s);
 					if (r != null)
 					{

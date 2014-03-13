@@ -24,7 +24,7 @@ public class Server
 	public HashSet<String> clines = new HashSet<String>(), clines_work = new HashSet<String>();
 	// oper name -> flags
 	public HashMap<String, String> olines = new HashMap<String, String>(), olines_work = new HashMap<String, String>();
-	public HashSet<String> links = new HashSet<String>();
+	public HashSet<Server> links = new HashSet<Server>();
 	public HashMap<String, Long> dnsbl = new HashMap<String, Long>();
 	public long bytes = 0;
 	public int users = 0, last_users = 0;
@@ -46,11 +46,10 @@ public class Server
 		
 		if (Moo.sock != null)
 		{
-			Moo.sock.write("STATS c " + this.getName());
-			Moo.sock.write("STATS o " + this.getName());
-			Moo.sock.write("STATS B " + this.getName());
+			this.requestStats();
 			if (!this.isServices())
 				Moo.sock.write("VERSION " + this.getName());
+			Moo.sock.write("MAP");
 		}
 		
 		for (Event e : Event.getEvents())
@@ -121,7 +120,7 @@ public class Server
 		return false;
 	}
 	
-	public void link(final String to)
+	public void link(final Server to)
 	{
 		this.links.add(to);
 		last_link = new Date();
@@ -228,17 +227,16 @@ public class Server
 		}
 	}
 	
-	public void splitDel(final String to)
+	public void splitDel(final Server to)
 	{
 		Split s = this.getSplit();
 		if (s == null)
 			return;
 		
-		Moo.sock.write("STATS c " + this.getName());
-		Moo.sock.write("STATS o " + this.getName());
-		Moo.sock.write("STATS B " + this.getName());
+		/* Be sure dnsbl stats are up to date, prevents long splits from tripping the dnsbl monitor */
+		this.requestStats();
 
-		s.to = to;
+		s.to = to.getName();
 		s.end = new Date();
 		
 		try
@@ -302,18 +300,8 @@ public class Server
 		return s;
 	}
 	
-	public static void clearServers()
-	{
-		servers.clear();
-	}
-	
 	public static class db extends Event
-	{
-		static
-		{
-			new db();
-		}
-		
+	{		
 		@Override
 		protected void initDatabases() 
 		{
@@ -327,9 +315,6 @@ public class Server
 		{
 			try
 			{
-				for (Iterator<Server> it = servers.iterator(); it.hasNext();)
-					it.next().preferred_links.clear();
-				
 				ResultSet rs = Moo.db.executeQuery("SELECT * FROM servers");
 				while (rs.next())
 				{
@@ -340,6 +325,9 @@ public class Server
 					Server s = Server.findServerAbsolute(name);
 					if (s == null)
 						s = new Server(name);
+					else
+						s.preferred_links.clear();
+					
 					if (desc != null)
 						s.desc = desc;
 					s.created = created;
@@ -382,5 +370,28 @@ public class Server
 				log.log(Level.WARNING, "Error saving servers", ex);
 			}
 		}
+	}
+	
+	private void requestStats()
+	{
+		Moo.sock.write("STATS c " + this.getName());
+		Moo.sock.write("STATS o " + this.getName());
+		Moo.sock.write("STATS B " + this.getName());
+	}
+	
+	public static void init()
+	{
+		new db();
+		
+		new Timer(300, true)
+		{
+			@Override
+			public void run(Date now)
+			{
+				for (Server s : Server.getServers())
+					s.requestStats();
+				Moo.sock.write("MAP");
+			}
+		};
 	}
 }

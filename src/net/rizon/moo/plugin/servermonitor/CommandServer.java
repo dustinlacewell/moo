@@ -22,9 +22,9 @@ class commandServerBase extends Command
 	
 	private static boolean isLink(Server s, Server targ)
 	{
-		for (Iterator<String> it = s.links.iterator(); it.hasNext();)
+		for (Iterator<Server> it = s.links.iterator(); it.hasNext();)
 		{
-			Server s2 = Server.findServerAbsolute(it.next());
+			Server s2 = it.next();
 			
 			if (targ == s2)
 				return true;

@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.dnsbl;
 
 import net.rizon.moo.Message;
 
+// End of stats
 class Numeric219 extends Message
 {
 	Numeric219()

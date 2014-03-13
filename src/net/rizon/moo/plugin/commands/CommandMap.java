@@ -165,8 +165,8 @@ class commandMapBase extends Command
 				if (s == null)
 					Moo.reply(source, target, "[MAP] Server " + params[2] + " not found");
 				else
-					for (Iterator<String> it = s.links.iterator(); it.hasNext();)
-						Moo.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next()); 
+					for (Iterator<Server> it = s.links.iterator(); it.hasNext();)
+						Moo.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next().getName());
 			}
 			else if (params[1].equalsIgnoreCase("FIND") && params.length > 2)
 			{

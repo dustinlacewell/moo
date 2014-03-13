@@ -20,20 +20,18 @@ class EventPlexus extends Event
 			{
 				String[] tokens = message.split(" ");
 				
-				Server serv = Server.findServerAbsolute(tokens[4]);
-				if (serv == null)
-				{
-					serv = new Server(tokens[4]);
-					Moo.sock.write("MAP");
-				}
-				else
-					serv.splitDel(tokens[8]);
-				serv.link(tokens[8]);
+				Server serv = Server.findServerAbsolute(tokens[4]),
+						to = Server.findServerAbsolute(tokens[8]);
 				
-				Server to = Server.findServerAbsolute(tokens[8]);
 				if (to == null)
 					to = new Server(tokens[8]);
-				to.link(tokens[4]);
+				if (serv == null)
+					serv = new Server(tokens[4]);
+				
+				serv.splitDel(to);
+				
+				serv.link(to);
+				to.link(serv);
 				
 				for (Event e : Event.getEvents())
 					e.onServerLink(serv, to);
@@ -41,20 +39,18 @@ class EventPlexus extends Event
 			else if (message.indexOf("End of burst from") != -1)
 			{
 				String[] tokens = message.split(" ");
-				Server serv = Server.findServerAbsolute(tokens[7]);
-				if (serv == null)
-				{
-					serv = new Server(tokens[7]);
-					Moo.sock.write("MAP");
-				}
-				else
-					serv.splitDel(source);
-				serv.link(source);
 				
-				Server to = Server.findServerAbsolute(source);
+				Server serv = Server.findServerAbsolute(tokens[7]),
+						to = Server.findServerAbsolute(source);
+				if (serv == null)
+					serv = new Server(tokens[7]);
 				if (to == null)
 					to = new Server(source);
-				to.link(tokens[7]);
+
+				serv.splitDel(to);
+				
+				serv.link(to);
+				to.link(serv);
 				
 				for (Event e : Event.getEvents())
 					e.onServerLink(serv, to);

@@ -67,11 +67,10 @@ public class Moo
 			System.exit(-1);
 		}
 		
+		Server.init();
+		
 		try
 		{
-			for (final String db_class : conf.getList("database_classes"))
-				Class.forName(db_class);
-			
 			Plugin.loadPlugin("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
 			
 			for (final String pkg : conf.getList("packages"))

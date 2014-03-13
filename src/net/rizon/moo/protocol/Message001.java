@@ -23,8 +23,6 @@ public class Message001 extends Message
 		for (String s : Moo.conf.getList("channels"))
 			Moo.join(s);
 		
-		Server.clearServers();
-
 		Moo.sock.write("MAP");
 		Moo.sock.write("LINKS");
 		
