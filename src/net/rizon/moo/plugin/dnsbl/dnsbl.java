@@ -13,7 +13,7 @@ public class dnsbl extends Plugin
 {
 	private Command dnsbl;
 	private Timer requester;
-	private Message n219;
+	private Message n219, n227;
 	private Event e;
 	
 	static HashMap<Server, DnsblInfo> infos = new HashMap<Server, DnsblInfo>();
@@ -29,6 +29,7 @@ public class dnsbl extends Plugin
 		dnsbl = new CommandDnsbl(this);
 		requester = new StatsRequester();
 		n219 = new Numeric219();
+		n227 = new Numeric227();
 		e = new EventDnsbl();
 	}
 
@@ -38,6 +39,7 @@ public class dnsbl extends Plugin
 		dnsbl.remove();
 		requester.stop();
 		n219.remove();
+		n227.remove();
 		e.remove();
 	}
 	

@@ -374,7 +374,6 @@ public class Server
 	{
 		Moo.sock.write("STATS c " + this.getName());
 		Moo.sock.write("STATS o " + this.getName());
-		//Moo.sock.write("STATS B " + this.getName());
 	}
 	
 	public static void init()
