@@ -164,7 +164,7 @@ tickets.password=
 protocol=plexus
 
 # Packages to use.
-packages=commands,core,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki,tickets,proxyscan
+packages=commands,core,dnsbl,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki,tickets,proxyscan
 
 debug=0
 

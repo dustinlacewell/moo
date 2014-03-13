@@ -6,7 +6,7 @@ import net.rizon.moo.Plugin;
 
 public class commands extends Plugin
 {
-	private Command climit, dnsbl, oline, slackers, soa, time, uptime, why;
+	private Command climit, oline, slackers, soa, time, uptime, why;
 	private CommandMap map;
 	private CommandSid sid;
 	private CommandVersions version;
@@ -22,7 +22,6 @@ public class commands extends Plugin
 		if (Moo.conf.getString("protocol").equals("plexus"))
 		{
 			climit = new CommandClimit(this);
-			dnsbl = new CommandDnsbl(this);
 			map = new CommandMap(this);
 			oline = new CommandOline(this);
 			sid = new CommandSid(this);
@@ -43,8 +42,6 @@ public class commands extends Plugin
 	{
 		if (climit != null)
 			climit.remove();
-		if (dnsbl != null)
-			dnsbl.remove();
 		if (map != null)
 			map.remove();
 		if (oline != null)
