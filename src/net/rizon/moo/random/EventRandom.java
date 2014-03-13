@@ -2,10 +2,8 @@ package net.rizon.moo.random;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 
@@ -19,7 +17,6 @@ class EventRandom extends Event
 	}
 
 	private static final String opmMatch = "Using or hosting open proxies is not permitted";
-	private static final Logger log = Logger.getLogger(EventRandom.class.getName());
 
 	@Override
 	public void onAkillAdd(final String setter, final String ip, final String reason)

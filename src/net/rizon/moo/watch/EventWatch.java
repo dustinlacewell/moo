@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
