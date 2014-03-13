@@ -37,6 +37,8 @@ public abstract class Plugin
 	public abstract void start() throws Exception;
 	public abstract void stop();
 	
+	private static final String base = "net.rizon.moo.plugins.";
+	
 	public static Plugin loadPlugin(String base, String name) throws Exception
 	{
 		Plugin p = findPlugin(name);
@@ -53,6 +55,11 @@ public abstract class Plugin
 		
 		p.start();
 		return p;
+	}
+	
+	public static Plugin loadPlugin(String name) throws Exception
+	{
+		return loadPlugin(base, name);
 	}
 	
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();

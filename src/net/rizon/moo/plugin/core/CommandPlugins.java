@@ -29,7 +29,7 @@ class CommandPlugins extends Command
 		{
 			try
 			{
-				Plugin p = Plugin.loadPlugin("net.rizon.moo.", params[2]);
+				Plugin p = Plugin.loadPlugin(params[2]);
 				Moo.reply(source, target, "Plugin " + p.getName() + " loaded");
 			}
 			catch (Exception ex)
@@ -64,7 +64,7 @@ class CommandPlugins extends Command
 
 				try
 				{
-					p = Plugin.loadPlugin("net.rizon.moo.", params[2]);
+					p = Plugin.loadPlugin(params[2]);
 					Moo.reply(source, target, "Plugin " + p.getName() + " reloaded");
 				}
 				catch (Exception ex)
