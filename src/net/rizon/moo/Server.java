@@ -389,6 +389,6 @@ public class Server
 					s.requestStats();
 				Moo.sock.write("MAP");
 			}
-		};
+		}.start();
 	}
 }
