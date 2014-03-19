@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -14,7 +13,6 @@ public final class ClassLoader extends java.lang.ClassLoader
 	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
 	
 	private String base;
-	private HashSet<String> loaded = new HashSet<String>();
 	
 	public ClassLoader(String base, java.lang.ClassLoader cl)
 	{
@@ -25,7 +23,7 @@ public final class ClassLoader extends java.lang.ClassLoader
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException
 	{
-		if (!name.startsWith(base) || loaded.contains(name))
+		if (!name.startsWith(base))
 			return super.loadClass(name);
 		
 		log.log(Level.FINE, "Loading " + name);
@@ -64,7 +62,6 @@ public final class ClassLoader extends java.lang.ClassLoader
 			byte[] newClass = buffer.toByteArray();
 
 			Class<?> c = this.defineClass(name, newClass, 0, newClass.length);
-			loaded.add(name);
 			return c;
 		}
 		catch (Exception ex)

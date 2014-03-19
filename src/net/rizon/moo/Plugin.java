@@ -37,7 +37,7 @@ public abstract class Plugin
 	public abstract void start() throws Exception;
 	public abstract void stop();
 	
-	private static final String base = "net.rizon.moo.plugins.";
+	private static final String base = "net.rizon.moo.plugin.";
 	
 	public static Plugin loadPlugin(String base, String name) throws Exception
 	{
