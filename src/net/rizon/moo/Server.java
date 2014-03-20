@@ -370,7 +370,7 @@ public class Server
 		}
 	}
 	
-	private void requestStats()
+	public void requestStats()
 	{
 		Moo.sock.write("STATS c " + this.getName());
 		Moo.sock.write("STATS o " + this.getName());
@@ -386,7 +386,8 @@ public class Server
 			public void run(Date now)
 			{
 				for (Server s : Server.getServers())
-					s.requestStats();
+					if (!s.isServices())
+						s.requestStats();
 				Moo.sock.write("MAP");
 			}
 		}.start();

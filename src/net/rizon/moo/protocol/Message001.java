@@ -28,10 +28,11 @@ public class Message001 extends Message
 		
 		for (Server s : Server.getServers())
 		{
-			Moo.sock.write("STATS c " + s.getName());
-			Moo.sock.write("STATS o " + s.getName());
-			if (!s.isServices())
-				Moo.sock.write("VERSION " + s.getName());
+			if (s.isServices())
+				continue;
+			
+			s.requestStats();
+			Moo.sock.write("VERSION " + s.getName());
 		}
 		
 		for (Event e : Event.getEvents())
