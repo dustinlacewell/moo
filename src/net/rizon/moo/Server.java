@@ -125,7 +125,7 @@ public class Server
 		last_link = new Date();
 	}
 	
-	public void split(final String from)
+	public void split(Server from)
 	{
 		Date now = new Date();
 		this.links.remove(from);
@@ -133,7 +133,7 @@ public class Server
 		
 		Split s = new Split();
 		s.me = this.getName();
-		s.from = from;
+		s.from = from.name;
 		s.when = now;
 		
 		try
