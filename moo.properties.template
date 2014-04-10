@@ -157,6 +157,9 @@ tickets.url=http://abuse.rizon.net/index.php/home/login
 tickets.username=
 tickets.password=
 
+servercontrol.cert.caserver=rizonweb
+servercontrol.cert.easyrsa=easy-rsa/
+
 # Protocol to use.
 protocol=plexus
 

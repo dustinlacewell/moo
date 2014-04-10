@@ -3,7 +3,7 @@ package net.rizon.moo.plugin.servercontrol;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
-public abstract class FileDownload extends Process
+public class FileDownload extends Process
 {
 	protected String file, dest;
 

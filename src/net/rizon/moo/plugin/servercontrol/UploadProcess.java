@@ -45,9 +45,9 @@ public class UploadProcess extends FileUpload
 {
 	private String source, target, args;
 	
-	public UploadProcess(Connection con, File file, final String source, final String target, final String args)
+	public UploadProcess(Connection con, File file, String dest, String source, String target, String args)
 	{
-		super(con, file);
+		super(con, file, dest);
 		this.source = source;
 		this.target = target;
 		this.args = args;

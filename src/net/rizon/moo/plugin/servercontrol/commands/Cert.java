@@ -1,124 +1,105 @@
 package net.rizon.moo.plugin.servercontrol.commands;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.servercontrol.Connection;
+import net.rizon.moo.plugin.servercontrol.EchoProcess;
 import net.rizon.moo.plugin.servercontrol.FileDownload;
 import net.rizon.moo.plugin.servercontrol.FileUpload;
-import net.rizon.moo.plugin.servercontrol.Protocol;
+import net.rizon.moo.plugin.servercontrol.Process;
 import net.rizon.moo.plugin.servercontrol.ServerInfo;
-import net.rizon.moo.plugin.servercontrol.UploadProcess;
 import net.rizon.moo.plugin.servercontrol.servercontrol;
 
-class CSRUploadProcess extends UploadProcess
+class CertCommand extends Thread
 {
-	private String s, t;
+	private String source, target;
 	private String server;
 	
-	CSRUploadProcess(Connection con, File file, String source, String target, String args)
+	CertCommand(String source, String target, String server)
 	{
-		super(con, file, source, target, args);
-		server = args;
-		s = source;
-		t = target;
+		this.source = source;
+		this.target = target;
+		this.server = server;
 	}
 	
 	@Override
-	public void onFinish()
+	public void run()
 	{
-		super.onFinish();
-
+		ServerInfo si = servercontrol.findGeoServer(server);
+		
+		if (si == null)
+		{
+			Moo.reply(source, target, "No such server " + server);
+			return;
+		}
+		
+		String caserver = Moo.conf.getString("servercontrol.cert.caserver");
+		ServerInfo siCA = servercontrol.findGeoServer(caserver);
+		if (siCA == null)
+		{
+			Moo.reply(source, target, "Unable to find CA server");
+			return;
+		}
+		
+		Moo.reply(source, target, "Creating certificate ...");
+		
+		Connection con = Connection.findOrCreateConncetion(siCA), destCon = Connection.findOrCreateConncetion(si);
+		
+		new EchoProcess(con, source, target, "EASYRSA=" + Moo.conf.getString("servercontrol.cert.easyrsa") + " " + Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa --req-cn=" + server + " gen-req " + server + " nopass").run();
+		new EchoProcess(con, source, target, "EASYRSA=" + Moo.conf.getString("servercontrol.cert.easyrsa") + " " + Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa sign-req server " + server).run();
+		
 		new File(System.getProperty("java.io.tmpdir"), "moo").mkdir();
+		new FileDownload(con, Moo.conf.getString("servercontrol.cert.easyrsa") + "/pki/issued/" + server + ".crt", System.getProperty("java.io.tmpdir") + File.separator + "moo" + File.separator + server + ".crt").run();
+		new FileDownload(con, Moo.conf.getString("servercontrol.cert.easyrsa") + "/pki/private/" + server + ".key", System.getProperty("java.io.tmpdir") + File.separator + "moo" + File.separator + server + ".key").run();
 		
-		new CSRDownloadProcess(con, "ircd/keys/" + server + ".csr", System.getProperty("java.io.tmpdir") + File.separator + "moo" + File.separator + server + ".csr", server, s, t).run();
+		new FileUpload(destCon, new File(System.getProperty("java.io.tmpdir") + File.separator + "moo", server + ".crt"), "ircd/keys/cert.pem").run();
+		new FileUpload(destCon, new File(System.getProperty("java.io.tmpdir") + File.separator + "moo", server + ".key"), "ircd/keys/" + server + ".key").run();
+		
+		new EchoProcess(destCon, source, target, "openssl rsa -in ircd/keys/" + server + ".key -pubout -out ircd/keys/" + server + ".pub").run();
+		
+		Moo.reply(source, target, "Done!");
 	}
 }
 
-class CSRDownloadProcess extends FileDownload
+class CertCommandRevoke extends Thread
 {
-	private String s, t;
+	private String source, target;
 	private String server;
-	private String dest;
 	
-	CSRDownloadProcess(Connection con, String file, String dest, String server, String source, String target)
+	CertCommandRevoke(String source, String target, String server)
 	{
-		super(con, file, dest);
+		this.source = source;
+		this.target = target;
 		this.server = server;
-		s = source;
-		t = target;
-		this.dest = dest;
 	}
 	
 	@Override
-	public void onFinish()
+	public void run()
 	{
-		super.onFinish();
-		
-		try
+		String caserver = Moo.conf.getString("servercontrol.cert.caserver");
+		ServerInfo siCA = servercontrol.findGeoServer(caserver);
+		if (siCA == null)
 		{
-			String cmds[] = new String[4];
-			cmds[0] = "/bin/sh";
-			cmds[1] = "sign.sh";
-			cmds[2] = dest;
-			cmds[3] = server;
-			
-			Process proc = Runtime.getRuntime().exec(cmds, null, new File("ssl"));
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			for (String s; (s = in.readLine()) != null;)
-				for (String ch : Moo.conf.getList("moo_log_channels"))
-					Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] " + s);
-			in.close();
-
-			in = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-			for (String s; (s = in.readLine()) != null;)
-				for (String ch : Moo.conf.getList("moo_log_channels"))
-					Moo.privmsg(ch, "[" + this.con.getServerInfo().name + "] " + s);
-			in.close();
-
-			proc.getOutputStream().close();
-		}
-		catch (IOException ex)
-		{
-			Logger.getGlobalLogger().log(Level.WARNING, "Error signing certificate request", ex);
+			Moo.reply(source, target, "Unable to find CA server");
+			return;
 		}
 		
-		/* upload pems/server.pem back now */
-		new CertUploader(con, new File("ssl" + File.separator + "pems" + File.separator + server + ".pem"), server, s, t).run();
-	}
-}
-
-class CertUploader extends FileUpload
-{
-	private String server, s, t;
-	
-	public CertUploader(Connection con, File file, String server, String source, String target)
-	{
-		super(con, file, "ircd/keys/cert.pem");
-		this.server = server;
-		s = source;
-		t = target;
-	}
-	
-	@Override
-	public void onFinish()
-	{
-		super.onFinish();
+		Moo.reply(source, target, "Revoking certificate...");
 		
-		Moo.reply(s, t, "Finished generating and signing cert for " + server);
+		String command = Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa revoke " + server + " && " + Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa gen-crl";
+		
+		Connection con = Connection.findOrCreateConncetion(siCA);
+		Process proc = new EchoProcess(con, source, target, command);
+		proc.start();
 	}
 }
 
 public class Cert extends Command
 {
+
 	public Cert(Plugin pkg)
 	{
 		super(pkg, "!CERT", "Generate server SSL certificates");
@@ -135,80 +116,13 @@ public class Cert extends Command
 		}
 		
 		String server = params[1];
+		String arg = params.length > 2 ? params[2] : null;
 		
-		Protocol proto = Protocol.findProtocol("ssh");
-		if (proto == null)
+		if (arg != null && arg.equals("revoke"))
 		{
-			Moo.reply(source, target, "No such protocol SSH?");
 			return;
 		}
 		
-		ServerInfo[] server_info = servercontrol.findServers(server, proto.getProtocolName());
-		if (server_info == null)
-		{
-			Moo.reply(source, target, "No servers found for " + server + " using " + proto.getProtocolName());
-			return;
-		}
-		
-		if (server_info.length != 1)
-		{
-			Moo.reply(source, target, "Multiple servers match " + server);
-			return;
-		}
-		
-		File f = new File("ssl", "csr.sh");
-		if (!f.exists())
-		{
-			Moo.reply(source, target, "csh.sh does not exist?");
-			return;
-		}
-		
-		ServerInfo si = server_info[0];
-		
-		if (params.length == 3 && params[2].equalsIgnoreCase("revoke"))
-		{
-			try
-			{
-				String cmds[] = new String[3];
-				cmds[0] = "/bin/sh";
-				cmds[1] = "revoke.sh";
-				cmds[2] = server;
-				
-				Process proc = Runtime.getRuntime().exec(cmds, null, new File("ssl"));
-	
-				BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-				for (String s; (s = in.readLine()) != null;)
-					for (String ch : Moo.conf.getList("moo_log_channels"))
-						Moo.privmsg(ch, s);
-				in.close();
-	
-				in = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-				for (String s; (s = in.readLine()) != null;)
-					for (String ch : Moo.conf.getList("moo_log_channels"))
-						Moo.privmsg(ch, s);
-				in.close();
-	
-				proc.getOutputStream().close();
-				
-				Moo.reply(source, target, "Done");
-			}
-			catch (IOException ex)
-			{
-				Logger.getGlobalLogger().log(Level.WARNING, "Error signing certificate request", ex);
-			}
-			
-			return;
-		}
-		
-		try
-		{
-			Connection con = Connection.findOrCreateConncetion(si);
-			CSRUploadProcess proc = new CSRUploadProcess(con, f, source, target, server);
-			proc.start();
-		}
-		catch (Exception ex)
-		{
-			Moo.reply(source, target, "Error executing command on " + si.host + ": " + ex.getMessage());
-		}
+		new CertCommand(source, target, server).start();
 	}
 }

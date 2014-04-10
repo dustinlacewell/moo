@@ -1,9 +1,13 @@
 package net.rizon.moo.plugin.servercontrol;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.Logger;
 
 public abstract class Command extends Process
 {
+	private static final Logger log = Logger.getLogger(Command.class.getName());
+	
 	private String command;
 
 	public Command(Connection con, final String command)
@@ -19,6 +23,8 @@ public abstract class Command extends Process
 		{
 			if (this.con.isConnected() == false)
 				this.con.connect();
+			
+			log.log(Level.FINE, "Command: " + command);
 				
 			this.con.execute(this.command);
 			

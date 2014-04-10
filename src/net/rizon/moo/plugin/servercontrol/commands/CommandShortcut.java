@@ -162,7 +162,7 @@ public class CommandShortcut extends Command
 					}
 					if (file != null)
 					{
-						Process proc = new UploadProcess(con, f, source, target, args);
+						Process proc = new UploadProcess(con, f, f.getName(), source, target, args);
 						proc.start();
 					}
 				}

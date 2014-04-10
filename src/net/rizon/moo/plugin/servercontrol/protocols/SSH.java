@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
@@ -29,8 +28,7 @@ final class connectionSSH extends Connection
 	private JSch jsch;
 	private Session session = null;
 	private Channel channel = null;
-	private PrintStream shellStream = null;
-	private BufferedReader reader = null;
+	private BufferedReader reader, readerErr;
 
 	public connectionSSH(Protocol proto, ServerInfo si, JSch jsch)
 	{
@@ -43,7 +41,8 @@ final class connectionSSH extends Connection
 	{
 		super.destroy();
 		this.cleanUp();
-		this.session.disconnect();
+		if (this.session != null)
+			this.session.disconnect();
 	}
 	
 	private void cleanUp()
@@ -51,10 +50,10 @@ final class connectionSSH extends Connection
 		try { this.channel.disconnect(); }
 		catch (Exception ex) { }
 		
-		try { this.shellStream.close(); }
+		try { this.reader.close(); } 
 		catch (Exception ex) { }
 		
-		try { this.reader.close(); } 
+		try { this.readerErr.close(); } 
 		catch (Exception ex) { }
 	}
 	
@@ -93,8 +92,8 @@ final class connectionSSH extends Connection
 		{
 			ChannelExec ce = (ChannelExec) this.session.openChannel("exec");
 			this.channel = ce;
-			this.shellStream = new PrintStream(this.channel.getOutputStream());
 			this.reader = new BufferedReader(new InputStreamReader(this.channel.getInputStream()));
+			this.reader = new BufferedReader(new InputStreamReader(ce.getErrStream()));
 			ce.setCommand(command);
 			this.channel.connect();
 		}
@@ -186,7 +185,14 @@ final class connectionSSH extends Connection
 		}
 		catch (IOException ex)
 		{
-			return null;
+			try
+			{
+				return this.readerErr.readLine();
+			}
+			catch (IOException ex2)
+			{
+				return null;
+			}
 		}
 	}
 }

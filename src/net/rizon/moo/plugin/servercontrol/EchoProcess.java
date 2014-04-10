@@ -4,7 +4,7 @@ import net.rizon.moo.Moo;
 
 public class EchoProcess extends Command
 {
-	private String source, target;
+	protected String source, target;
 	
 	public EchoProcess(Connection con, final String source, final String target, final String command)
 	{

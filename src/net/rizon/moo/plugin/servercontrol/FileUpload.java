@@ -5,17 +5,10 @@ import java.io.File;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
-public abstract class FileUpload extends Process
+public class FileUpload extends Process
 {
 	protected File file;
 	protected String dest;
-
-	public FileUpload(Connection con, final File file)
-	{
-		super(con);
-		this.file = file;
-		this.dest = file.getName();
-	}
 	
 	public FileUpload(Connection con, final File file, String dest)
 	{

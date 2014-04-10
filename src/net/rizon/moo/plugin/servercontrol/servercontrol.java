@@ -3,9 +3,11 @@ package net.rizon.moo.plugin.servercontrol;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import net.rizon.moo.Database;
+import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.servercontrol.commands.Cert;
@@ -22,7 +24,10 @@ import net.rizon.moo.plugin.servercontrol.protocols.Telnet;
 
 public class servercontrol extends Plugin
 {
+	protected static HashMap<String, ServerInfo> geoSSHInfo = new HashMap<String, ServerInfo>();
+	
 	private net.rizon.moo.Command addserver, close, connections, delserver, sc, servers, s, cert;
+	private Event e;
 	
 	public servercontrol()
 	{
@@ -44,6 +49,8 @@ public class servercontrol extends Plugin
 		s = new CommandShortcut(this);
 		cert = new Cert(this);
 		
+		e = new EventServerControl();
+		
 		new FTP();
 		new SSH();
 		new Telnet();
@@ -60,6 +67,8 @@ public class servercontrol extends Plugin
 		servers.remove();
 		s.remove();
 		cert.remove();
+		
+		e.remove();
 	}
 	
 	private static final ServerInfo[] processServers(ResultSet rs) throws SQLException
@@ -125,6 +134,23 @@ public class servercontrol extends Plugin
 		}
 		
 		return null;
+	}
+	
+	public static ServerInfo findGeoServer(String name)
+	{
+		String target = Moo.conf.getList("admin_channels")[0];
+		Moo.privmsg(target, ".ssh info " + name);
+		
+		synchronized (geoSSHInfo)
+		{
+			try
+			{
+				geoSSHInfo.wait();//2000L);
+			}
+			catch (InterruptedException e) { }
+		}
+		
+		return geoSSHInfo.get(name);
 	}
 	
 	public static final ServerInfo[] getServers()
