@@ -145,7 +145,7 @@ public class servercontrol extends Plugin
 		{
 			try
 			{
-				geoSSHInfo.wait();//2000L);
+				geoSSHInfo.wait(2000L);
 			}
 			catch (InterruptedException e) { }
 		}

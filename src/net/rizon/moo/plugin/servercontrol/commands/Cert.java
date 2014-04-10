@@ -9,7 +9,6 @@ import net.rizon.moo.plugin.servercontrol.Connection;
 import net.rizon.moo.plugin.servercontrol.EchoProcess;
 import net.rizon.moo.plugin.servercontrol.FileDownload;
 import net.rizon.moo.plugin.servercontrol.FileUpload;
-import net.rizon.moo.plugin.servercontrol.Process;
 import net.rizon.moo.plugin.servercontrol.ServerInfo;
 import net.rizon.moo.plugin.servercontrol.servercontrol;
 
@@ -92,8 +91,7 @@ class CertCommandRevoke extends Thread
 		String command = Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa revoke " + server + " && " + Moo.conf.getString("servercontrol.cert.easyrsa") + "/easyrsa gen-crl";
 		
 		Connection con = Connection.findOrCreateConncetion(siCA);
-		Process proc = new EchoProcess(con, source, target, command);
-		proc.start();
+		new EchoProcess(con, source, target, command).run();
 	}
 }
 
