@@ -118,6 +118,7 @@ public class Cert extends Command
 		
 		if (arg != null && arg.equals("revoke"))
 		{
+			new CertCommandRevoke(source, target, server).start();
 			return;
 		}
 		
