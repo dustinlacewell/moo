@@ -37,33 +37,43 @@ final class ConnectorThread extends Thread
 				log.log(Level.FINE, "Command part: " + it.next());
 			}
 			proc = pb.start();
-
-			String s;
-			log.log(Level.FINE, "Running process, getting lines...");
-			InputStreamReader isr = new InputStreamReader(proc.getInputStream());
-			BufferedReader in = new BufferedReader(isr);
-			if ((s = in.readLine()) != null)
+			
+			String s = null;
+			try
 			{
-				/*
-				 * s now contains the type of proxy, e.g.
-				 * "124.28.137.254 wg:23 open"
-				 */
-				String[] parts_sp = s.split(" ");
-				String[] parts_colon = parts_sp[1].split(":");
-				String port = parts_colon[1];
-				String type = parts_colon[0];
-
-				proxyscan.akill(this.ip, Integer.parseInt(port), type, false);
+				log.log(Level.FINE, "Running process, getting lines...");
+				InputStreamReader isr = new InputStreamReader(proc.getInputStream());
+				BufferedReader in = new BufferedReader(isr);
+				if ((s = in.readLine()) != null)
+				{
+					/*
+					 * s now contains the type of proxy, e.g.
+					 * "124.28.137.254 wg:23 open"
+					 */
+					String[] parts_sp = s.split(" ");
+					String[] parts_colon = parts_sp[1].split(":");
+					String port = parts_colon[1];
+					String type = parts_colon[0];
+	
+					proxyscan.akill(this.ip, Integer.parseInt(port), type, false);
+				}
 			}
-
-			try { in.close(); } catch (IOException ex) { }
-			try { isr.close(); } catch (IOException ex) { }
-			try { proc.getOutputStream().close(); } catch (IOException ex) { }
-			try { proc.getErrorStream().close(); } catch (IOException ex) { }
+			catch (Exception ex)
+			{
+				if (s != null)
+					log.log(Level.INFO, "Exception while processing untrusted proxy scan input: " + s);
+				throw ex;
+			}
+			finally
+			{
+				try { proc.getInputStream().close(); } catch (IOException ex) { }
+				try { proc.getOutputStream().close(); } catch (IOException ex) { }
+				try { proc.getErrorStream().close(); } catch (IOException ex) { }
+			}
 		}
 		catch (Exception ex)
 		{
-			log.log(ex);
+			log.log(Level.INFO, "Exception processing untrusted proxy connection", ex);
 		}
 		finally
 		{

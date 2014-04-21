@@ -46,7 +46,7 @@ final class loggerHandler extends Handler
 
 		if ((Moo.conf != null && Moo.conf.getBool("debug")) || bad)
 		{
-			System.out.println(format.format(new Date(record.getMillis())) + " [" + record.getLevel().getName() + "] [" + record.getLoggerName() + "] " + message);
+			System.out.println(format.format(new Date(record.getMillis())) + " [" + record.getLevel().getName() + "] [" + record.getLoggerName() + "] " + (message != null ? message : ""));
 			if (stes != null)
 			{
 				System.out.println(record.getThrown().toString());
