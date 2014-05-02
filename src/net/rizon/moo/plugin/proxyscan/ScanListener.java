@@ -59,7 +59,7 @@ final class ScanListener extends Thread
 							if (p > 0 && p < 65535)
 							{
 								InetSocketAddress them = (InetSocketAddress) client.getRemoteSocketAddress();
-								proxyscan.akill(them.getAddress().getHostAddress(), port, str[0], true);
+								proxyscan.akill(them.getAddress().getHostAddress(), p, str[0], true);
 							}
 						}
 						catch (NumberFormatException ex)
