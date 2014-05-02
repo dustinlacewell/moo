@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 
 final class ScanListener extends Thread
 {
@@ -41,7 +42,7 @@ final class ScanListener extends Thread
 
 				try
 				{
-					s.write((proxyscan.check_string + "\r\n").getBytes());
+					s.write((Moo.conf.getString("proxyscan.check_string") + "\r\n").getBytes());
 					s.flush();
 					log.log(Level.FINE, "Wrote check string.");
 					

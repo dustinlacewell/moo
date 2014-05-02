@@ -9,9 +9,7 @@ public class proxyscan extends Plugin
 	private Event e;
 	private ScanListener sc;
 	protected static final IPCache cache = new IPCache();
-	
-	public static final String check_string = "rizon-proxy-scan";
-	
+
 	public proxyscan()
 	{
 		super("Proxyscan", "Checks connecting users for proxies");

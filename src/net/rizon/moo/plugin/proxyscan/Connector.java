@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
@@ -13,12 +15,12 @@ import net.rizon.moo.Moo;
 final class ConnectorThread extends Thread
 {
 	private static final Logger log = Logger.getLogger(ConnectorThread.class.getName());
-	private final String proxycheck;
+	private static final Pattern vars = Pattern.compile("%[^%]+%");
+	
 	private final String ip;
 
-	public ConnectorThread(final String proxycheck, final String ip)
+	public ConnectorThread(final String ip)
 	{
-		this.proxycheck = proxycheck;
 		this.ip = ip;
 	}
 
@@ -29,13 +31,26 @@ final class ConnectorThread extends Thread
 
 		try
 		{
-			ProcessBuilder pb = new ProcessBuilder(this.proxycheck, "-c", "chat::" + proxyscan.check_string, "-b",
-					Moo.conf.getString("proxyscan.bindip"), "-d", Moo.conf.getString("proxyscan.ip") + ":"
-							+ Moo.conf.getString("proxyscan.port"), "-s", "-aaaa", this.ip).redirectErrorStream(true);
-			for (Iterator<String> it = pb.command().iterator(); it.hasNext();)
+			String args = Moo.conf.getString("proxyscan.path") + " " + Moo.conf.getString("proxyscan.args");
+			Matcher m = vars.matcher(args);
+			while (m.find())
 			{
-				log.log(Level.FINE, "Command part: " + it.next());
+				String var = m.group().substring(1, m.group().length() - 1);
+				
+				String replacement;
+				if (var.equals("destip"))
+					replacement = this.ip;
+				else
+					replacement = Moo.conf.getString("proxyscan." + var);
+				
+				args = args.replaceAll(m.group(), replacement);
 			}
+			
+			ProcessBuilder pb = new ProcessBuilder(args.split(" "));
+
+			for (Iterator<String> it = pb.command().iterator(); it.hasNext();)
+				log.log(Level.FINE, "Command part: " + it.next());
+			
 			proc = pb.start();
 			
 			String s = null;
@@ -99,7 +114,7 @@ public final class Connector
 		if (proxycheck.exists() == false || proxycheck.isFile() == false || proxycheck.canExecute() == false)
 			return;
 
-		ConnectorThread t = new ConnectorThread(path, ip);
+		ConnectorThread t = new ConnectorThread(ip);
 		t.start();
 	}
 }
