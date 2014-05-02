@@ -11,6 +11,7 @@ import java.util.logging.Level;
 public final class ClassLoader extends java.lang.ClassLoader
 {
 	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
+	private static final String bin = "target/classes";
 	
 	private String base;
 	
@@ -51,7 +52,7 @@ public final class ClassLoader extends java.lang.ClassLoader
 			}
 			else
 			{
-				is = new FileInputStream("bin/" + name.replace('.', '/') + ".class");
+				is = new FileInputStream(bin + name.replace('.', '/') + ".class");
 			}
 	
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
