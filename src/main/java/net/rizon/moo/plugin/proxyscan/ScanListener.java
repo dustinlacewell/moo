@@ -51,7 +51,7 @@ final class ScanListener extends Thread
 					is.read(b);
 					
 					String[] str = new String(b).trim().split(":");
-					if (str.length == 3 && str[0].length() < 5)
+					if (str.length == 3)
 					{
 						try
 						{
