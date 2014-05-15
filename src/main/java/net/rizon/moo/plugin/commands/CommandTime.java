@@ -178,7 +178,6 @@ class CommandTime extends Command
 	{
 		super(pkg, "!TIME", "View server times");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
 		this.requiresChannel(Moo.conf.getList("oper_channels"));
 		this.requiresChannel(Moo.conf.getList("admin_channels"));
 		

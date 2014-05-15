@@ -116,7 +116,6 @@ class commandVersionsBase extends Command
 	{
 		super(pkg, command, "View the IRCd versions");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
 		this.requiresChannel(Moo.conf.getList("oper_channels"));
 		this.requiresChannel(Moo.conf.getList("admin_channels"));
 	}
