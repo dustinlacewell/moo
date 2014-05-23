@@ -139,18 +139,17 @@ proxyscan.listenport=8888
 proxyscan.ip=192.168.1.9
 proxyscan.port=8888
 # IP and port for the proxyscan to bind to when connecting to incoming client's hosts
-proxyscan.bindip=192.168.1.7
+proxyscan.bindip=192.168.1.7,192.168.1.2
 # Path to the proxyscan binary
-proxyscan.path=/home/adam/rizon/proxycheck/proxycheck
-#proxyscan.args=-c chat::%check_string% -b %bindip% -d %ip%:%port% -s -aaaa %destip%
-proxyscan.args=--targetip=%destip%
+proxyscan.path=/home/rizon/proxyscan/proxyscan
+proxyscan.args=--bindip=%bindip% --targetip=%destip%
 proxyscan.check_string=rizon-proxy-scan
 # Channel to output proxy hits to
 proxyscan.channel=#kline-spam
 # Akill message for users with a proxy. %t is the proxy type, %p is the port and %i is the IP address
 proxyscan.ban_message=Using or hosting open proxies is not permitted, detected %t/%p.
 proxyscan.py-opers=false
-proxyscan.scan_notice=For network safety, your client is being scanned for open proxies by scanner.rizon.net (80.65.51.219). This scan will not harm your computer.
+proxyscan.scan_notice=For network safety, your client is being scanned for open proxies by scanner.rizon.net (%bindip%). This scan will not harm your computer.
 
 # Wiki URL
 wiki.url=http://wiki.rizon.net/index.php?title=Special:RecentChanges&feed=atom

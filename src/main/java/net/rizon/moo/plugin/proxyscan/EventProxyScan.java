@@ -27,6 +27,8 @@ class EventProxyScan extends Event
 	{
 		return ip.startsWith("10.") || ip.startsWith("127.") || ip.startsWith("172.16.") || ip.startsWith("192.168.") || ip.equals("255.255.255.255");
 	}
+	
+	private int curIp;
 
 	@Override
 	public void onClientConnect(final String nick, final String ident, final String ip, final String realname)
@@ -39,11 +41,19 @@ class EventProxyScan extends Event
 		
 		log.log(Level.FINE, "Scanning " + ip);
 		
-		String notice = Moo.conf.getString("proxyscan.scan_notice");
+		String[] ips = Moo.conf.getList("proxyscan.bindip");
+		if (ips.length == 0)
+			return;
+		
+		if (curIp >= ips.length)
+			curIp = 0;
+		String source = ips[curIp++]; 
+		
+		String notice = Moo.conf.getString("proxyscan.scan_notice").replace("%bindip%", source);
 		if (!notice.isEmpty())
 			Moo.notice(nick, notice);
 		
 		proxyscan.cache.addCacheEntry(ip);
-		Connector.connect(ip);
+		Connector.connect(source, ip);
 	}
 }

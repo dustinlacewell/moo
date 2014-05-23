@@ -17,10 +17,12 @@ final class ConnectorThread extends Thread
 	private static final Logger log = Logger.getLogger(ConnectorThread.class.getName());
 	private static final Pattern vars = Pattern.compile("%[^%]+%");
 	
+	private String source;
 	private final String ip;
 
-	public ConnectorThread(final String ip)
+	public ConnectorThread(String source, final String ip)
 	{
+		this.source = source;
 		this.ip = ip;
 	}
 
@@ -40,6 +42,8 @@ final class ConnectorThread extends Thread
 				String replacement;
 				if (var.equals("destip"))
 					replacement = this.ip;
+				else if (var.equals("bindip"))
+					replacement = this.source;
 				else
 					replacement = Moo.conf.getString("proxyscan." + var);
 				
@@ -104,7 +108,7 @@ final class ConnectorThread extends Thread
 
 public final class Connector
 {
-	public static final void connect(final String ip)
+	public static final void connect(String source, final String ip)
 	{
 		String path = Moo.conf.getString("proxyscan.path");
 		if (path.isEmpty() == true)
@@ -114,7 +118,7 @@ public final class Connector
 		if (proxycheck.exists() == false || proxycheck.isFile() == false || proxycheck.canExecute() == false)
 			return;
 
-		ConnectorThread t = new ConnectorThread(ip);
+		ConnectorThread t = new ConnectorThread(source, ip);
 		t.start();
 	}
 }
