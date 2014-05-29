@@ -83,6 +83,7 @@ class CommandSLogSearch extends Command
 	{
 		super(pkg, "!SLOGSEARCH", "Search through services logs");
 		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.getList("oper_channels"));
 	}
 
 	@Override
@@ -91,18 +92,15 @@ class CommandSLogSearch extends Command
 		if (params.length <= 1)
 			return;
 		
-		int num = 1000;
+		int num = 0;
 		if (params.length >= 3)
-			if (params[2].equalsIgnoreCase("ALL"))
-				num = 0;
-			else
-				try
-				{
-					num = Integer.parseInt(params[2]);
-					if (num <= 0)
-						return;
-				}
-				catch (NumberFormatException ex) { }
+			try
+			{
+				num = Integer.parseInt(params[2]);
+				if (num <= 0)
+					return;
+			}
+			catch (NumberFormatException ex) { }
 		
 		new logSearcher(source, target, params[1], num).start();
 	}
