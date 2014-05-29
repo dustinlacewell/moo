@@ -2,4 +2,4 @@
 
 cd ..
 git pull
-ant
+mvn package
