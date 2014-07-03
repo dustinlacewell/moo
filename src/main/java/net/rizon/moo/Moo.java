@@ -76,7 +76,7 @@ public class Moo
 			for (final String pkg : conf.getList("packages"))
 				Plugin.loadPlugin("net.rizon.moo.plugin.", pkg);
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
 			log.log(Level.SEVERE, "Error loading resources", ex);
 			System.exit(-1);

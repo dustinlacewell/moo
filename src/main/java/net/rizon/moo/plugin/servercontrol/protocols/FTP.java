@@ -5,13 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
-
 import net.rizon.moo.plugin.servercontrol.Connection;
 import net.rizon.moo.plugin.servercontrol.Protocol;
 import net.rizon.moo.plugin.servercontrol.ServerInfo;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
 
 final class connectionFTP extends Connection
 {

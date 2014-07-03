@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public final class ClassLoader extends java.lang.ClassLoader
 {
 	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
-	private static final String bin = "target/classes";
+	private static final String bin = "target/classes/";
 	
 	private String base;
 	

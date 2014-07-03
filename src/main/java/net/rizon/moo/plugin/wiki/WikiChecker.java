@@ -9,12 +9,12 @@ import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 
 class WikiChecker extends Thread
 {

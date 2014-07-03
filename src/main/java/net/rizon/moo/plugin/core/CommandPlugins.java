@@ -32,7 +32,7 @@ class CommandPlugins extends Command
 				Plugin p = Plugin.loadPlugin(params[2]);
 				Moo.reply(source, target, "Plugin " + p.getName() + " loaded");
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
 				Moo.reply(source, target, "Unable to load plugin " + params[2] + ": " + ex.getMessage());
 				Logger.getGlobalLogger().log(Level.WARNING, "Unable to load plugin " + params[2], ex);
@@ -67,7 +67,7 @@ class CommandPlugins extends Command
 					p = Plugin.loadPlugin(params[2]);
 					Moo.reply(source, target, "Plugin " + p.getName() + " reloaded");
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
 					Moo.reply(source, target, "Unable to load plugin " + params[2] + ": " + ex.getMessage());
 					Logger.getGlobalLogger().log(Level.WARNING, "Unable to reload plugin " + params[2], ex);

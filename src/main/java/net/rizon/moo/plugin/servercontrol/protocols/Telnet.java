@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
-import org.apache.commons.net.telnet.TelnetClient;
-
 import net.rizon.moo.plugin.servercontrol.Connection;
 import net.rizon.moo.plugin.servercontrol.Protocol;
 import net.rizon.moo.plugin.servercontrol.ServerInfo;
+
+import org.apache.commons.net.telnet.TelnetClient;
 
 final class connectionTelnet extends Connection
 {

@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import java.util.Random;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;

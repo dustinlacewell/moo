@@ -1,6 +1,7 @@
 package net.rizon.moo;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
 public abstract class Plugin
@@ -39,7 +40,7 @@ public abstract class Plugin
 	
 	private static final String base = "net.rizon.moo.plugin.";
 	
-	public static Plugin loadPlugin(String base, String name) throws Exception
+	public static Plugin loadPlugin(String base, String name) throws Throwable
 	{
 		Plugin p = findPlugin(name);
 		if (p != null)
@@ -48,7 +49,14 @@ public abstract class Plugin
 		ClassLoader cl = new ClassLoader(base + name, ClassLoader.class.getClassLoader());
 		Class<?> c = cl.loadClass(base + name + "." + name);
 		Constructor<?> con = c.getConstructor();
-		p = (Plugin) con.newInstance();
+		try
+		{
+			p = (Plugin) con.newInstance();
+		}
+		catch (InvocationTargetException ex)
+		{
+			throw ex.getCause();
+		}
 		
 		p.pname = name;
 		p.loader = cl;
@@ -57,7 +65,7 @@ public abstract class Plugin
 		return p;
 	}
 	
-	public static Plugin loadPlugin(String name) throws Exception
+	public static Plugin loadPlugin(String name) throws Throwable
 	{
 		return loadPlugin(base, name);
 	}
