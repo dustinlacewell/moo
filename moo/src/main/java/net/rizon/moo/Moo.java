@@ -366,6 +366,6 @@ public class Moo
 	
 	public static void operwall(final String message)
 	{
-		Moo.sock.write("WALLOPS :" + message);
+		Moo.sock.write("OPERWALL :" + message);
 	}
 }
