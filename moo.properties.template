@@ -95,7 +95,7 @@ sendmail_path=/usr/sbin/sendmail
 split_email=grimlock@rizon.net
 
 # Email address to send new votes to
-vote_email=#o:o@rizon.net,#r:routing.admins@rizon.net,#x:eb@rizon.net
+vote_email=#kline:kline@rizon.net,#o:o@rizon.net,#r:routing.admins@rizon.net,#x:eb@rizon.net
 
 # Database to use
 database=jdbc:sqlite:c:/users/adam/desktop/moo.db
