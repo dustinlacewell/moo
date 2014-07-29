@@ -3,6 +3,8 @@ package net.rizon.moo.plugin.logging;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,11 +88,31 @@ class EventLogging extends Event
 		}
 	}
 	
+	private void NotifyXLineChanges(Server serv, char type, final String message)
+	{
+		HashSet<String> chan_list = new HashSet<String>();
+		
+		switch (type)
+		{
+		case 'O':
+			chan_list.addAll(Arrays.asList(Moo.conf.getList("oper_channels")));
+			break;
+		default:
+			/* Default is admin_channels, which is handled below. */
+			break;
+		}
+		
+		/* admin_channels must always know. */
+		chan_list.addAll(Arrays.asList(Moo.conf.getList("admin_channels")));
+		
+		for (final String chan : chan_list)
+			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " " + message);
+	}
+	
 	@Override
 	public void OnXLineAdd(Server serv, char type, final String value)
 	{
-		for (final String chan : Moo.conf.getList("admin_channels"))
-			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " has a new " + type + "-Line for " + value + (type == 'O' ? " with flags " + serv.olines_work.get(value) : ""));
+		NotifyXLineChanges(serv, type, "has a new " + type + "-Line for " + value + (type == 'O' ? " with flags " + serv.olines_work.get(value) : ""));
 		
 		try
 		{
@@ -112,8 +134,7 @@ class EventLogging extends Event
 	@Override
 	public void OnXLineDel(Server serv, char type, final String value)
 	{
-		for (final String chan : Moo.conf.getList("admin_channels"))
-			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " removed " + type + "-Line for " + value);
+		NotifyXLineChanges(serv, type, "removed " + type + "-Line for " + value);
 
 		try
 		{
@@ -135,9 +156,8 @@ class EventLogging extends Event
 	@Override
 	public void OnOLineChange(final Server serv, final String oper, final String diff)
 	{
-		for (final String chan : Moo.conf.getList("admin_channels"))
-			Moo.privmsg(chan, "[O-LINE] " + serv.getName() + " changed flags for " + oper + ": " + diff);
-
+		NotifyXLineChanges(serv, 'O', "changed flags for " + oper + ": " + diff);
+		
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
