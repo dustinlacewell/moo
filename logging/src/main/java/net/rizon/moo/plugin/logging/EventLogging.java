@@ -94,12 +94,12 @@ class EventLogging extends Event
 		
 		switch (type)
 		{
-		case 'O':
-			chan_list.addAll(Arrays.asList(Moo.conf.getList("oper_channels")));
-			break;
-		default:
-			/* Default is admin_channels, which is handled below. */
-			break;
+			case 'O':
+				chan_list.addAll(Arrays.asList(Moo.conf.getList("oper_channels")));
+				break;
+			default:
+				/* Default is admin_channels, which is handled below. */
+				break;
 		}
 		
 		/* admin_channels must always know. */
