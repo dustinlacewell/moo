@@ -13,7 +13,7 @@ import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.plugin.commits.api.bitbucket.Bitbucket;
+import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -53,7 +53,7 @@ class Server extends Thread
 		{
 			this.sock = new ServerSocket();
 			this.sock.bind(new InetSocketAddress(this.ip, this.port));
-			
+
 			for (Socket client; (client = this.sock.accept()) != null;)
 			{
 				BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -103,31 +103,34 @@ class Server extends Thread
 					
 					str = new String(payload, 0, len);
 					if (str.startsWith("payload="))
+						str = str.substring(8);
+
+					final String json = URLDecoder.decode(str, "UTF-8");
+					try
 					{
-						final String json = URLDecoder.decode(str.substring(8), "UTF-8");
-						try
+						Push p = new Gson().fromJson(json, GitLab.class);
+
+						if (p.getPusher() != null)
+							Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
+						for (Commit c : p.getCommits())
 						{
-							Push p = new Gson().fromJson(json, Bitbucket.class);
-						
-							for (Commit c : p.getCommits())
+							String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
+							if (c.getMessage().length > 1)
 							{
-								if (c.getMessage().length > 1)
-								{
-									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003:");
-									for (final String msg : c.getMessage())
-										Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
-								}
-								else if (c.getMessage().length == 1)
-									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + c.getBranch() + "\003: " + c.getMessage()[0]);
+								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
+								for (final String msg : c.getMessage())
+									Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
 							}
+							else if (c.getMessage().length == 1)
+								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0]);
 						}
-						catch (JsonSyntaxException e)
-						{
-							log.log(Level.WARNING, "Exception while parsing json", e);
-							log.log(Level.WARNING, "Payload: " + json);
+					}
+					catch (JsonSyntaxException e)
+					{
+						log.log(Level.WARNING, "Exception while parsing json", e);
+						log.log(Level.WARNING, "Payload: " + json);
 							
-							// Don't continue; we need to see the fail only once.
-						}
+						// Don't continue; we need to see the fail only once.
 					}
 					
 					output.write("HTTP/1.1 200 OK\r\n");

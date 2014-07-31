@@ -1,18 +1,16 @@
-package net.rizon.moo.plugin.commits.api.bitbucket;
+package net.rizon.moo.plugin.commits.api.gitlab;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import net.rizon.moo.plugin.commits.Push;
 
-public class Bitbucket implements Push
+public class GitLab implements Push
 {
+	private String user_name; // pusher
+	private String ref; // refs/heads/branch
 	private List<Commit> commits;
-	public static class repository
-	{
-		public String name;
-	}
-	private repository repository;
+	private Repository repository;
 	
 	@Override
 	public String getProjectName()
@@ -32,12 +30,12 @@ public class Bitbucket implements Push
 	@Override
 	public String getBranch()
 	{
-		return null;
+		return ref.substring(11);
 	}
 
 	@Override
 	public String getPusher()
 	{
-		return null;
+		return this.user_name;
 	}
 }

@@ -17,7 +17,6 @@ public class commits extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		
 		s = new Server(Moo.conf.getString("commits.ip"), Moo.conf.getInt("commits.port"));
 		s.start();
 		
