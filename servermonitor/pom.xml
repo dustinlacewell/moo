@@ -21,20 +21,12 @@
       <version>2.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
 	    <configuration>
-          <archive>
-            <manifest>
-              <mainClass>net.rizon.moo.Moo</mainClass>
-            </manifest>
-            <manifestEntries>
-              <Author>Adam &lt;Adam@rizon.net&gt;</Author>
-            </manifestEntries>
-          </archive>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
