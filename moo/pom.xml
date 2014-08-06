@@ -34,21 +34,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>net.rizon.moo.Moo</mainClass>
-            </manifest>
-            <manifestEntries>
-              <Author>Adam &lt;Adam@rizon.net&gt;</Author>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	    <configuration>
+        <configuration>
           <archive>
             <manifest>
               <mainClass>net.rizon.moo.Moo</mainClass>
