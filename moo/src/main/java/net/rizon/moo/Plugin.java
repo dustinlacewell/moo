@@ -50,16 +50,18 @@ public abstract class Plugin
 	public abstract void start() throws Exception;
 	public abstract void stop();
 	
-	protected static final String base = "net.rizon.moo.plugin.";
-	
 	@SuppressWarnings("resource")
-	public static Plugin loadPlugin(String base, String name) throws Throwable
+	private static Plugin loadPlugin(String base, String name, boolean core) throws Throwable
 	{
 		Plugin p = findPlugin(name);
 		if (p != null)
 			return p;
 		
-		ClassLoader cl = new ClassLoader(name);
+		ClassLoader cl;
+		if (core)
+			cl = new ClassLoader(base + name);
+		else
+			cl = new ClassLoader(name, base + name);
 		Class<?> c = cl.loadClass(base + name + "." + name);
 		Constructor<?> con = c.getConstructor();
 		try
@@ -81,7 +83,12 @@ public abstract class Plugin
 	
 	public static Plugin loadPlugin(String name) throws Throwable
 	{
-		return loadPlugin(base, name);
+		return loadPlugin("net.rizon.moo.plugin.", name, false);
+	}
+
+	public static Plugin loadPluginCore(String base, String name) throws Throwable
+	{
+		return loadPlugin(base, name, true);
 	}
 	
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
