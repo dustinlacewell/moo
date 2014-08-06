@@ -7,6 +7,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
@@ -14,6 +16,8 @@ import net.rizon.moo.Moo;
 final class ScanListener extends Thread
 {
 	private static final Logger log = Logger.getLogger(ScanListener.class.getName());
+	private static final Pattern typeMatchPatter = Pattern.compile("[a-z0-9_]+");
+
 	private final String ip;
 	private final int port;
 	private ServerSocket listener;
@@ -50,16 +54,23 @@ final class ScanListener extends Thread
 					byte[] b = new byte[64];
 					is.read(b);
 					
+					/* protocol_name:ip:port\n */
 					String[] str = new String(b).trim().split(":");
 					if (str.length == 3)
 					{
 						try
 						{
-							int p = Integer.parseInt(str[2]);
-							if (p > 0 && p < 65535)
+							int p = Integer.parseInt(str[2]); /* port */
+							String type = str[0];
+
+							Matcher m = typeMatchPatter.matcher(type);
+							if (m.matches())
 							{
-								InetSocketAddress them = (InetSocketAddress) client.getRemoteSocketAddress();
-								proxyscan.akill(them.getAddress().getHostAddress(), p, str[0], true);
+								if (p > 0 && p < 65535)
+								{
+									InetSocketAddress them = (InetSocketAddress) client.getRemoteSocketAddress();
+									proxyscan.akill(them.getAddress().getHostAddress(), p, type, true);
+								}
 							}
 						}
 						catch (NumberFormatException ex)
