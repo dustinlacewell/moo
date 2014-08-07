@@ -26,14 +26,14 @@ public abstract class Plugin
 	public void remove()
 	{
 		this.stop();
-		try
+		/*try
 		{
 			loader.close();
 		}
 		catch (IOException ex)
 		{
 			log.log(Level.WARNING, "Unable to close classloader when removing plugin", ex);
-		}
+		}*/
 		plugins.remove(this);
 	}
 	
@@ -70,7 +70,7 @@ public abstract class Plugin
 		}
 		catch (InvocationTargetException ex)
 		{
-			cl.close();
+			//cl.close();
 			throw ex.getCause();
 		}
 		
