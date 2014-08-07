@@ -31,7 +31,7 @@ class StatsRequester extends Timer
 		before_count.clear();
 
 		for (Server s : Server.getServers())
-			if (s.getSplit() == null && !s.isServices() && !s.isHub())
+			if (s.isNormal() && !s.isHub())
 			{
 				Moo.sock.write("STATS B " + s.getName());
 				

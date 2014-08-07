@@ -29,7 +29,8 @@ class EventPlexus extends Event
 					serv = new Server(tokens[4]);
 				
 				serv.splitDel(to);
-				
+
+				serv.uplink = to;
 				serv.link(to);
 				to.link(serv);
 				
@@ -48,7 +49,8 @@ class EventPlexus extends Event
 					to = new Server(source);
 
 				serv.splitDel(to);
-				
+
+				serv.uplink = Server.root;
 				serv.link(to);
 				to.link(serv);
 				
@@ -65,7 +67,7 @@ class EventPlexus extends Event
 				if (from == null)
 					from = new Server(tokens[7]);
 				
-
+				serv.uplink = null;
 				from.links.remove(serv);
 				serv.split(from);
 				

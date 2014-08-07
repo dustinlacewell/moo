@@ -54,7 +54,7 @@ class CommandDnsbl extends Command
 		}
 
 		for (Server s : Server.getServers())
-			if (s.getSplit() == null && !s.isServices())
+			if (s.isNormal() && !s.isHub())
 			{
 				Moo.sock.write("STATS B " + s.getName());
 				command_waiting_on.add(s.getName());

@@ -23,13 +23,18 @@ public class Message364 extends Message
 		if (from.equals(to))
 			return;
 		
-		Server sfrom = Server.findServerAbsolute(from),
-				sto = Server.findServerAbsolute(to);
+		Server sfrom = Server.findServerAbsolute(from);
 		if (sfrom == null)
 			sfrom = new Server(from);
+
+		Server sto = Server.findServerAbsolute(to);
 		if (sto == null)
 			sto = new Server(to);
-		
+
+		if (sfrom != sto)
+			sfrom.uplink = sto;
+		else
+			Server.root = sfrom;
 		sfrom.link(sto);
 		sto.link(sfrom);
 	}
