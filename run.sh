@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JAR=moo/target/moo-2.0-SNAPSHOT-jar-with-dependencies.jar
+JAR=moo/target/moo-moo-2.0-SNAPSHOT-jar-with-dependencies.jar
 
 if [ `grep ^debug=0$ moo.properties` ] ; then
 	java -XX:+HeapDumpOnOutOfMemoryError -Xmx16M -jar $JAR >moo.log 2>&1 &

@@ -41,7 +41,7 @@ public final class ClassLoader extends URLClassLoader
 			{
 				String name = loadCandidate.getName();
 
-				if (name.endsWith(".jar") && name.startsWith(plugin))
+				if (name.endsWith(".jar") && name.startsWith("moo-" + plugin))
 				{
 					jar = loadCandidate;
 
