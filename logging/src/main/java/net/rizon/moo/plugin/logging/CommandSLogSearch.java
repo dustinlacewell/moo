@@ -52,18 +52,18 @@ class logSearcher extends Thread
 				stmt.setString(1, "%" + this.search + "%");
 			}
 			rs = stmt.executeQuery();
-			
+
 			int count = 0;
 			while (rs.next())
 			{
 				++count;
-				Moo.reply(source, target, rs.getString("date") + ": " + rs.getString("data"));
+				Moo.notice(source, rs.getString("date") + ": " + rs.getString("data"));
 			}
 			
 			if (this.limit > 0)
-				Moo.reply(source, target, "Done, " + count + " shown. Searched the last " + this.limit + " entries.");
+				Moo.notice(source, "Done, " + count + " shown. Searched the last " + this.limit + " entries.");
 			else
-				Moo.reply(source, target, "Done, " + count + " shown.");
+				Moo.notice(source, "Done, " + count + " shown.");
 		}
 		catch (SQLException ex)
 		{
