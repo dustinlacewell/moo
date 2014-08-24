@@ -134,7 +134,7 @@ class CommandFlood extends Command
 					nd.akilled = true;
 					++count;
 					
-					Moo.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + ")");
+					Moo.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + "!" + nd.user_str + "@" + nd.ip + "/" + nd.realname_str + ")");
 				}
 			}
 			
@@ -314,7 +314,7 @@ class CommandFlood extends Command
 				fe.akilled = true;
 				++count;
 				
-				Moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + ")");
+				Moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + "!" + fe.user_str + "@" + fe.ip + "/" + fe.realname_str + ")");
 			}
 
 			Moo.operwall(source + " used AKILL for " + count + " flood entries");
