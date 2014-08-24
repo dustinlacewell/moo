@@ -6,6 +6,7 @@ import java.util.Iterator;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.plugin.logging.logging;
 
 class CommandWatch extends Command
 {
@@ -124,6 +125,9 @@ class CommandWatch extends Command
 			we.registered = state;
 			
 			Moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
+			Moo.operwall(source + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
+			if (Plugin.findPlugin("logging") != null)
+				logging.addEntry("WATCH", source, we.nick, reason);
 			
 			if (add)
 				watch.watches.push(we);
