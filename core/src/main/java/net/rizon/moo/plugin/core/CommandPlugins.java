@@ -75,4 +75,14 @@ class CommandPlugins extends Command
 			}
 		}
 	}
+
+	@Override
+	public void onHelp(String source)
+	{
+		Moo.notice(source, "Syntax:");
+		Moo.notice(source, "!PLUGINS -- lists currently loaded plugins");
+		Moo.notice(source, "!PLUGINS LOAD <name> -- loads a plugin");
+		Moo.notice(source, "!PLUGINS UNLOAD <name> -- unloads a plugin");
+		Moo.notice(source, "!PLUGINS RELOAD <name> -- reloads a plugin");
+	}
 }
