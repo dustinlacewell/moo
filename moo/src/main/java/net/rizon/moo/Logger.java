@@ -30,7 +30,7 @@ final class loggerHandler extends Handler
 		StackTraceElement[] stes = (record.getThrown() != null ? record.getThrown().getStackTrace() : null);
 		boolean bad = record.getLevel() == Level.SEVERE || record.getLevel() == Level.WARNING || record.getLevel() == Level.ALL || record.getLevel() == Level.CONFIG;
 
-		if (Moo.conf != null && Moo.sock != null)
+		if (Moo.conf != null && Moo.sock != null && Moo.sock.isConnected())
 			if (record.getLevel() == Level.INFO || bad)
 				for (final String ch : Moo.conf.getList("moo_log_channels"))
 				{

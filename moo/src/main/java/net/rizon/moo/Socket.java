@@ -161,6 +161,11 @@ public class Socket
 		s.sslsock = (SSLSocket) s.sock;
 		return s;
 	}
+
+	public boolean isConnected()
+	{
+		return out != null && in != null && sock.isConnected();
+	}
 	
 	public java.net.Socket getSocket()
 	{
