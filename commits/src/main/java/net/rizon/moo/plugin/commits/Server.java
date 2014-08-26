@@ -103,10 +103,16 @@ class Server extends Thread
 					}
 					
 					str = new String(payload, 0, len);
-					if (str.startsWith("payload="))
-						str = str.substring(8);
 
-					final String json = URLDecoder.decode(str, "UTF-8");
+					final String json;
+					if (str.startsWith("payload="))
+					{
+						str = str.substring(8);
+						json = URLDecoder.decode(str, "UTF-8");
+					}
+					else
+						json = str;
+
 					try
 					{
 						GitLab p = new Gson().fromJson(json, GitLab.class);
