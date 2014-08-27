@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
+import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -108,22 +109,48 @@ class Server extends Thread
 					final String json = URLDecoder.decode(str, "UTF-8");
 					try
 					{
-						Push p = new Gson().fromJson(json, GitLab.class);
+						GitLab p = new Gson().fromJson(json, GitLab.class);
 
-						if (p.getPusher() != null)
-							Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
-						for (Commit c : p.getCommits())
+						if (p.getObjectKind() != null && p.getObjectKind().equals("issue"))
 						{
-							String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
-							if (c.getMessage().length > 1)
-							{
-								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
-								for (final String msg : c.getMessage())
-									Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
-							}
-							else if (c.getMessage().length == 1)
-								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0]);
+							ObjectAttributes attrs = p.getObjectAttributes();
+
+							/* 
+							 * very sadly gitlab doesn't provide this info, although
+							 * we can try to guess it from the URL, although this still
+							 * doesn't really give us the name of the person who opened
+							 * the issue.
+							 * 
+							 * this is kind of bad.
+							 */
+							String[] parts = attrs.getUrl().split("/");
+							String projectName = parts[4];
+
+							Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + projectName + "\2: \00303" + attrs.getState() + " issue\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
 						}
+						else if (p.getCommits() != null)
+						{
+							if (p.getPusher() != null)
+								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
+							
+							for (Commit c : p.getCommits())
+							{
+								String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
+								if (c.getMessage().length > 1)
+								{
+									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
+									for (final String msg : c.getMessage())
+										Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
+								}
+								else if (c.getMessage().length == 1)
+									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
+							}
+						}
+						else
+						{
+							log.log(Level.WARNING, "Unknown GitLab event, payload was: " + json);
+						}
+						
 					}
 					catch (JsonSyntaxException e)
 					{

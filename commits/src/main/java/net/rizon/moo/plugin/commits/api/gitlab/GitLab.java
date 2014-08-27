@@ -1,9 +1,9 @@
 package net.rizon.moo.plugin.commits.api.gitlab;
 
+import net.rizon.moo.plugin.commits.Push;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import net.rizon.moo.plugin.commits.Push;
 
 public class GitLab implements Push
 {
@@ -12,6 +12,9 @@ public class GitLab implements Push
 	private List<Commit> commits;
 	private Repository repository;
 	
+	private ObjectAttributes object_attributes;
+	private String object_kind;
+
 	@Override
 	public String getProjectName()
 	{
@@ -21,6 +24,9 @@ public class GitLab implements Push
 	@Override
 	public List<net.rizon.moo.plugin.commits.Commit> getCommits()
 	{
+		if (this.commits == null)
+			return null;
+
 		List<net.rizon.moo.plugin.commits.Commit> l = new LinkedList<net.rizon.moo.plugin.commits.Commit>();
 		for (Commit c : this.commits)
 			l.add(c);
@@ -37,5 +43,15 @@ public class GitLab implements Push
 	public String getPusher()
 	{
 		return this.user_name;
+	}
+
+	public ObjectAttributes getObjectAttributes()
+	{
+		return object_attributes;
+	}
+
+	public String getObjectKind()
+	{
+		return object_kind;
 	}
 }

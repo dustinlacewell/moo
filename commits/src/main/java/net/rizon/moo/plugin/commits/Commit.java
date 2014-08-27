@@ -6,4 +6,5 @@ public interface Commit
 	public String getAuthor();
 	public String[] getMessage();
 	public String getRevision();
+	public String getUrl();
 }

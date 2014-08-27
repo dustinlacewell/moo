@@ -5,6 +5,7 @@ public class Commit implements net.rizon.moo.plugin.commits.Commit
 	private String message;
 	private String id;
 	private Author author;
+	private String url;
 
 	@Override
 	public String getBranch()
@@ -30,4 +31,9 @@ public class Commit implements net.rizon.moo.plugin.commits.Commit
 		return id;
 	}
 
+	@Override
+	public String getUrl()
+	{
+		return url;
+	}
 }

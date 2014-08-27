@@ -30,4 +30,10 @@ class Commit implements net.rizon.moo.plugin.commits.Commit
 	{
 		return node;
 	}
+
+	@Override
+	public String getUrl()
+	{
+		return null;
+	}
 }
