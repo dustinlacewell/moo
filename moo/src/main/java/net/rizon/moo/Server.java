@@ -109,13 +109,16 @@ public class Server
 	
 	public final boolean isServices()
 	{
-		if (this.getSID() != null && this.getSID().endsWith("S"))
-			return true;
-		else if (this.getSID() != null && this.getSID().endsWith("PY"))
-			return true;
-		else if (this.getName().endsWith(".rizon.net"))
-			return true;
-		else if (this.getName().startsWith("services."))
+		String sid = this.getSID();
+		if (sid != null)
+		{
+			if (sid.endsWith("S") || sid.endsWith("PY"))
+				return true;
+			if (sid.endsWith("C") || sid.endsWith("H"))
+				return false;
+		}
+
+		if (this.getName().startsWith("services."))
 			return true;
 		
 		return false;
