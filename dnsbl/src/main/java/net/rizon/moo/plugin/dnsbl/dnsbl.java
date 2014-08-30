@@ -31,6 +31,7 @@ public class dnsbl extends Plugin
 		n219 = new Numeric219();
 		n227 = new Numeric227();
 		e = new EventDnsbl();
+		requester.start();
 	}
 
 	@Override
