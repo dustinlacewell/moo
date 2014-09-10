@@ -37,15 +37,4 @@ public class dnsbl extends Plugin
 		this.command.remove();
 		this.event.remove();
 	}
-	
-	static DnsblInfo getDnsblInfoFor(Server s)
-	{
-		DnsblInfo i = infos.get(s);
-		if (i == null)
-		{
-			i = new DnsblInfo();
-			infos.put(s, i);
-		}
-		return i;
-	}
 }
