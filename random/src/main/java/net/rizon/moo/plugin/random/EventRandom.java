@@ -58,16 +58,27 @@ class EventRandom extends Event
 			return;
 		else if (Server.last_split != null && Server.last_split.after(then))
 			return;
-		
+
 		if (ident.equals("qwebirc") || ident.equals("cgiirc") || real.equals("http://www.mibbit.com") || real.equals("...")
 				|| nick.startsWith("bRO-") || real.equals("realname") || real.equals("New Now Know How") || ident.endsWith("chatzilla"))
 			return;
-			
+
 		NickData nd = new NickData(nick, ident, real, ip);
 		random.addNickData(nd);
-		
-		if (ip.indexOf('.') != -1)
-			for (final String dnsbl : Moo.conf.getList("random.dnsbl"))
-				new DNSBLChecker(dnsbl, nd).start();
+	}
+
+	@Override
+	public void onDNSBLHit(final String nick, final String ip, final String dnsbl, final String reason)
+	{
+		NickData nickData = null;
+		for (NickData nd : random.getNicks())
+			if (!nd.dead && !nd.akilled && nd.nick_str.equals(nick))
+				nickData = nd;
+
+		if (nickData == null)
+			return;
+
+		DNSBL d = DNSBL.getList(dnsbl);
+		nickData.addList(d);
 	}
 }

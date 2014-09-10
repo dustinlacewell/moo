@@ -47,6 +47,7 @@ public abstract class Event
 	public void onAkillAdd(final String setter, final String ip, final String reason) { }
 	public void onAkillDel(final String setter, final String ip, final String reason) { }
 	public void onOPMHit(final String nick, final String ip, final String reason) { }
+	public void onDNSBLHit(final String nick, final String ip, final String dnsbl, final String result) { }
 	
 	private static LinkedList<Event> events = new LinkedList<Event>();
 	
