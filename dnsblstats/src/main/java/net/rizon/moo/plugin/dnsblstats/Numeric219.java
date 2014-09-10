@@ -1,4 +1,4 @@
-package net.rizon.moo.plugin.dnsbl;
+package net.rizon.moo.plugin.dnsblstats;
 
 import net.rizon.moo.Message;
 
@@ -16,7 +16,7 @@ class Numeric219 extends Message
 		if (message[1].equals("B") == false)
 			return;
 		
-		CommandDnsbl.checkReply(source);
+		CommandDnsblStats.checkReply(source);
 		StatsRequester.checkWarn(source);
 	}
 }

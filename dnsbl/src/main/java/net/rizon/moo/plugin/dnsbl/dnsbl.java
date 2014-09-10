@@ -1,47 +1,41 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import java.util.HashMap;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Event;
-import net.rizon.moo.Message;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
 public class dnsbl extends Plugin
 {
-	private Command dnsbl;
-	private Timer requester;
-	private Message n219, n227;
-	private Event e;
-	
-	static HashMap<Server, DnsblInfo> infos = new HashMap<Server, DnsblInfo>();
-	
+	protected static final Logger log = Logger.getLogger(dnsbl.class.getName());
+
+	private CommandDnsbl command;
+	private BlacklistManager blacklistManager;
+	private ResultCache cache;
+	private EventDnsblCheck event;
+
 	public dnsbl()
 	{
-		super("DNSBL", "Monitors and shows DNSBL hits");
+		super("DNSBL", "Monitors connections for DNSBL hits and takes action.");
 	}
 
 	@Override
-	public void start() throws Exception
+	public void start()
 	{
-		dnsbl = new CommandDnsbl(this);
-		requester = new StatsRequester();
-		n219 = new Numeric219();
-		n227 = new Numeric227();
-		e = new EventDnsbl();
-		requester.start();
+		this.blacklistManager = new BlacklistManager();
+		this.cache = new ResultCache();
+		this.command = new CommandDnsbl(this, this.blacklistManager, this.cache);
+		this.event = new EventDnsblCheck(this.blacklistManager, this.cache);
+
+		DnsblChecker.loadSettingsFromConfiguration(Moo.conf);
+		this.cache.loadSettingsFromConfiguration(Moo.conf);
+		this.blacklistManager.loadRulesFromConfiguration(Moo.conf);
 	}
 
 	@Override
 	public void stop()
 	{
-		dnsbl.remove();
-		requester.stop();
-		n219.remove();
-		n227.remove();
-		e.remove();
+		this.command.remove();
+		this.event.remove();
 	}
 	
 	static DnsblInfo getDnsblInfoFor(Server s)

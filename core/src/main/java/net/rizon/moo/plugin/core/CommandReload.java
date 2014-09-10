@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Config;
+import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 
@@ -25,7 +26,11 @@ class CommandReload extends Command
 	{
 		try
 		{
-			Moo.conf = new Config();
+			Config c = new Config();
+			for (Event e : Event.getEvents())
+				e.onReload(c);
+
+			Moo.conf = c;
 			Moo.reply(source, target, "Successfully reloaded configuration");
 		}
 		catch (Exception ex)

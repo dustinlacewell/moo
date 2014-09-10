@@ -1,4 +1,4 @@
-package net.rizon.moo.plugin.dnsbl;
+package net.rizon.moo.plugin.dnsblstats;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ class StatsRequester extends Timer
 				requested.add(s.getName());
 				check_waiting_on.add(s.getName());
 				
-				long count = dnsbl.getDnsblInfoFor(s).getTotal();
+				long count = dnsblstats.getDnsblInfoFor(s).getTotal();
 				before_total_count += count;
 				before_count.put(s.getName(), count);
 			}
@@ -62,7 +62,7 @@ class StatsRequester extends Timer
 			Server s = Server.findServerAbsolute(ss);
 			if (s != null && s.getSplit() == null && !s.isServices())
 			{
-				long count = dnsbl.getDnsblInfoFor(s).getTotal();
+				long count = dnsblstats.getDnsblInfoFor(s).getTotal();
 				after_total_count += count;
 				after_counts.put(s.getName(), count);
 			}

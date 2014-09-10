@@ -1,4 +1,4 @@
-package net.rizon.moo.plugin.dnsbl;
+package net.rizon.moo.plugin.dnsblstats;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
@@ -35,7 +35,7 @@ class Numeric227 extends Message
 		if (s == null)
 			s = new Server(source);
 
-		DnsblInfo info = dnsbl.getDnsblInfoFor(s);
+		DnsblInfo info = dnsblstats.getDnsblInfoFor(s);
 		info.hits.put(name, count);
 	}
 }

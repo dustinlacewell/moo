@@ -20,6 +20,8 @@ public abstract class Event
 	protected void initDatabases() { }
 	public void loadDatabases() { }
 	public void saveDatabases() { }
+
+	public void onReload(Config c) { }
 	
 	public void onServerCreate(Server serv) { }
 	public void onServerDestroy(Server serv) { }

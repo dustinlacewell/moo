@@ -1,4 +1,4 @@
-package net.rizon.moo.plugin.dnsbl;
+package net.rizon.moo.plugin.dnsblstats;
 
 import java.util.HashMap;
 

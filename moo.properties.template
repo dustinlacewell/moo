@@ -151,6 +151,20 @@ proxyscan.ban_message=Using or hosting open proxies is not permitted, detected %
 proxyscan.py-opers=false
 proxyscan.scan_notice=For network safety, your client is being scanned for open proxies by scanner.rizon.net (%bindip%). This scan will not harm your computer.
 
+# DNSBL resolver to use for DNS queries
+dnsbl.resolver = 8.8.8.8
+# DNSBLs to check against
+dnsbl.servers = foo.rizon.net,foo2.rizon.net
+# DNSBL rules
+dnsbl.rules.foo.rizon.net = 127.0.0.1:LOG,127.0.0.2:AKILL
+dnsbl.rules.foo2.rizon.net = 127.0.0.1:AKILL,*:LOG
+# Akill duration
+dnsbl.actions.akill.duration = +3d
+# Akill message; %d = DNSBL host, %r = DNSBL response, %h = user IP
+dnsbl.actions.akill.message = Your IP address (%h) has been matched against a DNSBL. Please contact the %d owner for delistment procedures.
+# Lookup cache lifetime in seconds
+dnsbl.cache.lifetime = 60
+
 # Wiki URL
 wiki.url=http://wiki.rizon.net/index.php?title=Special:RecentChanges&feed=atom
 
@@ -166,7 +180,8 @@ servercontrol.cert.easyrsa=easy-rsa/
 protocol=plexus
 
 # Packages to use.
-packages=commands,core,dnsbl,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki,tickets,proxyscan
+packages=commands,core,dnsbl,dnsblstats,servercontrol,servermonitor,watch,vote,logging,grapher,random,antiidle,osflood,commits,fun,wiki,tickets,proxyscan
 
 debug=0
+
 

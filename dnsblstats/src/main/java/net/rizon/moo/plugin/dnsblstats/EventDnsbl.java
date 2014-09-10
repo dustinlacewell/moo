@@ -1,4 +1,4 @@
-package net.rizon.moo.plugin.dnsbl;
+package net.rizon.moo.plugin.dnsblstats;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
@@ -23,6 +23,6 @@ public class EventDnsbl extends Event
 	@Override
 	public void onServerDestroy(Server serv)
 	{
-		dnsbl.infos.remove(serv);
+		dnsblstats.infos.remove(serv);
 	}
 }
