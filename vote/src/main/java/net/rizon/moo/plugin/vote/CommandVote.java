@@ -1,11 +1,15 @@
 package net.rizon.moo.plugin.vote;
 
-import java.util.Date;
-
+import net.rizon.moo.Channel;
 import net.rizon.moo.Command;
 import net.rizon.moo.Mail;
+import net.rizon.moo.Membership;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.User;
+
+import java.util.Collection;
+import java.util.Date;
 
 class commandVoteBase extends Command
 {
@@ -153,6 +157,66 @@ class commandVoteBase extends Command
 			
 			v.close();
 			Moo.reply(source, target, "Vote " + vnum + " closed.");
+		}
+		else if (params[1].equalsIgnoreCase("slackers") && params.length > 2)
+		{
+			/* !vote slackers is *intentionally* undocumented in the help output because there's inevitably going to be
+			 * that one idiot who can't contain himself and spam it in #opers forever and ever until the end of time.
+			 */
+			int vnum;
+			try
+			{
+				vnum = Integer.parseInt(params[2]);
+			}
+			catch (NumberFormatException ex)
+			{
+				Moo.reply(source, target, "Vote " + params[2] + " is not a valid number");
+				return;
+			}
+
+			VoteInfo v = VoteInfo.getVote(vnum, target);
+			if (v == null)
+			{
+				Moo.reply(source, target, "Vote " + vnum + " does not exist.");
+				return;
+			}
+
+			Channel c = Moo.channels.find(target);
+			Collection<Membership> users = c.getUsers();
+			StringBuilder sb = new StringBuilder("People who need to vote on vote #");
+			sb.append(vnum);
+			sb.append(":");
+			int listed = 0;
+			for (Membership mem : users)
+			{
+				User u = mem.getUser();
+
+				if (v.findCastFor(u.getNick()) || u == Moo.me)
+					continue;
+
+				listed++;
+
+				sb.append(' ');
+				sb.append(u.getNick());
+
+				/* 512 - ":" (1) - NICKLEN (30 on Rizon) - "!" (1) - USERLEN (10) - "@" (1) - HOSTLEN (63) - " :" (2)
+				 *     - "People who need to vote on vote #" (33) - ": " (2) - "\r\n" (2) = 367
+				 *
+				 * Cutting down to 360; I doubt we'll ever have votes with more than 7 digits.
+				 */
+				if (sb.length() > 360)
+				{
+					Moo.reply(source, target, sb.toString());
+					sb = new StringBuilder("People who need to vote on vote #");
+					sb.append(vnum);
+					sb.append(":");
+					listed = 0;
+				}
+			}
+			if (listed > 0)
+				Moo.reply(source, target, sb.toString());
+			else
+				Moo.reply(source, target, "Nobody is slacking off on voting for a change.");
 		}
 		else if (params.length > 2)
 		{

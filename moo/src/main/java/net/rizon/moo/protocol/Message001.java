@@ -4,6 +4,7 @@ import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+import net.rizon.moo.User;
 
 public class Message001 extends Message
 {
@@ -19,7 +20,10 @@ public class Message001 extends Message
 			Moo.sock.write("OPER " + Moo.conf.getString("oper"));
 		if (Moo.conf.getString("nickserv_pass").isEmpty() == false)
 			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.getString("nickserv_pass"));
-		
+
+		Moo.me = new User(Moo.conf.getString("nick"));
+		Moo.users.add(Moo.me);
+
 		for (String s : Moo.conf.getList("channels"))
 			Moo.join(s);
 		

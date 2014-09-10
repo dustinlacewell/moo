@@ -1,5 +1,7 @@
 package net.rizon.moo;
 
+import net.rizon.moo.protocol.ProtocolPlugin;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
@@ -33,9 +35,14 @@ public class Moo
 	public static Config conf = null;
 	public static Socket sock = null;
 	public static Database db = null;
+	public static ChannelManager channels = null;
+	public static UserManager users = null;
 	public static boolean quitting = false;
+	public static ProtocolPlugin protocol = null;
 	
 	public static String akillServ = "GeoServ";
+
+	public static User me = null;
 
 	public static void main(String[] args)
 	{
@@ -68,10 +75,12 @@ public class Moo
 		}
 		
 		Server.init();
+		channels = new ChannelManager();
+		users = new UserManager();
 		
 		try
 		{
-			Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
+			Moo.protocol = (ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
 			
 			for (final String pkg : conf.getList("packages"))
 				Plugin.loadPlugin(pkg);
@@ -111,6 +120,8 @@ public class Moo
 				
 				sock.write("USER " + conf.getString("ident") + " . . :" + conf.getString("realname"));
 				sock.write("NICK :" + conf.getString("nick"));
+
+				sock.write("PROTOCTL UHNAMES NAMESX");
 				
 				long last_timer_check = System.currentTimeMillis() / 1000L;
 
@@ -330,7 +341,7 @@ public class Moo
 	{
 		Moo.sock.write("JOIN " + target);
 	}
-	
+
 	public static void kick(final String target, final String channel, final String reason)
 	{
 		Moo.sock.write("KICK " + channel + " " + target + " :" + reason);
