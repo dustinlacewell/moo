@@ -1,14 +1,16 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 import net.rizon.moo.Timer;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 class Reconnector extends Timer
 {
@@ -61,7 +63,7 @@ class Reconnector extends Timer
 		if (this.from.getSplit() != null && findValidReconnectorFor(this.from) != null)
 			return this.serv; // Special case.
 		
-		for (Iterator<String> it = this.serv.preferred_links.iterator(); it.hasNext();)
+		for (Iterator<String> it = this.serv.allowed_clines.iterator(); it.hasNext();)
 		{
 			final String pname = it.next();
 			Server pserver = Server.findServerAbsolute(pname);
@@ -72,17 +74,21 @@ class Reconnector extends Timer
 		
 		if (isGood(this.from))
 			return this.from;
-		
-		Server lowest = null;
+
+		if (!this.serv.allowed_clines.isEmpty())
+			return null;
+
+		// Take a guess. Highest hub is probably good.
+		Server highest = null;
 		for (Iterator<String> it = this.serv.clines.iterator(); it.hasNext();)
 		{
 			Server altserver = Server.findServerAbsolute(it.next());
 			if (isGood(altserver) && altserver.isHub()
-					&& (lowest == null || altserver.links.size() < lowest.links.size()))
-				lowest = altserver;
+					&& (highest == null || altserver.links.size() > highest.links.size()))
+				highest = altserver;
 		}
 		
-		return lowest;
+		return highest;
 	}
 	
 	@Override
@@ -122,7 +128,34 @@ class Reconnector extends Timer
 		if (this.tries == 7 || targ == null)
 		{
 			for (final String chan : Moo.conf.getList("split_channels"))
+			{
+				if (targ == null)
+				{
+					List<String> others = new ArrayList<String>();
+					others.addAll(s.clines);
+
+					// remove attempted
+					for (String s2 : attempted)
+						others.remove(s2);
+
+					// get suggestion
+					Server guess = null;
+					for (String s2 : others)
+					{
+						Server tmp = Server.findServerAbsolute(s2);
+						if (tmp != null && isGood(tmp) && (guess == null || tmp.links.size() > guess.links.size()))
+							guess = tmp;
+					}
+
+					String buf = "I am no longer able to intelligently route " + s.getName() + ". Other servers may be: " + others + ".";
+					if (guess != null)
+						buf += " My best guess is " + guess.getName() + ".";
+
+					if (!others.isEmpty())
+						Moo.privmsg(chan, buf);
+				}
 				Moo.privmsg(chan, "Giving up reconnecting " + s.getName() + ", tried " + this.tries + " times in " + this.tick + " minutes to " + this.attempted.size() + " servers: " + this.attempted.toString());
+			}
 			
 			this.destroy();
 			this.setRepeating(false);

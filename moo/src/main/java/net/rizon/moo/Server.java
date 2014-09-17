@@ -29,7 +29,7 @@ public class Server
 	public HashSet<Server> links = new HashSet<Server>();
 	public long bytes = 0;
 	public int users = 0, last_users = 0;
-	public LinkedList<String> preferred_links = new LinkedList<String>();
+	public LinkedList<String> allowed_clines = new LinkedList<String>();
 	public boolean frozen = false;
 	/* from /stats u */
 	public Date uptime;
@@ -334,14 +334,14 @@ public class Server
 					if (s == null)
 						s = new Server(name);
 					else
-						s.preferred_links.clear();
+						s.allowed_clines.clear();
 					
 					if (desc != null)
 						s.desc = desc;
 					s.created = created;
 					for (String l : pl.split(" "))
 						if (l.trim().isEmpty() == false)
-							s.preferred_links.add(l.trim());
+							s.allowed_clines.add(l.trim());
 					s.frozen = frozen;
 				}
 			}
@@ -363,7 +363,7 @@ public class Server
 					statement.setString(1, s.getName());
 					statement.setString(2, s.desc);
 					String links = "";
-					for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
+					for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 						links += it.next() + " ";
 					links = links.trim();
 					statement.setString(3, links);

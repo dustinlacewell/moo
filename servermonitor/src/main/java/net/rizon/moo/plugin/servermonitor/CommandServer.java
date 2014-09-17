@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.HashSet;
+import java.util.Iterator;
 
 class commandServerBase extends Command
 {
@@ -99,8 +99,8 @@ class commandServerBase extends Command
 				Moo.reply(source, target, "Server " + params[1] + " not found");
 			else if (params[2].equals("."))
 			{
-				s.preferred_links.clear();
-				Moo.reply(source, target, "Prefered links for " + s.getName() + " unset");
+				s.allowed_clines.clear();
+				Moo.reply(source, target, "Allowed links for " + s.getName() + " unset");
 			}
 			else
 			{
@@ -119,7 +119,7 @@ class commandServerBase extends Command
 						Moo.reply(source, target, "Servers can not link to themselves");
 						continue;
 					}
-					else if (modified == true && s.preferred_links.contains(arg.getName()))
+					else if (modified == true && s.allowed_clines.contains(arg.getName()))
 					{
 						Moo.reply(source, target, s.getName() + " already has " + arg.getName());
 						continue;
@@ -132,13 +132,13 @@ class commandServerBase extends Command
 					
 					if (modified == false)
 					{
-						s.preferred_links.clear();
+						s.allowed_clines.clear();
 						modified = true;
 					}
-					s.preferred_links.add(arg.getName());
+					s.allowed_clines.add(arg.getName());
 				}
 				
-				Moo.reply(source, target, "Prefered links for " + s.getName() + " set to " + s.preferred_links.toString());
+				Moo.reply(source, target, "Prefered links for " + s.getName() + " set to " + s.allowed_clines.toString());
 			}
 		}
 		else
@@ -172,7 +172,7 @@ class commandServerBase extends Command
 				
 				String links = "";
 				HashSet<String> why = new HashSet<String>();
-				for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
+				for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 				{
 					String link_name = it.next();
 					Server link_server = Server.findServerAbsolute(link_name);
@@ -233,10 +233,10 @@ class commandServerBase extends Command
 					msg += Message.COLOR_ORANGE;
 					output = true;
 				}
-				else if (s.preferred_links.isEmpty() == false)
+				else if (s.allowed_clines.isEmpty() == false)
 				{
 					boolean good = false;
-					for (Iterator<String> it = s.preferred_links.iterator(); it.hasNext();)
+					for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 					{
 						Server p_s = Server.findServerAbsolute(it.next());
 						if (p_s != null && isLink(s, p_s))
@@ -247,7 +247,7 @@ class commandServerBase extends Command
 					{
 						output = true;
 						showAllCLines = true;
-						why.add("Uplink not a preferred server");
+						why.add("Uplink not an allowed server");
 					}
 				}
 				if (s.clines.size() == 1)
@@ -355,11 +355,12 @@ class commandServerBase extends Command
 	{
 		Moo.notice(source, "Syntax: " + this.getCommandName() + " [freeze|unfreeze|delete] server.name [.|all|preferred clines]");
 		Moo.notice(source, " ");
-		Moo.notice(source, this.getCommandName() + " is used to view C-Lines between servers and configure preferred C-Lines,");
+		Moo.notice(source, this.getCommandName() + " is used to view C-Lines between servers and configure allowed C-Lines,");
 		Moo.notice(source, "which are C-Lines that have preference over others. When servers split the auto reconnector will");
 		Moo.notice(source, "use this information to determine where to reconnect servers.");
 		Moo.notice(source, " ");
-		Moo.notice(source, "The output format of this command is as follows: users / preferred C-Lines / all C-Lines");
+		Moo.notice(source, "The output format of this command is as follows: users / allowed C-lines / all C-Lines");
+		Moo.notice(source, "If allowed C-lines is set, the server will only be auto reconnected to the given allowed servers.");
 		Moo.notice(source, "The number in parentheses next to C-Lines are the number of links active on that hub.");
 		Moo.notice(source, " ");
 		Moo.notice(source, "C-Lines are color coded to determine the state of the C-Line");
@@ -373,7 +374,7 @@ class commandServerBase extends Command
 		Moo.notice(source, " ");
 		Moo.notice(source, "Executing this command with no parameters will only show problem servers and and the problem C-Lines on those servers.");
 		Moo.notice(source, "When using ALL or searching for a specific name all C-Lines will be shown.");
-		Moo.notice(source, "If a single dot is provided after server.name, all preferred C-Lines will be unset.");
+		Moo.notice(source, "If a single dot is provided after server.name, all allowed C-Lines will be unset.");
 	}
 }
 
