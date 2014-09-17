@@ -145,16 +145,18 @@ public class Server
 		s.me = this.getName();
 		s.from = from.name;
 		s.when = now;
+		s.recursive = from.getSplit() != null;
 		
 		try
 		{
-			PreparedStatement statement = Moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`) VALUES(?, ?, ?, ?, ?, ?)");
+			PreparedStatement statement = Moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`, `recursive`) VALUES(?, ?, ?, ?, ?, ?, ?)");
 			statement.setString(1, s.me);
 			statement.setString(2, s.from);
 			statement.setString(3, s.to);
 			statement.setDate(4, new java.sql.Date(s.when.getTime()));
 			statement.setDate(5, (s.end != null ? new java.sql.Date(s.end.getTime()) : null));
 			statement.setString(6, s.reconnectedBy);
+			statement.setBoolean(7, s.recursive);
 			Moo.db.executeUpdate();
 		}
 		catch (SQLException ex)
@@ -180,6 +182,7 @@ public class Server
 			{
 				String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
 				Date when = rs.getDate("when"), end = rs.getDate("end");
+				boolean recursive = rs.getBoolean("recursive");
 
 				Split sp = new Split();
 				sp.me = name;
@@ -188,6 +191,7 @@ public class Server
 				sp.when = when;
 				sp.end = end;
 				sp.reconnectedBy = rBy;
+				sp.recursive = recursive;
 
 				if (sp.end == null)
 				{

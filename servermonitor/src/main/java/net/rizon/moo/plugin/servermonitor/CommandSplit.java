@@ -1,16 +1,18 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.TreeSet;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeSet;
 
 class splitComparator implements Comparator<Split>
 {
@@ -90,6 +92,7 @@ class CommandSplit extends Command
 		}
 		else if (params[1].equalsIgnoreCase("recent"))
 		{
+			boolean all = params.length > 2 && params[2].equalsIgnoreCase("all");
 			TreeSet<Split> ts = new TreeSet<Split>(new splitComparator());
 			Date now = new Date();
 			
@@ -98,7 +101,11 @@ class CommandSplit extends Command
 				Split[] splits = s.getSplits();
 				
 				for (int i = splits.length; i > 0; --i)
-					ts.add(splits[i - 1]);
+				{
+					Split split = splits[i - 1];
+					if (all || !split.recursive)
+						ts.add(split);
+				}
 			}
 			
 			int count = 10;
@@ -187,46 +194,52 @@ class CommandSplit extends Command
 			Date now = new Date();
 			
 			if (s == null)
-				Moo.reply(source, target, "No such server " + params[1]);
-			else
 			{
-				Split[] splits = s.getSplits();
+				Moo.reply(source, target, "No such server " + params[1]);
+				return;
+			}
+
+			boolean all = params.length > 2 && params[2].equalsIgnoreCase("all");
+			List<Split> splits = new ArrayList<Split>();
+			for (Split split : s.getSplits())
+				if (all || !split.recursive)
+					splits.add(split);
 				
-				if (splits.length == 0)
-					Moo.reply(source, target, s.getName() + " has never split");
+			if (splits.isEmpty())
+			{
+				Moo.reply(source, target, s.getName() + " has never split");
+				return;
+			}
+
+			Moo.reply(source, target, "Recent splits for " + s.getName() + ":");
+					
+			int count = 3;
+			try
+			{
+				count = Integer.parseInt(params[2]);
+			}
+			catch (Exception ex) { }
+					
+			for (int i = splits.size(); i > 0 && count > 0; --i, --count)
+			{
+				Split sp = splits.get(i - 1);
+						
+				String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+				if (sp.end != null && sp.to != null)
+				{
+					buf += " Reconnected to " + sp.to + " " + Moo.difference(sp.end, sp.when) + " later";
+					if (sp.reconnectedBy != null)
+						buf += " by " + sp.reconnectedBy;
+					buf += ".";
+				}
 				else
 				{
-					Moo.reply(source, target, "Recent splits for " + s.getName() + ":");
-					
-					int count = 3;
-					try
-					{
-						count = Integer.parseInt(params[2]);
-					}
-					catch (Exception ex) { }
-					
-					for (int i = splits.length; i > 0 && count > 0; --i, --count)
-					{
-						Split sp = splits[i - 1];
-						
-						String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
-						if (sp.end != null && sp.to != null)
-						{
-							buf += " Reconnected to " + sp.to + " " + Moo.difference(sp.end, sp.when) + " later";
-							if (sp.reconnectedBy != null)
-								buf += " by " + sp.reconnectedBy;
-							buf += ".";
-						}
-						else
-						{
-							Reconnector r = Reconnector.findValidReconnectorFor(s);
-							if (r != null)
-								buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
-						}
-						
-						Moo.reply(source, target, buf);
-					}
+					Reconnector r = Reconnector.findValidReconnectorFor(s);
+					if (r != null)
+						buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 				}
+						
+				Moo.reply(source, target, buf);
 			}
 		}
 	}

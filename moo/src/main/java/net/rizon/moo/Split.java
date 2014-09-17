@@ -6,6 +6,7 @@ public class Split
 {
 	public String me, from, to, reconnectedBy;
 	public Date when, end;
+	public boolean recursive;
 	
 	@Override
 	public boolean equals(Object other)
