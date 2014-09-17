@@ -1,14 +1,15 @@
 package net.rizon.moo.plugin.commands;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+import net.rizon.moo.Server;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 
 final class operComparator implements Comparator<String>
 {
@@ -59,19 +60,19 @@ class CommandOline extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !OLINE { COUNT [num] | SERVER [[{<,<=,>,>=,=}]num] | <oper> | <server> }");
-		Moo.notice(source, "If COUNT is given, all known O:lines will be searched and opers with at least");
-		Moo.notice(source, "two (2) O:lines will be returned. If a number is given as well, the minimum");
-		Moo.notice(source, "number of O:lines can be changed.");
-		Moo.notice(source, "If SERVER is given, all servers will be searched for O:lines and servers with at");
-		Moo.notice(source, "least two (2) O:lines will be returned by default. If a number is given as well, the minimum");
-		Moo.notice(source, "number of O:lines can be changed. If one of <, <=, >, >=, = is supplied, only servers with");
-		Moo.notice(source, "less than, less than or equal to, greater than, greater than or equal to, equal to the");
-		Moo.notice(source, "number supplied, respectively, will be returned.");
-		Moo.notice(source, "If an oper name is given, the servers (s)he has an O:line on will be shown.");
-		Moo.notice(source, "If a server name is given, the O:lines on that server will be shown.");
+		source.notice("Syntax: !OLINE { COUNT [num] | SERVER [[{<,<=,>,>=,=}]num] | <oper> | <server> }");
+		source.notice("If COUNT is given, all known O:lines will be searched and opers with at least");
+		source.notice("two (2) O:lines will be returned. If a number is given as well, the minimum");
+		source.notice("number of O:lines can be changed.");
+		source.notice("If SERVER is given, all servers will be searched for O:lines and servers with at");
+		source.notice("least two (2) O:lines will be returned by default. If a number is given as well, the minimum");
+		source.notice("number of O:lines can be changed. If one of <, <=, >, >=, = is supplied, only servers with");
+		source.notice("less than, less than or equal to, greater than, greater than or equal to, equal to the");
+		source.notice("number supplied, respectively, will be returned.");
+		source.notice("If an oper name is given, the servers (s)he has an O:line on will be shown.");
+		source.notice("If a server name is given, the O:lines on that server will be shown.");
 	}
 
 	enum Type
@@ -84,7 +85,7 @@ class CommandOline extends Command
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1)
 			return;
@@ -130,7 +131,7 @@ class CommandOline extends Command
 			
 			if (count == 0)
 			{
-				Moo.reply(source, target, "No opers with " + min + " o:lines");
+				source.reply("No opers with " + min + " o:lines");
 				return;
 			}
 			
@@ -148,13 +149,13 @@ class CommandOline extends Command
 			operComparator compare = new operComparator(oper_map);
 			Arrays.sort(opers, compare);
 			
-			Moo.reply(source, target, "Oper list with at least " + min + " o:lines");
+			source.reply("Oper list with at least " + min + " o:lines");
 			for (int i = opers.length; i > 0; --i)
 			{
 				String oper = opers[i - 1];
 				int oper_count = oper_map.get(oper);
 
-				Moo.reply(source, target, oper + ": " + oper_count);
+				source.reply(oper + ": " + oper_count);
 			}
 		}
 		else if (params[1].equalsIgnoreCase("SERVER"))
@@ -205,7 +206,7 @@ class CommandOline extends Command
 			Server servers[] = Server.getServers();
 			Arrays.sort(servers, servComparator);
 			
-			Moo.reply(source, target, "Servers with " + (params.length > 2 ? (Character.isDigit(params[2].charAt(0)) ? ">=" + count : params[2]) : ">=" + count) + " o:lines:");
+			source.reply("Servers with " + (params.length > 2 ? (Character.isDigit(params[2].charAt(0)) ? ">=" + count : params[2]) : ">=" + count) + " o:lines:");
 			
 			for (int i = servers.length; i > 0; --i)
 			{
@@ -241,7 +242,7 @@ class CommandOline extends Command
 				String olines = s.olines.toString();
 				olines = olines.substring(1, olines.length() - 1);
 				
-				Moo.reply(source, target, s.getName() + ": " + olines); 
+				source.reply(s.getName() + ": " + olines);
 			}
 		}
 		else
@@ -263,7 +264,7 @@ class CommandOline extends Command
 					buffer = buffer.substring(0, buffer.length() - 2);
 				}
 				
-				Moo.reply(source, target, buffer);
+				source.reply(buffer);
 				found = true;
 			}
 			
@@ -279,11 +280,11 @@ class CommandOline extends Command
 			if (!servers.isEmpty())
 			{
 				servers = servers.substring(0, servers.length() - 2);
-				Moo.reply(source, target, params[1] + " has o:lines on: " + servers);
+				source.reply(params[1] + " has o:lines on: " + servers);
 				found = true;
 			}
 			if (found == false)
-				Moo.reply(source, target, "No o:lines for " + params[1]);
+				source.reply("No o:lines for " + params[1]);
 		}
 	}
 }

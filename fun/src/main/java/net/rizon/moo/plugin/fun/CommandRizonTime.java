@@ -1,11 +1,11 @@
 package net.rizon.moo.plugin.fun;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Plugin;
+
 import java.util.HashMap;
 import java.util.Random;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
 
 class CommandRizonTime extends Command
 {
@@ -17,7 +17,7 @@ class CommandRizonTime extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		Random r = new Random();
 		
@@ -59,7 +59,7 @@ class CommandRizonTime extends Command
 		
 		if (this.cache.containsKey(buf.toLowerCase()))
 		{
-			Moo.reply(source, target, buf + " in Rizon Time(tm) is " + this.cache.get(buf.toLowerCase()));
+			source.reply(buf + " in Rizon Time(tm) is " + this.cache.get(buf.toLowerCase()));
 			return;
 		}
 		
@@ -96,7 +96,7 @@ class CommandRizonTime extends Command
 		
 		if (out.length() > 2)
 		{
-			Moo.reply(source, target, buf + " in Rizon Time(tm) is " + out.substring(2));
+			source.reply(buf + " in Rizon Time(tm) is " + out.substring(2));
 			this.cache.put(buf.toLowerCase(), out.substring(2));
 		}
 	}

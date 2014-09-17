@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Version;
@@ -52,17 +53,17 @@ class CommandStatus extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !STATUS");
-		Moo.notice(source, "!STATUS prints misc info on " + Moo.conf.getString("nick") + ".");
-		Moo.notice(source, "This includes the version, the date when " + Moo.conf.getString("nick") + " was started,");
-		Moo.notice(source, "the amount of currently running threads and memory usage.");
+		source.notice("Syntax: !STATUS");
+		source.notice("!STATUS prints misc info on " + Moo.conf.getString("nick") + ".");
+		source.notice("This includes the version, the date when " + Moo.conf.getString("nick") + " was started,");
+		source.notice("the amount of currently running threads and memory usage.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
-		Moo.reply(source, target, "[STATUS] " + Moo.conf.getString("nick") + " version " + Moo.conf.getString("version") + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		source.reply("[STATUS] " + Moo.conf.getString("nick") + " version " + Moo.conf.getString("version") + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

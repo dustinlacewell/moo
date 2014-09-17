@@ -1,26 +1,26 @@
 package net.rizon.moo.plugin.commands;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 class DNSBLChecker extends Thread
 {
-	private static final String DNSBLs[] = { "rbl.efnetrbl.org", "dnsbl.rizon.net" };
-	
-	private String source, target;
+	private static final String DNSBLs[] = { "rbl.efnetrbl.org", "dnsbl.dronebl.org" };
+
+	private CommandSource source;
 	
 	private String ip;
 	
-	public DNSBLChecker(final String source, final String target, final String ip)
+	public DNSBLChecker(CommandSource source, final String ip)
 	{
 		this.source = source;
-		this.target = target;
 		this.ip = ip;
 	}
 	
@@ -40,7 +40,7 @@ class DNSBLChecker extends Thread
 			try
 			{
 				InetAddress.getAllByName(lookup_addr);
-				Moo.reply(this.source, this.target, this.ip + " is listed in " + dnsbl);
+				source.reply(this.ip + " is listed in " + dnsbl);
 			}
 			catch (UnknownHostException ex)
 			{
@@ -65,8 +65,8 @@ class message_216 extends Message
 			return;
 		else if (message[2].equalsIgnoreCase(CommandWhy.host_ip) == false && message[2].equalsIgnoreCase(CommandWhy.host_host) == false)
 			return;
-		
-		Moo.reply(CommandWhy.message_source, CommandWhy.message_target, "[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[5]);
+
+		CommandWhy.command_source.reply("[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[5]);
 
 		CommandWhy.host_ip = "";
 		CommandWhy.host_host = "";
@@ -89,8 +89,8 @@ class message_225 extends Message
 			return;
 		else if (message[2].equalsIgnoreCase(CommandWhy.host_ip) == false && message[2].equalsIgnoreCase(CommandWhy.host_host) == false)
 			return;
-		
-		Moo.reply(CommandWhy.message_source, CommandWhy.message_target, "[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[3]);
+
+		CommandWhy.command_source.reply("[" + source + "] " + message[2] + " is " + message[1] + "-lined for: " + message[3]);
 
 		CommandWhy.host_ip = "";
 		CommandWhy.host_host = "";
@@ -114,7 +114,7 @@ class message219_why extends Message
 		
 		if (CommandWhy.requested == 0)
 		{
-			Moo.reply(CommandWhy.message_source, CommandWhy.message_target, CommandWhy.host_ip + " (" + CommandWhy.host_host + ") is not banned");
+			CommandWhy.command_source.reply(CommandWhy.host_ip + " (" + CommandWhy.host_host + ") is not banned");
 			
 			CommandWhy.host_ip = "";
 			CommandWhy.host_host = "";
@@ -130,8 +130,9 @@ class CommandWhy extends Command
 	private static final message_225 message225 = new message_225();
 	@SuppressWarnings("unused")
 	private static final message219_why message219 = new message219_why();
-	
-	public static String message_target, message_source, host_ip = "", host_host = "";
+
+	protected static CommandSource command_source;
+	public static String host_ip = "", host_host = "";
 	public static int requested = 0;
 
 	public CommandWhy(Plugin pkg)
@@ -144,18 +145,18 @@ class CommandWhy extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !WHY <ip/host>");
-		Moo.notice(source, "Finds out why a certain IP is banned. It is looked for in DNSBLs and k/K/d:lines");
+		source.notice("Syntax: !WHY <ip/host>");
+		source.notice("Finds out why a certain IP is banned. It is looked for in DNSBLs and k/K/d:lines");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1)
 		{
-			Moo.reply(source, target, "Syntax: !WHY <ip/host>");
+			source.reply("Syntax: !WHY <ip/host>");
 			return;
 		}
 		
@@ -167,12 +168,12 @@ class CommandWhy extends Command
 		}
 		catch (UnknownHostException ex)
 		{
-			Moo.reply(source, target, "Invalid IP or host");
+			source.reply("Invalid IP or host");
 			return;
 		}
 		
 		
-		Thread t = new DNSBLChecker(source, target, host_ip);
+		Thread t = new DNSBLChecker(source, host_ip);
 		t.start();
 		
 		requested = 0;
@@ -184,8 +185,7 @@ class CommandWhy extends Command
 				Moo.sock.write("STATS d " + s.getName());
 				requested += 3;
 			}
-		
-		message_target = target;
-		message_source = source;
+
+		command_source = source;
 	}
 }

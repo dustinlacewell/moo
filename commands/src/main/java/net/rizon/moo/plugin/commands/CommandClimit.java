@@ -1,12 +1,13 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.HashSet;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.HashSet;
 
 class message_limit extends Message
 {
@@ -24,8 +25,7 @@ class message_limit extends Message
 	}
 	
 	public static HashSet<String> waiting_for = new HashSet<String>();
-	public static String target_channel = null;
-	public static String target_source = null;
+	protected static CommandSource source;
 
 	public message_limit(String what)
 	{
@@ -35,7 +35,7 @@ class message_limit extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (target_channel == null || target_source == null)
+		if (source == null)
 			return;
 
 		Server s = Server.findServerAbsolute(source);
@@ -55,8 +55,8 @@ class message_limit extends Message
 				for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 					buf += "-";
 				buf += " \00309" + limit + "\003";
-				
-				Moo.reply(target_source, target_channel, buf);
+
+				this.source.reply(buf);
 			}
 		}
 	}
@@ -78,14 +78,14 @@ class CommandClimit extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !CLIMIT");
-		Moo.notice(source, "Shows how many channels clients may join for all servers.");
+		source.notice("Syntax: !CLIMIT");
+		source.notice("Shows how many channels clients may join for all servers.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		for (Server s : Server.getServers())
 		{
@@ -96,7 +96,6 @@ class CommandClimit extends Command
 			message_limit.waiting_for.add(s.getName());
 		}
 		
-		message_limit.target_channel = target;
-		message_limit.target_source = source;
+		message_limit.source = source;
 	}
 }

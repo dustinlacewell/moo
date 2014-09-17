@@ -1,13 +1,14 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.HashSet;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.HashSet;
 
 class message351 extends Message
 {
@@ -15,10 +16,9 @@ class message351 extends Message
 	{
 		super("351");
 	}
-	
+
+	protected static CommandSource command_source;
 	public static HashSet<String> waiting_for = new HashSet<String>();
-	public static String target_channel = null;
-	public static String target_source = null;
 	private static int max_ver = 0;
 	
 	private static int dashesFor(Server s)
@@ -69,7 +69,7 @@ class message351 extends Message
 			// We might just want to update the max_ver, not run a command
 			if (waiting_for.remove(s.getName()) == false)
 				return;
-			if (target_channel == null || target_source == null)
+			if (command_source == null)
 				return;
 			
 			if (commandVersionsBase.onlyOld && ver_num == max_ver)
@@ -94,8 +94,8 @@ class message351 extends Message
 			buf += " (";
 			buf += tok.substring(serno_pos1+1, pos-1);
 			buf += ")";
-			
-			Moo.reply(target_source, target_channel, buf);
+
+			command_source.reply(buf);
 		}
 		catch (Exception ex)
 		{
@@ -121,16 +121,16 @@ class commandVersionsBase extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !VERSIONS [OLD|server]");
-		Moo.notice(source, "This command gets the version and serno of all currently linked IRCds and lists them.");
-		Moo.notice(source, "If OLD is given as a parameter, only versions that aren't the latest will be shown.");
-		Moo.notice(source, "If a server name is given, the version for that server will be shown.");
+		source.notice("Syntax: !VERSIONS [OLD|server]");
+		source.notice("This command gets the version and serno of all currently linked IRCds and lists them.");
+		source.notice("If OLD is given as a parameter, only versions that aren't the latest will be shown.");
+		source.notice("If a server name is given, the version for that server will be shown.");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length > 1)
 		{
@@ -156,9 +156,8 @@ class commandVersionsBase extends Command
 				message351.waiting_for.add(s.getName());
 			}
 		}
-		
-		message351.target_channel = target;
-		message351.target_source = source;
+
+		message351.command_source = source;
 	}
 }
 

@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.servermonitor;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
@@ -39,18 +40,18 @@ class CommandSplit extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: " + this.getCommandName() + " [recent|del|freeze|unfreeze|server.name]");
-		Moo.notice(source, " ");
-		Moo.notice(source, "With no arguments shows currently split servers. With recent or server.name only");
-		Moo.notice(source, "recent splits or splits from that server are shown. Freeze and unfreeze can be used");
-		Moo.notice(source, "to globally freeze and unfreeze all servers, including past and future ones. Del");
-		Moo.notice(source, "(or stop) will disable a reconnect for a server.");
+		source.notice("Syntax: " + this.getCommandName() + " [recent|del|freeze|unfreeze|server.name]");
+		source.notice(" ");
+		source.notice("With no arguments shows currently split servers. With recent or server.name only");
+		source.notice("recent splits or splits from that server are shown. Freeze and unfreeze can be used");
+		source.notice("to globally freeze and unfreeze all servers, including past and future ones. Del");
+		source.notice("(or stop) will disable a reconnect for a server.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1)
 		{
@@ -84,11 +85,11 @@ class CommandSplit extends Command
 						else
 							buffer += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 					}
-					Moo.reply(source, target, buffer);
+					source.reply(buffer);
 				}
 			}
 			
-			Moo.reply(source, target, "[SPLIT] [" + split + "/" + count + "]");
+			source.reply("[SPLIT] [" + split + "/" + count + "]");
 		}
 		else if (params[1].equalsIgnoreCase("recent"))
 		{
@@ -119,10 +120,10 @@ class CommandSplit extends Command
 				ts.remove(ts.first());
 			
 			if (ts.size() == 0)
-				Moo.reply(source, target, "There are no recent splits");
+				source.reply("There are no recent splits");
 			else
 			{
-				Moo.reply(source, target, "Recent splits:");
+				source.reply("Recent splits:");
 
 				for (Iterator<Split> it = ts.descendingIterator(); it.hasNext();)
 				{
@@ -147,7 +148,7 @@ class CommandSplit extends Command
 						}
 					}
 					
-					Moo.reply(source, target, buf);
+					source.reply(buf);
 				}
 			}
 		}
@@ -155,12 +156,12 @@ class CommandSplit extends Command
 		{
 			Server s = Server.findServer(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
+				source.reply("[SPLIT] Server " + params[2] + " not found");
 			else if (s.getSplit() == null)
-				Moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+				source.reply("[SPLIT] Server " + s.getName() + " is not marked as split");
 			else
 			{
-				Moo.reply(source, target, "Deleted server " + s.getName());
+				source.reply("Deleted server " + s.getName());
 				s.destroy();
 			}
 		}
@@ -168,25 +169,25 @@ class CommandSplit extends Command
 		{
 			Server s = Server.findServer(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "[SPLIT] Server " + params[2] + " not found");
+				source.reply("[SPLIT] Server " + params[2] + " not found");
 			else if (s.getSplit() == null)
-				Moo.reply(source, target, "[SPLIT] Server " + s.getName() + " is not marked as split");
+				source.reply("[SPLIT] Server " + s.getName() + " is not marked as split");
 			else if (Reconnector.removeReconnectsFor(s))
-				Moo.reply(source, target, "[SPLIT] Removed reconnect for server " + s.getName());
+				source.reply("[SPLIT] Removed reconnect for server " + s.getName());
 			else
-				Moo.reply(source, target, "[SPLIT] There are no pending reconnects for " + s.getName());
+				source.reply("[SPLIT] There are no pending reconnects for " + s.getName());
 		}
 		else if (params[1].equalsIgnoreCase("freeze"))
 		{
 			Moo.conf.setBoolean("disable_split_reconnect", true);
 			for (Server s : Server.getServers())
 				Reconnector.removeReconnectsFor(s);
-			Moo.reply(source, target, "[SPLIT] Disabled all reconnects and all future reconnects");
+			source.reply("[SPLIT] Disabled all reconnects and all future reconnects");
 		}
 		else if (params[1].equalsIgnoreCase("unfreeze"))
 		{
 			Moo.conf.setBoolean("disable_split_reconnect", false);
-			Moo.reply(source, target, "[SPLIT] Reenabled reconnects");
+			source.reply("[SPLIT] Reenabled reconnects");
 		}
 		else
 		{
@@ -195,7 +196,7 @@ class CommandSplit extends Command
 			
 			if (s == null)
 			{
-				Moo.reply(source, target, "No such server " + params[1]);
+				source.reply("No such server " + params[1]);
 				return;
 			}
 
@@ -207,11 +208,11 @@ class CommandSplit extends Command
 				
 			if (splits.isEmpty())
 			{
-				Moo.reply(source, target, s.getName() + " has never split");
+				source.reply(s.getName() + " has never split");
 				return;
 			}
 
-			Moo.reply(source, target, "Recent splits for " + s.getName() + ":");
+			source.reply("Recent splits for " + s.getName() + ":");
 					
 			int count = 3;
 			try
@@ -239,7 +240,7 @@ class CommandSplit extends Command
 						buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 				}
 						
-				Moo.reply(source, target, buf);
+				source.reply(buf);
 			}
 		}
 	}

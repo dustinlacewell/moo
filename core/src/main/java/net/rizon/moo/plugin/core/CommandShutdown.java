@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 
@@ -14,18 +15,18 @@ class CommandShutdown extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !SHUTDOWN");
-		Moo.notice(source, "!SHUTDOWN shuts " + Moo.conf.getString("nick") + " down.");
-		Moo.notice(source, "Please note that this will show the nick!user@host of the user");
-		Moo.notice(source, "issuing this command in the quit message.");
+		source.notice("Syntax: !SHUTDOWN");
+		source.notice("!SHUTDOWN shuts " + Moo.conf.getString("nick") + " down.");
+		source.notice("Please note that this will show the nick!user@host of the user");
+		source.notice("issuing this command in the quit message.");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
-		Moo.reply(source, target, "Shutting down");
+		source.reply("Shutting down");
 		Moo.sock.write("QUIT :SHUTDOWN from " + source);
 		Moo.sock.shutdown();
 		Moo.quitting = true;

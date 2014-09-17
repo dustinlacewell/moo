@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.dnsbl;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
@@ -27,38 +28,38 @@ class CommandDnsbl extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !DNSBL <SUBCOMMAND> [ARGUMENTS...]");
-		Moo.notice(source, "SUBCOMMAND can be one of: ADD, DEL, LIST, ACTION, DELACTION, CHECK, CHECKACTION.");
-		Moo.notice(source, "Actions take arguments as follows:");
-		Moo.notice(source, "ADD <SERVER>");
-		Moo.notice(source, "  Add server to DNSBL system.");
-		Moo.notice(source, "DEL <SERVER>");
-		Moo.notice(source, "  Remove server and associated actions from DNSBL system.");
-		Moo.notice(source, "LIST [SERVER]");
-		Moo.notice(source, "  List all rules. If server if given, only list rules from server.");
-		Moo.notice(source, "ACTION <SERVER> <RESPONSE> <ACTION>");
-		Moo.notice(source, "  Perform action when a new connection triggers a DNSBL response.");
-		Moo.notice(source, "DELACTION <SERVER> <RESPONSE> <ACTION>");
-		Moo.notice(source, "  Cease doing action when a new connection triggers given response.");
-		Moo.notice(source, "CHECK <IP> [SERVER]");
-		Moo.notice(source, "  Check IP against DNSBLs and return responses.");
-		Moo.notice(source, "  If server is given, only check against server.");
-		Moo.notice(source, "CHECKACTION <IP> [SERVER]");
-		Moo.notice(source, "  Check IP against DNSBLs and return what actions would have been taken.");
-		Moo.notice(source, "  If server is given, only check against server. ");
-		Moo.notice(source, "Possible actions:");
+		source.notice("Syntax: !DNSBL <SUBCOMMAND> [ARGUMENTS...]");
+		source.notice("SUBCOMMAND can be one of: ADD, DEL, LIST, ACTION, DELACTION, CHECK, CHECKACTION.");
+		source.notice("Actions take arguments as follows:");
+		source.notice("ADD <SERVER>");
+		source.notice("  Add server to DNSBL system.");
+		source.notice("DEL <SERVER>");
+		source.notice("  Remove server and associated actions from DNSBL system.");
+		source.notice("LIST [SERVER]");
+		source.notice("  List all rules. If server if given, only list rules from server.");
+		source.notice("ACTION <SERVER> <RESPONSE> <ACTION>");
+		source.notice("  Perform action when a new connection triggers a DNSBL response.");
+		source.notice("DELACTION <SERVER> <RESPONSE> <ACTION>");
+		source.notice("  Cease doing action when a new connection triggers given response.");
+		source.notice("CHECK <IP> [SERVER]");
+		source.notice("  Check IP against DNSBLs and return responses.");
+		source.notice("  If server is given, only check against server.");
+		source.notice("CHECKACTION <IP> [SERVER]");
+		source.notice("  Check IP against DNSBLs and return what actions would have been taken.");
+		source.notice("  If server is given, only check against server. ");
+		source.notice("Possible actions:");
 		for (Action a : Action.getAllActions())
-			Moo.notice(source, "  " + a.getName() + ": " + a.getDescription());
+			source.notice("  " + a.getName() + ": " + a.getDescription());
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length < 2)
 		{
-			Moo.notice(source, "No subcommand specified. See !HELP DNSBL for details.");
+			source.reply("No subcommand specified. See !HELP DNSBL for details.");
 			return;
 		}
 
@@ -67,33 +68,33 @@ class CommandDnsbl extends Command
 
 		// Determine which subcommand to call.
 		if (action.equals("add"))
-			this.onAddSubCommand(source, target, actionParams);
+			this.onAddSubCommand(source, actionParams);
 		else if (action.equals("del"))
-			this.onDelSubCommand(source, target, actionParams);
+			this.onDelSubCommand(source, actionParams);
 		else if (action.equals("list"))
-			this.onListSubCommand(source, target, actionParams);
+			this.onListSubCommand(source, actionParams);
 		else if (action.equals("action"))
-			this.onActionSubCommand(source, target, actionParams);
+			this.onActionSubCommand(source, actionParams);
 		else if (action.equals("delaction"))
-			this.onDelActionSubCommand(source, target, actionParams);
+			this.onDelActionSubCommand(source, actionParams);
 		else if (action.equals("check"))
-			this.onCheckSubCommand(source, target, actionParams);
+			this.onCheckSubCommand(source, actionParams);
 		else if (action.equals("checkaction"))
-			this.onCheckActionSubCommand(source, target, actionParams);
+			this.onCheckActionSubCommand(source, actionParams);
 		else
-			Moo.notice(source, "Invalid subcommand. See !HELP DNSBL for details.");
+			source.reply("Invalid subcommand. See !HELP DNSBL for details.");
 	}
 
 	/**
 	 * DNSBL server add command.
 	 * Syntax: !DNSBL ADD <SERVER>
 	 */
-	public void onAddSubCommand(String source, String target, String[] params)
+	public void onAddSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 1)
 		{
 			// Invalid command.
-			Moo.notice(source, "Usage: ADD [SERVER]");
+			source.reply("Usage: ADD [SERVER]");
 			return;
 		}
 
@@ -101,26 +102,26 @@ class CommandDnsbl extends Command
 		Blacklist b = this.blacklists.getBlacklist(host);
 		if (b != null)
 		{
-			Moo.reply(source, target, "DNSBL server already exists.");
+			source.reply("DNSBL server already exists.");
 			return;
 		}
 
 		b = new Blacklist(host);
 		this.blacklists.addBlacklist(b);
 		this.cache.clear();
-		Moo.reply(source, target, "DNSBL server " + host + " added.");
+		source.reply("DNSBL server " + host + " added.");
 	}
 
 	/**
 	 * DNSBL server remove command.
 	 * Syntax: !DNSBL DEL <SERVER>
 	 */
-	public void onDelSubCommand(String source, String target, String[] params)
+	public void onDelSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 1)
 		{
 			// Invalid command.
-			Moo.notice(source, "Usage: REMOVE [SERVER]");
+			source.reply("Usage: REMOVE [SERVER]");
 			return;
 		}
 
@@ -128,20 +129,20 @@ class CommandDnsbl extends Command
 		Blacklist b = this.blacklists.getBlacklist(host);
 		if (b == null)
 		{
-			Moo.reply(source, target, "DNSBL server doesn't exist.");
+			source.reply("DNSBL server doesn't exist.");
 			return;
 		}
 
 		this.blacklists.removeBlacklist(b);
 		this.cache.clear();
-		Moo.reply(source, target, "DNSBL server " + b.getName() + " removed.");
+		source.reply("DNSBL server " + b.getName() + " removed.");
 	}
 
 	/**
 	 * DNSBL server list command
 	 * Syntax: !DNSBL LIST [SERVER] [SERVER...]
 	 */
-	public void onListSubCommand(String source, String target, String[] params)
+	public void onListSubCommand(CommandSource source, String[] params)
 	{
 		Collection<Blacklist> blacklists;
 
@@ -154,7 +155,7 @@ class CommandDnsbl extends Command
 				Blacklist b = this.blacklists.getBlacklist(s);
 				if (b == null)
 				{
-					Moo.notice(source, "DNSBL server " + s + " doesn't exist.");
+					source.reply("DNSBL server " + s + " doesn't exist.");
 					continue;
 				}
 
@@ -166,13 +167,13 @@ class CommandDnsbl extends Command
 
 		if (blacklists.isEmpty())
 		{
-			Moo.notice(source, "No DNSBL servers active.");
+			source.reply("No DNSBL servers active.");
 			return;
 		}
 
 		for (Blacklist b : blacklists)
 		{
-			Moo.notice(source, "-- " + b.getName() + " --");
+			source.reply("-- " + b.getName() + " --");
 
 			List<Rule> rules = b.getRules();
 			if (!rules.isEmpty())
@@ -182,10 +183,10 @@ class CommandDnsbl extends Command
 					if (response == null)
 						response = Rule.RESPONSE_ANY;
 
-					Moo.notice(source, "  " + response + ": " + r.getAction().getName());
+					source.reply("  " + response + ": " + r.getAction().getName());
 				}
 			else
-				Moo.notice(source, "  <no rules>");
+				source.reply("  <no rules>");
 		}
 	}
 
@@ -193,12 +194,12 @@ class CommandDnsbl extends Command
 	 * DNSBL action add command.
 	 * Syntax: !DNSBL ACTION <SERVER> <RESPOMSE> <ACTION>
 	 */
-	public void onActionSubCommand(String source, String target, String[] params)
+	public void onActionSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 3)
 		{
 			// Invalid command.
-			Moo.notice(source, "Usage: ACTION [SERVER] [RESPONSE] [ACTION]");
+			source.reply("Usage: ACTION [SERVER] [RESPONSE] [ACTION]");
 			return;
 		}
 
@@ -213,7 +214,7 @@ class CommandDnsbl extends Command
 
 		if (action == null)
 		{
-			Moo.notice(source, "Invalid action: " + params[2]);
+			source.reply("Invalid action: " + params[2]);
 			return;
 		}
 
@@ -223,30 +224,30 @@ class CommandDnsbl extends Command
 		{
 			b = new Blacklist(host);
 			this.blacklists.addBlacklist(b);
-			Moo.reply(source, target, "DNSBL server " + host + " added.");
+			source.reply("DNSBL server " + host + " added.");
 		}
 		else if (b.hasRule(actualResponse, action))
 		{
-			Moo.notice(source, "DNSBL rule already exists.");
+			source.reply("DNSBL rule already exists.");
 			return;
 		}
 
 		Rule rule = new Rule(b, actualResponse, action);
 		b.addRule(rule);
 		this.cache.clear();
-		Moo.reply(source, target, "DNSBL rule " + b.getName() + ":" + response + " -> " + action.getName() + " added.");
+		source.reply("DNSBL rule " + b.getName() + ":" + response + " -> " + action.getName() + " added.");
 	}
 
 	/**
 	 * DNSBL action remove command.
 	 * Syntax: !DNSBL DELACTION <SERVER> <RESPONSE> <ACTION>
 	 */
-	public void onDelActionSubCommand(String source, String target, String[] params)
+	public void onDelActionSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 3)
 		{
 			// Invalid command.
-			Moo.notice(source, "Usage: DELACTION [SERVER] [RESPONSE] [ACTION]");
+			source.reply("Usage: DELACTION [SERVER] [RESPONSE] [ACTION]");
 			return;
 		}
 
@@ -261,45 +262,45 @@ class CommandDnsbl extends Command
 
 		if (action == null)
 		{
-			Moo.notice(source, "Invalid action: " + params[2]);
+			source.reply("Invalid action: " + params[2]);
 			return;
 		}
 
 		Blacklist b = this.blacklists.getBlacklist(host);
 		if (b == null)
 		{
-			Moo.notice(source, "Unknown DNSBL server: " + host);
+			source.reply("Unknown DNSBL server: " + host);
 			return;
 		}
 
 		Rule r = b.getRule(actualResponse, action);
 		if (r == null)
 		{
-			Moo.notice(source, "Unknown DNSBL rule.");
+			source.reply("Unknown DNSBL rule.");
 			return;
 		}
 
 		b.removeRule(r);
 		this.cache.clear();
-		Moo.reply(source, target, "DNSBL rule " + b.getName() + ":" + response + " -> " + action.getName() + " deleted.");
+		source.reply("DNSBL rule " + b.getName() + ":" + response + " -> " + action.getName() + " deleted.");
 	}
 
 	/**
 	 * DNSBL check command.
 	 * Syntax: !DNSBL CHECK <IP> [SERVER] [SERVER...]
 	 */
-	public void onCheckSubCommand(String source, String target, String[] params)
+	public void onCheckSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 1)
 		{
-			Moo.notice(source, "Usage: CHECK <IP> [SERVER]");
+			source.reply("Usage: CHECK <IP> [SERVER]");
 			return;
 		}
 
 		DnsblCheckTarget host = DnsblCheckTarget.find(params[0]);
 		if (host == null)
 		{
-			Moo.notice(source, "Invalid IP: " + params[0]);
+			source.reply("Invalid IP: " + params[0]);
 			return;
 		}
 
@@ -314,7 +315,7 @@ class CommandDnsbl extends Command
 				Blacklist b = this.blacklists.getBlacklist(params[i]);
 				if (b == null)
 				{
-					Moo.notice(source, "DNSBL server " + params[i] + " doesn't exist.");
+					source.reply("DNSBL server " + params[i] + " doesn't exist.");
 					continue;
 				}
 
@@ -327,13 +328,13 @@ class CommandDnsbl extends Command
 		DnsblChecker checker = new DnsblChecker(host, this.blacklists);
 		for (Blacklist b : blacklists)
 		{
-			Moo.notice(source, "-- " + b.getName() + ":" + host.getIP() + " --");
+			source.reply("-- " + b.getName() + ":" + host.getIP() + " --");
 			Record[] result = checker.getDnsblResponse(b);
 			if (result == null)
-				Moo.notice(source, "  <no results>");
+				source.reply("  <no results>");
 			else
 				for (Record r : result)
-					Moo.notice(source, "  " + r.rdataToString());
+					source.reply("  " + r.rdataToString());
 		}
 	}
 
@@ -341,18 +342,18 @@ class CommandDnsbl extends Command
 	 * DNSBL check action command.
 	 * Syntax: !DNSBL CHECKACTION <IP> [SERVER] [SERVER...]
 	 */
-	public void onCheckActionSubCommand(String source, String target, String[] params)
+	public void onCheckActionSubCommand(CommandSource source, String[] params)
 	{
 		if (params.length < 1)
 		{
-			Moo.notice(source, "Usage: CHECKACTION <IP> [SERVER]");
+			source.reply("Usage: CHECKACTION <IP> [SERVER]");
 			return;
 		}
 
 		DnsblCheckTarget host = DnsblCheckTarget.find(params[0]);
 		if (host == null)
 		{
-			Moo.notice(source, "Invalid IP: " + params[0]);
+			source.reply("Invalid IP: " + params[0]);
 			return;
 		}
 
@@ -367,7 +368,7 @@ class CommandDnsbl extends Command
 				Blacklist b = this.blacklists.getBlacklist(params[i]);
 				if (b == null)
 				{
-					Moo.notice(source, "DNSBL server " + params[i] + " doesn't exist.");
+					source.reply("DNSBL server " + params[i] + " doesn't exist.");
 					continue;
 				}
 
@@ -380,15 +381,15 @@ class CommandDnsbl extends Command
 		DnsblChecker checker = new DnsblChecker(host, this.blacklists);
 		for (Blacklist b : blacklists)
 		{
-			Moo.notice(source, "-- " + b.getName() + ":" + host.getIP() + " --");
+			source.reply("-- " + b.getName() + ":" + host.getIP() + " --");
 
 			DnsblCheckResult result = checker.check(b);
 			if (result == null)
-				Moo.notice(source, "  <no results>");
+				source.reply("  <no results>");
 			else
 				for (Map.Entry<String, List<Action>> entry : result.getActions().entrySet())
 					for (Action a : entry.getValue())
-						Moo.notice(source, "  " + entry.getKey() + " -> " + a.getName());
+						source.reply("  " + entry.getKey() + " -> " + a.getName());
 		}
 	}
 }

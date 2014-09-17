@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.core;
 
-import java.util.Random;
-
 import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
+
+import java.util.Random;
 
 class CommandRand extends Command
 {
@@ -25,16 +25,16 @@ class CommandRand extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: .rand [length]");
-		Moo.notice(source, "Generates a random string of the given length. If no");
-		Moo.notice(source, "length is given, it will default to 8, which is also");
-		Moo.notice(source, "the minimum length.");
+		source.notice("Syntax: .rand [length]");
+		source.notice("Generates a random string of the given length. If no");
+		source.notice("length is given, it will default to 8, which is also");
+		source.notice("the minimum length.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		try
 		{
@@ -47,11 +47,11 @@ class CommandRand extends Command
 			if (randLen < 8)
 				randLen = 8;
 			
-			Moo.reply(source, target, "Rand(" + randLen + ") = " + randomString(randLen));
+			source.reply("Rand(" + randLen + ") = " + randomString(randLen));
 		}
 		catch (NumberFormatException e)
 		{
-			Moo.reply(source, target, params[1] + " is not a number.");
+			source.reply(params[1] + " is not a number.");
 		}
 	}
 }

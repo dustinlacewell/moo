@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.servermonitor;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
@@ -34,42 +35,42 @@ class commandServerBase extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length >= 3 && params[1].equalsIgnoreCase("FREEZE"))
 		{
 			Server s = Server.findServer(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "No such server " + params[2]);
+				source.reply("No such server " + params[2]);
 			else if (s.frozen == true)
-				Moo.reply(source, target, s.getName() + " is already frozen");
+				source.reply(s.getName() + " is already frozen");
 			else
 			{
 				s.frozen = true;
-				Moo.reply(source, target, "Froze server " + s.getName());
+				source.reply("Froze server " + s.getName());
 			}
 		}
 		else if (params.length >= 3 && params[1].equalsIgnoreCase("UNFREEZE"))
 		{
 			Server s = Server.findServer(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "No such server " + params[2]);
+				source.reply("No such server " + params[2]);
 			else if (s.frozen == false)
-				Moo.reply(source, target, s.getName() + " is already unfrozen");
+				source.reply(s.getName() + " is already unfrozen");
 			else
 			{
 				s.frozen = false;
-				Moo.reply(source, target, "Unfroze server " + s.getName());
+				source.reply("Unfroze server " + s.getName());
 			}
 		}
 		else if (params.length >= 3 && (params[1].equalsIgnoreCase("DELETE") || params[1].equalsIgnoreCase("DEL")))
 		{
 			Server s = Server.findServerAbsolute(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "No such server " + params[2] + ", full name required");
+				source.reply("No such server " + params[2] + ", full name required");
 			else
 			{
-				Moo.reply(source, target, "Deleted server " + s.getName());
+				source.reply("Deleted server " + s.getName());
 				s.destroy();
 			}
 		}
@@ -77,11 +78,11 @@ class commandServerBase extends Command
 		{
 			Server s = Server.findServer(params[2]);
 			if (s == null)
-				Moo.reply(source, target, "No such server " + params[2]);
+				source.reply("No such server " + params[2]);
 			else if (params.length == 3)
 			{
 				s.setDesc("");
-				Moo.reply(source, target, "Description for " + s.getName() + " unset");
+				source.reply("Description for " + s.getName() + " unset");
 			}
 			else
 			{
@@ -89,18 +90,18 @@ class commandServerBase extends Command
 				for (int i = 4; i < params.length; ++i)
 					desc += " " + params[i];
 				s.setDesc(desc);
-				Moo.reply(source, target, "Description for " + s.getName() + " updated");
+				source.reply("Description for " + s.getName() + " updated");
 			}
 		}
 		else if (params.length >= 3)
 		{
 			Server s = Server.findServer(params[1]);
 			if (s == null)
-				Moo.reply(source, target, "Server " + params[1] + " not found");
+				source.reply("Server " + params[1] + " not found");
 			else if (params[2].equals("."))
 			{
 				s.allowed_clines.clear();
-				Moo.reply(source, target, "Allowed links for " + s.getName() + " unset");
+				source.reply("Allowed links for " + s.getName() + " unset");
 			}
 			else
 			{
@@ -111,22 +112,22 @@ class commandServerBase extends Command
 					Server arg = Server.findServer(params[i].substring(1));
 					if (arg == null)
 					{
-						Moo.reply(source, target, "No such server: " + params[i]);
+						source.reply("No such server: " + params[i]);
 						continue;
 					}
 					else if (arg == s)
 					{
-						Moo.reply(source, target, "Servers can not link to themselves");
+						source.reply("Servers can not link to themselves");
 						continue;
 					}
 					else if (modified == true && s.allowed_clines.contains(arg.getName()))
 					{
-						Moo.reply(source, target, s.getName() + " already has " + arg.getName());
+						source.reply(s.getName() + " already has " + arg.getName());
 						continue;
 					}
 					else if (arg.isHub() == false)
 					{
-						Moo.reply(source, target, "You may only link servers to hubs");
+						source.reply("You may only link servers to hubs");
 						continue;
 					}
 					
@@ -138,7 +139,7 @@ class commandServerBase extends Command
 					s.allowed_clines.add(arg.getName());
 				}
 				
-				Moo.reply(source, target, "Prefered links for " + s.getName() + " set to " + s.allowed_clines.toString());
+				source.reply("Prefered links for " + s.getName() + " set to " + s.allowed_clines.toString());
 			}
 		}
 		else
@@ -335,7 +336,7 @@ class commandServerBase extends Command
 				
 				if (output || all)
 				{
-					Moo.reply(source, target, msg);
+					source.reply(msg);
 					all_output = true;
 				}
 			}
@@ -346,35 +347,35 @@ class commandServerBase extends Command
 				change = "+" + change;
 			
 			if (match == null && (all_output || all))
-				Moo.reply(source, target, "Total Users: " + Server.cur_total_users + change);
+				source.reply("Total Users: " + Server.cur_total_users + change);
 		}
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: " + this.getCommandName() + " [freeze|unfreeze|delete] server.name [.|all|preferred clines]");
-		Moo.notice(source, " ");
-		Moo.notice(source, this.getCommandName() + " is used to view C-Lines between servers and configure allowed C-Lines,");
-		Moo.notice(source, "which are C-Lines that have preference over others. When servers split the auto reconnector will");
-		Moo.notice(source, "use this information to determine where to reconnect servers.");
-		Moo.notice(source, " ");
-		Moo.notice(source, "The output format of this command is as follows: users / allowed C-lines / all C-Lines");
-		Moo.notice(source, "If allowed C-lines is set, the server will only be auto reconnected to the given allowed servers.");
-		Moo.notice(source, "The number in parentheses next to C-Lines are the number of links active on that hub.");
-		Moo.notice(source, " ");
-		Moo.notice(source, "C-Lines are color coded to determine the state of the C-Line");
-		Moo.notice(source, " " + Message.COLOR_RED + "red" + Message.COLOR_END + " - Represents a C-Line to a nonexistent server");
-		Moo.notice(source, " " + Message.COLOR_ORANGE + "orange" + Message.COLOR_END + " - Represents a C-Line to a split server");
-		Moo.notice(source, " " + Message.COLOR_YELLOW + "yellow" + Message.COLOR_END + " - Represents a broken C-Line with only one direction (no return C-Line)");
-		Moo.notice(source, " " + Message.COLOR_BRIGHTBLUE + "blue" + Message.COLOR_END + " - Represents a C-Line to a frozen server");
-		Moo.notice(source, " " + Message.COLOR_GREEN + "green" + Message.COLOR_END + " - Represents a good C-Line");
-		Moo.notice(source, " " + Message.COLOR_UNDERLINE + "Underlines" + Message.COLOR_UNDERLINE + " are used to show what the current uplink for a server is.");
-		Moo.notice(source, "Frozen servers are made using the freeze command. Frozen servers will not be connected to, but may be reconnected to the network.");
-		Moo.notice(source, " ");
-		Moo.notice(source, "Executing this command with no parameters will only show problem servers and and the problem C-Lines on those servers.");
-		Moo.notice(source, "When using ALL or searching for a specific name all C-Lines will be shown.");
-		Moo.notice(source, "If a single dot is provided after server.name, all allowed C-Lines will be unset.");
+		source.notice("Syntax: " + this.getCommandName() + " [freeze|unfreeze|delete] server.name [.|all|preferred clines]");
+		source.notice(" ");
+		source.notice(this.getCommandName() + " is used to view C-Lines between servers and configure allowed C-Lines,");
+		source.notice("which are C-Lines that have preference over others. When servers split the auto reconnector will");
+		source.notice("use this information to determine where to reconnect servers.");
+		source.notice(" ");
+		source.notice("The output format of this command is as follows: users / allowed C-lines / all C-Lines");
+		source.notice("If allowed C-lines is set, the server will only be auto reconnected to the given allowed servers.");
+		source.notice("The number in parentheses next to C-Lines are the number of links active on that hub.");
+		source.notice(" ");
+		source.notice("C-Lines are color coded to determine the state of the C-Line");
+		source.notice(" " + Message.COLOR_RED + "red" + Message.COLOR_END + " - Represents a C-Line to a nonexistent server");
+		source.notice(" " + Message.COLOR_ORANGE + "orange" + Message.COLOR_END + " - Represents a C-Line to a split server");
+		source.notice(" " + Message.COLOR_YELLOW + "yellow" + Message.COLOR_END + " - Represents a broken C-Line with only one direction (no return C-Line)");
+		source.notice(" " + Message.COLOR_BRIGHTBLUE + "blue" + Message.COLOR_END + " - Represents a C-Line to a frozen server");
+		source.notice(" " + Message.COLOR_GREEN + "green" + Message.COLOR_END + " - Represents a good C-Line");
+		source.notice(" " + Message.COLOR_UNDERLINE + "Underlines" + Message.COLOR_UNDERLINE + " are used to show what the current uplink for a server is.");
+		source.notice("Frozen servers are made using the freeze command. Frozen servers will not be connected to, but may be reconnected to the network.");
+		source.notice(" ");
+		source.notice("Executing this command with no parameters will only show problem servers and and the problem C-Lines on those servers.");
+		source.notice("When using ALL or searching for a specific name all C-Lines will be shown.");
+		source.notice("If a single dot is provided after server.name, all allowed C-Lines will be unset.");
 	}
 }
 
@@ -386,10 +387,10 @@ class commandCline extends commandServerBase
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length == 2)
-			super.execute(source, target, params);
+			super.execute(source, params);
 	}
 }
 

@@ -1,13 +1,14 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 
 class message249 extends Message
 {
@@ -42,8 +43,8 @@ class message219_s extends Message
 			return;
 
 		message366.waiting_on.remove(source);
-		if (message366.waiting_on.isEmpty() && message366.target_chan != null)
-			Moo.sock.write("NAMES " + message366.target_chan);
+		if (message366.waiting_on.isEmpty() && message366.command_source != null)
+			Moo.sock.write("NAMES " + message366.command_source.getTargetName());
 	}
 }
 
@@ -75,39 +76,37 @@ class message366 extends Message
 	{
 		super("366");
 	}
-	
-	public static String target_source = null;
-	public static String target_chan = null;
+
+	public static CommandSource command_source;
 	public static HashSet<String> waiting_on = new HashSet<String>();
 
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (target_source == null || target_chan == null)
+		if (command_source == null)
 			return;
 		
 		if (CommandSlackers.opers.isEmpty())
-			Moo.reply(target_source, target_chan, "There are no opers missing from " + target_chan);
+			command_source.reply("There are no opers missing from " + command_source.getTargetName());
 		else
 		{
-			Moo.reply(target_source, target_chan, "There are " + CommandSlackers.opers.size() + " opers missing from " + target_chan + ":");
+			command_source.reply("There are " + CommandSlackers.opers.size() + " opers missing from " + command_source.getTargetName() + ":");
 			String operbuf = "";
 			for (int i = 0; i < CommandSlackers.opers.size(); ++i)
 			{
 				operbuf += " " + CommandSlackers.opers.get(i);
 				if (operbuf.length() > 200)
 				{
-					Moo.reply(target_source, target_chan, operbuf.substring(1));
+					command_source.reply(operbuf.substring(1));
 					operbuf = "";
 				}
 			}
 			if (operbuf.isEmpty() == false)
-				Moo.reply(target_source, target_chan, operbuf.substring(1));
+				command_source.reply(operbuf.substring(1));
 		}
 		
 		CommandSlackers.opers.clear();
-		target_source = null;
-		target_chan = null;
+		command_source = null;
 		waiting_on.clear();
 	}
 }
@@ -135,14 +134,14 @@ class CommandSlackers extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !SLACKERS");
-		Moo.notice(source, "Searches for all online opers who are not in this channel.");
+		source.reply("Syntax: !SLACKERS");
+		source.reply("Searches for all online opers who are not in this channel.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		opers.clear();
 		message366.waiting_on.clear();
@@ -152,7 +151,6 @@ class CommandSlackers extends Command
 				Moo.sock.write("STATS p " + s.getName());
 				message366.waiting_on.add(s.getName());
 			}
-		message366.target_chan = target;
-		message366.target_source = source;
+		message366.command_source = source;
 	}
 }

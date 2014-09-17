@@ -1,25 +1,26 @@
 package net.rizon.moo.plugin.commands;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-
 class soaCheck extends Thread
 {
-	private String domain, source, target;
+	private CommandSource source;
+	private String domain;
 	private boolean debug;
 
-	public soaCheck(final String domain, final String source, final String target, boolean debug)
+	public soaCheck(final String domain, CommandSource source, boolean debug)
 	{
 		this.domain = domain;
 		this.source = source;
-		this.target = target;
 		this.debug = debug;
 	}
 	
@@ -48,7 +49,7 @@ class soaCheck extends Thread
 				nameservers.put(tokens[4], 0);
 				
 				if (this.debug)
-					Moo.reply(this.source, this.target, this.domain + " has nameserver " + tokens[4]);
+					source.reply(this.domain + " has nameserver " + tokens[4]);
 			}
 			
 			in.close();
@@ -75,7 +76,7 @@ class soaCheck extends Thread
 					nameservers.put(nameserver, Integer.parseInt(tokens[6]));
 				
 					if (this.debug)
-						Moo.reply(this.source, this.target, "Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
+						source.reply("Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
 				}
 				
 				in.close();
@@ -85,7 +86,7 @@ class soaCheck extends Thread
 			
 			if (nameservers.size() == 1)
 			{
-				Moo.reply(this.source, this.target, this.domain + " only has one nameserver");
+				source.reply(this.domain + " only has one nameserver");
 				return;
 			}
 			
@@ -99,19 +100,19 @@ class soaCheck extends Thread
 					last = value;
 				else if (last != value)
 				{
-					Moo.reply(this.source, this.target, "Warning! Nameserver serial numbers are not equal!");
+					source.reply("Warning! Nameserver serial numbers are not equal!");
 					for (it = nameservers.keySet().iterator(); it.hasNext();)
 					{
 						nameserver = it.next();
 						value = nameservers.get(nameserver);
-						
-						Moo.reply(this.source, this.target, "  " + nameserver + ": " + value);
+
+						source.reply("  " + nameserver + ": " + value);
 					}
 					return;
 				}
 			}
-			
-			Moo.reply(this.source, this.target, "All nameserver serial numbers are equal");
+
+			source.reply("All nameserver serial numbers are equal");
 		}
 		catch (Exception ex)
 		{
@@ -132,27 +133,28 @@ class CommandSoa extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !SOA host.name");
-		Moo.notice(source, "Fetches all NS records for host.name and checks if all SOA records");
-		Moo.notice(source, "associated with those name servers have the same serial number.");
+		source.notice("Syntax: !SOA host.name");
+		source.notice("Fetches all NS records for host.name and checks if all SOA records");
+		source.notice("associated with those name servers have the same serial number.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length == 1)
 			return;
-		else if (params[1].indexOf('.') == -1 || params[1].indexOf(';') != -1 || params[1].indexOf('|') != -1 || params[1].indexOf('&') != -1)
+
+		if (params[1].indexOf('.') == -1 || params[1].indexOf(';') != -1 || params[1].indexOf('|') != -1 || params[1].indexOf('&') != -1)
 		{
-			Moo.reply(source, target, "You must give a valid hostname.");
+			source.reply("You must give a valid hostname.");
 			return;
 		}
 		
 		boolean debug = params.length > 2 && params[2].equalsIgnoreCase("debug");
 		
-		soaCheck soa = new soaCheck(params[1], source, target, debug);
+		soaCheck soa = new soaCheck(params[1], source, debug);
 		soa.start();
 	}
 }

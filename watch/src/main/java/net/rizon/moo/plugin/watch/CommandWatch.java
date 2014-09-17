@@ -1,12 +1,13 @@
 package net.rizon.moo.plugin.watch;
 
-import java.util.Date;
-import java.util.Iterator;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.logging.logging;
+
+import java.util.Date;
+import java.util.Iterator;
 
 class CommandWatch extends Command
 {
@@ -20,21 +21,21 @@ class CommandWatch extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax:");
-		Moo.notice(source, this.getCommandName() + " LIST -- shows the watch list");
-		Moo.notice(source, this.getCommandName() + " ADD <nick> [+expiry] [+C] <reason> -- adds an entry to the watch list");
-		Moo.notice(source, this.getCommandName() + " DEL <nick> -- deletes an entry from the watch list");
+		source.notice("Syntax:");
+		source.notice(this.getCommandName() + " LIST -- shows the watch list");
+		source.notice(this.getCommandName() + " ADD <nick> [+expiry] [+C] <reason> -- adds an entry to the watch list");
+		source.notice(this.getCommandName() + " DEL <nick> -- deletes an entry from the watch list");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1 || params[1].equalsIgnoreCase("list"))
 		{
 			if (watch.watches.isEmpty())
-				Moo.notice(source, "The watch list is empty");
+				source.reply("The watch list is empty");
 			else
 			{
 				Date now = new Date();
@@ -50,11 +51,11 @@ class CommandWatch extends Command
 						continue;
 					}
 					
-					Moo.notice(source, "" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
+					source.notice("" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
 				}
 			}
 		}
-		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.listContains("admin_channels", target) || Moo.conf.listContains("oper_channels", target)))
+		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.listContains("admin_channels", source.getTargetName()) || Moo.conf.listContains("oper_channels", source.getTargetName())))
 		{
 			WatchEntry we = null;
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
@@ -98,7 +99,7 @@ class CommandWatch extends Command
 				}
 				catch (NumberFormatException ex)
 				{
-					Moo.reply(source, target, "Expiry " + expires + " is not valid");
+					source.reply("Expiry " + expires + " is not valid");
 					return;
 				}
 				
@@ -118,16 +119,16 @@ class CommandWatch extends Command
 				reason = "No reason";
 			
 			we.nick = params[2];
-			we.creator = source;
+			we.creator = source.getUser().getNick();
 			we.reason = reason;
 			we.created = new Date();
 			we.expires = new Date(System.currentTimeMillis() + (expires_len * 1000L));
 			we.registered = state;
 			
-			Moo.reply(source, target, "Watch added for " + we.nick + " to expire on " + we.expires);
+			source.reply("Watch added for " + we.nick + " to expire on " + we.expires);
 			Moo.operwall(source + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
 			if (Plugin.findPlugin("logging") != null)
-				logging.addEntry("WATCH", source, we.nick, reason);
+				logging.addEntry("WATCH", we.creator, we.nick, reason);
 			
 			if (add)
 				watch.watches.push(we);
@@ -140,12 +141,12 @@ class CommandWatch extends Command
 				if (e.nick.equalsIgnoreCase(params[2]))
 				{
 					it.remove();
-					Moo.reply(source, target, "Watch for " + e.nick + " removed");
+					source.reply("Watch for " + e.nick + " removed");
 					return;
 				}
 			}
 			
-			Moo.reply(source, target, "No watch for " + params[2] + " found");
+			source.reply("No watch for " + params[2] + " found");
 		}
 	}
 }

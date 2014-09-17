@@ -1,11 +1,12 @@
 package net.rizon.moo.plugin.core;
 
-import java.util.logging.Level;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+
+import java.util.logging.Level;
 
 class CommandPlugins extends Command
 {
@@ -16,25 +17,25 @@ class CommandPlugins extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 2)
 		{
-			Moo.reply(source, target, "Currently loaded plugins:");
+			source.reply("Currently loaded plugins:");
 			
 			for (Plugin pl : Plugin.getPlugins())
-				Moo.reply(source, target, "  " + pl.pname + " (" + pl.getName() + ")");
+				source.reply("  " + pl.pname + " (" + pl.getName() + ")");
 		}
 		else if (params[1].equalsIgnoreCase("load"))
 		{
 			try
 			{
 				Plugin p = Plugin.loadPlugin(params[2]);
-				Moo.reply(source, target, "Plugin " + p.getName() + " loaded");
+				source.reply("Plugin " + p.getName() + " loaded");
 			}
 			catch (Throwable ex)
 			{
-				Moo.reply(source, target, "Unable to load plugin " + params[2] + ": " + ex.getMessage());
+				source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
 				Logger.getGlobalLogger().log(Level.WARNING, "Unable to load plugin " + params[2], ex);
 			}
 		}
@@ -43,12 +44,12 @@ class CommandPlugins extends Command
 			Plugin p = Plugin.findPlugin(params[2]);
 			if (p == null)
 			{
-				Moo.reply(source, target, "Plugin " + params[2] + " is not loaded");
+				source.reply("Plugin " + params[2] + " is not loaded");
 			}
 			else
 			{
 				p.remove();
-				Moo.reply(source, target, "Plugin " + p.getName() + " removed");
+				source.reply("Plugin " + p.getName() + " removed");
 			}
 		}
 		else if (params[1].equalsIgnoreCase("reload"))
@@ -56,7 +57,7 @@ class CommandPlugins extends Command
 			Plugin p = Plugin.findPlugin(params[2]);
 			if (p == null)
 			{
-				Moo.reply(source, target, "Plugin " + params[2] + " is not loaded");
+				source.reply("Plugin " + params[2] + " is not loaded");
 			}
 			else
 			{
@@ -65,11 +66,11 @@ class CommandPlugins extends Command
 				try
 				{
 					p = Plugin.loadPlugin(params[2]);
-					Moo.reply(source, target, "Plugin " + p.getName() + " reloaded");
+					source.reply("Plugin " + p.getName() + " reloaded");
 				}
 				catch (Throwable ex)
 				{
-					Moo.reply(source, target, "Unable to load plugin " + params[2] + ": " + ex.getMessage());
+					source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
 					Logger.getGlobalLogger().log(Level.WARNING, "Unable to reload plugin " + params[2], ex);
 				}
 			}
@@ -77,12 +78,12 @@ class CommandPlugins extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax:");
-		Moo.notice(source, "!PLUGINS -- lists currently loaded plugins");
-		Moo.notice(source, "!PLUGINS LOAD <name> -- loads a plugin");
-		Moo.notice(source, "!PLUGINS UNLOAD <name> -- unloads a plugin");
-		Moo.notice(source, "!PLUGINS RELOAD <name> -- reloads a plugin");
+		source.notice("Syntax:");
+		source.notice("!PLUGINS -- lists currently loaded plugins");
+		source.notice("!PLUGINS LOAD <name> -- loads a plugin");
+		source.notice("!PLUGINS UNLOAD <name> -- unloads a plugin");
+		source.notice("!PLUGINS RELOAD <name> -- reloads a plugin");
 	}
 }

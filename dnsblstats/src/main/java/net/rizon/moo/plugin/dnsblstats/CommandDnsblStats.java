@@ -1,19 +1,20 @@
 package net.rizon.moo.plugin.dnsblstats;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+import net.rizon.moo.Server;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
-
 class CommandDnsblStats extends Command
 {	
 	private static HashSet<String> command_waiting_on = new HashSet<String>();
-	private static String command_target_chan, command_target_source;
+	private static CommandSource command_source;
 	private static boolean do_server_counts;
 	private static String do_server_name;
 	
@@ -27,21 +28,20 @@ class CommandDnsblStats extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !DNSBLSTATS [SERVER [server.name]]");
-		Moo.notice(source, "Fetches the amount of hits on all configured DNSBLs across the network.");
-		Moo.notice(source, "If SERVER is given, the amount of DNSBL hits on the respective servers");
-		Moo.notice(source, "will be shown. If a specific server name is appended to SERVER, the");
-		Moo.notice(source, "number of hits on each DNSBL will be shown for that specific server.");
+		source.notice("Syntax: !DNSBLSTATS [SERVER [server.name]]");
+		source.notice("Fetches the amount of hits on all configured DNSBLs across the network.");
+		source.notice("If SERVER is given, the amount of DNSBL hits on the respective servers");
+		source.notice("will be shown. If a specific server name is appended to SERVER, the");
+		source.notice("number of hits on each DNSBL will be shown for that specific server.");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		command_waiting_on.clear();
-		command_target_chan = target;
-		command_target_source = source;
+		command_source = source;
 		do_server_counts = false;
 		do_server_name = null;
 		
@@ -64,19 +64,19 @@ class CommandDnsblStats extends Command
 	static void checkReply(String source)
 	{
 		command_waiting_on.remove(source);
-		if (command_waiting_on.isEmpty() && command_target_chan != null && command_target_source != null)
+		if (command_waiting_on.isEmpty() && command_source != null)
 		{
 			if (CommandDnsblStats.do_server_name != null)
 			{
 				Server s = Server.findServer(do_server_name);
 				if (s == null)
-					Moo.reply(command_target_source, command_target_chan, "No servers found for " + do_server_name);
+					command_source.reply("No servers found for " + do_server_name);
 				else
 				{
 					DnsblInfo info = dnsblstats.getDnsblInfoFor(s);
 					long total = info.getTotal();
 
-					Moo.reply(command_target_source, command_target_chan, "DNSBL counts for " + s.getName() + " (" + total + "):");
+					command_source.reply("DNSBL counts for " + s.getName() + " (" + total + "):");
 
 					String[] dnsbl_names = new String[info.hits.size()];
 					info.hits.keySet().toArray(dnsbl_names);
@@ -90,8 +90,8 @@ class CommandDnsblStats extends Command
 						
 						float percent = total > 0 ? ((float) dnsbl_count / (float) total * 100) : 0;
 						int percent_i = Math.round(percent);
-						
-						Moo.reply(CommandDnsblStats.command_target_source, command_target_chan, dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
+
+						command_source.reply(dnsbl_name + ": " + dnsbl_count + " (" + percent_i + "%)");
 					}
 				}
 			}
@@ -101,7 +101,7 @@ class CommandDnsblStats extends Command
 				for (Server s : Server.getServers())
 					total += dnsblstats.getDnsblInfoFor(s).getTotal();
 
-				Moo.reply(CommandDnsblStats.command_target_source, command_target_chan, "DNSBL counts by server (" + total + "):");
+				command_source.reply("DNSBL counts by server (" + total + "):");
 
 				Server servers[] = Server.getServers();
 				Arrays.sort(servers, dnsblServerComparator.cmp);
@@ -116,8 +116,8 @@ class CommandDnsblStats extends Command
 
 					float percent = total > 0 ? ((float) value / (float) total * 100) : 0;
 					int percent_i = Math.round(percent);
-					
-					Moo.reply(CommandDnsblStats.command_target_source, command_target_chan, s.getName() + ": " + value + " (" + percent_i + "%)");
+
+					command_source.reply(s.getName() + ": " + value + " (" + percent_i + "%)");
 				}
 			}
 			else
@@ -140,7 +140,7 @@ class CommandDnsblStats extends Command
 					}
 				}
 
-				Moo.reply(CommandDnsblStats.command_target_source, command_target_chan, "DNSBL counts (" + total + "):");
+				command_source.reply("DNSBL counts (" + total + "):");
 
 				String[] dnsbl_names = new String[dnsbl_counts.size()];
 				dnsbl_counts.keySet().toArray(dnsbl_names);
@@ -154,12 +154,12 @@ class CommandDnsblStats extends Command
 					
 					float percent = total > 0 ? ((float) value / (float) total * 100) : 0;
 					int percent_i = Math.round(percent);
-					
-					Moo.reply(CommandDnsblStats.command_target_source, command_target_chan, name + ": " + value + " (" + percent_i + "%)");
+
+					command_source.reply(name + ": " + value + " (" + percent_i + "%)");
 				}
 			}
 
-			command_target_chan = command_target_source = null;
+			command_source = null;
 		}
 	}
 }

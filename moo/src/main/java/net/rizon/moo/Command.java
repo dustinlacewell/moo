@@ -57,27 +57,35 @@ public abstract class Command extends Message
 	{
 		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
 			return;
+
+		String tokens[] = message[1].split(" ");
+		if (!this.cmdname.equalsIgnoreCase(tokens[0]))
+			return;
 		
 		if (!this.isRequiredChannel(message[0]))
 			return;
-		
-		String tokens[] = message[1].split(" ");
-		if (this.cmdname.equalsIgnoreCase(tokens[0]))
-			this.execute(source, message[0], tokens);
+
+		User user = Moo.users.findOrCreateUser(source);
+		CommandSource csource = new CommandSource(user, Moo.channels.find(message[0]));
+
+		this.execute(csource, tokens);
+
+		if (user.getChannels().isEmpty())
+			Moo.users.remove(user);
 	}
+
+	public abstract void execute(CommandSource source, String[] params);
 	
-	public abstract void execute(final String source, final String target, final String[] params);
-	
-	public void onHelpList(final String source)
+	public void onHelpList(CommandSource source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
-			Moo.notice(source, " " + this.getCommandName() + " - " + this.getDescription());
+			source.notice(" " + this.getCommandName() + " - " + this.getDescription());
 		else
-			Moo.notice(source, " " + this.getCommandName());
+			source.notice(" " + this.getCommandName());
 	}
 	
-	public void onHelp(final String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "No help available.");
+		source.notice("No help available.");
 	}
 }

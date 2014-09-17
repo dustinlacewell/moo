@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.antiidle;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 
@@ -15,21 +16,21 @@ public class CommandIdle extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !IDLE <nick>");
-		Moo.notice(source, "The !IDLE command removes the automatic kickban timer for the given nick.");
-		Moo.notice(source, "This does not create a permanent exception, so if the target leaves the channel");
-		Moo.notice(source, "through whatever means and joins again, the command must be executed again.");
+		source.notice("Syntax: !IDLE <nick>");
+		source.notice("The !IDLE command removes the automatic kickban timer for the given nick.");
+		source.notice("This does not create a permanent exception, so if the target leaves the channel");
+		source.notice("through whatever means and joins again, the command must be executed again.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length != 2)
 			return;
 		
 		if (AntiIdleEntry.removeTimerFor(params[1]))
-			Moo.reply(source, target, "Antiidle removed for " + params[1]);
+			source.reply("Antiidle removed for " + params[1]);
 	}
 }

@@ -1,12 +1,13 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
 
 public class ProxyStats extends Command
 {
@@ -18,14 +19,14 @@ public class ProxyStats extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
-		Moo.reply(source, target, "Proxy stats:");
+		source.reply("Proxy stats:");
 		try
 		{
 			ResultSet rs = Moo.db.executeQuery("select protocol,port,count(*) from proxies group by protocol, port order by count(*) desc");
 			while (rs.next())
-				Moo.reply(source, target, rs.getString("protocol") + " " + rs.getString("port") + ": " + rs.getString("count(*)"));
+				source.reply(rs.getString("protocol") + " " + rs.getString("port") + ": " + rs.getString("count(*)"));
 		}
 		catch (SQLException ex)
 		{

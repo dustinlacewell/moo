@@ -1,7 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Moo;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
 
 class commandHelpBase extends Command
@@ -12,14 +12,14 @@ class commandHelpBase extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: " + this.getCommandName() + " [command]");
-		Moo.notice(source, this.getCommandName() + " lists all available commands or gives more verbose information on a command.");
+		source.notice("Syntax: " + this.getCommandName() + " [command]");
+		source.notice(this.getCommandName() + " lists all available commands or gives more verbose information on a command.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		for (Plugin pkg : Plugin.getPlugins())
 		{
@@ -27,14 +27,14 @@ class commandHelpBase extends Command
 			
 			for (Command c : pkg.commands)
 			{
-				if (!c.isRequiredChannel(target))
+				if (!c.isRequiredChannel(source.getTargetName()))
 					continue;
 				
 				if (params.length == 1)
 				{
 					if (show_header == false)
 					{
-						Moo.notice(source, pkg.getName() + " - " + pkg.getDescription());
+						source.notice(pkg.getName() + " - " + pkg.getDescription());
 						show_header = true;
 					}
 					

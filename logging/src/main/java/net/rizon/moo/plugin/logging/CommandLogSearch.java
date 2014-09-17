@@ -1,14 +1,15 @@
 package net.rizon.moo.plugin.logging;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
 
 class CommandLogSearch extends Command
 {
@@ -22,39 +23,39 @@ class CommandLogSearch extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !LOGSEARCH { <target> | <(source|type|target|reason)=searcharg> ... } [limit]");
-		Moo.notice(source, "Searches through moo's logs, finding all actions that affected the given target.");
-		Moo.notice(source, "by default, only 10 items will be shown, unless there is a limit specifying otherwise.");
-		Moo.notice(source, "Replies for a limit greater than 10 will be given via notice.");
-		Moo.notice(source, " ");
-		Moo.notice(source, "If given, one or more of source, type, target or reason can be searched for; else");
-		Moo.notice(source, "the given search term will be applied against the target field (e.g., target in a");
-		Moo.notice(source, "KILL or OLINE log type entry).");
-		Moo.notice(source, "When searching for the reason field, you may only search for one keyword.");
-		Moo.notice(source, " ");
-		Moo.notice(source, "The following type arguments are currently supported:");
-		Moo.notice(source, " AKILL, AKILLDEL, CLINE, CONNECT, KILL, LINK, OLINE, OPER, SPLIT");
-		Moo.notice(source, " ");
-		Moo.notice(source, "Example: !LOGSEARCH moo -- searches for all entries for which \"moo\" was the");
-		Moo.notice(source, " target. Expect to see a lot of OPER events.");
-		Moo.notice(source, "Example: !LOGSEARCH source=culex 100 -- searches for log entries for which");
-		Moo.notice(source, " \"culex\" was the source and displays 100 instead of 10 items.");
-		Moo.notice(source, "Example: !LOGSEARCH type=OLINE target=wof -- searches for all O:line-related");
-		Moo.notice(source, " events concerning \"wof\".");
+		source.notice("Syntax: !LOGSEARCH { <target> | <(source|type|target|reason)=searcharg> ... } [limit]");
+		source.notice("Searches through moo's logs, finding all actions that affected the given target.");
+		source.notice("by default, only 10 items will be shown, unless there is a limit specifying otherwise.");
+		source.notice("Replies for a limit greater than 10 will be given via notice.");
+		source.notice(" ");
+		source.notice("If given, one or more of source, type, target or reason can be searched for; else");
+		source.notice("the given search term will be applied against the target field (e.g., target in a");
+		source.notice("KILL or OLINE log type entry).");
+		source.notice("When searching for the reason field, you may only search for one keyword.");
+		source.notice(" ");
+		source.notice("The following type arguments are currently supported:");
+		source.notice(" AKILL, AKILLDEL, CLINE, CONNECT, KILL, LINK, OLINE, OPER, SPLIT");
+		source.notice(" ");
+		source.notice("Example: !LOGSEARCH moo -- searches for all entries for which \"moo\" was the");
+		source.notice(" target. Expect to see a lot of OPER events.");
+		source.notice("Example: !LOGSEARCH source=culex 100 -- searches for log entries for which");
+		source.notice(" \"culex\" was the source and displays 100 instead of 10 items.");
+		source.notice("Example: !LOGSEARCH type=OLINE target=wof -- searches for all O:line-related");
+		source.notice(" events concerning \"wof\".");
 	}
 	
-	private final void replyWithLimit(String source, String target, int limit, String buffer)
+	private final void replyWithLimit(CommandSource source, int limit, String buffer)
 	{
 		if (limit > 10)
-			Moo.notice(source, buffer);
+			source.notice(buffer);
 		else
-			Moo.reply(source, target, buffer);
+			source.reply(buffer);
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length < 2)
 			return;
@@ -88,7 +89,7 @@ class CommandLogSearch extends Command
 			{
 				if (arguments.size() > 0 && i != params.length - 1)
 				{
-					Moo.reply(source, target, "Argument " + params[i] + " not in column=argument format.");
+					source.reply("Argument " + params[i] + " not in column=argument format.");
 					return;
 				}
 				
@@ -109,7 +110,7 @@ class CommandLogSearch extends Command
 					&& !column.equals("target")
 					&& !column.equals("reason"))
 			{
-				Moo.reply(source, target, "Unknown column " + column + ".");
+				source.reply("Unknown column " + column + ".");
 				return;
 			}
 			
@@ -129,7 +130,7 @@ class CommandLogSearch extends Command
 		
 		queryBuffer.append(" 1=1 ORDER BY `created` DESC");
 		
-		replyWithLimit(source, target, limit, "Searching for the last " + limit + " events for " + searchMessage.toString());
+		replyWithLimit(source, limit, "Searching for the last " + limit + " events for " + searchMessage.toString());
 		
 		try
 		{
@@ -155,21 +156,21 @@ class CommandLogSearch extends Command
 					if (lsource != null && lsource.isEmpty() == false)
 					{
 						if (reason != null && reason.isEmpty() == false)
-							replyWithLimit(source, target, limit, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget + " - Reason: " + reason);
+							replyWithLimit(source, limit, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget + " - Reason: " + reason);
 						else
-							replyWithLimit(source, target, limit, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget);
+							replyWithLimit(source, limit, "#" + count + " on " + d + " - " + type + " - By " + lsource + " on " + ltarget);
 					}
 					else
-						replyWithLimit(source, target, limit, "#" + count + " on " + d + " - " + type + " - For " + ltarget);
+						replyWithLimit(source, limit, "#" + count + " on " + d + " - " + type + " - For " + ltarget);
 				}
 				
 			}
 			
-			replyWithLimit(source, target, limit, "Done, " + shown + "/" + count + " shown");
+			replyWithLimit(source, limit, "Done, " + shown + "/" + count + " shown");
 		}
 		catch (SQLException ex)
 		{
-			Moo.reply(source, target, "Error processing request");
+			source.reply("Error processing request");
 			Logger.getGlobalLogger().log(ex);
 		}
 	}

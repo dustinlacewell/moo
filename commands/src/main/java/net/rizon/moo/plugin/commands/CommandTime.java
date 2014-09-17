@@ -1,5 +1,14 @@
 package net.rizon.moo.plugin.commands;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+import net.rizon.moo.Server;
+import net.rizon.moo.Timer;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,14 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import net.rizon.moo.Command;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
 class message391 extends Message
 {
@@ -56,8 +57,7 @@ class message391 extends Message
 	
 	public static HashSet<String> waiting_for = new HashSet<String>();
 	public static HashMap<Long, Integer> known_times = new HashMap<Long, Integer>();
-	public static String target_channel = null;
-	public static String target_source = null;
+	public static CommandSource command_source;
 	public static boolean hourly_check = false;
 
 	public message391(String what)
@@ -68,7 +68,7 @@ class message391 extends Message
 	@Override
 	public void run(String source, String[] msg)
 	{
-		if ((target_channel == null || target_source == null) && !hourly_check)
+		if (command_source == null && !hourly_check)
 			return;
 
 		Server s = Server.findServerAbsolute(source);
@@ -136,7 +136,7 @@ class message391 extends Message
 				}
 			}
 			else
-				Moo.reply(target_source, target_channel, buf);
+				command_source.reply(buf);
 		}
 		catch (ParseException ex)
 		{
@@ -186,16 +186,16 @@ class CommandTime extends Command
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !TIME");
-		Moo.notice(source, "Queries all IRCds about their current time and returns the responses.");
-		Moo.notice(source, "If there are significant differences in time between servers (at least");
-		Moo.notice(source, "60 seconds), the offset will be shown");
+		source.notice("Syntax: !TIME");
+		source.notice("Queries all IRCds about their current time and returns the responses.");
+		source.notice("If there are significant differences in time between servers (at least");
+		source.notice("60 seconds), the offset will be shown");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		for (Server s : Server.getServers())
 		{
@@ -207,7 +207,6 @@ class CommandTime extends Command
 		
 		message391.known_times.clear();
 		message391.hourly_check = false;
-		message391.target_channel = target;
-		message391.target_source = source;
+		message391.command_source = source;
 	}
 }

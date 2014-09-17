@@ -1,25 +1,25 @@
 package net.rizon.moo.plugin.logging;
 
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-
 class logSearcher extends Thread
 {
-	private String source, target;
+	private CommandSource source;
 	private String search;
 	private int limit;
 	
-	public logSearcher(final String source, final String target, final String search, final int limit)
+	public logSearcher(CommandSource source, final String search, final int limit)
 	{
 		this.source = source;
-		this.target = target;
 		this.search = search;
 		this.limit = limit;
 	}
@@ -57,13 +57,13 @@ class logSearcher extends Thread
 			while (rs.next())
 			{
 				++count;
-				Moo.notice(source, rs.getString("date") + ": " + rs.getString("data"));
+				source.notice(rs.getString("date") + ": " + rs.getString("data"));
 			}
 			
 			if (this.limit > 0)
-				Moo.notice(source, "Done, " + count + " shown. Searched the last " + this.limit + " entries.");
+				source.reply("Done, " + count + " shown. Searched the last " + this.limit + " entries.");
 			else
-				Moo.notice(source, "Done, " + count + " shown.");
+				source.reply("Done, " + count + " shown.");
 		}
 		catch (SQLException ex)
 		{
@@ -87,7 +87,7 @@ class CommandSLogSearch extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, final String[] params)
+	public void execute(CommandSource source, final String[] params)
 	{
 		if (params.length <= 1)
 			return;
@@ -102,6 +102,6 @@ class CommandSLogSearch extends Command
 			}
 			catch (NumberFormatException ex) { }
 		
-		new logSearcher(source, target, params[1], num).start();
+		new logSearcher(source, params[1], num).start();
 	}
 }

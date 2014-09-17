@@ -1,12 +1,13 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.Iterator;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.Iterator;
 
 class message211 extends Message
 {
@@ -76,19 +77,17 @@ class message219 extends Message
 			return b + " " + what;
 	}
 	
-	
-	public static String request_source = null;
-	public static String request_target = null;
+	protected static CommandSource source;
 	public static boolean request_all = false;
 
 	@Override
 	public void run(String source, String[] message)
 	{
 		Server serv = Server.findServerAbsolute(source);
-		if (serv == null || request_source == null || request_target == null || message[1].equals("?") == false)
+		if (serv == null || this.source == null || message[1].equals("?") == false)
 			return;
 		else if (request_all || serv.bytes >= 1024)
-			Moo.reply(request_source, request_target, "[MAP] " + source + " " + this.convertBytes(serv.bytes));
+			this.source.reply("[MAP] " + source + " " + this.convertBytes(serv.bytes));
 	}
 }
 
@@ -98,20 +97,19 @@ class message265 extends Message
 	{
 		super("265");
 	}
-	
-	public static String request_source = null;
-	public static String request_target = null;
+
+	protected static CommandSource source;
 	public static int request_users = 0;
 
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (request_source == null || request_target == null || message.length < 2)
+		if (this.source == null || message.length < 2)
 			return;
 
 		int users = Integer.parseInt(message[1]);
 		if (users >= request_users)
-			Moo.reply(request_source, request_target, "[MAP] " + source + " " + users);
+			this.source.reply("[MAP] " + source + " " + users);
 	}
 }
 
@@ -130,20 +128,21 @@ class commandMapBase extends Command
 	}
 	
 	@Override
-	public void onHelp(String source) {
-		Moo.notice(source, "Syntax: " + this.getCommandName() + " [{ usercount | HUB server.name | FIND mask}]");
-		Moo.notice(source, "Searches for information about servers.");
-		Moo.notice(source, "Without any further arguments, the sendq (in bytes) of hubs is shown.");
+	public void onHelp(CommandSource source)
+	{
+		source.notice("Syntax: " + this.getCommandName() + " [{ usercount | HUB server.name | FIND mask}]");
+		source.notice("Searches for information about servers.");
+		source.notice("Without any further arguments, the sendq (in bytes) of hubs is shown.");
 		if(!this.getCommandName().equalsIgnoreCase("!MAP-"))
-			Moo.notice(source, "The sendq output will be hidden unless it exceeds 1023 bytes, use !MAP- to see them.");
-		Moo.notice(source, "If a user count is given, only servers and their user count with that amount of");
-		Moo.notice(source, "(or more) users will be shown.");
-		Moo.notice(source, "HUB server.name shows what other servers server.name is connected to.");
-		Moo.notice(source, "FIND mask tries to find all servers matching the given mask.");
+			source.notice("The sendq output will be hidden unless it exceeds 1023 bytes, use !MAP- to see them.");
+		source.notice("If a user count is given, only servers and their user count with that amount of");
+		source.notice("(or more) users will be shown.");
+		source.notice("HUB server.name shows what other servers server.name is connected to.");
+		source.notice("FIND mask tries to find all servers matching the given mask.");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length == 1)
 		{
@@ -154,8 +153,7 @@ class commandMapBase extends Command
 					Moo.sock.write("STATS ? " + s.getName());
 				}
 			message219.request_all = this.full;
-			message219.request_source = source;
-			message219.request_target = target;
+			message219.source = source;
 		}
 		else if (params.length > 1)
 		{
@@ -163,10 +161,10 @@ class commandMapBase extends Command
 			{
 				Server s = Server.findServer(params[2]);
 				if (s == null)
-					Moo.reply(source, target, "[MAP] Server " + params[2] + " not found");
+					source.reply("[MAP] Server " + params[2] + " not found");
 				else
 					for (Iterator<Server> it = s.links.iterator(); it.hasNext();)
-						Moo.reply(source, target, "[MAP] " + s.getName() + " is linked to " + it.next().getName());
+						source.reply("[MAP] " + s.getName() + " is linked to " + it.next().getName());
 			}
 			else if (params[1].equalsIgnoreCase("FIND") && params.length > 2)
 			{
@@ -175,11 +173,11 @@ class commandMapBase extends Command
 				{
 					if (Moo.matches(s.getName(), "*" + params[2] + "*"))
 					{
-						Moo.reply(source, target, "[MAP] Server " + s.getName() + " matches " + params[2]);
+						source.reply("[MAP] Server " + s.getName() + " matches " + params[2]);
 						++count;
 					}
 				}
-				Moo.reply(source, target, "[MAP] End of match, " + count + " servers found");
+				source.reply("[MAP] End of match, " + count + " servers found");
 			}
 			else
 			{
@@ -190,22 +188,20 @@ class commandMapBase extends Command
 					for (Server s : Server.getServers())
 						Moo.sock.write("USERS " + s.getName());
 
-					message265.request_source = source;
-					message265.request_target = target;
+					message265.source = source;
 					message265.request_users = users;
 				}
 				catch (NumberFormatException ex)
 				{
 					Server s = Server.findServer(params[1]);
 					if (s == null)
-						Moo.reply(source, target, "[MAP] Server " + params[1] + " not found");
+						source.reply("[MAP] Server " + params[1] + " not found");
 					else
 					{
 						s.bytes = 0;
 						Moo.sock.write("STATS ? " + s.getName());;
 						message219.request_all = this.full;
-						message219.request_source = source;
-						message219.request_target = target;
+						message219.source = source;
 					}
 				}
 			}

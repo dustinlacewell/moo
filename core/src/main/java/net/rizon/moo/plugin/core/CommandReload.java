@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Config;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
@@ -15,14 +16,14 @@ class CommandReload extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !RELOAD");
-		Moo.notice(source, "!RELOAD reloads the configuration file, moo.properties.");
+		source.notice("Syntax: !RELOAD");
+		source.notice("!RELOAD reloads the configuration file, moo.properties.");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		try
 		{
@@ -31,11 +32,11 @@ class CommandReload extends Command
 				e.onReload(c);
 
 			Moo.conf = c;
-			Moo.reply(source, target, "Successfully reloaded configuration");
+			source.reply("Successfully reloaded configuration");
 		}
 		catch (Exception ex)
 		{
-			Moo.reply(source, target, "Error reloading configuration: " + ex.getMessage());
+			source.reply("Error reloading configuration: " + ex.getMessage());
 		}
 	}
 }

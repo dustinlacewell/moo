@@ -1,11 +1,12 @@
 package net.rizon.moo.plugin.core;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 class CommandHost extends Command
 {
@@ -19,7 +20,7 @@ class CommandHost extends Command
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1)
 			return;
@@ -27,11 +28,11 @@ class CommandHost extends Command
 		try
 		{
 			for (InetAddress in : InetAddress.getAllByName(params[1]))
-				Moo.reply(source, target, params[1] + " has address " + in.getHostAddress());
+				source.reply(params[1] + " has address " + in.getHostAddress());
 		}
 		catch (UnknownHostException ex)
 		{
-			Moo.reply(source, target, params[1] + " does not resolve.");
+			source.reply(params[1] + " does not resolve.");
 		}
 	}
 }

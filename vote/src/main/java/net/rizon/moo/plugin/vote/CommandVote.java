@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.vote;
 
 import net.rizon.moo.Channel;
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Mail;
 import net.rizon.moo.Membership;
 import net.rizon.moo.Moo;
@@ -23,22 +24,22 @@ class commandVoteBase extends Command
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, this.getCommandName() + " keeps track of simple yes/no votes for channels.");
-		Moo.notice(source, "Syntax:");
-		Moo.notice(source, this.getCommandName() + " ADD <vote info here> -- add a new vote");
-		Moo.notice(source, this.getCommandName() + " CLOSE <num> -- close a vote. This cannot be undone!");
-		Moo.notice(source, this.getCommandName() + " INFO <num> -- show info about a certain vote (date added, who added, votes)");
-		Moo.notice(source, this.getCommandName() + " LIST [ALL] -- list known votes. If ALL is given, closed votes will also be shown");
-		Moo.notice(source, this.getCommandName() + " <num> yes/no -- vote on a certain vote");
+		source.notice(this.getCommandName() + " keeps track of simple yes/no votes for channels.");
+		source.notice("Syntax:");
+		source.notice(this.getCommandName() + " ADD <vote info here> -- add a new vote");
+		source.notice(this.getCommandName() + " CLOSE <num> -- close a vote. This cannot be undone!");
+		source.notice(this.getCommandName() + " INFO <num> -- show info about a certain vote (date added, who added, votes)");
+		source.notice(this.getCommandName() + " LIST [ALL] -- list known votes. If ALL is given, closed votes will also be shown");
+		source.notice(this.getCommandName() + " <num> yes/no -- vote on a certain vote");
 	}
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
-		int e = source.indexOf('!');
-		String nick = source.substring(0, e != -1 ? e : source.length());
+		String nick = source.getUser().getNick();
+		String target = source.getTargetName();
 		
 		if (params.length < 2 || params[1].equalsIgnoreCase("list"))
 		{
@@ -54,13 +55,13 @@ class commandVoteBase extends Command
 					if (all)
 						Moo.notice(target, msg);
 					else
-						Moo.reply(source, target, "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
+						source.reply("[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
 					any = true;
 				}
 			
 			if (any == false)
 			{
-				Moo.reply(source, target, "No votes for " + target);
+				source.reply("No votes for " + target);
 				return;
 			}
 		}
@@ -71,7 +72,7 @@ class commandVoteBase extends Command
 			v.id = VoteInfo.getMaxFor(target);
 			if (v.id == -1)
 			{
-				Moo.reply(source, target, "Unable to create vote!");
+				source.reply("Unable to create vote!");
 				return;
 			}
 			
@@ -83,8 +84,8 @@ class commandVoteBase extends Command
 			v.owner = nick;
 			
 			v.insert();
-			
-			Moo.reply(source, target, "Added vote #" + v.id);
+
+			source.reply("Added vote #" + v.id);
 			
 			String email = vote.getVoteEmailFor(target);
 			if (email != null)
@@ -99,19 +100,19 @@ class commandVoteBase extends Command
 			}
 			catch (NumberFormatException ex)
 			{
-				Moo.reply(source, target, "Vote " + params[2] + " is not a valid number");
+				source.reply("Vote " + params[2] + " is not a valid number");
 				return;
 			}
 			
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
-				Moo.reply(source, target, "Vote " + vnum + " does not exist.");
+				source.reply("Vote " + vnum + " does not exist.");
 				return;
 			}
-			
-			Moo.reply(source, target, "Vote #" + vnum + " for " + target + " added by " + v.owner + " " + Moo.difference(new Date(), v.date) + " ago.");
-			Moo.reply(source, target, v.info);
+
+			source.reply("Vote #" + vnum + " for " + target + " added by " + v.owner + " " + Moo.difference(new Date(), v.date) + " ago.");
+			source.reply(v.info);
 			
 			Cast[] casts = Cast.getCastsFor(v);
 			int negative = 0, positive = 0, total = 0;
@@ -129,11 +130,11 @@ class commandVoteBase extends Command
 			
 			if (total > 0)
 			{
-				Moo.reply(source, target, "Total: " + total + ", For: " + positive + " [" + (((float) positive / (float) total) * 100F) + "%], Against: " + negative + " [" + (((float) negative / (float) total) * 100F) + "%]");
-				Moo.reply(source, target, "Voted: " + voted);
+				source.reply("Total: " + total + ", For: " + positive + " [" + (((float) positive / (float) total) * 100F) + "%], Against: " + negative + " [" + (((float) negative / (float) total) * 100F) + "%]");
+				source.reply("Voted: " + voted);
 			}
 			else
-				Moo.reply(source, target, "Noone has voted yet!");
+				source.reply("Noone has voted yet!");
 		}
 		else if (params[1].equalsIgnoreCase("close") && params.length > 2)
 		{
@@ -144,19 +145,19 @@ class commandVoteBase extends Command
 			}
 			catch (NumberFormatException ex)
 			{
-				Moo.reply(source, target, "Vote " + params[2] + " is not a valid number");
+				source.reply("Vote " + params[2] + " is not a valid number");
 				return;
 			}
 			
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
-				Moo.reply(source, target, "Vote " + vnum + " does not exist.");
+				source.reply("Vote " + vnum + " does not exist.");
 				return;
 			}
 			
 			v.close();
-			Moo.reply(source, target, "Vote " + vnum + " closed.");
+			source.reply("Vote " + vnum + " closed.");
 		}
 		else if (params[1].equalsIgnoreCase("slackers") && params.length > 2)
 		{
@@ -170,14 +171,14 @@ class commandVoteBase extends Command
 			}
 			catch (NumberFormatException ex)
 			{
-				Moo.reply(source, target, "Vote " + params[2] + " is not a valid number");
+				source.reply("Vote " + params[2] + " is not a valid number");
 				return;
 			}
 
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
-				Moo.reply(source, target, "Vote " + vnum + " does not exist.");
+				source.reply("Vote " + vnum + " does not exist.");
 				return;
 			}
 
@@ -206,7 +207,7 @@ class commandVoteBase extends Command
 				 */
 				if (sb.length() > 360)
 				{
-					Moo.reply(source, target, sb.toString());
+					source.reply(sb.toString());
 					sb = new StringBuilder("People who need to vote on vote #");
 					sb.append(vnum);
 					sb.append(":");
@@ -214,9 +215,9 @@ class commandVoteBase extends Command
 				}
 			}
 			if (listed > 0)
-				Moo.reply(source, target, sb.toString());
+				source.reply(sb.toString());
 			else
-				Moo.reply(source, target, "Nobody is slacking off on voting for a change.");
+				source.reply("Nobody is slacking off on voting for a change.");
 		}
 		else if (params.length > 2)
 		{
@@ -227,27 +228,27 @@ class commandVoteBase extends Command
 			}
 			catch (NumberFormatException ex)
 			{
-				Moo.reply(source, target, "Invalid vote number");
+				source.reply("Invalid vote number");
 				return;
 			}
 			
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
-				Moo.reply(source, target, "Error finding vote " + vnum);
+				source.reply("Error finding vote " + vnum);
 				return;
 			}
 			
 			if (v.findCastFor(nick))
 			{
-				Moo.reply(source, target, "You have already voted.");
+				source.reply("You have already voted.");
 				return;
 			}
 			
 			if (v.closed)
 			{
 				// Can't let you do that, Starfox.
-				Moo.reply(source, target, "This vote is closed.");
+				source.reply("This vote is closed.");
 				return;
 			}
 			
@@ -262,11 +263,11 @@ class commandVoteBase extends Command
 				c.vote = false;
 			else
 			{
-				Moo.reply(source, target, "Invalid vote, use yes or no");
+				source.reply("Invalid vote, use yes or no");
 				return;
 			}
-			
-			Moo.reply(source, target, "Vote cast");
+
+			source.reply("Vote cast");
 			c.insert();
 		}
 		else

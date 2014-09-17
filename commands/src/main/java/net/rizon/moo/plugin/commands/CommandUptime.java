@@ -1,9 +1,7 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.Date;
-import java.util.HashSet;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
@@ -11,11 +9,13 @@ import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 
+import java.util.Date;
+import java.util.HashSet;
+
 class message242 extends Message
 {
+	protected static CommandSource source;
 	public static HashSet<String> waiting_for = new HashSet<String>();
-	public static String target_channel = null;
-	public static String target_source = null;
 	
 	public message242()
 	{
@@ -54,7 +54,7 @@ class message242 extends Message
 		
 		if (waiting_for.isEmpty())
 		{
-			CommandUptime.post_update(target_source, target_channel);
+			CommandUptime.post_update(this.source);
 		}
 	}
 }
@@ -77,23 +77,23 @@ class CommandUptime extends Command
 	private static String want_server;
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !UPTIME [{ ALL | server.name }]");
-		Moo.notice(source, "Without any parameters, the highest and lowest uptime and last split times");
-		Moo.notice(source, "are sought and shown.");
-		Moo.notice(source, "If ALL is given, uptimes and times since the last split for all servers will");
-		Moo.notice(source, "be shown.");
-		Moo.notice(source, "If a server name is given, the uptime and last split time for that particular");
-		Moo.notice(source, "will be shown.");
-		Moo.notice(source, "The lowest last split time and the highest uptime will be colored "
-		                   + Message.COLOR_GREEN + "green" + Message.COLOR_END + ",");
-		Moo.notice(source, "the highest last split time will be colored "
-		                   + Message.COLOR_RED + "red" + Message.COLOR_END + ".");
+		source.notice("Syntax: !UPTIME [{ ALL | server.name }]");
+		source.notice("Without any parameters, the highest and lowest uptime and last split times");
+		source.notice("are sought and shown.");
+		source.notice("If ALL is given, uptimes and times since the last split for all servers will");
+		source.notice("be shown.");
+		source.notice("If a server name is given, the uptime and last split time for that particular");
+		source.notice("will be shown.");
+		source.notice("The lowest last split time and the highest uptime will be colored "
+				+ Message.COLOR_GREEN + "green" + Message.COLOR_END + ",");
+		source.notice("the highest last split time will be colored "
+				+ Message.COLOR_RED + "red" + Message.COLOR_END + ".");
 	}
 
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		want_server = null;
 		
@@ -118,9 +118,8 @@ class CommandUptime extends Command
 				message242.waiting_for.add(s.getName());
 			}
 		}
-		
-		message242.target_channel = target;
-		message242.target_source = source;
+
+		message242.source = source;
 	}
 	
 	private static Split findLastSplit(Server s)
@@ -163,7 +162,7 @@ class CommandUptime extends Command
 		return longest - s.getName().length() + 2;
 	}
 	
-	public static void post_update(String source, String target)
+	public static void post_update(CommandSource source)
 	{
 		Date highest = null, lowest = null;
 		Split highest_sp = null, lowest_sp = null;
@@ -238,13 +237,13 @@ class CommandUptime extends Command
 			{
 				if (is_extreme)
 				{
-					Moo.reply(source, target, buffer);
+					source.reply(buffer);
 					shown = true;
 				}
 			}
 			else
 			{
-				Moo.reply(source, target, buffer);
+				source.reply(buffer);
 				shown = true;
 			}
 		}
@@ -252,9 +251,9 @@ class CommandUptime extends Command
 		if (shown == false)
 		{
 			if (want_server != null)
-				Moo.reply(source, target, "No servers match " + want_server);
+				source.reply("No servers match " + want_server);
 			else
-				Moo.reply(source, target, "You have managed to execute a command with no servers on the network, congrats");
+				source.reply("You have managed to execute a command with no servers on the network, congrats");
 		}
 	}
 }

@@ -1,11 +1,12 @@
 package net.rizon.moo.plugin.commands;
 
-import java.util.Random;
-
 import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+
+import java.util.Random;
 
 abstract class commandSidBase extends Command
 {
@@ -29,7 +30,7 @@ abstract class commandSidBase extends Command
 	protected abstract String getSID();
 	
 	@Override
-	public void execute(String source, String target, String[] params)
+	public void execute(CommandSource source, String[] params)
 	{
 		String sid;
 		
@@ -37,7 +38,7 @@ abstract class commandSidBase extends Command
 			sid = getSID();
 		while (inUse(sid));
 		
-		Moo.reply(source, target, "[SID] " + sid);
+		source.reply("[SID] " + sid);
 	}
 }
 
@@ -49,10 +50,10 @@ final class commandSidClient extends commandSidBase
 	}
 
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !SID");
-		Moo.notice(source, "Generates a new SID for a client server. It will be checked not to be already in use.");
+		source.notice("Syntax: !SID");
+		source.notice("Generates a new SID for a client server. It will be checked not to be already in use.");
 	}
 	
 	@Override
@@ -75,10 +76,10 @@ final class commandSidHub extends commandSidBase
 	}
 	
 	@Override
-	public void onHelp(String source)
+	public void onHelp(CommandSource source)
 	{
-		Moo.notice(source, "Syntax: !HUBSID");
-		Moo.notice(source, "Generates a new SID for a hub. It will be checked not to be already in use.");
+		source.notice("Syntax: !HUBSID");
+		source.notice("Generates a new SID for a hub. It will be checked not to be already in use.");
 	}
 	
 	@Override
