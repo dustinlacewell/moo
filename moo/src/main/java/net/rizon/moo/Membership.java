@@ -6,7 +6,7 @@ public class Membership
 {
 	private User user;
 	private Channel channel;
-	private EnumSet<ChannelUserStatus> status;
+	private EnumSet<ChannelUserStatus> status = EnumSet.noneOf(ChannelUserStatus.class);
 
 	public Membership(User user, Channel channel)
 	{
