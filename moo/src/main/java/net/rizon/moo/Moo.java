@@ -75,8 +75,6 @@ public class Moo
 		}
 		
 		Server.init();
-		channels = new ChannelManager();
-		users = new UserManager();
 		
 		try
 		{
@@ -103,6 +101,9 @@ public class Moo
 		
 		while (quitting == false)
 		{
+			channels = new ChannelManager();
+			users = new UserManager();
+
 			try
 			{
 				if (Moo.conf.getBool("ssl"))
@@ -201,6 +202,10 @@ public class Moo
 			
 			for (Event e : Event.getEvents())
 				e.saveDatabases();
+
+			channels = null;
+			users = null;
+			me = null;
 			
 			try
 			{
