@@ -28,6 +28,6 @@ public class CommandSource
 
 	public void notice(String message)
 	{
-		Moo.notice(dest.getName(), message);
+		Moo.notice(user.getNick(), message);
 	}
 }
