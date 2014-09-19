@@ -126,7 +126,7 @@ class CommandWatch extends Command
 			we.registered = state;
 			
 			source.reply("Watch added for " + we.nick + " to expire on " + we.expires);
-			Moo.operwall(source + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
+			Moo.operwall(we.creator + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
 			if (Plugin.findPlugin("logging") != null)
 				logging.addEntry("WATCH", we.creator, we.nick, reason);
 			
