@@ -12,6 +12,7 @@ import net.rizon.moo.Timer;
 class StatsRequester extends Timer
 {
 	private static boolean check_requested;
+	private static boolean first_run = true;
 	private static HashSet<String> requested = new HashSet<String>(), check_waiting_on = new HashSet<String>();
 	private static long before_total_count;
 	private static HashMap<String, Long> before_count = new HashMap<String, Long>();
@@ -53,7 +54,7 @@ class StatsRequester extends Timer
 		
 		if (!check_requested || !check_waiting_on.isEmpty())
 			return;
-		
+
 		long after_total_count = 0;
 		HashMap<String, Long> after_counts = new HashMap<String, Long>();
 			
@@ -93,10 +94,11 @@ class StatsRequester extends Timer
 			}
 		}
 			
-		if (!dnsbl_message.isEmpty())
+		if (!dnsbl_message.isEmpty() && !first_run)
 			for (final String chan : Moo.conf.getList("oper_channels"))
 				Moo.privmsg(chan, dnsbl_message);
-			
+
+		first_run = false;
 		check_requested = false;
 		requested.clear();
 		before_total_count = 0;
