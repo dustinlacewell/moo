@@ -17,7 +17,7 @@ import net.rizon.moo.Moo;
 class TicketChecker extends Thread
 {
 	private static final int reminder = 30; // minutes
-	private static final Pattern pattern = Pattern.compile("<tr><td><a href=\"/index.php/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
+	private static final Pattern pattern = Pattern.compile("<tr><td><a href=\"/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
 	private static boolean firstRun = true;
 
 	@Override
