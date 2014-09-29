@@ -194,9 +194,12 @@ public class Server
 	
 	public Split getSplit()
 	{
-		if (split != null || !this.links.isEmpty())
+		if (split != null)
 			return split;
-		
+
+		if (!this.links.isEmpty())
+			return null;
+
 		try
 		{
 			PreparedStatement statement = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ? ORDER BY `when` DESC LIMIT 1");
@@ -228,7 +231,7 @@ public class Server
 		{
 			Database.handleException(ex);
 		}
-		
+
 		return null;
 	}
 	
