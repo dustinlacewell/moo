@@ -42,7 +42,11 @@ class message_limit extends Message
 		if (s == null)
 			return;
 
-		String[] tokens = message[1].split(" ");
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i < message.length - 1; ++i)
+			sb.append(" " + message[i]);
+
+		String[] tokens = sb.toString().trim().split(" ");
 		for (String token : tokens)
 		{
 			if (token.startsWith("CHANLIMIT="))
