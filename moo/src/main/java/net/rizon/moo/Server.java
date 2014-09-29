@@ -145,7 +145,31 @@ public class Server
 		s.me = this.getName();
 		s.from = from.name;
 		s.when = now;
-		s.recursive = from.getSplit() != null;
+		s.recursive = false;
+
+		// Find servers that split from this one at the same time
+		for (Server serv : Server.getServers())
+		{
+			Split sp = serv.getSplit();
+			if (sp != null && sp.from.equals(this.name) && sp.when.getTime() / 1000L == now.getTime() / 1000L)
+			{
+				sp.recursive = true;
+
+				try
+				{
+					PreparedStatement statement = Moo.db.prepare("UPDATE splits SET `recursive` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
+					statement.setBoolean(1, sp.recursive);
+					statement.setString(2, sp.me);
+					statement.setString(3, sp.from);
+					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
+					Moo.db.executeUpdate();
+				}
+				catch (SQLException ex)
+				{
+					Database.handleException(ex);
+				}
+			}
+		}
 		
 		try
 		{
@@ -317,7 +341,7 @@ public class Server
 		@Override
 		protected void initDatabases() 
 		{
-			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64));");
+			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64), `recursive`);");
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `desc`, `preferred_links`, `frozen`);");
 			Moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
