@@ -11,13 +11,13 @@ public class ActionAkill extends Action
 	}
 
 	@Override
-	public void onHit(Blacklist blacklist, String dnsblResponse, String user)
+	public void onHit(Blacklist blacklist, String dnsblResponse, String nick, String ip)
 	{
 		String message = Moo.conf.getString("dnsbl.actions.akill.message")
-			.replace("%h", user)
+			.replace("%h", ip)
 			.replace("%d", blacklist.getName())
 			.replace("%r", dnsblResponse);
-		Moo.akill(user, Moo.conf.getString("dnsbl.actions.akill.duration"), message);
+		Moo.akill(ip, Moo.conf.getString("dnsbl.actions.akill.duration"), message);
 	}
 
 	@Override

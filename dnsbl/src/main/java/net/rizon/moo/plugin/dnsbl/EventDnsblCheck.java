@@ -22,7 +22,7 @@ class EventDnsblCheck extends Event
 		this.cache = cache;
 	}
 
-	private void takeAction(String ip, List<DnsblCheckResult> results)
+	private void takeAction(String nick, String ip, List<DnsblCheckResult> results)
 	{
 		if (results.isEmpty())
 			return;
@@ -41,7 +41,9 @@ class EventDnsblCheck extends Event
 					if (!a.isUnique() || !takenActions.contains(a.getName()))
 					{
 						takenActions.add(a.getName());
-						a.onHit(result.getBlacklist(), dnsblResult.getKey(), ip);
+						a.onHit(result.getBlacklist(), dnsblResult.getKey(), nick, ip);
+						for (Event e : Event.getEvents())
+							e.onDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey());
 					}
 	}
 
@@ -52,7 +54,7 @@ class EventDnsblCheck extends Event
 		if (entry != null)
 		{
 			// Use cached entry to take action.
-			this.takeAction(ip, entry.getResults());
+			this.takeAction(nick, ip, entry.getResults());
 			return;
 		}
 
@@ -68,15 +70,17 @@ class EventDnsblCheck extends Event
 		// Run checker asynchronously.
 		checker.addCallback(new DnsblCallback()
 		{
+			@Override
 			public void onResult(DnsblCheckResult result)
 			{
 				results.add(result);
 			}
 
+			@Override
 			public void onDone()
 			{
 				cache.addEntry(ip, results);
-				takeAction(ip, results);
+				takeAction(nick, ip, results);
 			}
 		});
 		checker.runAsynchronous();

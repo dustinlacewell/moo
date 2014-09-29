@@ -11,9 +11,9 @@ public class ActionLog extends Action
 	}
 
 	@Override
-	public void onHit(Blacklist blacklist, String response, String user)
+	public void onHit(Blacklist blacklist, String response, String nick, String ip)
 	{
 		for (String channel : Moo.conf.getList("spam_channels"))
-			Moo.privmsg(channel, "DNSBL " + blacklist.getName() + " gave hit on " + user + ": " + response);
+			Moo.privmsg(channel, "DNSBL " + blacklist.getName() + " gave hit on " + nick + " (" + ip + "): " + response);
 	}
 }

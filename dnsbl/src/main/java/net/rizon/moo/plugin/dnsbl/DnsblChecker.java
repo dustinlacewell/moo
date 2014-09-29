@@ -10,10 +10,7 @@ import org.xbill.DNS.Type;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -106,7 +103,7 @@ class DnsblChecker implements Runnable
 			//   X.Y.Z.W -> W.Z.Y.X.dnsbl.host
 			for (int i = bytes.length - 1; i >= 0; i--)
 			{
-				sb.append(bytes[i]);
+				sb.append(bytes[i] & 0xFF);
 				sb.append(".");
 			}
 		}
@@ -130,7 +127,7 @@ class DnsblChecker implements Runnable
 				actions.put(response, new ArrayList<Action>());
 
 			for (Rule rule : blacklist.getRules())
-				if (record.rdataToString().equals(rule.getResponse()))
+				if (response.equals(rule.getResponse()))
 				{
 					if (isAny)
 						actions.put(response, new ArrayList<Action>());

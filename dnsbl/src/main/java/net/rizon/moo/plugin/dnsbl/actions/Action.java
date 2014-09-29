@@ -15,7 +15,7 @@ public abstract class Action
 		this.description = description;
 	}
 
-	public abstract void onHit(Blacklist blacklist, String dnsblResponse, String user);
+	public abstract void onHit(Blacklist blacklist, String dnsblResponse, String nick, String ip);
 
 	public boolean isUnique()
 	{
