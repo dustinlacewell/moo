@@ -139,7 +139,7 @@ class CommandFlood extends Command
 				}
 			}
 			
-			Moo.operwall(source + " used AKILL for " + count + " flood entries");
+			Moo.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
 			
 			source.reply("Akilled " + count + " entries from " + lists + " lists with " + dupes + " duplicates. Removed " + purge() + " entries.");
 			return;
@@ -318,7 +318,7 @@ class CommandFlood extends Command
 				Moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + "!" + fe.user_str + "@" + fe.ip + "/" + fe.realname_str + ")");
 			}
 
-			Moo.operwall(source + " used AKILL for " + count + " flood entries");
+			Moo.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
 			source.reply("Akilled " + count + " entries with " + duplicates + " duplicates. Removed " + purge() + " entries.");
 			/* purge() is guaranteed to eat this list */
 			fl = null;
