@@ -33,7 +33,8 @@ class ResultCache
 
 		public boolean hasExpired()
 		{
-			return this.expiration.after(new Date());
+			Date now = new Date();
+			return now.after(this.expiration);
 		}
 	}
 
