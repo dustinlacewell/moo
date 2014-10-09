@@ -66,6 +66,7 @@ class DnsblChecker implements Runnable
 		{
 			String lookupHost = this.getLookupHost(blacklist.getName());
 			Lookup message = new Lookup(lookupHost, this.target.isIPv6() ? Type.AAAA : Type.A);
+			message.setCache(null);
 			message.setResolver(resolver);
 
 			Record[] result = message.run();
