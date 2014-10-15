@@ -143,7 +143,7 @@ class Reconnector extends Timer
 					for (String s2 : others)
 					{
 						Server tmp = Server.findServerAbsolute(s2);
-						if (tmp != null && isGood(tmp) && (guess == null || tmp.links.size() > guess.links.size()))
+						if (tmp != null && isGood(tmp) && tmp.isHub() && (guess == null || tmp.links.size() > guess.links.size()))
 							guess = tmp;
 					}
 
