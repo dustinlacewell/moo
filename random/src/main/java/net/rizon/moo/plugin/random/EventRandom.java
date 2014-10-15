@@ -1,11 +1,11 @@
 package net.rizon.moo.plugin.random;
 
-import java.util.Date;
-import java.util.Iterator;
-
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+
+import java.util.Date;
+import java.util.Iterator;
 
 class EventRandom extends Event
 {
@@ -60,7 +60,8 @@ class EventRandom extends Event
 			return;
 
 		if (ident.equals("qwebirc") || ident.equals("cgiirc") || real.equals("http://www.mibbit.com") || real.equals("...")
-				|| nick.startsWith("bRO-") || real.equals("realname") || real.equals("New Now Know How") || ident.endsWith("chatzilla"))
+				|| nick.startsWith("bRO-") || real.equals("realname") || real.equals("New Now Know How") || ident.endsWith("chatzilla")
+				|| nick.startsWith("[EWG]"))
 			return;
 
 		NickData nd = new NickData(nick, ident, real, ip);
