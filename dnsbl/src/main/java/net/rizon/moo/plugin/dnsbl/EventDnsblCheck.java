@@ -35,6 +35,10 @@ class EventDnsblCheck extends Event
 		for (DnsblCheckResult result : results)
 			// Each result contains multiple DNS responses... (e.g. multiple infractions or categories)
 			for (Map.Entry<String, List<Action>> dnsblResult : result.getActions().entrySet())
+			{
+				for (Event e : Event.getEvents())
+					e.onDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey());
+
 				// And those responses each have a set of actions.
 				for (Action a : dnsblResult.getValue())
 					// Don't perform unique action types multiple times.
@@ -42,9 +46,8 @@ class EventDnsblCheck extends Event
 					{
 						takenActions.add(a.getName());
 						a.onHit(result.getBlacklist(), dnsblResult.getKey(), nick, ip);
-						for (Event e : Event.getEvents())
-							e.onDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey());
 					}
+			}
 	}
 
 	@Override
