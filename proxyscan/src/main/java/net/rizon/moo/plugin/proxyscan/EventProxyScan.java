@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.proxyscan;
 
-import java.util.logging.Level;
-
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+
+import java.util.logging.Level;
 
 class EventProxyScan extends Event
 {
@@ -27,6 +27,11 @@ class EventProxyScan extends Event
 	{
 		return ip.startsWith("10.") || ip.startsWith("127.") || ip.startsWith("172.16.") || ip.startsWith("192.168.") || ip.equals("255.255.255.255");
 	}
+
+	private static boolean nickOk(String nick)
+	{
+		return !nick.startsWith("[EWG]");
+	}
 	
 	private int curIp;
 
@@ -37,6 +42,9 @@ class EventProxyScan extends Event
 		
 		// We only scan IPv4
 		if (ip.indexOf('.') == -1 || isReserved(ip) || proxyscan.cache.isCached(ip))
+			return;
+
+		if (!nickOk(nick))
 			return;
 		
 		log.log(Level.FINE, "Scanning " + ip);
