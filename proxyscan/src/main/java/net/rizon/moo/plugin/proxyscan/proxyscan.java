@@ -1,14 +1,15 @@
 package net.rizon.moo.plugin.proxyscan;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class proxyscan extends Plugin
 {
@@ -18,19 +19,20 @@ public class proxyscan extends Plugin
 	private ScanListener sc;
 	private Command c;
 	protected static final IPCache cache = new IPCache();
+	public static ProxyscanConfiguration conf;
 
-	public proxyscan()
+	public proxyscan() throws Exception
 	{
 		super("Proxyscan", "Checks connecting users for proxies");
-		
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `proxies` (protocol, port, ip, date timestamp default current_timestamp)");
+		conf = ProxyscanConfiguration.load();
 	}
 
 	@Override
 	public void start() throws Exception
 	{
 		e = new EventProxyScan();
-		sc = new ScanListener(Moo.conf.getString("proxyscan.listenip"), Moo.conf.getInt("proxyscan.listenport"));
+		sc = new ScanListener(conf.server.ip, conf.server.port);
 		c = new ProxyStats(this);
 		sc.start();
 	}
@@ -48,9 +50,9 @@ public class proxyscan extends Plugin
 		if (cache.hit(ip))
 			return;
 		
-		String message = Moo.conf.getString("proxyscan.ban_message").replace("%i", ip).replace("%p", "" + port).replace("%t", type);
+		String message = conf.ban_message.replace("%i", ip).replace("%p", "" + port).replace("%t", type);
 		
-		Moo.privmsg(Moo.conf.getString("proxyscan.channel"), "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
+		Moo.privmsgAll(conf.channels, "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
 		Moo.akill(ip, "+3d", message);
 		
 		try
@@ -66,7 +68,7 @@ public class proxyscan extends Plugin
 			log.log(Level.WARNING, "Unable to record proxy hit", ex);
 		}
 		
-		if (Moo.conf.getBool("proxyscan.py-opers"))
+		if (conf.py_opers)
 			Moo.privmsg("py-opers", "~dnsbl_admin.add " + ip + " 1 " + message); 
 	}
 }

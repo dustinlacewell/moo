@@ -1,17 +1,17 @@
 package net.rizon.moo.plugin.random;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 class deadListChecker extends Timer
 {
@@ -34,8 +34,7 @@ class deadListChecker extends Timer
 			
 			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
-				for (String s : Moo.conf.getList("flood_channels"))
-					Moo.privmsg(s, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
+				Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 				
 				/* Don't really close this, we want the list to persist forever. */
 				p.isClosed = true;
@@ -97,8 +96,7 @@ public class random extends Plugin
 	
 	public static void logMatch(NickData nd, FloodList fl)
 	{
-		for (String s : Moo.conf.getList("flood_channels"))
-			Moo.privmsg(s, "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+		Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 	
 	protected static void akill(final String ip)

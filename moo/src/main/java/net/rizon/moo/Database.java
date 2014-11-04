@@ -1,5 +1,7 @@
 package net.rizon.moo;
 
+import net.rizon.moo.conf.DatabaseConfiguration;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,11 +14,17 @@ public class Database
 	private static final Logger log = Logger.getLogger(Database.class.getName());
 	
 	private Connection con = null;
-	
-	public Database() throws ClassNotFoundException, SQLException
+
+	/**
+	 * Constructs a new database connector.
+	 * @param database Configuration details for database.
+	 * @throws ClassNotFoundException When unable to load class.
+	 * @throws SQLException
+	 */
+	public Database(final DatabaseConfiguration database) throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
-		this.con = DriverManager.getConnection(Moo.conf.getString("database"));
+		this.con = DriverManager.getConnection(database.connection);
 	}
 	
 	public void shutdown()

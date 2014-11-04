@@ -1,0 +1,32 @@
+# DNSBL resolver to use for DNS queries
+resolver: 8.8.8.8
+
+# DNSBLs to check against, together with their rules.
+servers:
+  -
+    address: foo.rizon.net
+    rules:
+      -
+        reply: 127.0.0.1
+        action: LOG
+      -
+        reply: 127.0.0.2
+        action: AKILL
+  -
+    address: foo2.rizon.net
+    rules:
+      -
+        reply: 127.0.0.1
+        action: AKILL
+      -
+        reply: "*"
+        action: LOG
+
+# AKILL settings.
+akill:
+  duration: +3d
+  message:  "Your IP address (%h) has been matched against a DNSBL. Please contact the %d owner for delistment procedures."
+
+# Lookup cache lifetime in seconds
+cache:
+  lifetime: 60

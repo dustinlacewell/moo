@@ -1,0 +1,4 @@
+# Path to shell commands.
+shell:
+  enabled: false
+  base: /home/adam/rizon/moo/shell

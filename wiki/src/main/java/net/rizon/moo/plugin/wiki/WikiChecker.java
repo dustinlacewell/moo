@@ -30,7 +30,7 @@ class WikiChecker extends Thread
 		
 		try
 		{
-			is = new URL(Moo.conf.getString("wiki.url")).openStream();
+			is = new URL(wiki.conf.url).openStream();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document document = db.parse(is);
 			Date highest = null;
@@ -56,8 +56,7 @@ class WikiChecker extends Thread
 						author = n.getElementsByTagName("author").item(0).getTextContent(),
 						link = n.getElementsByTagName("link").item(0).getAttributes().getNamedItem("href").getTextContent();
 				
-				for (String c : Moo.conf.getList("help_channels"))
-					Moo.privmsg(c, title + " modified by " + author + " (" + link + ")");
+				Moo.privmsgAll(Moo.conf.help_channels, title + " modified by " + author + " (" + link + ")");
 			}
 			
 			if (highest != null)

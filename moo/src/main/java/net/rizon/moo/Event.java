@@ -21,7 +21,7 @@ public abstract class Event
 	public void loadDatabases() { }
 	public void saveDatabases() { }
 
-	public void onReload(Config c) { }
+	public void onReload(CommandSource source) { }
 	
 	public void onServerCreate(Server serv) { }
 	public void onServerDestroy(Server serv) { }

@@ -132,24 +132,24 @@ class Server extends Thread
 							String[] parts = attrs.getUrl().split("/");
 							String projectName = parts[4];
 
-							Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + projectName + "\2: \00303" + attrs.getState() + " issue\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
+							Moo.privmsgAll(commits.conf.channels, "\2" + projectName + "\2: \00303" + attrs.getState() + " issue\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
 						}
 						else if (p.getCommits() != null)
 						{
 							if (p.getPusher() != null)
-								Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
 							
 							for (Commit c : p.getCommits())
 							{
 								String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
 								if (c.getMessage().length > 1)
 								{
-									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
+									Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
 									for (final String msg : c.getMessage())
-										Moo.privmsg(Moo.conf.getString("commits.channel"), msg);
+										Moo.privmsgAll(commits.conf.channels, msg);
 								}
 								else if (c.getMessage().length == 1)
-									Moo.privmsg(Moo.conf.getString("commits.channel"), "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
+									Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
 							}
 						}
 						else

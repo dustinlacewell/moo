@@ -42,7 +42,7 @@ class EventLogging extends Event
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
-		if (Moo.conf.listContains("log_channels", channel) == false)
+		if (!Moo.conf.logChannelsContains(channel))
 			return;
 		
 		try
@@ -95,7 +95,7 @@ class EventLogging extends Event
 		switch (type)
 		{
 			case 'O':
-				chan_list.addAll(Arrays.asList(Moo.conf.getList("oper_channels")));
+				chan_list.addAll(Arrays.asList(Moo.conf.oper_channels));
 				break;
 			default:
 				/* Default is admin_channels, which is handled below. */
@@ -103,7 +103,7 @@ class EventLogging extends Event
 		}
 		
 		/* admin_channels must always know. */
-		chan_list.addAll(Arrays.asList(Moo.conf.getList("admin_channels")));
+		chan_list.addAll(Arrays.asList(Moo.conf.admin_channels));
 		
 		for (final String chan : chan_list)
 			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " " + message);

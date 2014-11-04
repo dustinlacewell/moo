@@ -13,8 +13,8 @@ public class MessageInvite extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (message.length > 1 && message[0].equalsIgnoreCase(Moo.conf.getString("nick")))
-			if (Moo.conf.listContains("channels", message[1]))
+		if (message.length > 1 && message[0].equalsIgnoreCase(Moo.me.getNick()))
+			if (Moo.conf.channelsContains(message[1]))
 				Moo.join(message[1]);
 	}
 }

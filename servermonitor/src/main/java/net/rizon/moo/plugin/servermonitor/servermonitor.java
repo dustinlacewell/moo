@@ -1,11 +1,13 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
+import net.rizon.moo.Logger;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+
+import java.util.Date;
 
 class requester extends Timer
 {
@@ -25,15 +27,19 @@ class requester extends Timer
 
 public class servermonitor extends Plugin
 {
+	protected static final Logger log = Logger.getLogger(servermonitor.class.getName());
+
 	private Command scheck;
 	private CommandServer server;
 	private Command split;
 	private Event e;
 	private Timer r;
+	public static ServerMonitorConfiguration conf;
 	
-	public servermonitor()
+	public servermonitor() throws Exception
 	{
 		super("Server Monitor", "Monitor servers");
+		conf = ServerMonitorConfiguration.load();
 	}
 
 	@Override

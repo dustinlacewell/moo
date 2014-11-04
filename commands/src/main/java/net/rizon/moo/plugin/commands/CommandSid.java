@@ -13,7 +13,7 @@ abstract class commandSidBase extends Command
 	protected commandSidBase(Plugin pkg, final String name, final String desc)
 	{
 		super(pkg, name, desc);
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	private static boolean inUse(final String sid)

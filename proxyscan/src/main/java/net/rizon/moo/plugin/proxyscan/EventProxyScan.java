@@ -1,8 +1,10 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 
 import java.util.logging.Level;
 
@@ -49,19 +51,33 @@ class EventProxyScan extends Event
 		
 		log.log(Level.FINE, "Scanning " + ip);
 		
-		String[] ips = Moo.conf.getList("proxyscan.bindip");
+		String[] ips = proxyscan.conf.bindip;
 		if (ips.length == 0)
 			return;
 		
 		if (curIp >= ips.length)
 			curIp = 0;
-		String source = ips[curIp++]; 
-		
-		String notice = Moo.conf.getString("proxyscan.scan_notice").replace("%bindip%", source);
+		String source = ips[curIp++];
+
+		String notice = proxyscan.conf.scan_notice.replace("%bindip%", source);
 		if (!notice.isEmpty())
 			Moo.notice(nick, notice);
 		
 		proxyscan.cache.addCacheEntry(ip);
 		Connector.connect(source, ip);
+	}
+
+	@Override
+	public void onReload(CommandSource source)
+	{
+		try
+		{
+			proxyscan.conf = ProxyscanConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading proxyscan configuration: " + ex.getMessage());
+			proxyscan.log.log(Level.WARNING, "Unable to reload proxyscan configuration", ex);
+		}
 	}
 }

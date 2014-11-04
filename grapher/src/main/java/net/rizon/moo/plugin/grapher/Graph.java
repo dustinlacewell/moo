@@ -13,8 +13,8 @@ public abstract class Graph extends Timer
 {
 	private static final Logger log = Logger.getLogger(Graph.class.getName());
 	
-	private static File rrd_bin = new File(Moo.conf.getString("rrd_bin")),
-			rrd_graphdir = new File(Moo.conf.getString("rrd_dir"));
+	private static File rrd_bin = new File(grapher.conf.bin),
+			rrd_graphdir = new File(grapher.conf.dir);
 	private static Runtime rt = Runtime.getRuntime();
 
 	private class dataSource

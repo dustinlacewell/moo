@@ -1,54 +1,44 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Config;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblServerConfiguration;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import net.rizon.moo.plugin.dnsbl.conf.RuleConfiguration;
 
 
 class BlacklistManager
 {
 	private Map<String, Blacklist> blacklists = new HashMap<String, Blacklist>();
 
-	public void loadRulesFromConfiguration(Config c)
+	/**
+	 * Loads the list of DNSBL server configuration.
+	 * @param configuration List of server configurations.
+	 */
+	public void load(List<DnsblServerConfiguration> configuration)
 	{
-		String[] hosts = c.getList("dnsbl.servers");
-
 		blacklists.clear();
 
-		for (String host : hosts)
+		for (DnsblServerConfiguration c : configuration)
 		{
-			if (host.isEmpty())
-				// Config artifact: if dnsbl.servers is not set, conf.getList() will return new String[] { "" }.
-				continue;
+			Blacklist b = new Blacklist(c.address);
+			blacklists.put(c.address, b);
 
-			Blacklist b = new Blacklist(host);
-			blacklists.put(host, b);
-
-			String[] rules = c.getList("dnsbl.rules." + host);
-			for (String rawRule : rules)
+			for (RuleConfiguration rule : c.rules)
 			{
-				// Rule format: RESPONSE + ":" + ACTION-NAME
-				String[] ruleParts = rawRule.split(":");
-				if (ruleParts.length != 2)
-				{
-					// Invalid config item, ignore it.
-					dnsbl.log.log(Level.WARNING, "Invalid rule format: " + rawRule);
-					continue;
-				}
-
-				String response = ruleParts[0];
+				String response = rule.reply;
 				if (response.equals(Rule.RESPONSE_ANY))
 					response = null;
 
-				Action action = Action.getByName(ruleParts[1]);
+				Action action = Action.getByName(rule.action);
 				if (action == null)
 				{
 					// Invalid config item, ignore it.
-					dnsbl.log.log(Level.WARNING, "Invalid action '" + ruleParts[1] + "' in rule: " + rawRule);
+					dnsbl.log.log(Level.WARNING, "Invalid action ''{0}'' in rule: {1}", new Object[]{rule.action, rule.toString()});
 					continue;
 				}
 

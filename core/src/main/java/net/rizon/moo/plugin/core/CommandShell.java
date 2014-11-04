@@ -26,7 +26,7 @@ class shellExec extends Thread
 	{
 		try
 		{
-			Process proc = Runtime.getRuntime().exec(this.command, null, new File(Moo.conf.getString("shell_base")));
+			Process proc = Runtime.getRuntime().exec(this.command, null, new File(core.conf.shell.base));
 			BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			for (String line; (line = in.readLine()) != null;)
 			{
@@ -57,7 +57,7 @@ class CommandShell extends Command
 	public CommandShell(Plugin pkg)
 	{
 		super(pkg, "!SHELL", "Execute a shell command");
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	@Override
@@ -65,16 +65,16 @@ class CommandShell extends Command
 	{
 		source.notice("!SHELL <command>");
 		source.notice("!SHELL executes a single shell command from the configured shell base directory.");
-		source.notice("This command is currently " + (Moo.conf.getBool("enable_shell") ? "enabled" : "disabled") + ".");
+		source.notice("This command is currently " + (core.conf.shell.enabled ? "enabled" : "disabled") + ".");
 	}
 
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		if (Moo.conf.getBool("enable_shell") == false || params.length == 1)
+		if (!core.conf.shell.enabled || params.length == 1)
 			return;
 		
-		File base = new File(Moo.conf.getString("shell_base"));
+		File base = new File(core.conf.shell.base);
 		if (base.exists() == false || base.isDirectory() == false)
 		{
 			source.reply("Shell base dir is set to an invalid path");

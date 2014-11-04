@@ -10,7 +10,7 @@ class CommandStatus extends Command
 {
 	public CommandStatus(Plugin pkg)
 	{
-		super(pkg, "!STATUS", "View " + Moo.conf.getString("nick") + "'s status");
+		super(pkg, "!STATUS", "View " + Moo.conf.general.nick + "'s status");
 	}
 	
 	private String convertBytes(long bb)
@@ -56,14 +56,14 @@ class CommandStatus extends Command
 	public void onHelp(CommandSource source)
 	{
 		source.notice("Syntax: !STATUS");
-		source.notice("!STATUS prints misc info on " + Moo.conf.getString("nick") + ".");
-		source.notice("This includes the version, the date when " + Moo.conf.getString("nick") + " was started,");
+		source.notice("!STATUS prints misc info on " + Moo.conf.general.nick + ".");
+		source.notice("This includes the version, the date when " + Moo.conf.general.nick + " was started,");
 		source.notice("the amount of currently running threads and memory usage.");
 	}
 
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		source.reply("[STATUS] " + Moo.conf.getString("nick") + " version " + Moo.conf.getString("version") + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		source.reply("[STATUS] " + Moo.conf.general.nick + " version " + Moo.conf.version + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

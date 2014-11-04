@@ -131,7 +131,7 @@ class message391 extends Message
 			{
 				if (time_is_very_off)
 				{
-					for (String c : Moo.conf.getList("admin_channels"))
+					for (String c : Moo.conf.admin_channels)
 						Moo.privmsg(c, buf);
 				}
 			}
@@ -178,8 +178,8 @@ class CommandTime extends Command
 	{
 		super(pkg, "!TIME", "View server times");
 		
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 		
 		this.check_times_timer = new checkTimesTimer();
 		this.check_times_timer.start();

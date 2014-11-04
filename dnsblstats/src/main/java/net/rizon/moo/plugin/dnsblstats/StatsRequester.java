@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.dnsblstats;
 
+import net.rizon.moo.Moo;
+import net.rizon.moo.Server;
+import net.rizon.moo.Timer;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
 class StatsRequester extends Timer
 {
@@ -95,8 +95,7 @@ class StatsRequester extends Timer
 		}
 			
 		if (!dnsbl_message.isEmpty() && !first_run)
-			for (final String chan : Moo.conf.getList("oper_channels"))
-				Moo.privmsg(chan, dnsbl_message);
+			Moo.privmsgAll(Moo.conf.oper_channels, dnsbl_message);
 
 		first_run = false;
 		check_requested = false;

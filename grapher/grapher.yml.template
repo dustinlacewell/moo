@@ -1,0 +1,2 @@
+bin: /usr/bin/rrdtool
+dir: /home/adam/rizon/moo/graphs

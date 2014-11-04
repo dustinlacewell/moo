@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.watch;
 
+import net.rizon.moo.Event;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
-
-import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 
 class EventWatch extends Event
 {
@@ -29,14 +29,14 @@ class EventWatch extends Event
 			while (rs.next())
 			{
 				WatchEntry we = new WatchEntry();
-				
+
 				we.nick = rs.getString("nick");
 				we.creator = rs.getString("creator");
 				we.reason = rs.getString("reason");
 				we.created = new Date(rs.getDate("created").getTime());
 				we.expires = new Date(rs.getDate("expires").getTime());
 				we.registered = WatchEntry.registeredState.valueOf(rs.getString("registered"));
-				
+
 				watch.watches.add(we);
 			}
 		}
@@ -90,7 +90,7 @@ class EventWatch extends Event
 
 		WatchEntry we = new WatchEntry();
 		we.nick = nick;
-		we.creator = Moo.conf.getString("nick");
+		we.creator = Moo.conf.general.nick;
 		// Do not move IP from the end of the reason
 		we.reason = "Suspected open proxy (" + reason + ") on " + ip;
 		we.created = new Date();
@@ -98,9 +98,8 @@ class EventWatch extends Event
 		we.registered = WatchEntry.registeredState.RS_UNKNOWN;
 			
 		watch.watches.add(we);
-		
-		for (String s : Moo.conf.getList("spam_channels"))
-			Moo.privmsg(s, "Added watch for " + nick + " due to hitting the OPM.");
+
+		Moo.privmsgAll(Moo.conf.spam_channels, "Added watch for " + nick + " due to hitting the OPM.");
 	}
 	
 	@Override
@@ -113,9 +112,8 @@ class EventWatch extends Event
 			// NOTE: This relies on the fact that the IP comes at the end of the reason
 			if (!e.reason.startsWith("Suspected open proxy") || !e.reason.endsWith(ip))
 				continue;
-			
-			for (String s : Moo.conf.getList("spam_channels"))
-				Moo.privmsg(s, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
+
+			Moo.privmsgAll(Moo.conf.spam_channels, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
 			
 			it.remove();
 		}

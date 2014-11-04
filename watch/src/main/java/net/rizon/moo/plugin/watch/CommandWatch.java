@@ -15,9 +15,9 @@ class CommandWatch extends Command
 	{
 		super(pkg, "!WATCH", "View or modify the watch list");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.staff_channels);
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ class CommandWatch extends Command
 				}
 			}
 		}
-		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.listContains("admin_channels", source.getTargetName()) || Moo.conf.listContains("oper_channels", source.getTargetName())))
+		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.adminChannelsContains(source.getTargetName()) || Moo.conf.operChannelsContains(source.getTargetName())))
 		{
 			WatchEntry we = null;
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)

@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.protocol.ProtocolPlugin;
 
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 class databaseTimer extends Timer
 {
@@ -50,7 +50,7 @@ public class Moo
 		
 		try
 		{
-			conf = new Config();
+			conf = Config.load();
 		}
 		catch (Exception ex)
 		{
@@ -60,8 +60,8 @@ public class Moo
 		
 		try
 		{
-			if (Moo.conf.getString("database").isEmpty() == false)
-				db = new Database();
+			if (conf.database != null)
+				db = new Database(conf.database);
 		}
 		catch (ClassNotFoundException ex)
 		{
@@ -78,18 +78,29 @@ public class Moo
 		
 		try
 		{
-			Moo.protocol = (ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.getString("protocol"));
-			
-			for (final String pkg : conf.getList("packages"))
-				Plugin.loadPlugin(pkg);
+			Moo.protocol = (ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.general.protocol.getName());
 		}
 		catch (Throwable ex)
 		{
-			log.log(Level.SEVERE, "Error loading resources", ex);
+			log.log(Level.SEVERE, "Error loading protocol", ex);
 			System.exit(-1);
 		}
 
-		log.log(Level.INFO, "moo v" + Version.getFullVersion() + " starting up");
+		for (String pkg : conf.plugins)
+		{
+			log.log(Level.INFO, "Loading plugin: {0}", pkg);
+			try
+			{
+				Plugin.loadPlugin(pkg);
+			}
+			catch (Throwable ex)
+			{
+				log.log(Level.SEVERE, "Error loading plugin " + pkg, ex);
+				System.exit(-1);
+			}
+		}
+
+		log.log(Level.INFO, "moo v{0} starting up", Version.getFullVersion());
 
 		for (Event e : Event.getEvents())
 			e.initDatabases();
@@ -106,21 +117,21 @@ public class Moo
 
 			try
 			{
-				if (Moo.conf.getBool("ssl"))
+				if (conf.general.ssl)
 					sock = Socket.createSSL();
 				else
 					sock = Socket.create();
+
+				if (conf.general.host != null)
+					sock.getSocket().bind(new InetSocketAddress(conf.general.host, 0));
 				
-				if (conf.getString("host").isEmpty() == false)
-					sock.getSocket().bind(new InetSocketAddress(conf.getString("host"), 0));
+				sock.connect(conf.general.server, conf.general.port);
 				
-				sock.connect(conf.getString("server"), conf.getInt("port"));
+				if (conf.general.server_pass != null)
+					sock.write("PASS :" + conf.general.server_pass);
 				
-				if (conf.getString("server_pass").isEmpty() == false)
-					sock.write("PASS :" + conf.getString("server_pass"));
-				
-				sock.write("USER " + conf.getString("ident") + " . . :" + conf.getString("realname"));
-				sock.write("NICK :" + conf.getString("nick"));
+				sock.write("USER " + conf.general.ident + " . . :" + conf.general.realname);
+				sock.write("NICK :" + conf.general.nick);
 
 				sock.write("PROTOCTL UHNAMES NAMESX");
 				
@@ -325,6 +336,17 @@ public class Moo
 			target = target.substring(0, ex);
 		Moo.sock.write("PRIVMSG " + target + " :" + buffer);
 	}
+
+	/**
+	 * Sends the same message to all targets.
+	 * @param targets Array of targets.
+	 * @param buffer Message to send.
+	 */
+	public static void privmsgAll(final String[] targets, final String buffer)
+	{
+		for (String s : targets)
+			privmsg(s, buffer);
+	}
 	
 	public static void notice(String target, final String buffer)
 	{
@@ -336,7 +358,7 @@ public class Moo
 	
 	public static void reply(String source, String target, final String buffer)
 	{
-		if (target.equalsIgnoreCase(Moo.conf.getString("nick")))
+		if (target.equalsIgnoreCase(Moo.conf.general.nick))
 			notice(source, buffer);
 		else
 			privmsg(target, buffer);

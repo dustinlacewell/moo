@@ -1,12 +1,15 @@
 package net.rizon.moo.plugin.antiidle;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Timer;
+import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Level;
 
 class eventAntiIdle extends Event
 {
@@ -33,7 +36,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onJoin(final String source, final String channel) 
 	{
-		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(source))
+		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
 		
 		AntiIdleEntry ai = new AntiIdleEntry(source);
@@ -46,7 +49,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onPart(final String source, final String channel)
 	{
-		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(source))
+		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
 		
 		AntiIdleEntry.removeTimerFor(source);
@@ -55,7 +58,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onKick(final String source, final String target, final String channel)
 	{
-		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false || Moo.conf.getString("nick").equals(target))
+		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
 		
 		AntiIdleEntry.removeTimerFor(target);
@@ -64,13 +67,13 @@ class eventAntiIdle extends Event
 	@Override
 	public void onMode(final String source, final String channel, final String modes)
 	{
-		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false)
+		if (!antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
-		
+
 		for (final String s : modes.split(" "))
 		{
 			AntiIdleEntry.removeTimerFor(s);
-			
+
 			for (Iterator<antiIdleVoicer> it = toBeVoiced.iterator(); it.hasNext();)
 			{
 				antiIdleVoicer av = it.next();
@@ -87,7 +90,7 @@ class eventAntiIdle extends Event
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
-		if (Moo.conf.getString("antiidle.channel").equalsIgnoreCase(channel) == false)
+		if (!antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
 		
 		AntiIdleEntry.removeTimerFor(source);
@@ -103,5 +106,23 @@ class eventAntiIdle extends Event
 	public void onQuit(final String source, final String reason)
 	{
 		AntiIdleEntry.removeTimerFor(source);
+	}
+
+	/**
+	 * Reloads the Configuration of antiidle.
+	 * @param source Origin of the target that the !RELOAD command originated from.
+	 */
+	@Override
+	public void onReload(CommandSource source)
+	{
+		try
+		{
+			antiidle.conf = AntiIdleConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading antiidle configuration: " + ex.getMessage());
+			antiidle.log.log(Level.WARNING, "Unable to reload antiidle configuration", ex);
+		}
 	}
 }

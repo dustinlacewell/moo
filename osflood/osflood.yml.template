@@ -1,0 +1,4 @@
+# Amount of minutes for X numbers of failed OperServ (non-oper) messages in X minutes to akill
+time: 30
+# Amount of failed OperServ (non-oper) messages in X minutes to akill
+num: 10

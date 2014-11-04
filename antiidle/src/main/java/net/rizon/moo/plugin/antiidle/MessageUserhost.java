@@ -23,7 +23,7 @@ class MessageUserhost extends Message
 		if (message[1].charAt(eq - 1) == '*')
 		{
 			AntiIdleEntry.removeTimerFor(message[1].substring(0, eq - 1));
-			Moo.mode(Moo.conf.getString("antiidle.channel"), "+v " + message[1].substring(0, eq - 1));
+			Moo.mode(antiidle.conf.channel, "+v " + message[1].substring(0, eq - 1));
 		}
 	}
 }

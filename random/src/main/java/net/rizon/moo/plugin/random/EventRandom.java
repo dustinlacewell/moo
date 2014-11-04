@@ -46,8 +46,7 @@ class EventRandom extends Event
 	public void onAkillDel(final String setter, final String ip, final String reason)
 	{
 		if (random.remove(ip))
-			for (String s : Moo.conf.getList("flood_channels"))
-				Moo.privmsg(s, "Removed IP " + ip + " from akill history.");
+			Moo.privmsgAll(Moo.conf.flood_channels, "Removed IP " + ip + " from akill history.");
 	}
 
 	@Override

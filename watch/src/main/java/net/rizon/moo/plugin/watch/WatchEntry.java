@@ -39,7 +39,7 @@ class WatchEntry
 		}
 		else if (this.registered == registeredState.RS_REGISTERED && this.warned == false)
 		{
-			for (String chan : Moo.conf.getList("spam_channels"))
+			for (String chan : Moo.conf.spam_channels)
 				Moo.privmsg(chan, "PROXY: " + this.nick + " was detected on an open proxy on " + this.created + ", which was " + Moo.difference(new Date(), this.created) + " ago.");
 			this.warned = true;
 		}

@@ -1,0 +1,15 @@
+domain: rizon.net
+check:
+- na.iso.rizon.net
+- eu.iso.rizon.net
+- us.iso.rizon.net
+- ca.iso.rizon.net
+- nl.iso.rizon.net
+- fr.iso.rizon.net
+- de.iso.rizon.net
+
+reconnect: true
+messages: true
+port: 27888
+
+split_emails: [adam@rizon.net]

@@ -13,10 +13,10 @@ class CommandHost extends Command
 	public CommandHost(Plugin pkg)
 	{
 		super(pkg, "!HOST", "Resolve a hostname");
-		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+
+		this.requiresChannel(Moo.conf.staff_channels);
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 
 	@Override

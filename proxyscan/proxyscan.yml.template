@@ -1,0 +1,26 @@
+# IP and port moo listens on for incoming proxy connections
+server:
+  ip: 192.168.1.2
+  port: 8888
+
+# IP and port the proxy scanner attempts to connect to
+connect:
+  ip: 192.168.1.2
+  port: 8888
+
+# IP and port for the proxyscan to bind to when connecting to incoming client's hosts
+bindip:
+- 192.168.1.7
+- 192.168.1.2
+
+# Path to the proxyscan binary
+path: /home/rizon/proxyscan/proxyscan
+arguments: "--bindip=%bindip% --targetip=%destip%"
+check_string: rizon-proxy-scan
+
+# Channel to output proxy hits to
+channels: ["#kline-spam"]
+
+ban_message: "Using or hosting open proxies is not permitted, detected %t/%p."
+py_opers: false
+scan_notice: "For network safety, your client is being scanned for open proxies by scanner.rizon.net (%bindip%). This scan will not harm your computer."

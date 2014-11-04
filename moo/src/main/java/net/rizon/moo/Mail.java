@@ -55,7 +55,7 @@ class mailThread extends Thread
 			proc.getInputStream().close();
 			proc.getErrorStream().close();
 			
-			log.log(Level.FINER, "Successfully sent message to " + this.to);
+			log.log(Level.FINER, "Successfully sent message to {0}", this.to);
 		}
 		catch (IOException ex)
 		{
@@ -68,12 +68,10 @@ public class Mail
 {
 	public static void send(final String to, final String subject, final String message)
 	{
-		String smpath = Moo.conf.getString("sendmail_path");
-		if (smpath.isEmpty() == true)
-			return;
+		String smpath = Moo.conf.mail.path;
 		
 		File sendmail = new File(smpath);
-		if (sendmail.exists() == false || sendmail.isFile() == false)
+		if (sendmail.isFile() == false)
 			return;
 		
 		mailThread t = new mailThread(smpath, to, subject, message);

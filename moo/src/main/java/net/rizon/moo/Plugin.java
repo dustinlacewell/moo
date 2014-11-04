@@ -1,14 +1,13 @@
 package net.rizon.moo;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.util.logging.Level;
 
 public abstract class Plugin
 {
 	private static final Logger log = Logger.getLogger(Plugin.class.getName());
+	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
 	
 	private String name, desc;
 	public String pname;
@@ -19,8 +18,6 @@ public abstract class Plugin
 	{
 		this.name = name;
 		this.desc = desc;
-
-		plugins.add(this);
 	}
 	
 	public void remove()
@@ -57,11 +54,7 @@ public abstract class Plugin
 		if (p != null)
 			return p;
 		
-		ClassLoader cl;
-		if (core)
-			cl = new ClassLoader(base + name);
-		else
-			cl = new ClassLoader(name, base + name);
+		ClassLoader cl = core ? new ClassLoader(base + name) : new ClassLoader(name, base + name);
 		Class<?> c = cl.loadClass(base + name + "." + name);
 		Constructor<?> con = c.getConstructor();
 		try
@@ -73,14 +66,15 @@ public abstract class Plugin
 			//cl.close();
 			throw ex.getCause();
 		}
-		
+
+		plugins.add(p);
 		p.pname = name;
 		p.loader = cl;
 		
 		p.start();
 		return p;
 	}
-	
+
 	public static Plugin loadPlugin(String name) throws Throwable
 	{
 		return loadPlugin("net.rizon.moo.plugin.", name, false);
@@ -90,10 +84,8 @@ public abstract class Plugin
 	{
 		return loadPlugin(base, name, true);
 	}
-	
-	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
-	
-	public static final Plugin[] getPlugins()
+
+	public static Plugin[] getPlugins()
 	{
 		Plugin[] a = new Plugin[plugins.size()];
 		plugins.toArray(a);

@@ -16,15 +16,15 @@ public class Message001 extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (Moo.conf.getString("oper").isEmpty() == false)
-			Moo.sock.write("OPER " + Moo.conf.getString("oper"));
-		if (Moo.conf.getString("nickserv_pass").isEmpty() == false)
-			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.getString("nickserv_pass"));
+		if (Moo.conf.general.oper != null)
+			Moo.sock.write("OPER " + Moo.conf.general.oper.name + " " + Moo.conf.general.oper.pass);
+		if (Moo.conf.general.nickserv != null)
+			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.general.nickserv.pass);
 
-		Moo.me = new User(Moo.conf.getString("nick"));
+		Moo.me = new User(Moo.conf.general.nick);
 		Moo.users.add(Moo.me);
 
-		for (String s : Moo.conf.getList("channels"))
+		for (String s : Moo.conf.channels)
 			Moo.join(s);
 		
 		Moo.sock.write("MAP");

@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.random;
 
+import net.rizon.moo.Moo;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-
-import net.rizon.moo.Moo;
 
 abstract class FloodList
 {
@@ -24,8 +24,7 @@ abstract class FloodList
 				++n.hits;
 				if (n.hits > random.reconnectFloodLimit)
 				{
-					for (String s : Moo.conf.getList("flood_channels"))
-						Moo.privmsg(s, "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
+					Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
 					return;
 				}
 			}
@@ -44,8 +43,7 @@ abstract class FloodList
 		long now = System.currentTimeMillis() / 1000L;
 		if (this.isList == false && now - first <= random.timeforMatches && this.getMatches().size() >= random.matchesForFlood)
 		{
-			for (String s : Moo.conf.getList("flood_channels"))
-				Moo.privmsg(s, "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
+			Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
 				
 			this.isList = true;
 				

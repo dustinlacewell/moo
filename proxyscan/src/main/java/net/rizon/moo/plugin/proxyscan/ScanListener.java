@@ -46,7 +46,7 @@ final class ScanListener extends Thread
 
 				try
 				{
-					s.write((Moo.conf.getString("proxyscan.check_string") + "\r\n").getBytes());
+					s.write((proxyscan.conf.check_string + "\r\n").getBytes());
 					s.flush();
 					log.log(Level.FINE, "Wrote check string.");
 					

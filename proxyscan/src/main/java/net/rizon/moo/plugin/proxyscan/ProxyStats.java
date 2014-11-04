@@ -14,8 +14,8 @@ public class ProxyStats extends Command
 	public ProxyStats(Plugin pkg)
 	{
 		super(pkg, "!PROXYSTATS", "View proxy hit statistics");
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 
 	@Override

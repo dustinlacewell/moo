@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.fun;
 
+import net.rizon.moo.Event;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Timer;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.rizon.moo.Event;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 
 class timedKill extends Timer
 {
@@ -40,23 +40,23 @@ class EventFun extends Event
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
-		if (message.startsWith("\1ACTION pets " + Moo.conf.getString("nick")))
+		if (message.startsWith("\1ACTION pets " + Moo.me.getNick()))
 			Moo.privmsg(channel, "\1ACTION moos\1");
-		else if (message.startsWith("\1ACTION milks " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION milks " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
 			Moo.privmsg(channel, "\1ACTION kicks " + nick + " in the face\1");
 		}
-		else if (message.startsWith("\1ACTION feeds " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION feeds " + Moo.me.getNick()))
 			Moo.privmsg(channel, "\1ACTION eats happily\1");
-		else if (message.startsWith("\1ACTION kicks " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION kicks " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
 			Moo.privmsg(channel, "\1ACTION body slams " + nick + "\1");
 		}
-		else if (message.startsWith("\1ACTION brands " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION brands " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
@@ -66,17 +66,17 @@ class EventFun extends Event
 				Moo.privmsg(channel, "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
 			else
 			{
-				Moo.privmsg(channel, "FEEL THE WRATH OF " + Moo.conf.getString("nick").toUpperCase());
-				Moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + Moo.conf.getString("nick").toUpperCase());
+				Moo.privmsg(channel, "FEEL THE WRATH OF " + Moo.me.getNick().toUpperCase());
+				Moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + Moo.me.getNick().toUpperCase());
 			}
 		}
-		else if (message.startsWith("\1ACTION tips " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION tips " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
 			Moo.privmsg(channel, "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
 		}
-		else if (message.startsWith("\1ACTION slaughters " + Moo.conf.getString("nick")))
+		else if (message.startsWith("\1ACTION slaughters " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());

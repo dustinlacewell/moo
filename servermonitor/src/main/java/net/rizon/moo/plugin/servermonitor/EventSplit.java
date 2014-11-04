@@ -1,18 +1,21 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Mail;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 import net.rizon.moo.Timer;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class textDelay extends Timer
 {
@@ -31,7 +34,8 @@ class textDelay extends Timer
 				buf += " / ";
 			buf += s;
 		}
-		for (String email : Moo.conf.getList("split_email"))
+
+		for (String email : servermonitor.conf.split_emails)
 			Mail.send(email, "Split", buf);
 		
 		EventSplit.texts = null;
@@ -49,14 +53,12 @@ class EventSplit extends Event
 	{
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 		
-		if (Moo.conf.getBool("disable_split_message") == false)
+		if (servermonitor.conf.messages)
 		{
 			if (pypsd)
-				for (final String channel : Moo.conf.getList("dev_channels"))
-					Moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+				Moo.privmsgAll(Moo.conf.dev_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 			else
-				for (final String channel : Moo.conf.getList("split_channels"))
-					Moo.privmsg(channel, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+				Moo.privmsgAll(Moo.conf.split_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 		}
 		if (!pypsd)
 		{
@@ -87,18 +89,13 @@ class EventSplit extends Event
 	{
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 		
-		if (Moo.conf.getBool("disable_split_message") == false)
+		if (servermonitor.conf.messages)
 		{
 			if (pypsd)
-				for (final String channel : Moo.conf.getList("dev_channels"))
-				{
-					final String insult = pypsdMockery[rand.nextInt(pypsdMockery.length)];
-					Moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2. " + insult);
-				}
+				Moo.privmsgAll(Moo.conf.dev_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2. " + pypsdMockery[rand.nextInt(pypsdMockery.length)]);
 			else
 			{
-				for (final String channel : Moo.conf.getList("split_channels"))
-					Moo.privmsg(channel, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
+				Moo.privmsgAll(Moo.conf.split_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
 				for (Server s : Server.getServers())
 				{
 					if (s.isHub() == true && s.getSplit() == null)
@@ -107,8 +104,7 @@ class EventSplit extends Event
 							String cline = it2.next();
 							
 							if (serv.getName().equalsIgnoreCase(cline))
-								for (final String channel : Moo.conf.getList("split_channels"))
-									Moo.privmsg(channel, serv.getName() + " can connect to " + s.getName());
+								Moo.privmsgAll(Moo.conf.split_channels, serv.getName() + " can connect to " + s.getName());
 						}
 				}
 			}
@@ -124,7 +120,7 @@ class EventSplit extends Event
 			texts.messages.add(serv.getName() + " split from " + from.getName());
 		}
 		
-		if (Moo.conf.getBool("disable_split_reconnect") == false && serv.isServices() == false)
+		if (servermonitor.conf.reconnect && !serv.isServices())
 		{
 			Reconnector r = new Reconnector(serv, from);
 			r.start();
@@ -157,6 +153,20 @@ class EventSplit extends Event
 				return;
 			
 			sp.reconnectedBy = m.group(2);
+		}
+	}
+
+	@Override
+	public void onReload(CommandSource source)
+	{
+		try
+		{
+			servermonitor.conf = ServerMonitorConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading servermonitor configuration: " + ex.getMessage());
+			servermonitor.log.log(Level.WARNING, "Unable to reload servermonitor configuration", ex);
 		}
 	}
 }

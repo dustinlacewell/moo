@@ -1,13 +1,16 @@
 package net.rizon.moo.plugin.osflood;
 
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Event;
+import net.rizon.moo.Moo;
+import net.rizon.moo.plugin.osflood.conf.OsfloodConfiguration;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.rizon.moo.Event;
-import net.rizon.moo.Moo;
 
 class EventOSFlood extends Event
 {
@@ -17,7 +20,7 @@ class EventOSFlood extends Event
 	
 	private boolean isExpired(OperServFlood fu)
 	{
-		return fu.start.before(new Date(System.currentTimeMillis() - Moo.conf.getInt("osflood.time") * 60 * 1000));
+		return fu.start.before(new Date(System.currentTimeMillis() - osflood.conf.time * 60 * 1000));
 	}
 	
 	@Override
@@ -60,14 +63,28 @@ class EventOSFlood extends Event
 				fu.frequency++;
 			}
 			
-			if (fu.frequency >= Moo.conf.getInt("osflood.num"))
+			if (fu.frequency >= osflood.conf.num)
 			{
 				Moo.akill(host, "+3d", "Services abuse");
 				osFlooders.remove(host);
 				
-				for (String s : Moo.conf.getList("flood_channels"))
+				for (String s : Moo.conf.flood_channels)
 					Moo.privmsg(s, "[FLOOD] Akilled *@" + host + " for flooding OperServ.");
 			}
+		}
+	}
+
+	@Override
+	public void onReload(CommandSource source)
+	{
+		try
+		{
+			osflood.conf = OsfloodConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading osflood configuration: " + ex.getMessage());
+			osflood.log.log(Level.WARNING, "Unable to reload osflood configuration", ex);
 		}
 	}
 }

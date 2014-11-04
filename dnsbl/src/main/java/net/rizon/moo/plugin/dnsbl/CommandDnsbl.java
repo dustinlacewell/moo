@@ -22,7 +22,7 @@ class CommandDnsbl extends Command
 	public CommandDnsbl(Plugin pkg, BlacklistManager blacklistManager, ResultCache cache)
 	{
 		super(pkg, "!DNSBL", "Manage DNSBL servers");
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.admin_channels);
 		this.blacklists = blacklistManager;
 		this.cache = cache;
 	}

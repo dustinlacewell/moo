@@ -1,5 +1,8 @@
 package net.rizon.moo.plugin.tickets;
 
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -10,9 +13,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 
 class TicketChecker extends Thread
 {
@@ -27,7 +27,7 @@ class TicketChecker extends Thread
 		
 		try
 		{
-			URL url = new URL(Moo.conf.getString("tickets.url"));
+			URL url = new URL(tickets.conf.url);
 			connection = (HttpURLConnection) url.openConnection();
 			
 			connection.setRequestMethod("POST");
@@ -35,7 +35,7 @@ class TicketChecker extends Thread
 			connection.setReadTimeout(15 * 1000);
 			connection.setDoOutput(true);
 			
-			String postData = "username=" + URLEncoder.encode(Moo.conf.getString("tickets.username"), "UTF-8") + "&password=" + URLEncoder.encode(Moo.conf.getString("tickets.password"), "UTF-8");
+			String postData = "username=" + URLEncoder.encode(tickets.conf.username, "UTF-8") + "&password=" + URLEncoder.encode(tickets.conf.password, "UTF-8");
 			
 			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(postData);
@@ -94,8 +94,7 @@ class TicketChecker extends Thread
 					message = "#" + id + ": " + message + " (" + date + ") :: " + type + " :: " + ip + " :: " + contact + " :: http://abuse.rizon.net/" + id;
 					
 					if (!firstRun)
-						for (String s : Moo.conf.getList("kline_channels"))
-							Moo.privmsg(s, message);
+						Moo.privmsgAll(Moo.conf.kline_channels, message);
 					
 					if (t == null)
 					{
@@ -109,8 +108,7 @@ class TicketChecker extends Thread
 			
 			if (!firstRun)
 				if (reminded > 1)
-					for (String s : Moo.conf.getList("kline_channels"))
-						Moo.privmsg(s, "Remaining tickets: " + (reminded - 1));
+					Moo.privmsgAll(Moo.conf.kline_channels, "Remaining tickets: " + (reminded - 1));
 			
 			firstRun = false;
 		}

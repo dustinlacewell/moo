@@ -1,14 +1,16 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Config;
+import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 class EventDnsblCheck extends Event
 {
@@ -90,11 +92,21 @@ class EventDnsblCheck extends Event
 	}
 
 	@Override
-	public void onReload(Config c)
+	public void onReload(CommandSource source)
 	{
-		rules.loadRulesFromConfiguration(c);
-		cache.loadSettingsFromConfiguration(c);
-		cache.clear();
-		DnsblChecker.loadSettingsFromConfiguration(c);
+		try
+		{
+			DnsblConfiguration c = DnsblConfiguration.load();
+			rules.load(c.servers);
+			cache.load(c.cache);
+			cache.clear();
+			DnsblChecker.load(c);
+			dnsbl.conf = c;
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading dnsbl configuration: " + ex.getMessage());
+			dnsbl.log.log(Level.WARNING, "Unable to reload dnsbl configuration", ex);
+		}
 	}
 }

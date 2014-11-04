@@ -1,5 +1,7 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import net.rizon.moo.Logger;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +10,6 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 
 final class ConnectorThread extends Thread
 {
@@ -33,7 +32,7 @@ final class ConnectorThread extends Thread
 
 		try
 		{
-			String args = Moo.conf.getString("proxyscan.path") + " " + Moo.conf.getString("proxyscan.args");
+			String args = proxyscan.conf.path + " " + proxyscan.conf.arguments;
 			Matcher m = vars.matcher(args);
 			while (m.find())
 			{
@@ -45,7 +44,7 @@ final class ConnectorThread extends Thread
 				else if (var.equals("bindip"))
 					replacement = this.source;
 				else
-					replacement = Moo.conf.getString("proxyscan." + var);
+					replacement = "";
 				
 				args = args.replaceAll(m.group(), replacement);
 			}
@@ -110,7 +109,7 @@ public final class Connector
 {
 	public static final void connect(String source, final String ip)
 	{
-		String path = Moo.conf.getString("proxyscan.path");
+		String path = proxyscan.conf.path;
 		if (path.isEmpty() == true)
 			return;
 

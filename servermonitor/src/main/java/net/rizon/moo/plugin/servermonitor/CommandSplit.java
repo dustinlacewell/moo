@@ -34,9 +34,9 @@ class CommandSplit extends Command
 	{
 		super(pkg, "!SPLIT", "Views split servers");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.staff_channels);
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	@Override
@@ -67,7 +67,7 @@ class CommandSplit extends Command
 				{
 					++split;
 					String s_name;
-					if (s.frozen || Moo.conf.getBool("disable_split_reconnect"))
+					if (s.frozen || !servermonitor.conf.reconnect)
 						s_name = Message.COLOR_BRIGHTBLUE + s.getName() + Message.COLOR_END;
 					else
 						s_name = s.getName();
@@ -119,7 +119,7 @@ class CommandSplit extends Command
 			while (ts.size() > count)
 				ts.remove(ts.first());
 			
-			if (ts.size() == 0)
+			if (ts.isEmpty())
 				source.reply("There are no recent splits");
 			else
 			{
@@ -179,14 +179,14 @@ class CommandSplit extends Command
 		}
 		else if (params[1].equalsIgnoreCase("freeze"))
 		{
-			Moo.conf.setBoolean("disable_split_reconnect", true);
+			servermonitor.conf.reconnect = false;
 			for (Server s : Server.getServers())
 				Reconnector.removeReconnectsFor(s);
 			source.reply("[SPLIT] Disabled all reconnects and all future reconnects");
 		}
 		else if (params[1].equalsIgnoreCase("unfreeze"))
 		{
-			Moo.conf.setBoolean("disable_split_reconnect", false);
+			servermonitor.conf.reconnect = true;
 			source.reply("[SPLIT] Reenabled reconnects");
 		}
 		else

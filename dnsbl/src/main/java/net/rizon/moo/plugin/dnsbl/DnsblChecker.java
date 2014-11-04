@@ -1,6 +1,5 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Config;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
@@ -14,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 interface DnsblCallback
 {
@@ -35,11 +35,11 @@ class DnsblChecker implements Runnable
 		this.rules = rules;
 	}
 
-	public static void loadSettingsFromConfiguration(Config c)
+	public static void load(DnsblConfiguration c)
 	{
 		try
 		{
-			resolver = new SimpleResolver(c.getString("dnsbl.resolver"));
+			resolver = new SimpleResolver(c.resolver);
 		}
 		catch (UnknownHostException ex)
 		{

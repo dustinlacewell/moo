@@ -16,9 +16,9 @@ class commandServerBase extends Command
 	{
 		super(pkg, command, "Views servers");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.staff_channels);
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	private static boolean isLink(Server s, Server targ)
@@ -224,7 +224,7 @@ class commandServerBase extends Command
 					msg += Message.COLOR_RED;
 					output = true;
 				}
-				else if (s.frozen || Moo.conf.getBool("disable_split_reconnect"))
+				else if (s.frozen || !servermonitor.conf.reconnect)
 				{
 					msg += Message.COLOR_BRIGHTBLUE;
 					output = true;

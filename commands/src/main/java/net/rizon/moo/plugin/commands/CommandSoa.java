@@ -127,9 +127,9 @@ class CommandSoa extends Command
 	{
 		super(pkg, "!SOA", "Check if SOA records for a domain are valid");
 		
-		this.requiresChannel(Moo.conf.getList("staff_channels"));
-		this.requiresChannel(Moo.conf.getList("oper_channels"));
-		this.requiresChannel(Moo.conf.getList("admin_channels"));
+		this.requiresChannel(Moo.conf.staff_channels);
+		this.requiresChannel(Moo.conf.oper_channels);
+		this.requiresChannel(Moo.conf.admin_channels);
 	}
 	
 	@Override

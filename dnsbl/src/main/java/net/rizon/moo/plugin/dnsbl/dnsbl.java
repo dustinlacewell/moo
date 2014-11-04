@@ -1,8 +1,8 @@
 package net.rizon.moo.plugin.dnsbl;
 
 import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 public class dnsbl extends Plugin
 {
@@ -12,10 +12,12 @@ public class dnsbl extends Plugin
 	private BlacklistManager blacklistManager;
 	private ResultCache cache;
 	private EventDnsblCheck event;
+	public static DnsblConfiguration conf;
 
-	public dnsbl()
+	public dnsbl() throws Exception
 	{
 		super("DNSBL", "Monitors connections for DNSBL hits and takes action.");
+		conf = DnsblConfiguration.load();
 	}
 
 	@Override
@@ -26,9 +28,9 @@ public class dnsbl extends Plugin
 		this.command = new CommandDnsbl(this, this.blacklistManager, this.cache);
 		this.event = new EventDnsblCheck(this.blacklistManager, this.cache);
 
-		DnsblChecker.loadSettingsFromConfiguration(Moo.conf);
-		this.cache.loadSettingsFromConfiguration(Moo.conf);
-		this.blacklistManager.loadRulesFromConfiguration(Moo.conf);
+		DnsblChecker.load(conf);
+		this.cache.load(conf.cache);
+		this.blacklistManager.load(conf.servers);
 	}
 
 	@Override

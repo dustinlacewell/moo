@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.dnsbl.actions;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.dnsbl.Blacklist;
+import net.rizon.moo.plugin.dnsbl.dnsbl;
 
 public class ActionAkill extends Action
 {
@@ -13,11 +14,11 @@ public class ActionAkill extends Action
 	@Override
 	public void onHit(Blacklist blacklist, String dnsblResponse, String nick, String ip)
 	{
-		String message = Moo.conf.getString("dnsbl.actions.akill.message")
+		String message = dnsbl.conf.akill.message
 			.replace("%h", ip)
 			.replace("%d", blacklist.getName())
 			.replace("%r", dnsblResponse);
-		Moo.akill(ip, Moo.conf.getString("dnsbl.actions.akill.duration"), message);
+		Moo.akill(ip, dnsbl.conf.akill.duration, message);
 	}
 
 	@Override

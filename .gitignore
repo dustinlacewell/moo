@@ -9,3 +9,6 @@ bin
 /.idea/
 *.iml
 
+*.yml
+moo/nbactions.xml
+moo.properties

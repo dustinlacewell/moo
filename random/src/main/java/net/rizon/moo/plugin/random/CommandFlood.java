@@ -16,7 +16,7 @@ class CommandFlood extends Command
 	public CommandFlood(Plugin pkg)
 	{
 		super(pkg, "!FLOOD", "Manage flood lists");
-		this.requiresChannel(Moo.conf.getList("flood_channels"));
+		this.requiresChannel(Moo.conf.flood_channels);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ class SCheck extends Thread
 	private final String prefix;
 	
 	private static final Random rand = new Random();
-	private static final String getRandom()
+	private static String getRandom()
 	{
 		String buf = "";
 		for (int i = 0; i < 5; ++i)
@@ -95,8 +95,8 @@ class SCheck extends Thread
 				return;
 			}
 
-			s.write("USER " + Moo.conf.getString("ident") + " . . :" + Moo.conf.getString("realname"));
-			s.write("NICK " + Moo.conf.getString("nick") + "-" + getRandom());
+			s.write("USER " + Moo.conf.general.ident + " . . :" + Moo.conf.general.realname);
+			s.write("NICK " + Moo.conf.general.nick + "-" + getRandom());
 			
 			for (String in; (in = s.read()) != null;)
 			{

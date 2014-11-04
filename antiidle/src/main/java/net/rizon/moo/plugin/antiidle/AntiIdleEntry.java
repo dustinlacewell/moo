@@ -1,12 +1,12 @@
 package net.rizon.moo.plugin.antiidle;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.logging.Level;
-
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Timer;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 class AntiIdleEntry extends Timer
 {
@@ -17,7 +17,7 @@ class AntiIdleEntry extends Timer
 	
 	public AntiIdleEntry(final String mask)
 	{
-		super(Moo.conf.getInt("antiidle.time") * 60, false);
+		super(antiidle.conf.time * 60, false);
 		
 		String nick = mask;
 		int e = mask.indexOf('!');
@@ -35,9 +35,9 @@ class AntiIdleEntry extends Timer
 	@Override
 	public void run(Date now)
 	{
-		if (Moo.conf.getInt("antiidle.bantime") > 0)
+		if (antiidle.conf.bantime > 0)
 			new AntiIdleUnbanner(this.mask).start();
-		Moo.kick(this.nick, Moo.conf.getString("antiidle.channel"), "You may not idle in this channel for more than " + Moo.conf.getString("antiidle.time") + " minutes.");
+		Moo.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
 		
 		entries.remove(this.nick.toLowerCase());
 	}

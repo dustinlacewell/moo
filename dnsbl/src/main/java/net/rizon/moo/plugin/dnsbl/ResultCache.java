@@ -1,6 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Config;
+import net.rizon.moo.plugin.dnsbl.conf.CacheConfiguration;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -40,11 +40,14 @@ class ResultCache
 
 	private Map<String, Entry> entries = new HashMap<String, Entry>();
 
-	public void loadSettingsFromConfiguration(Config c)
+	/**
+	 * Loads the configuration for the ResultCache.
+	 * @param c Configuration settings to load.
+	 */
+	public void load(CacheConfiguration c)
 	{
-		int lifetime = c.getInt("dnsbl.cache.lifetime");
-		if (lifetime > 0)
-			this.entryLifetime = lifetime;
+		if (c.lifetime > 0)
+			this.entryLifetime = c.lifetime;
 	}
 
 	public void addEntry(String ip, List<DnsblCheckResult> results)

@@ -1,0 +1,13 @@
+vote:
+ -
+  channel: "#kline"
+  email: kline@rizon.net
+ -
+  channel: "#o"
+  email: o@rizon.net
+ -
+  channel: "#r"
+  email: routing.admins@rizon.net
+ -
+  channel: "#x"
+  email: eb@rizon.net
