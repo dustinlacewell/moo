@@ -101,8 +101,12 @@ class SCheck extends Thread
 			for (String in; (in = s.read()) != null;)
 			{
 				String[] token = in.split(" ");
-				
-				if (token.length > 11 && token[1].equals("251"))
+
+				if (token.length >= 2 && token[0].equals("PING"))
+				{
+					s.write("PONG " + token[1]);
+				}				
+				else if (token.length > 11 && token[1].equals("251"))
 				{
 					this.servers = token[11];
 				}
