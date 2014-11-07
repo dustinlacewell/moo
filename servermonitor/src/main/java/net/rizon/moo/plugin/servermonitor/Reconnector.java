@@ -107,7 +107,7 @@ class Reconnector extends Timer
 			return;
 		}
 		
-		if (servermonitor.conf.reconnect)
+		if (!servermonitor.conf.reconnect)
 		{
 			Moo.privmsgAll(Moo.conf.split_channels, "Disabling reconnect for frozen server " + s.getName());
 			
