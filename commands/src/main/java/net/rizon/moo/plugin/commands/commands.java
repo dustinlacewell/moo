@@ -3,6 +3,7 @@ package net.rizon.moo.plugin.commands;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Protocol;
 
 public class commands extends Plugin
 {
@@ -19,7 +20,7 @@ public class commands extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		if (Moo.conf.general.protocol.equals("plexus"))
+		if (Moo.conf.general.protocol == Protocol.PLEXUS)
 		{
 			climit = new CommandClimit(this);
 			map = new CommandMap(this);
@@ -30,7 +31,7 @@ public class commands extends Plugin
 		soa = new CommandSoa(this);
 		time = new CommandTime(this);
 		uptime = new CommandUptime(this);
-		if (Moo.conf.general.protocol.equals("plexus"))
+		if (Moo.conf.general.protocol == Protocol.PLEXUS)
 		{
 			version = new CommandVersions(this);
 			why = new CommandWhy(this);
