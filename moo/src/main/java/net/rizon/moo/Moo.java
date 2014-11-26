@@ -88,7 +88,7 @@ public class Moo
 
 		for (String pkg : conf.plugins)
 		{
-			log.log(Level.INFO, "Loading plugin: {0}", pkg);
+			log.log(Level.INFO, "Loading plugin: " + pkg);
 			try
 			{
 				Plugin.loadPlugin(pkg);
@@ -100,7 +100,7 @@ public class Moo
 			}
 		}
 
-		log.log(Level.INFO, "moo v{0} starting up", Version.getFullVersion());
+		log.log(Level.INFO, "moo v" + Version.getFullVersion() + " starting up");
 
 		for (Event e : Event.getEvents())
 			e.initDatabases();
