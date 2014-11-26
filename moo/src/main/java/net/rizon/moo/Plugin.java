@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public abstract class Plugin
 {
-	private static final Logger log = Logger.getLogger(Plugin.class.getName());
+	/*private static final Logger log = Logger.getLogger(Plugin.class.getName());*/
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
 
 	private String name, desc;

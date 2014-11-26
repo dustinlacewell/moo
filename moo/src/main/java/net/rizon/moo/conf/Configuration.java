@@ -23,6 +23,7 @@ public abstract class Configuration implements Validatable
 		try
 		{
 			io = new FileInputStream(file);
+			@SuppressWarnings("unchecked")
 			T conf = (T) yaml.load(io);
 			conf.validate();
 			return conf;

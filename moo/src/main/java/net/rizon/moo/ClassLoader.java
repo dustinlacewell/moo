@@ -9,15 +9,12 @@ import java.util.logging.Level;
 public final class ClassLoader extends URLClassLoader
 {
 	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
-	private String plugin;
 
 	public ClassLoader(String plugin, String classname)
 	{
 		super(new URL[0]);
 
 		File jar = null;
-
-		this.plugin = plugin;
 
 		if (plugin != null)
 		{

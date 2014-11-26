@@ -87,9 +87,7 @@ class message219_s extends Message
 
 class CommandSlackers extends Command
 {
-	@SuppressWarnings("unused")
 	private static message249 msg_249 = new message249();
-	@SuppressWarnings("unused")
 	private static message219_s msg_219 = new message219_s();
 
 	public static LinkedList<String> opers = new LinkedList<String>();

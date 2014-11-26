@@ -1,5 +1,7 @@
 package net.rizon.moo.plugin.core;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
@@ -41,6 +43,7 @@ class CommandReload extends Command
 		catch (Exception ex)
 		{
 			source.reply("Error reloading configuration: " + ex.getMessage());
+			log.log(Level.WARNING, "Error reloading configuration", ex);
 		}
 	}
 }

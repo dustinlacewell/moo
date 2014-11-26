@@ -44,7 +44,7 @@ public class Membership
 		return !status.isEmpty();
 	}
 
-	private boolean haStatus(ChannelUserStatus s)
+	public boolean haStatus(ChannelUserStatus s)
 	{
 		return status.contains(s);
 	}
