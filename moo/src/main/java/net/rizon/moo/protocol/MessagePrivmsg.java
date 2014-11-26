@@ -1,10 +1,10 @@
 package net.rizon.moo.protocol;
 
+import java.util.Date;
+
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-
-import java.util.Date;
 
 public class MessagePrivmsg extends Message
 {

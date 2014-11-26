@@ -1,5 +1,8 @@
 package net.rizon.moo.plugin.vote;
 
+import java.util.Collection;
+import java.util.Date;
+
 import net.rizon.moo.Channel;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
@@ -8,9 +11,6 @@ import net.rizon.moo.Membership;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.User;
-
-import java.util.Collection;
-import java.util.Date;
 
 class commandVoteBase extends Command
 {

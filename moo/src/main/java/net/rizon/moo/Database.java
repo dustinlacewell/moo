@@ -1,13 +1,13 @@
 package net.rizon.moo;
 
-import net.rizon.moo.conf.DatabaseConfiguration;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
+
+import net.rizon.moo.conf.DatabaseConfiguration;
 
 public class Database
 {

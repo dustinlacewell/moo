@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.plugin.dnsbl.actions.Action;
-
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
-import java.net.InetAddress;
+
+import net.rizon.moo.plugin.dnsbl.actions.Action;
 
 class DnsblCheckResult
 {

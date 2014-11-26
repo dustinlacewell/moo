@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.dnsbl.conf;
 
+import java.util.List;
+
 import net.rizon.moo.conf.Configuration;
 import net.rizon.moo.conf.ConfigurationException;
 import net.rizon.moo.conf.Validator;
-
-import java.util.List;
 
 public class DnsblConfiguration extends Configuration
 {

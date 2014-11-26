@@ -1,8 +1,5 @@
 package net.rizon.moo.plugin.tickets;
 
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -13,6 +10,9 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 
 class TicketChecker extends Thread
 {

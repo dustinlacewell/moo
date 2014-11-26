@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.watch;
 
-import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
+
+import net.rizon.moo.Event;
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 
 class EventWatch extends Event
 {

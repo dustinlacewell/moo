@@ -1,7 +1,5 @@
 package net.rizon.moo.plugin.proxyscan;
 
-import net.rizon.moo.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +8,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rizon.moo.Logger;
 
 final class ConnectorThread extends Thread
 {

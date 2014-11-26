@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.core;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
 
 class shellExec extends Thread
 {

@@ -1,5 +1,7 @@
 package net.rizon.moo.protocol;
 
+import java.util.Arrays;
+
 import net.rizon.moo.Channel;
 import net.rizon.moo.ChannelUserStatus;
 import net.rizon.moo.Event;
@@ -7,8 +9,6 @@ import net.rizon.moo.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
-
-import java.util.Arrays;
 
 public class MessageMode extends Message
 {

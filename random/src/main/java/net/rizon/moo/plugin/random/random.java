@@ -1,17 +1,17 @@
 package net.rizon.moo.plugin.random;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 class deadListChecker extends Timer
 {

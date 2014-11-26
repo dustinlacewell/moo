@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class ProxyStats extends Command
 {

@@ -1,9 +1,9 @@
 package net.rizon.moo.plugin.commits.api.gitlab;
 
-import net.rizon.moo.plugin.commits.Push;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import net.rizon.moo.plugin.commits.Push;
 
 public class GitLab implements Push
 {

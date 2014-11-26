@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.watch;
 
+import java.util.Date;
+import java.util.Iterator;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.logging.logging;
-
-import java.util.Date;
-import java.util.Iterator;
 
 class CommandWatch extends Command
 {

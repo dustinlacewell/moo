@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.random;
 
-import net.rizon.moo.Moo;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import net.rizon.moo.Moo;
 
 abstract class FloodList
 {

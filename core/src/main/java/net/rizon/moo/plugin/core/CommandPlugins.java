@@ -1,12 +1,12 @@
 package net.rizon.moo.plugin.core;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-
-import java.util.logging.Level;
 
 class CommandPlugins extends Command
 {

@@ -1,5 +1,7 @@
 package net.rizon.moo.plugin.commands;
 
+import java.util.HashSet;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Logger;
@@ -7,8 +9,6 @@ import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-
-import java.util.HashSet;
 
 class message351 extends Message
 {

@@ -1,9 +1,9 @@
 package net.rizon.moo.protocol;
 
+import java.util.EnumSet;
+
 import net.rizon.moo.ChannelUserStatus;
 import net.rizon.moo.Plugin;
-
-import java.util.EnumSet;
 
 public abstract class ProtocolPlugin extends Plugin
 {

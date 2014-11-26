@@ -1,12 +1,12 @@
 package net.rizon.moo.plugin.core;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 class CommandHost extends Command
 {

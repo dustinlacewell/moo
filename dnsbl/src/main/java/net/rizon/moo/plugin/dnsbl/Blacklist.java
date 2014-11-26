@@ -1,9 +1,9 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.plugin.dnsbl.actions.Action;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.rizon.moo.plugin.dnsbl.actions.Action;
 
 public class Blacklist
 {

@@ -1,15 +1,15 @@
 package net.rizon.moo.plugin.antiidle;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.logging.Level;
 
 class eventAntiIdle extends Event
 {

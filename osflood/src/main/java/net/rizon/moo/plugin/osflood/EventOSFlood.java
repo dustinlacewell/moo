@@ -1,16 +1,16 @@
 package net.rizon.moo.plugin.osflood;
 
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
-import net.rizon.moo.Moo;
-import net.rizon.moo.plugin.osflood.conf.OsfloodConfiguration;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Event;
+import net.rizon.moo.Moo;
+import net.rizon.moo.plugin.osflood.conf.OsfloodConfiguration;
 
 class EventOSFlood extends Event
 {

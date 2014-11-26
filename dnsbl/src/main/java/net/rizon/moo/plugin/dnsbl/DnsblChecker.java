@@ -1,19 +1,20 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.plugin.dnsbl.actions.Action;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.Record;
-import org.xbill.DNS.SimpleResolver;
-import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Type;
-
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
+
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.SimpleResolver;
+import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 interface DnsblCallback
 {

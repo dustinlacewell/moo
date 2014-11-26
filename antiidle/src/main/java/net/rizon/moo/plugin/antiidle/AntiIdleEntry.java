@@ -1,12 +1,12 @@
 package net.rizon.moo.plugin.antiidle;
 
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
+
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Timer;
 
 class AntiIdleEntry extends Timer
 {

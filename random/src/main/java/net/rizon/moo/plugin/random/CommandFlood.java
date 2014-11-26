@@ -1,15 +1,15 @@
 package net.rizon.moo.plugin.random;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
 
 class CommandFlood extends Command
 {

@@ -1,11 +1,11 @@
 package net.rizon.moo.plugin.fun;
 
+import java.util.HashMap;
+import java.util.Random;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
-
-import java.util.HashMap;
-import java.util.Random;
 
 class CommandRizonTime extends Command
 {

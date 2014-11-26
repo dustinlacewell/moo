@@ -1,15 +1,15 @@
 package net.rizon.moo.plugin.tickets;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.util.HashMap;
+
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
-
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.util.HashMap;
 
 public class tickets extends Plugin
 {

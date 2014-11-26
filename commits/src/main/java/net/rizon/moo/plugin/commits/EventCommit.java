@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.commits;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
-
-import java.util.logging.Level;
 
 class EventCommit extends Event
 {

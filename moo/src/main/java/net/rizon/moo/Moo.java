@@ -1,8 +1,5 @@
 package net.rizon.moo;
 
-import net.rizon.moo.conf.Config;
-import net.rizon.moo.protocol.ProtocolPlugin;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
@@ -10,6 +7,9 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.protocol.ProtocolPlugin;
 
 class databaseTimer extends Timer
 {

@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.fun;
 
-import net.rizon.moo.Event;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rizon.moo.Event;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Timer;
 
 class timedKill extends Timer
 {

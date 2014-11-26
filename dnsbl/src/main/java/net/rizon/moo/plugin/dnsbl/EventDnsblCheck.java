@@ -1,16 +1,16 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
-import net.rizon.moo.plugin.dnsbl.actions.Action;
-import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Event;
+import net.rizon.moo.plugin.dnsbl.actions.Action;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 class EventDnsblCheck extends Event
 {

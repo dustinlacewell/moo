@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.wiki;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.wiki.conf.WikiConfiguration;
-
-import java.util.logging.Level;
 
 public class EventWiki extends Event
 {

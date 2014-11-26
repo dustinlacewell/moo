@@ -1,5 +1,9 @@
 package net.rizon.moo.plugin.commands;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import net.rizon.moo.Channel;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
@@ -8,10 +12,6 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.User;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 class message249 extends Message
 {

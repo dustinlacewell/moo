@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.plugin.dnsbl.conf.CacheConfiguration;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.rizon.moo.plugin.dnsbl.conf.CacheConfiguration;
 
 class ResultCache
 {

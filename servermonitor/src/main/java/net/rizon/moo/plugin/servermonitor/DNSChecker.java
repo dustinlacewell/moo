@@ -1,16 +1,17 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Properties;
+
+import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 
 class DNSChecker extends Thread
 {

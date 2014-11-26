@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.tickets;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
-
-import java.util.logging.Level;
 
 public class EventTicket extends Event
 {

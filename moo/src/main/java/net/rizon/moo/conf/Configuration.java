@@ -1,11 +1,11 @@
 package net.rizon.moo.conf;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 public abstract class Configuration implements Validatable
 {

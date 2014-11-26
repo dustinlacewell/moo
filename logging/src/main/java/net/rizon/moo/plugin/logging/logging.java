@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.logging;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class logging extends Plugin
 {

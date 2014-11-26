@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import java.util.Date;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Timer;
-
-import java.util.Date;
 
 class scheckTimer extends Timer
 {

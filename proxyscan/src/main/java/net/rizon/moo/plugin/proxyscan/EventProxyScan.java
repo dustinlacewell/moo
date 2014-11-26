@@ -1,12 +1,12 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
-
-import java.util.logging.Level;
 
 class EventProxyScan extends Event
 {

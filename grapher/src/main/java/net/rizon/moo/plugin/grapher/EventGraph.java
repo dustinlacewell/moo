@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.grapher;
 
 import java.util.logging.Level;
+
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Server;

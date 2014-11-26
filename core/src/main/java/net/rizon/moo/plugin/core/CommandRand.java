@@ -1,10 +1,10 @@
 package net.rizon.moo.plugin.core;
 
+import java.util.Random;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
-
-import java.util.Random;
 
 class CommandRand extends Command
 {

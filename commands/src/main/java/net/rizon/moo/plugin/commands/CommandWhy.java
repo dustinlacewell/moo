@@ -1,14 +1,14 @@
 package net.rizon.moo.plugin.commands;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 class DNSBLChecker extends Thread
 {

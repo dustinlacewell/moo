@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import java.util.Date;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
-
-import java.util.Date;
 
 class requester extends Timer
 {

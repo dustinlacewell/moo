@@ -1,17 +1,18 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Command;
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.plugin.dnsbl.actions.Action;
-import org.xbill.DNS.Record;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import net.rizon.moo.Command;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Plugin;
+import net.rizon.moo.plugin.dnsbl.actions.Action;
+
+import org.xbill.DNS.Record;
 
 
 class CommandDnsbl extends Command

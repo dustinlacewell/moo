@@ -1,11 +1,11 @@
 package net.rizon.moo.plugin.random;
 
+import java.util.Date;
+import java.util.Iterator;
+
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
-
-import java.util.Date;
-import java.util.Iterator;
 
 class EventRandom extends Event
 {

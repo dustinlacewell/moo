@@ -1,15 +1,15 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class proxyscan extends Plugin
 {
