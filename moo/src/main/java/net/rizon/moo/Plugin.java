@@ -47,7 +47,7 @@ public abstract class Plugin
 	public abstract void start() throws Exception;
 	public abstract void stop();
 
-	@SuppressWarnings("resource")
+	//@SuppressWarnings("resource")
 	private static Plugin loadPlugin(String base, String name, boolean core) throws Throwable
 	{
 		Plugin p = findPlugin(name);
