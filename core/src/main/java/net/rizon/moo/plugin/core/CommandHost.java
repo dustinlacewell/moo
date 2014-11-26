@@ -24,7 +24,7 @@ class CommandHost extends Command
 	{
 		if (params.length <= 1)
 			return;
-		
+
 		try
 		{
 			for (InetAddress in : InetAddress.getAllByName(params[1]))

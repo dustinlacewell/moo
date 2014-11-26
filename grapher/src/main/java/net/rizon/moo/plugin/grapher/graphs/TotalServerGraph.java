@@ -12,7 +12,7 @@ public class TotalServerGraph extends Graph
 	public TotalServerGraph()
 	{
 		super("servers", 60);
-		
+
 		this.addDataSource("servers", DataSourceType.DST_GAUGE, 120, 0, 1000);
 		this.setRRA(RoundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
 	}

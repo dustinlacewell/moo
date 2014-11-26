@@ -28,10 +28,10 @@ class message391 extends Message
 			if (l > longest)
 				longest = l;
 		}
-		
+
 		return longest - s.getName().length() + 2;
 	}
-	
+
 	private static long commonTime()
 	{
 		long highest_ts = 0;
@@ -41,20 +41,20 @@ class message391 extends Message
 		{
 			long key = it.next();
 			int i = known_times.get(key);
-			
+
 			if (i > highest_count)
 			{
 				highest_count = i;
 				highest_ts = key;
 			}
 		}
-		
+
 		return highest_ts;
 	}
-	
+
 	private static DateFormat format1 = new SimpleDateFormat("EEEE MMMM dd yyyy -- HH:mm:ss Z");
 	private static DateFormat format2 = new SimpleDateFormat("EEEE MMMM dd yyyy -- HH:mm Z");
-	
+
 	public static HashSet<String> waiting_for = new HashSet<String>();
 	public static HashMap<Long, Integer> known_times = new HashMap<Long, Integer>();
 	public static CommandSource command_source;
@@ -74,10 +74,10 @@ class message391 extends Message
 		Server s = Server.findServerAbsolute(source);
 		if (s == null)
 			return;
-		
+
 		if (waiting_for.remove(s.getName()) == false)
 			return;
-		
+
 		try
 		{
 			String time_buf = msg[2];
@@ -96,15 +96,15 @@ class message391 extends Message
 				st = format2.parse(time_buf);
 			}
 			long them = st.getTime() / 1000L;
-			
+
 			String buf = "[TIME] " + s.getName() + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
 			buf += " ";
-			
+
 			long common_time = commonTime();
 			boolean time_is_very_off = false;
-			
+
 			if (common_time != 0 && common_time != them)
 			{
 				if (Math.abs(common_time - them) < 60)
@@ -118,7 +118,7 @@ class message391 extends Message
 			}
 			else
 				buf += Message.COLOR_BRIGHTGREEN + msg[2] + Message.COLOR_END;
-			
+
 			if (known_times.containsKey(them) == false)
 				known_times.put(them, 1);
 			else
@@ -126,7 +126,7 @@ class message391 extends Message
 				int cur = known_times.get(them);
 				known_times.put(them, cur + 1);
 			}
-			
+
 			if (hourly_check)
 			{
 				if (time_is_very_off)
@@ -151,13 +151,13 @@ class checkTimesTimer extends Timer
 	{
 		super(60 * 15, true);
 	}
-	
+
 	@Override
 	public void run(Date now)
 	{
 		message391.known_times.clear();
 		message391.hourly_check = true;
-		
+
 		for (Server s : Server.getServers())
 		{
 			if (s.isServices())
@@ -177,10 +177,10 @@ class CommandTime extends Command
 	public CommandTime(Plugin pkg)
 	{
 		super(pkg, "!TIME", "View server times");
-		
+
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
-		
+
 		this.check_times_timer = new checkTimesTimer();
 		this.check_times_timer.start();
 	}
@@ -193,7 +193,7 @@ class CommandTime extends Command
 		source.notice("If there are significant differences in time between servers (at least");
 		source.notice("60 seconds), the offset will be shown");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -204,7 +204,7 @@ class CommandTime extends Command
 			Moo.sock.write("TIME " + s.getName());
 			message391.waiting_for.add(s.getName());
 		}
-		
+
 		message391.known_times.clear();
 		message391.hourly_check = false;
 		message391.command_source = source;

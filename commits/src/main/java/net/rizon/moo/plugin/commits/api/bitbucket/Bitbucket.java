@@ -13,13 +13,13 @@ public class Bitbucket implements Push
 		public String name;
 	}
 	private repository repository;
-	
+
 	@Override
 	public String getProjectName()
 	{
 		return this.repository.name;
 	}
-	
+
 	@Override
 	public List<net.rizon.moo.plugin.commits.Commit> getCommits()
 	{

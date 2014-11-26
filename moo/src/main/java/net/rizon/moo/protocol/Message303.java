@@ -9,7 +9,7 @@ import net.rizon.moo.Moo;
 public class Message303 extends Message
 {
 	private static final Logger log = Logger.getLogger(Message303.class.getName());
-	
+
 	public Message303()
 	{
 		super("303");

@@ -23,7 +23,7 @@ class geoChecker extends Timer
 			this.setRepeating(false);
 			return;
 		}
-		
+
 		Moo.sock.write("ISON GeoServ");
 	}
 }
@@ -31,19 +31,19 @@ class geoChecker extends Timer
 public class Message401 extends Message
 {
 	private static final Logger log = Logger.getLogger(Message401.class.getName());
-	
+
 	public Message401()
 	{
 		super("401");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
 		if (message[1].equalsIgnoreCase("GeoServ"))
 		{
 			Moo.akillServ = "OperServ";
-			
+
 			log.log(Level.INFO, "GeoServ has gone away! Changing akillserv to OperServ");
 			new geoChecker().start();
 		}

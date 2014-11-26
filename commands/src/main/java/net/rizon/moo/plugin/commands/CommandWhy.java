@@ -15,28 +15,28 @@ class DNSBLChecker extends Thread
 	private static final String DNSBLs[] = { "rbl.efnetrbl.org", "dnsbl.dronebl.org" };
 
 	private CommandSource source;
-	
+
 	private String ip;
-	
+
 	public DNSBLChecker(CommandSource source, final String ip)
 	{
 		this.source = source;
 		this.ip = ip;
 	}
-	
+
 	@Override
 	public void run()
 	{
 		String octets[] = ip.split("\\.");
 		if (octets.length != 4)
 			return;
-		
+
 		String reverse_ip = octets[3] + "." + octets[2] + "." + octets[1] + "." + octets[0];
-		
+
 		for (final String dnsbl : DNSBLs)
 		{
 			String lookup_addr = reverse_ip + "." + dnsbl;
-			
+
 			try
 			{
 				InetAddress.getAllByName(lookup_addr);
@@ -57,7 +57,7 @@ class message_216 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message) 
+	public void run(String source, String[] message)
 	{
 		if (message[1].equals("k") == false && message[1].equals("K") == false)
 			return;
@@ -109,13 +109,13 @@ class message219_why extends Message
 	{
 		if (CommandWhy.host_ip.isEmpty())
 			return;
-		
+
 		CommandWhy.requested--;
-		
+
 		if (CommandWhy.requested == 0)
 		{
 			CommandWhy.command_source.reply(CommandWhy.host_ip + " (" + CommandWhy.host_host + ") is not banned");
-			
+
 			CommandWhy.host_ip = "";
 			CommandWhy.host_host = "";
 		}
@@ -138,7 +138,7 @@ class CommandWhy extends Command
 	public CommandWhy(Plugin pkg)
 	{
 		super(pkg, "!WHY", "Find why an IP is banned");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
@@ -150,7 +150,7 @@ class CommandWhy extends Command
 		source.notice("Syntax: !WHY <ip/host>");
 		source.notice("Finds out why a certain IP is banned. It is looked for in DNSBLs and k/K/d:lines");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -159,7 +159,7 @@ class CommandWhy extends Command
 			source.reply("Syntax: !WHY <ip/host>");
 			return;
 		}
-		
+
 		try
 		{
 			InetAddress addr = InetAddress.getByName(params[1]);
@@ -171,11 +171,11 @@ class CommandWhy extends Command
 			source.reply("Invalid IP or host");
 			return;
 		}
-		
-		
+
+
 		Thread t = new DNSBLChecker(source, host_ip);
 		t.start();
-		
+
 		requested = 0;
 		for (Server s : Server.getServers())
 			if (s.getSplit() == null && !s.isServices() && !s.isHub())

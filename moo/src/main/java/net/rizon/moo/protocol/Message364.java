@@ -19,10 +19,10 @@ public class Message364 extends Message
 
 		String from = message[1];
 		String to = message[2];
-		
+
 		if (from.equals(to))
 			return;
-		
+
 		Server sfrom = Server.findServerAbsolute(from);
 		if (sfrom == null)
 			sfrom = new Server(from);

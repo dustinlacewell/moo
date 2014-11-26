@@ -24,28 +24,28 @@ class TicketChecker extends Thread
 	public void run()
 	{
 		HttpURLConnection connection = null;
-		
+
 		try
 		{
 			URL url = new URL(tickets.conf.url);
 			connection = (HttpURLConnection) url.openConnection();
-			
+
 			connection.setRequestMethod("POST");
 			connection.setConnectTimeout(15 * 1000);
 			connection.setReadTimeout(15 * 1000);
 			connection.setDoOutput(true);
-			
+
 			String postData = "username=" + URLEncoder.encode(tickets.conf.username, "UTF-8") + "&password=" + URLEncoder.encode(tickets.conf.password, "UTF-8");
-			
+
 			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(postData);
 			writer.flush();
-			
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			
+
 			Date now = new Date();
 			int reminded = 0;
-			
+
 			for (String line; (line = reader.readLine()) != null;)
 			{
 				Matcher m = pattern.matcher(line);
@@ -53,7 +53,7 @@ class TicketChecker extends Thread
 				{
 					String id = m.group(1), type = m.group(2), ip = m.group(3), contact = m.group(4),
 							date = m.group(5), state = m.group(6), lastReplier = m.group(7);
-					
+
 					int ticket;
 					try
 					{
@@ -63,10 +63,10 @@ class TicketChecker extends Thread
 					{
 						continue;
 					}
-					
+
 					String message = null;
 					Ticket t = tickets.tickets.get(ticket);
-					
+
 					if (t == null)
 					{
 						message = "new ticket";
@@ -80,22 +80,22 @@ class TicketChecker extends Thread
 					{
 						if (!state.equals("Pending"))
 							continue;
-						
+
 						if (reminded++ > 0)
 							continue;
-						
+
 						t.nextReminder = new Date(now.getTime() + ((reminder * ++t.reminded) * 60 * 1000));
 						message = "reminder";
 					}
-					
+
 					if (message == null)
 						continue;
-					
+
 					message = "#" + id + ": " + message + " (" + date + ") :: " + type + " :: " + ip + " :: " + contact + " :: http://abuse.rizon.net/" + id;
-					
+
 					if (!firstRun)
 						Moo.privmsgAll(Moo.conf.kline_channels, message);
-					
+
 					if (t == null)
 					{
 						t = new Ticket();
@@ -105,11 +105,11 @@ class TicketChecker extends Thread
 					}
 				}
 			}
-			
+
 			if (!firstRun)
 				if (reminded > 1)
 					Moo.privmsgAll(Moo.conf.kline_channels, "Remaining tickets: " + (reminded - 1));
-			
+
 			firstRun = false;
 		}
 		catch (Exception ex)
@@ -120,10 +120,10 @@ class TicketChecker extends Thread
 		{
 			try { connection.getInputStream().close(); }
 			catch (Exception ex) { }
-			
+
 			try { connection.getOutputStream().close(); }
 			catch (Exception ex) { }
-			
+
 			try { connection.getErrorStream().close(); }
 			catch (Exception ex) { }
 		}

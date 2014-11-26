@@ -30,7 +30,7 @@ public class Config extends Configuration
 	 */
 	public static Config load() throws Exception
 	{
-		return Config.load("moo.yml", Config.class);
+		return Configuration.load("moo.yml", Config.class);
 	}
 
 	/**

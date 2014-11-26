@@ -1,7 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
 import java.net.InetAddress;
-import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.UnknownHostException;
 

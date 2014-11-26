@@ -26,7 +26,7 @@ class message249 extends Message
 		String[] m = message[2].split(" ");
 		if (m.length != 5)
 			return;
-		
+
 		String oper = m[1];
 		CommandSlackers.opers.add(oper);
 	}
@@ -86,12 +86,12 @@ class message219_s extends Message
 }
 
 class CommandSlackers extends Command
-{	
+{
 	@SuppressWarnings("unused")
 	private static message249 msg_249 = new message249();
 	@SuppressWarnings("unused")
 	private static message219_s msg_219 = new message219_s();
-	
+
 	public static LinkedList<String> opers = new LinkedList<String>();
 	public static CommandSource command_source;
 	public static HashSet<String> waiting_on = new HashSet<String>();
@@ -99,7 +99,7 @@ class CommandSlackers extends Command
 	public CommandSlackers(Plugin pkg)
 	{
 		super(pkg, "!SLACKERS", "Find opers online but not in the channel");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
@@ -112,7 +112,7 @@ class CommandSlackers extends Command
 		msg_219.remove();
 		msg_249.remove();
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{

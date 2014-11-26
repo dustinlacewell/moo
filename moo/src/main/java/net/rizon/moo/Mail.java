@@ -12,7 +12,7 @@ class outputWriter extends OutputStreamWriter
 	{
 		super(out);
 	}
-	
+
 	@Override
 	public void write(final String str) throws IOException
 	{
@@ -23,12 +23,12 @@ class outputWriter extends OutputStreamWriter
 class mailThread extends Thread
 {
 	private static final Logger log = Logger.getLogger(mailThread.class.getName());
-	
+
 	private String path;
 	private String to;
 	private String subject;
 	private String message;
-	
+
 	public mailThread(final String path, final String to, final String subject, final String message)
 	{
 		this.path = path;
@@ -36,7 +36,7 @@ class mailThread extends Thread
 		this.subject = subject;
 		this.message = message;
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -44,17 +44,17 @@ class mailThread extends Thread
 		{
 			Process proc = Runtime.getRuntime().exec(this.path + " -t");
 			outputWriter out = new outputWriter(proc.getOutputStream());
-			
+
 			out.write("From: moo@rizon.net");
 			out.write("To: " + this.to);
 			out.write("Subject: " + this.subject);
 			out.write(this.message);
 			out.write(".");
-			
+
 			out.close();
 			proc.getInputStream().close();
 			proc.getErrorStream().close();
-			
+
 			log.log(Level.FINER, "Successfully sent message to {0}", this.to);
 		}
 		catch (IOException ex)
@@ -69,11 +69,11 @@ public class Mail
 	public static void send(final String to, final String subject, final String message)
 	{
 		String smpath = Moo.conf.mail.path;
-		
+
 		File sendmail = new File(smpath);
 		if (sendmail.isFile() == false)
 			return;
-		
+
 		mailThread t = new mailThread(smpath, to, subject, message);
 		t.start();
 	}

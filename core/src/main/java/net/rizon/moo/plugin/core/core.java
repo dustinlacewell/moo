@@ -15,7 +15,7 @@ public class core extends Plugin
 	private CommandHelp help;
 	private Command host, plugins, rand, reload, shell, shutdown, status;
 	private Event e;
-	
+
 	public core() throws Exception
 	{
 		super("Commands", "Core commands");

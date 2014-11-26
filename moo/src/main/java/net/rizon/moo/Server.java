@@ -16,7 +16,7 @@ public class Server
 	private static final Logger log = Logger.getLogger(Server.class.getName());
 	public static long lastSplit = 0;
 	public static int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
-	
+
 	private String name;
 	private Date created;
 	private String desc = "";
@@ -42,9 +42,9 @@ public class Server
 	{
 		this.name = name;
 		servers.push(this);
-		
+
 		log.log(Level.FINE, "Adding server " + this.getName());
-		
+
 		if (Moo.sock != null)
 		{
 			this.requestStats();
@@ -52,24 +52,24 @@ public class Server
 				Moo.sock.write("VERSION " + this.getName());
 			Moo.sock.write("MAP");
 		}
-		
+
 		for (Event e : Event.getEvents())
 			e.onServerCreate(this);
 	}
-	
+
 	public void destroy()
 	{
 		log.log(Level.FINE, "Removing server " + this.getName());
-		
+
 		for (Event e : Event.getEvents())
 			e.onServerDestroy(this);
-		
+
 		try
 		{
 			PreparedStatement statement = Moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
 			statement.setString(1, this.getName());
 			Moo.db.executeUpdate();
-			
+
 			statement = Moo.db.prepare("DELETE FROM splits WHERE `name` = ?");
 			statement.setString(1, this.getName());
 			Moo.db.executeUpdate();
@@ -78,25 +78,25 @@ public class Server
 		{
 			log.log(Level.SEVERE, "Error removing server from database", ex);
 		}
-		
+
 		servers.remove(this);
 	}
-	
+
 	public final String getName()
 	{
 		return this.name;
 	}
-	
+
 	public final Date getCreated()
 	{
 		return this.created;
 	}
-	
+
 	public void setSID(final String s)
 	{
 		this.sid = s;
 	}
-	
+
 	public final String getSID()
 	{
 		return this.sid;
@@ -106,7 +106,7 @@ public class Server
 	{
 		return (this.getSID() != null && this.getSID().endsWith("H")) || this.getName().endsWith(".hub") || this.getName().startsWith("hub.");
 	}
-	
+
 	public final boolean isServices()
 	{
 		String sid = this.getSID();
@@ -120,7 +120,7 @@ public class Server
 
 		if (this.getName().startsWith("services."))
 			return true;
-		
+
 		return false;
 	}
 
@@ -128,19 +128,19 @@ public class Server
 	{
 		return !isServices() && (uplink == null || !uplink.isServices()) && getSplit() == null;
 	}
-	
+
 	public void link(final Server to)
 	{
 		this.links.add(to);
 		last_link = new Date();
 	}
-	
+
 	public void split(Server from)
 	{
 		Date now = new Date();
 		this.links.remove(from);
 		last_split = now;
-		
+
 		Split s = new Split();
 		s.me = this.getName();
 		s.from = from.name;
@@ -170,7 +170,7 @@ public class Server
 				}
 			}
 		}
-		
+
 		try
 		{
 			PreparedStatement statement = Moo.db.prepare("INSERT INTO splits (`name`, `from`, `to`, `when`, `end`, `reconnectedBy`, `recursive`) VALUES(?, ?, ?, ?, ?, ?, ?)");
@@ -187,11 +187,11 @@ public class Server
 		{
 			Database.handleException(ex);
 		}
-		
+
 		lastSplit = System.currentTimeMillis() / 1000L;
 		split = s;
 	}
-	
+
 	public Split getSplit()
 	{
 		if (split != null)
@@ -234,7 +234,7 @@ public class Server
 
 		return null;
 	}
-	
+
 	public Split[] getSplits()
 	{
 		try
@@ -254,7 +254,7 @@ public class Server
 				sp.reconnectedBy = rs.getString("reconnectedBy");
 				splits.add(sp);
 			}
-			
+
 			// Most recent split is at the end
 			Split[] s = new Split[splits.size()];
 			splits.toArray(s);
@@ -266,18 +266,18 @@ public class Server
 			return null;
 		}
 	}
-	
+
 	public void splitDel(final Server to)
 	{
 		Split s = this.getSplit();
 		if (s == null)
 			return;
-		
+
 		this.requestStats();
 
 		s.to = to.getName();
 		s.end = new Date();
-		
+
 		try
 		{
 			PreparedStatement statement = Moo.db.prepare("UPDATE `splits` SET `to` = ?, `end` = ?, `reconnectedBy` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
@@ -293,23 +293,23 @@ public class Server
 		{
 			Database.handleException(ex);
 		}
-		
+
 		split = null;
 	}
-	
+
 	public String getDesc()
 	{
 		return this.desc;
 	}
-	
+
 	public void setDesc(final String d)
 	{
 		this.desc = d;
 	}
-	
+
 	private static LinkedList<Server> servers = new LinkedList<Server>();
 	public static Date last_link = null, last_split = null;
-	
+
 	public static Server findServer(final String name)
 	{
 		for (Iterator<Server> it = servers.iterator(); it.hasNext();)
@@ -320,7 +320,7 @@ public class Server
 		}
 		return null;
 	}
-	
+
 	public static Server findServerAbsolute(final String name)
 	{
 		for (Iterator<Server> it = servers.iterator(); it.hasNext();)
@@ -331,18 +331,18 @@ public class Server
 		}
 		return null;
 	}
-	
+
 	public static final Server[] getServers()
 	{
 		Server[] s = new Server[servers.size()];
 		servers.toArray(s);
 		return s;
 	}
-	
+
 	public static class db extends Event
-	{		
+	{
 		@Override
-		protected void initDatabases() 
+		protected void initDatabases()
 		{
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64), `recursive`);");
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `desc`, `preferred_links`, `frozen`);");
@@ -360,13 +360,13 @@ public class Server
 					String name = rs.getString("name"), desc = rs.getString("desc"), pl = rs.getString("preferred_links");
 					Date created = rs.getDate("created");
 					boolean frozen = rs.getBoolean("frozen");
-					
+
 					Server s = Server.findServerAbsolute(name);
 					if (s == null)
 						s = new Server(name);
 					else
 						s.allowed_clines.clear();
-					
+
 					if (desc != null)
 						s.desc = desc;
 					s.created = created;
@@ -387,8 +387,8 @@ public class Server
 		{
 			try
 			{
-				PreparedStatement statement = Moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)"); 
-				
+				PreparedStatement statement = Moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)");
+
 				for (Server s : Server.getServers())
 				{
 					statement.setString(1, s.getName());
@@ -399,10 +399,10 @@ public class Server
 					links = links.trim();
 					statement.setString(3, links);
 					statement.setBoolean(4, s.frozen);
-					
+
 					Moo.db.executeUpdate();
 				}
-				
+
 			}
 			catch (SQLException ex)
 			{
@@ -410,17 +410,17 @@ public class Server
 			}
 		}
 	}
-	
+
 	public void requestStats()
 	{
 		Moo.sock.write("STATS c " + this.getName());
 		Moo.sock.write("STATS o " + this.getName());
 	}
-	
+
 	public static void init()
 	{
 		new db();
-		
+
 		new Timer(300, true)
 		{
 			@Override

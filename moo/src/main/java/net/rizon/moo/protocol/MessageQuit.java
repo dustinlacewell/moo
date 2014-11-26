@@ -12,7 +12,7 @@ public class MessageQuit extends Message
 	{
 		super("QUIT");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{

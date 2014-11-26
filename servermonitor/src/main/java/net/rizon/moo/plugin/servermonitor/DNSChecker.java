@@ -24,36 +24,36 @@ class DNSChecker extends Thread
 		try
 		{
 			idir = new InitialDirContext(env);
-			
+
 			String what = "NS";
 			String[] what_array = { what };
-			
+
 			Attributes attributes = idir.getAttributes(servermonitor.conf.domain, what_array);
 			Attribute attr = attributes.get(what);
-			
+
 			long serial = -1;
-			
+
 			for (int i = 0; i < attr.size(); ++i)
 			{
 				final String ns = attr.get(i).toString();
-				
+
 				InitialDirContext idir2 = null;
 				try
 				{
 					env.put(Context.PROVIDER_URL, "dns://" + ns);
 					idir2 = new InitialDirContext(env);
-					
+
 					what = "SOA";
 					what_array[0] = what;
-					
+
 					Attributes nameserver_attributes = idir2.getAttributes(servermonitor.conf.domain, what_array);
 					Attribute nameserver_attr = nameserver_attributes.get(what);
-					
+
 					final String soa = nameserver_attr.get(0).toString();
 					final String[] soa_s = soa.split(" ");
-					
+
 					long soa_serial = Long.parseLong(soa_s[2]);
-					
+
 					if (serial == -1)
 						serial = soa_serial;
 					else if (serial != soa_serial)
@@ -89,7 +89,7 @@ class DNSChecker extends Thread
 		{
 			try { idir.close(); } catch (Exception ex) { }
 		}
-		
+
 		for (final String r : servermonitor.conf.check)
 		{
 			try

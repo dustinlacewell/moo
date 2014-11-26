@@ -10,7 +10,7 @@ public class GrapherConfiguration extends Configuration
 
 	public static GrapherConfiguration load() throws Exception
 	{
-		return GrapherConfiguration.load("grapher.yml", GrapherConfiguration.class);
+		return Configuration.load("grapher.yml", GrapherConfiguration.class);
 	}
 
 	@Override

@@ -10,12 +10,12 @@ import net.rizon.moo.plugin.grapher.graphs.ServerUserGraph;
 class EventGraph extends Event
 {
 	private grapher pkg;
-	
+
 	public EventGraph(grapher pkg)
 	{
 		this.pkg = pkg;
 	}
-	
+
 	@Override
 	public void onServerCreate(Server serv)
 	{
@@ -23,9 +23,9 @@ class EventGraph extends Event
 		g.start();
 		this.pkg.serverGraphs.put(serv, g);
 	}
-	
+
 	@Override
-	public void onServerDestroy(Server serv) 
+	public void onServerDestroy(Server serv)
 	{
 		this.pkg.serverGraphs.remove(serv).stop();
 	}

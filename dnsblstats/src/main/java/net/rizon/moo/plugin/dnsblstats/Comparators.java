@@ -27,7 +27,7 @@ class dnsblCountComparator implements Comparator<String>
 {
 	public static dnsblCountComparator cmp = new dnsblCountComparator();
 	public static HashMap<String, Long> counts = null;
-	
+
 	@Override
 	public int compare(String arg0, String arg1)
 	{

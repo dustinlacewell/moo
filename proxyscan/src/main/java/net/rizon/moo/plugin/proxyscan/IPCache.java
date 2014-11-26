@@ -19,7 +19,7 @@ final class IPCache extends Timer
 	 */
 	private final ArrayDeque<CacheEntry> cacheq = new ArrayDeque<CacheEntry>();
 	private final HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
-	
+
 	IPCache()
 	{
 		super(tick, true);
@@ -56,7 +56,7 @@ final class IPCache extends Timer
 	{
 		return this.cache.get(ip) != null;
 	}
-	
+
 	public synchronized boolean hit(String ip)
 	{
 		CacheEntry e = this.cache.get(ip);

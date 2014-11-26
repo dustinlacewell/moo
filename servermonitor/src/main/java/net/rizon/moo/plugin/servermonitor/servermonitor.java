@@ -20,7 +20,7 @@ class requester extends Timer
 	public void run(Date now)
 	{
 		new DNSChecker().start();
-		
+
 		CertChecker.run();
 	}
 }
@@ -35,7 +35,7 @@ public class servermonitor extends Plugin
 	private Event e;
 	private Timer r;
 	public static ServerMonitorConfiguration conf;
-	
+
 	public servermonitor() throws Exception
 	{
 		super("Server Monitor", "Monitor servers");
@@ -48,11 +48,11 @@ public class servermonitor extends Plugin
 		scheck = new CommandScheck(this);
 		server = new CommandServer(this);
 		split = new CommandSplit(this);
-		
+
 		e = new EventSplit();
-		
+
 		r = new requester();
-		
+
 		r.start();
 	}
 
@@ -62,9 +62,9 @@ public class servermonitor extends Plugin
 		scheck.remove();
 		server.remove();
 		split.remove();
-		
+
 		e.remove();
-		
+
 		r.stop();
 	}
 }

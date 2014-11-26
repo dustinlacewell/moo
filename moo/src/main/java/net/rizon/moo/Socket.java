@@ -23,7 +23,7 @@ import javax.net.ssl.X509TrustManager;
 class TrustingSSLSocketFactory extends SSLSocketFactory
 {
 	public static TrustingSSLSocketFactory sslSocketFactory = null;
-	
+
 	static
 	{
 		try
@@ -35,7 +35,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 			Logger.getGlobalLogger().log(ex);
 		}
 	}
-	
+
 	private class TrustingX509TrustManager implements X509TrustManager
 	{
 		@Override
@@ -45,7 +45,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 
 		@Override
 		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException
-		{	
+		{
 		}
 
 		@Override
@@ -54,10 +54,10 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 			return new X509Certificate[0];
 		}
 	}
-	
+
 	private SSLSocketFactory factory;
 	private String[] ciphers;
-	
+
 	public TrustingSSLSocketFactory() throws SSLException
 	{
 		try
@@ -76,7 +76,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 			throw new SSLException("Unable to register a trust manger");
 		}
 	}
-	
+
 	private java.net.Socket prepare(java.net.Socket base)
 	{
 		SSLSocket basessl = (SSLSocket) base;
@@ -101,7 +101,7 @@ class TrustingSSLSocketFactory extends SSLSocketFactory
 	{
 		return this.ciphers;
 	}
-	
+
 	@Override
 	public java.net.Socket createSocket() throws IOException
 	{
@@ -145,7 +145,7 @@ public class Socket
 	private Socket()
 	{
 	}
-	
+
 	public static Socket create()
 	{
 		Socket s = new Socket();
@@ -153,7 +153,7 @@ public class Socket
 		s.sslsock = null;
 		return s;
 	}
-	
+
 	public static Socket createSSL() throws IOException
 	{
 		Socket s = new Socket();
@@ -166,27 +166,27 @@ public class Socket
 	{
 		return out != null && in != null && sock.isConnected();
 	}
-	
+
 	public java.net.Socket getSocket()
 	{
 		return this.sock;
 	}
-	
+
 	public SSLSocket getSSLSocket()
 	{
 		return this.sslsock;
 	}
-	
+
 	public void connect(final String addr, int port) throws IOException
 	{
 		this.connect(addr, port, 0, false);
 	}
-	
+
 	public void connect(final String addr, int port, int timeout) throws IOException
 	{
 		this.connect(addr,port, 0, false);
 	}
-	
+
 	public void connect(final String addr, int port, int timeout, boolean use_v6) throws IOException
 	{
 		InetSocketAddress target = null;
@@ -195,37 +195,37 @@ public class Socket
 			if ((!use_v6 && ia.getAddress().length != 4) ||
 					(use_v6 && ia.getAddress().length != 16))
 				continue;
-			
+
 			target = new InetSocketAddress(ia, port);
 			break;
 		}
-		
+
 		if (target == null)
 			throw new UnknownHostException();
-		
+
 		this.sock.connect(target, timeout);
 		this.out = new PrintWriter(this.sock.getOutputStream(), true);
 		this.in = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
 	}
-	
+
 	public void shutdown()
 	{
 		try { this.out.close(); }
 		catch (Exception ex) { }
-		
+
 		try { this.in.close(); }
 		catch (Exception ex) { }
-		
+
 		try { this.sock.close(); }
 		catch (Exception ex) { }
 	}
-	
+
 	public void write(final String buf)
 	{
 		log.log(Level.FINE, "-> " + buf);
 		this.out.println(buf);
 	}
-	
+
 	public final String read() throws IOException
 	{
 		String in = this.in.readLine();

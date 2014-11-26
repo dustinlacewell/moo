@@ -10,7 +10,7 @@ class MessageNotice extends Message
 	{
 		super("NOTICE");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
@@ -18,11 +18,11 @@ class MessageNotice extends Message
 		{
 			final String msg = message[1].replace("\2", "");
 			String[] msg_params = msg.split(" ");
-			
+
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 			{
 				WatchEntry e = it.next();
-				
+
 				if (e.nick.equalsIgnoreCase(msg_params[0]) && msg.startsWith(e.nick + " is "))
 				{
 					e.registered = WatchEntry.registeredState.RS_REGISTERED;

@@ -15,7 +15,7 @@ class VoteInfo
 	public String channel, info, owner;
 	public Date date = new Date();
 	public boolean closed = false;
-	
+
 	public void insert()
 	{
 		try
@@ -27,7 +27,7 @@ class VoteInfo
 			stmt.setString(4, this.owner);
 			stmt.setDate(5, new java.sql.Date(this.date.getTime()));
 			stmt.setBoolean(6, this.closed);
-			
+
 			Moo.db.executeUpdate();
 		}
 		catch (SQLException ex)
@@ -35,7 +35,7 @@ class VoteInfo
 			Database.handleException(ex);
 		}
 	}
-	
+
 	public void close()
 	{
 		try
@@ -50,7 +50,7 @@ class VoteInfo
 			Database.handleException(ex);
 		}
 	}
-	
+
 	public boolean findCastFor(final String nick)
 	{
 		Cast[] casts = Cast.getCastsFor(this);
@@ -60,7 +60,7 @@ class VoteInfo
 					return true;
 		return false;
 	}
-	
+
 	public static int getMaxFor(final String chan)
 	{
 		try
@@ -72,7 +72,7 @@ class VoteInfo
 			int id = 1;
 			if (rs.next())
 				id = rs.getInt("max") + 1;
-			
+
 			return id;
 		}
 		catch (SQLException ex)
@@ -81,7 +81,7 @@ class VoteInfo
 			return -1;
 		}
 	}
-	
+
 	public static VoteInfo getVote(int id, final String channel)
 	{
 		try
@@ -89,7 +89,7 @@ class VoteInfo
 			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `votes` WHERE `id` = ? AND `channel` = ?");
 			stmt.setInt(1, id);
 			stmt.setString(2, channel);
-			
+
 			ResultSet rs = Moo.db.executeQuery();
 			if (rs.next())
 			{
@@ -107,17 +107,17 @@ class VoteInfo
 		{
 			Database.handleException(ex);
 		}
-		
+
 		return null;
 	}
-	
+
 	public static VoteInfo[] getVotes(final String channel)
 	{
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `votes` WHERE `channel` = ?");
 			stmt.setString(1, channel);
-			
+
 			ResultSet rs = Moo.db.executeQuery();
 			LinkedList<VoteInfo> vis = new LinkedList<VoteInfo>();
 			while (rs.next())
@@ -129,10 +129,10 @@ class VoteInfo
 				vi.owner = rs.getString("owner");
 				vi.date = rs.getDate("date");
 				vi.closed = rs.getBoolean("closed");
-				
+
 				vis.add(vi);
 			}
-			
+
 			VoteInfo[] votes = new VoteInfo[vis.size()];
 			vis.toArray(votes);
 			return votes;
@@ -141,7 +141,7 @@ class VoteInfo
 		{
 			Database.handleException(ex);
 		}
-		
+
 		return null;
 	}
 }

@@ -7,7 +7,7 @@ class CertChecker
 {
 	private static final int sslPort = 6697;
 	private static int lastIdx = -1;
-	
+
 	protected static void run()
 	{
 		Server[] servers = Server.getServers();
@@ -17,9 +17,9 @@ class CertChecker
 		lastIdx += 1;
 		if (lastIdx >= servers.length)
 			lastIdx = 0;
-			
+
 		Server s = servers[lastIdx];
-			
+
 		if (!s.isHub() && !s.isServices())
 		{
 			SCheck sc = new SCheck(s, Moo.conf.moo_log_channels, true, CertChecker.sslPort, true, false);

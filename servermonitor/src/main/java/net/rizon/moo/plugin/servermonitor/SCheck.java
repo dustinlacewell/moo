@@ -28,7 +28,7 @@ class SCheck extends Thread
 	private boolean quiet;
 	private boolean use_v6;
 	private final String prefix;
-	
+
 	private static final Random rand = new Random();
 	private static String getRandom()
 	{
@@ -45,10 +45,10 @@ class SCheck extends Thread
 			while (Character.isLetter(c) == false);
 			buf += c;
 		}
-		
+
 		return buf;
 	}
-	
+
 	private void reply(final String msg)
 	{
 		for (String s : this.targets)
@@ -65,12 +65,12 @@ class SCheck extends Thread
 		this.use_v6 = use_v6;
 		this.prefix = use_v6 ? "[SCHECK6] " : "[SCHECK] ";
 	}
-	
+
 	@Override
 	public void run()
 	{
 		Socket s = null;
-		
+
 		try
 		{
 			if (this.ssl == true)
@@ -84,7 +84,7 @@ class SCheck extends Thread
 				else
 					reply(this.prefix + "Connecting to " + this.server.getName() + "...");
 			}
-			
+
 			try
 			{
 				s.connect(this.server.getName(), this.port, 15000, this.use_v6);
@@ -97,7 +97,7 @@ class SCheck extends Thread
 
 			s.write("USER " + Moo.conf.general.ident + " . . :" + Moo.conf.general.realname);
 			s.write("NICK " + Moo.conf.general.nick + "-" + getRandom());
-			
+
 			for (String in; (in = s.read()) != null;)
 			{
 				String[] token = in.split(" ");
@@ -105,7 +105,7 @@ class SCheck extends Thread
 				if (token.length >= 2 && token[0].equals("PING"))
 				{
 					s.write("PONG " + token[1]);
-				}				
+				}
 				else if (token.length > 11 && token[1].equals("251"))
 				{
 					this.servers = token[11];
@@ -118,16 +118,16 @@ class SCheck extends Thread
 				else if (token.length > 7 && token[1].equals("242"))
 				{
 					final String servername = token[0].substring(1);
-					
+
 					if (this.ssl == true)
 					{
 						Certificate[] certs = s.getSSLSocket().getSession().getPeerCertificates();
 						Certificate cert = certs[0];
-						
+
 						if (cert instanceof X509Certificate)
 						{
 							X509Certificate x509 = (X509Certificate) cert;
-							
+
 							if (this.server.cert == null)
 								this.server.cert = x509;
 							else if (!this.server.cert.equals(x509))
@@ -139,12 +139,12 @@ class SCheck extends Thread
 									reply(this.prefix + "[INFO] SSL certificate for " + this.server.getName() + " has changed");
 								this.server.cert = x509;
 							}
-								
+
 							try
 							{
 								Date now = new Date();
 								x509.checkValidity(now);
-								
+
 								try
 								{
 									Calendar c = Calendar.getInstance();
@@ -165,7 +165,7 @@ class SCheck extends Thread
 							{
 								reply(this.prefix + "[WARNING] " + servername + " has a NOT VALID YET X509 SSL certificate!");
 							}
-								
+
 							final String issuerDn = x509.getIssuerDN().getName();
 							if (this.quiet == false)
 								reply(this.prefix + servername + " has X509 certificate " + issuerDn);
@@ -194,7 +194,7 @@ class SCheck extends Thread
 		{
 			reply(this.prefix + "Unable to connect to " + this.server.getName());
 		}
-		catch (Exception ex) 
+		catch (Exception ex)
 		{
 			reply(this.prefix + "[EXCEPTION] Unable to connect to " + this.server.getName() + ": " + ex);
 			Logger.getGlobalLogger().log(ex);

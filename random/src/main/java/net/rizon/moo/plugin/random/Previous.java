@@ -11,7 +11,7 @@ class Previous extends FloodList
 {
 	private static PreparedStatement stmt;
 	private static Previous self;
-	
+
 	static
 	{
 		try
@@ -24,13 +24,13 @@ class Previous extends FloodList
 			Logger.getGlobalLogger().log(ex);
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "PREVIOUS";
 	}
-	
+
 	protected static FloodList matches(NickData nd)
 	{
 		try

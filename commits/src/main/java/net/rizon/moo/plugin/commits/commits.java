@@ -11,7 +11,7 @@ public class commits extends Plugin
 	private Event e;
 	public static CommitsConfiguration conf;
 	protected static final Logger log = Logger.getLogger(commits.class.getName());
-	
+
 	public commits() throws Exception
 	{
 		super("Commits", "Manages and shows commits made to repositories");
@@ -23,7 +23,7 @@ public class commits extends Plugin
 	{
 		s = new Server(conf.ip, conf.port);
 		s.start();
-		
+
 		e = new EventCommit();
 	}
 

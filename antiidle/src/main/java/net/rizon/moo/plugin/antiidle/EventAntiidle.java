@@ -14,17 +14,17 @@ import java.util.logging.Level;
 class eventAntiIdle extends Event
 {
 	protected static final ArrayList<antiIdleVoicer> toBeVoiced = new ArrayList<antiIdleVoicer>();
-	
+
 	class antiIdleVoicer extends Timer
 	{
 		private final AntiIdleEntry ai;
-	
+
 		private antiIdleVoicer(AntiIdleEntry ai)
 		{
 			super(5, false);
 			this.ai = ai;
 		}
-	
+
 		@Override
 		public void run(Date now)
 		{
@@ -32,26 +32,26 @@ class eventAntiIdle extends Event
 			Moo.sock.write("USERHOST " + ai.nick);
 		}
 	}
-	
+
 	@Override
-	public void onJoin(final String source, final String channel) 
+	public void onJoin(final String source, final String channel)
 	{
 		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
-		
+
 		AntiIdleEntry ai = new AntiIdleEntry(source);
 		antiIdleVoicer av = new antiIdleVoicer(ai);
 		toBeVoiced.add(av);
 		ai.start();
 		av.start();
 	}
-	
+
 	@Override
 	public void onPart(final String source, final String channel)
 	{
 		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
-		
+
 		AntiIdleEntry.removeTimerFor(source);
 	}
 
@@ -60,10 +60,10 @@ class eventAntiIdle extends Event
 	{
 		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
-		
+
 		AntiIdleEntry.removeTimerFor(target);
 	}
-	
+
 	@Override
 	public void onMode(final String source, final String channel, final String modes)
 	{
@@ -86,22 +86,22 @@ class eventAntiIdle extends Event
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPrivmsg(final String source, final String channel, final String message)
 	{
 		if (!antiidle.conf.channel.equalsIgnoreCase(channel))
 			return;
-		
+
 		AntiIdleEntry.removeTimerFor(source);
 	}
-	
+
 	@Override
 	public void onNick(final String source, final String dest)
 	{
 		AntiIdleEntry.renameTimerFor(source, dest);
 	}
-	
+
 	@Override
 	public void onQuit(final String source, final String reason)
 	{

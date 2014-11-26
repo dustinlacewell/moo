@@ -12,21 +12,21 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 class CommandDnsblStats extends Command
-{	
+{
 	private static HashSet<String> command_waiting_on = new HashSet<String>();
 	private static CommandSource command_source;
 	private static boolean do_server_counts;
 	private static String do_server_name;
-	
+
 	public CommandDnsblStats(Plugin pkg)
 	{
 		super(pkg, "!DNSBLSTATS", "Views DNSBL counts");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -36,7 +36,7 @@ class CommandDnsblStats extends Command
 		source.notice("will be shown. If a specific server name is appended to SERVER, the");
 		source.notice("number of hits on each DNSBL will be shown for that specific server.");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -44,11 +44,11 @@ class CommandDnsblStats extends Command
 		command_source = source;
 		do_server_counts = false;
 		do_server_name = null;
-		
+
 		if (params.length > 1 && params[1].equalsIgnoreCase("server"))
 		{
 			do_server_counts = true;
-			
+
 			if (params.length > 2)
 				do_server_name = params[2];
 		}
@@ -60,7 +60,7 @@ class CommandDnsblStats extends Command
 				command_waiting_on.add(s.getName());
 			}
 	}
-	
+
 	static void checkReply(String source)
 	{
 		command_waiting_on.remove(source);
@@ -82,12 +82,12 @@ class CommandDnsblStats extends Command
 					info.hits.keySet().toArray(dnsbl_names);
 					dnsblCountComparator.counts = info.hits;
 					Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
-					
+
 					for (int i = dnsbl_names.length; i > 0; --i)
 					{
 						final String dnsbl_name = dnsbl_names[i - 1];
 						long dnsbl_count = info.hits.get(dnsbl_name);
-						
+
 						float percent = total > 0 ? ((float) dnsbl_count / (float) total * 100) : 0;
 						int percent_i = Math.round(percent);
 
@@ -105,12 +105,12 @@ class CommandDnsblStats extends Command
 
 				Server servers[] = Server.getServers();
 				Arrays.sort(servers, dnsblServerComparator.cmp);
-				
+
 				for (int i = servers.length; i > 0; --i)
 				{
 					Server s = servers[i - 1];
 					long value = dnsblstats.getDnsblInfoFor(s).getTotal();
-					
+
 					if (value == 0)
 						continue;
 
@@ -128,12 +128,12 @@ class CommandDnsblStats extends Command
 				{
 					DnsblInfo info = dnsblstats.getDnsblInfoFor(s);
 					total += info.getTotal();
-					
+
 					for (Iterator<String> it = info.hits.keySet().iterator(); it.hasNext();)
 					{
 						final String dnsbl_name = it.next();
 						long dnsbl_count = info.hits.get(dnsbl_name);
-						
+
 						long i = dnsbl_counts.containsKey(dnsbl_name) ? dnsbl_counts.get(dnsbl_name) : 0;
 						i += dnsbl_count;
 						dnsbl_counts.put(dnsbl_name, i);
@@ -146,12 +146,12 @@ class CommandDnsblStats extends Command
 				dnsbl_counts.keySet().toArray(dnsbl_names);
 				dnsblCountComparator.counts = dnsbl_counts;
 				Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
-				
+
 				for (int i = dnsbl_names.length; i > 0; --i)
 				{
 					final String name = dnsbl_names[i - 1];
 					long value = dnsbl_counts.get(name);
-					
+
 					float percent = total > 0 ? ((float) value / (float) total * 100) : 0;
 					int percent_i = Math.round(percent);
 

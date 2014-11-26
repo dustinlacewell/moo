@@ -2,6 +2,7 @@ package net.rizon.moo;
 
 public class ChannelManager extends EntityManager<Channel>
 {
+	@Override
 	public Channel find(String name)
 	{
 		return entities.get(name.toLowerCase());

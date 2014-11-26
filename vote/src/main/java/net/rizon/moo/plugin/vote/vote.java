@@ -14,12 +14,12 @@ public class vote extends Plugin
 
 	private CommandVote vote;
 	private Event e;
-	
+
 	public vote() throws Exception
 	{
 		super("Vote", "Manages votes");
 		conf = VoteConfiguration.load();
-		
+
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `votes` (`id` int, `channel` text, `info` text, `owner` text, `date` date, `closed` int)");
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `vote_casts` (`id` int, `channel` text, `voter` text, `vote` text)");
 	}
@@ -37,13 +37,13 @@ public class vote extends Plugin
 		vote.remove();
 		e.remove();
 	}
-	
+
 	protected static String getVoteEmailFor(String chan)
 	{
 		for (Vote v : conf.vote)
 			if (v.channel.equals(chan))
 				return v.email;
-		
+
 		return null;
 	}
 }

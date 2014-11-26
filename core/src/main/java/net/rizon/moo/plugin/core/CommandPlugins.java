@@ -22,7 +22,7 @@ class CommandPlugins extends Command
 		if (params.length <= 2)
 		{
 			source.reply("Currently loaded plugins:");
-			
+
 			for (Plugin pl : Plugin.getPlugins())
 				source.reply("  " + pl.pname + " (" + pl.getName() + ")");
 		}

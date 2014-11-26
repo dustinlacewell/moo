@@ -1,13 +1,13 @@
 package net.rizon.moo.plugin.commands;
 
+import java.util.HashSet;
+
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-
-import java.util.HashSet;
 
 class message_limit extends Message
 {
@@ -20,10 +20,10 @@ class message_limit extends Message
 			if (l > longest)
 				longest = l;
 		}
-		
+
 		return longest - s.getName().length() + 2;
 	}
-	
+
 	public static HashSet<String> waiting_for = new HashSet<String>();
 	protected static CommandSource source;
 
@@ -50,7 +50,7 @@ class message_limit extends Message
 		for (String token : tokens)
 		{
 			if (token.startsWith("CHANLIMIT="))
-			{				
+			{
 				if (waiting_for.remove(s.getName()) == false)
 					return;
 
@@ -60,7 +60,7 @@ class message_limit extends Message
 					buf += "-";
 				buf += " \00309" + limit + "\003";
 
-				this.source.reply(buf);
+				message_limit.source.reply(buf);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ class CommandClimit extends Command
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -99,7 +99,7 @@ class CommandClimit extends Command
 			Moo.sock.write("VERSION " + s.getName());
 			message_limit.waiting_for.add(s.getName());
 		}
-		
+
 		message_limit.source = source;
 	}
 }

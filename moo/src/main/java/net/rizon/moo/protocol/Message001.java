@@ -26,19 +26,19 @@ public class Message001 extends Message
 
 		for (String s : Moo.conf.channels)
 			Moo.join(s);
-		
+
 		Moo.sock.write("MAP");
 		Moo.sock.write("LINKS");
-		
+
 		for (Server s : Server.getServers())
 		{
 			if (s.isServices())
 				continue;
-			
+
 			s.requestStats();
 			Moo.sock.write("VERSION " + s.getName());
 		}
-		
+
 		for (Event e : Event.getEvents())
 			e.onConnect();
 	}

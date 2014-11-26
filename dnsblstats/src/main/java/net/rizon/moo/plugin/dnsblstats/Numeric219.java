@@ -15,7 +15,7 @@ class Numeric219 extends Message
 	{
 		if (message[1].equals("B") == false)
 			return;
-		
+
 		CommandDnsblStats.checkReply(source);
 		StatsRequester.checkWarn(source);
 	}

@@ -53,12 +53,12 @@ class CommandOline extends Command
 	public CommandOline(Plugin pkg)
 	{
 		super(pkg, "!OLINE", "View olines");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -83,15 +83,15 @@ class CommandOline extends Command
 		ge,
 		e
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
 		if (params.length <= 1)
 			return;
-		
+
 		if (params[1].equalsIgnoreCase("COUNT"))
-		{			
+		{
 			int min = 2;
 			if (params.length > 2)
 			{
@@ -104,51 +104,51 @@ class CommandOline extends Command
 
 			HashMap<String, Integer> oper_map = new HashMap<String, Integer>();
 			for (Server s : Server.getServers())
-			{	
+			{
 				if (s.isServices())
 					continue;
-				
+
 				for (Iterator<String> it2 = s.olines.keySet().iterator(); it2.hasNext();)
 				{
 					String oline = it2.next();
-					
+
 					int old = 0;
 					if (oper_map.containsKey(oline))
 						old = oper_map.get(oline);
 					oper_map.put(oline, old + 1);
 				}
 			}
-			
+
 			int count = 0;
 			for (Iterator<String> it = oper_map.keySet().iterator(); it.hasNext();)
 			{
 				String oper = it.next();
 				int oper_count = oper_map.get(oper);
-				
+
 				if (oper_count >= min)
 					++count;
 			}
-			
+
 			if (count == 0)
 			{
 				source.reply("No opers with " + min + " o:lines");
 				return;
 			}
-			
+
 			String opers[] = new String[count];
 			int array_count = 0;
 			for (Iterator<String> it = oper_map.keySet().iterator(); it.hasNext();)
 			{
 				String oper = it.next();
 				int oper_count = oper_map.get(oper);
-				
+
 				if (oper_count >= min)
 					opers[array_count++] = oper;
 			}
-			
+
 			operComparator compare = new operComparator(oper_map);
 			Arrays.sort(opers, compare);
-			
+
 			source.reply("Oper list with at least " + min + " o:lines");
 			for (int i = opers.length; i > 0; --i)
 			{
@@ -195,7 +195,7 @@ class CommandOline extends Command
 					t = Type.gt;
 					offset = 0;
 				}
-				
+
 				try
 				{
 					count = Integer.parseInt(params[2].substring(offset));
@@ -205,16 +205,16 @@ class CommandOline extends Command
 
 			Server servers[] = Server.getServers();
 			Arrays.sort(servers, servComparator);
-			
+
 			source.reply("Servers with " + (params.length > 2 ? (Character.isDigit(params[2].charAt(0)) ? ">=" + count : params[2]) : ">=" + count) + " o:lines:");
-			
+
 			for (int i = servers.length; i > 0; --i)
 			{
 				Server s = servers[i - 1];
 
 				if (s.isServices())
 					continue;
-				
+
 				switch (t)
 				{
 					case e:
@@ -238,10 +238,10 @@ class CommandOline extends Command
 							continue;
 						break;
 				}
-				
+
 				String olines = s.olines.toString();
 				olines = olines.substring(1, olines.length() - 1);
-				
+
 				source.reply(s.getName() + ": " + olines);
 			}
 		}
@@ -263,17 +263,17 @@ class CommandOline extends Command
 					}
 					buffer = buffer.substring(0, buffer.length() - 2);
 				}
-				
+
 				source.reply(buffer);
 				found = true;
 			}
-			
+
 			String servers = "";
 			for (Server s2 : Server.getServers())
 			{
 				if (s2.isServices())
 					continue;
-				
+
 				if (s2.olines.keySet().contains(params[1]))
 					servers += s2.getName() +  ", ";
 			}

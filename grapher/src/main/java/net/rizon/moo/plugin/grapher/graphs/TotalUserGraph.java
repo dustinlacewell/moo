@@ -12,7 +12,7 @@ public class TotalUserGraph extends Graph
 	public TotalUserGraph()
 	{
 		super("users", 60);
-		
+
 		this.addDataSource("users", DataSourceType.DST_GAUGE, 120, 0, 200000);
 		this.setRRA(RoundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
 	}

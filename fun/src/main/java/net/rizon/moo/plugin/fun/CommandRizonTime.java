@@ -10,7 +10,7 @@ import java.util.Random;
 class CommandRizonTime extends Command
 {
 	private HashMap<String, String> cache = new HashMap<String, String>();
-	
+
 	public CommandRizonTime(Plugin pkg)
 	{
 		super(pkg, "!RIZONTIME", "Calculates out a length of time in Rizon Time(tm)");
@@ -20,11 +20,11 @@ class CommandRizonTime extends Command
 	public void execute(CommandSource source, String[] params)
 	{
 		Random r = new Random();
-		
+
 		String buf = "";
 		int time = 1;
 		int num = 0;
-		
+
 		for (int i = 1; i < params.length; ++i)
 		{
 			try
@@ -36,7 +36,7 @@ class CommandRizonTime extends Command
 			{
 				if (num == 0)
 					continue;
-				
+
 				buf += params[i] + " ";
 				if (params[i].indexOf("year") > -1)
 					time += num * 32140800 * (r.nextFloat() + 1.0f) * (r.nextInt(2) + 1);
@@ -54,32 +54,32 @@ class CommandRizonTime extends Command
 					time += num * (r.nextFloat() + 1.0f) * r.nextInt(200);
 			}
 		}
-		
+
 		buf = buf.trim();
-		
+
 		if (this.cache.containsKey(buf.toLowerCase()))
 		{
 			source.reply(buf + " in Rizon Time(tm) is " + this.cache.get(buf.toLowerCase()));
 			return;
 		}
-		
+
 		int years = time / 32140800;
 		time %= 32140800;
-		
+
 		int months = time / 2678400;
 		time %= 2678400;
-		
+
 		int days = time / 86400;
 		time %= 86400;
-		
+
 		int hours = time / 3600;
 		time %= 3600;
-		
+
 		int minutes = time / 60;
 		time %= 60;
-		
+
 		int seconds = time;
-		
+
 		String out = "";
 		if (years > 0)
 			out += ", " + years + " year" + (years != 1 ? "s" : "");
@@ -93,7 +93,7 @@ class CommandRizonTime extends Command
 			out += ", " + minutes + " minute" + (minutes != 1 ? "s" : "");
 		if (years == 0 && seconds > 0)
 			out += ", " + seconds + " second" + (seconds != 1 ? "s" : "");
-		
+
 		if (out.length() > 2)
 		{
 			source.reply(buf + " in Rizon Time(tm) is " + out.substring(2));

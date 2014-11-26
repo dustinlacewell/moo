@@ -8,18 +8,18 @@ public abstract class Plugin
 {
 	private static final Logger log = Logger.getLogger(Plugin.class.getName());
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
-	
+
 	private String name, desc;
 	public String pname;
 	protected ClassLoader loader; // Loader for this class
 	public LinkedList<Command> commands = new LinkedList<Command>();
-	
+
 	protected Plugin(String name, String desc)
 	{
 		this.name = name;
 		this.desc = desc;
 	}
-	
+
 	public void remove()
 	{
 		this.stop();
@@ -33,27 +33,27 @@ public abstract class Plugin
 		}*/
 		plugins.remove(this);
 	}
-	
+
 	public final String getName()
 	{
 		return this.name;
 	}
-	
+
 	public final String getDescription()
 	{
 		return this.desc;
 	}
-	
+
 	public abstract void start() throws Exception;
 	public abstract void stop();
-	
+
 	@SuppressWarnings("resource")
 	private static Plugin loadPlugin(String base, String name, boolean core) throws Throwable
 	{
 		Plugin p = findPlugin(name);
 		if (p != null)
 			return p;
-		
+
 		ClassLoader cl = core ? new ClassLoader(base + name) : new ClassLoader(name, base + name);
 		Class<?> c = cl.loadClass(base + name + "." + name);
 		Constructor<?> con = c.getConstructor();
@@ -70,7 +70,7 @@ public abstract class Plugin
 		plugins.add(p);
 		p.pname = name;
 		p.loader = cl;
-		
+
 		p.start();
 		return p;
 	}
@@ -91,7 +91,7 @@ public abstract class Plugin
 		plugins.toArray(a);
 		return a;
 	}
-	
+
 	public static Plugin findPlugin(String name)
 	{
 		for (Plugin p : plugins)

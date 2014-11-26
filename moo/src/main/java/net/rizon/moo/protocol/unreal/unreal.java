@@ -1,8 +1,6 @@
 package net.rizon.moo.protocol.unreal;
 
-import net.rizon.moo.ChannelUserStatus;
 import net.rizon.moo.Message;
-import net.rizon.moo.Plugin;
 import net.rizon.moo.protocol.Message001;
 import net.rizon.moo.protocol.Message213;
 import net.rizon.moo.protocol.Message219;
@@ -56,7 +54,7 @@ public class unreal extends ProtocolPlugin
 		notice = new MessageNotice();
 		quit = new MessageQuit();
 		wallops = new MessageWallops();
-		
+
 		/* Unreal */
 		m006 = new Message006();
 		m007 = new Message007();
@@ -83,7 +81,7 @@ public class unreal extends ProtocolPlugin
 		notice.remove();
 		quit.remove();
 		wallops.remove();
-		
+
 		m006.remove();
 		m007.remove();
 	}

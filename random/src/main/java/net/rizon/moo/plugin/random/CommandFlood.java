@@ -36,33 +36,33 @@ class CommandFlood extends Command
 		source.notice("!FLOOD LIST -- Lists all available flood lists");
 		source.notice("!FLOOD CLEAR -- Deletes all available flood lists");
 	}
-	
+
 	private int purge()
 	{
 		int removed = 0;
-		
+
 		for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
 		{
 			FloodList fl = it.next();
-			
+
 			for (Iterator<NickData> it2 = fl.getMatches().iterator(); it2.hasNext();)
 			{
 				NickData nd = it2.next();
-				
+
 				if (nd.akilled)
 				{
 					it2.remove();
 					++removed;
 				}
 			}
-			
+
 			if (fl.getMatches().isEmpty())
 				it.remove();
 		}
-		
+
 		return removed;
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -81,7 +81,7 @@ class CommandFlood extends Command
 				for (Iterator<FloodList> it = FloodList.getActiveLists().iterator(); it.hasNext();)
 				{
 					FloodList p = it.next();
-					
+
 					source.reply(i++ + ": Contains " + p.getMatches().size() + " entries, last modified: " + new Date(p.getTimes().getLast() * 1000L) + ", pattern: " + p.toString());
 				}
 			}
@@ -104,7 +104,7 @@ class CommandFlood extends Command
 		else if (params[1].equalsIgnoreCase("DESTROY"))
 		{
 			int min = 0;
-			
+
 			try
 			{
 				min = Integer.parseInt(params[2]);
@@ -112,35 +112,35 @@ class CommandFlood extends Command
 			catch (Exception ex)
 			{
 			}
-			
+
 			int lists = FloodList.getActiveLists().size(), count = 0, dupes = 0;
-			
+
 			for (Iterator<FloodList> it = FloodList.getActiveLists().iterator(); it.hasNext();)
 			{
 				FloodList fl = it.next();
-				
+
 				for (Iterator<NickData> it2 = fl.getMatches().iterator(); it2.hasNext();)
 				{
 					NickData nd = it2.next();
-					
+
 					if (nd.getActiveListCount() < min)
 						continue;
-					
+
 					if (nd.akilled)
 					{
 						++dupes;
 						continue;
 					}
-					
+
 					nd.akilled = true;
 					++count;
-					
+
 					Moo.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + "!" + nd.user_str + "@" + nd.ip + "/" + nd.realname_str + ")");
 				}
 			}
-			
+
 			Moo.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
-			
+
 			source.reply("Akilled " + count + " entries from " + lists + " lists with " + dupes + " duplicates. Removed " + purge() + " entries.");
 			return;
 		}
@@ -148,11 +148,11 @@ class CommandFlood extends Command
 		{
 			int count = FloodList.getActiveLists().size();
 			FloodList.clearFloodLists();
-			
+
 			source.reply("Deleted " + count + " lists.");
 			return;
 		}
-		
+
 		int i;
 		try
 		{
@@ -163,14 +163,14 @@ class CommandFlood extends Command
 			source.reply("Invalid flood list number");
 			return;
 		}
-		
+
 		FloodList fl = FloodList.getFloodListAt(i - 1);
 		if (fl == null)
 		{
 			source.reply("There is no flood list numbered " + i);
 			return;
 		}
-		
+
 		if (params[2].equalsIgnoreCase("LIST"))
 		{
 			int j = 1;
@@ -193,7 +193,7 @@ class CommandFlood extends Command
 					for (int k = 0; k < parts.length; k++)
 					{
 						int dashpos = parts[k].indexOf('-');
-						
+
 						if (dashpos == -1) // No range, just a single integer
 						{
 							int tmp;
@@ -218,19 +218,19 @@ class CommandFlood extends Command
 								max = Integer.valueOf(upper);
 							}
 							catch (NumberFormatException ex)
-							{		
+							{
 								continue;
 							}
-							
+
 							// Prevent memory overflow/very slow responses
 							if(max > fl.getMatches().size())
 								max = fl.getMatches().size();
-							
+
 							for ( ; min <= max; min++)
 								tobedeleted.add(min - 1);
 						}
 					}
-					
+
 					if (tobedeleted.isEmpty())
 					{
 						source.reply("Nothing to be deleted.");
@@ -242,15 +242,15 @@ class CommandFlood extends Command
 						for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext(); j++)
 						{
 							NickData nd = it.next();
-							
+
 							if(!tobedeleted.contains(j)) // XXX: this is inefficient!
 								continue;
-							
+
 							it.remove();
 							fl.delMatch(nd);
 							deleted++;
 						}
-						
+
 						source.reply("Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 					}
 				}
@@ -260,7 +260,7 @@ class CommandFlood extends Command
 					for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext();)
 					{
 						NickData fe = it.next();
-						
+
 						if (Moo.matches(fe.ip, params[3]))
 						{
 							source.reply("Removed flood entry " + fe.ip);
@@ -287,7 +287,7 @@ class CommandFlood extends Command
 				String dur = params[3];
 				if (dur.startsWith("+"))
 					dur = params[3].substring(1);
-				
+
 				if (dur.isEmpty() == false && (dur.endsWith("d") || dur.endsWith("h")
 						|| dur.endsWith("m") || dur.endsWith("s")
 						|| Character.isDigit(dur.charAt(dur.length() - 1))))
@@ -300,21 +300,21 @@ class CommandFlood extends Command
 					return;
 				}
 			}
-			
+
 			int count = 0, duplicates = 0;
 			for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext();)
 			{
 				NickData fe = it.next();
-				
+
 				if (fe.akilled)
 				{
 					++duplicates;
 					continue;
 				}
-				
+
 				fe.akilled = true;
 				++count;
-				
+
 				Moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + "!" + fe.user_str + "@" + fe.ip + "/" + fe.realname_str + ")");
 			}
 
@@ -330,16 +330,16 @@ class CommandFlood extends Command
 				source.reply("Syntax: !FLOOD <flood list number> APPLY <regex>");
 				return;
 			}
-			
+
 			try
 			{
 				int fln = Integer.parseInt(params[3]);
-				
+
 				int deleted = 0;
 				for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext();)
 				{
 					NickData nd = it.next();
-					
+
 					if (nd.getActiveListCount() < fln)
 					{
 						it.remove();
@@ -347,14 +347,14 @@ class CommandFlood extends Command
 						++deleted;
 					}
 				}
-				
+
 				source.reply("Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
-				
+
 				return;
 			}
 			catch (NumberFormatException nfe)
 			{
-			
+
 				Pattern regex;
 				try
 				{
@@ -365,21 +365,21 @@ class CommandFlood extends Command
 					source.reply("Invalid regex: " + params[3]);
 					return;
 				}
-				
+
 				int deleted = 0;
 				for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext();)
 				{
 					NickData nd = it.next();
-					
+
 					if (regex.matcher(nd.nick_str).matches())
 						continue;
-					
+
 					it.remove();
 					fl.delMatch(nd);
-					
+
 					deleted++;
 				}
-				
+
 				source.reply("Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 			}
 		}
@@ -390,21 +390,21 @@ class CommandFlood extends Command
 				source.reply("Syntax: !FLOOD <flood list number> APPLYW <wildcard match>");
 				return;
 			}
-			
+
 			int deleted = 0;
 			for (Iterator<NickData> it = fl.getMatches().iterator(); it.hasNext();)
 			{
 				NickData nd = it.next();
-				
+
 				if (Moo.wmatch(params[3], nd.nick_str))
 					continue;
-				
+
 				it.remove();
 				fl.delMatch(nd);
-				
+
 				deleted++;
 			}
-			
+
 			source.reply("Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 		}
 		else if (params[2].equalsIgnoreCase("APPLYF"))
@@ -414,7 +414,7 @@ class CommandFlood extends Command
 				source.reply("Syntax: !FLOOD <flood list number> APPLYF <nick!user@host/gecos regex>");
 				return;
 			}
-			
+
 			Pattern regex;
 			try
 			{
@@ -442,7 +442,7 @@ class CommandFlood extends Command
 
 			source.reply("Deleted " + (fl.getMatches().isEmpty() ? "all" : deleted) + " entries");
 		}
-		
+
 		if (fl != null && fl.getMatches().isEmpty() == true)
 			FloodList.removeFloodListAt(i - 1);
 	}

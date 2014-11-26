@@ -14,7 +14,7 @@ class WatchEntry
 		RS_NOT_REGISTERED,
 		RS_REGISTERED
 	}
-	
+
 	public String nick, creator, reason;
 	public Date created, expires;
 	public registeredState registered;
@@ -44,7 +44,7 @@ class WatchEntry
 			this.warned = true;
 		}
 	}
-	
+
 	public void handleOffline()
 	{
 		this.warned = false;

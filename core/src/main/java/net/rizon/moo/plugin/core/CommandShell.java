@@ -37,10 +37,10 @@ class shellExec extends Thread
 					Moo.quitting = true;
 					break;
 				}
-				
+
 				source.reply(line);
 			}
-			
+
 			in.close();
 			proc.getOutputStream().close();
 			proc.getErrorStream().close();
@@ -59,7 +59,7 @@ class CommandShell extends Command
 		super(pkg, "!SHELL", "Execute a shell command");
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -73,7 +73,7 @@ class CommandShell extends Command
 	{
 		if (!core.conf.shell.enabled || params.length == 1)
 			return;
-		
+
 		File base = new File(core.conf.shell.base);
 		if (base.exists() == false || base.isDirectory() == false)
 		{
@@ -84,7 +84,7 @@ class CommandShell extends Command
 		String param = "./";
 		for (int i = 1; i < params.length; ++i)
 			param += params[i];
-		
+
 		if (param.indexOf("..") != -1)
 			return;
 

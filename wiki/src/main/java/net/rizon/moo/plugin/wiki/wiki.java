@@ -13,7 +13,7 @@ public class wiki extends Plugin
 	private Timer wiki;
 	private Event e;
 	public static WikiConfiguration conf;
-	
+
 	public wiki() throws Exception
 	{
 		super("Wiki", "Monitors the Wiki and reports changes");

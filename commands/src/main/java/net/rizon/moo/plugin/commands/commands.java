@@ -11,7 +11,7 @@ public class commands extends Plugin
 	private CommandMap map;
 	private CommandSid sid;
 	private CommandVersions version;
-	
+
 	public commands()
 	{
 		super("Administation Commands", "Common IRC administration commands");

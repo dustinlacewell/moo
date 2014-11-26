@@ -15,11 +15,11 @@ class MessageUserhost extends Message
 	{
 		if (message.length != 2)
 			return;
-		
+
 		int eq = message[1].indexOf('=');
 		if (eq == -1)
 			return;
-		
+
 		if (message[1].charAt(eq - 1) == '*')
 		{
 			AntiIdleEntry.removeTimerFor(message[1].substring(0, eq - 1));

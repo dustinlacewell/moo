@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 
 final class ScanListener extends Thread
 {
@@ -49,11 +48,11 @@ final class ScanListener extends Thread
 					s.write((proxyscan.conf.check_string + "\r\n").getBytes());
 					s.flush();
 					log.log(Level.FINE, "Wrote check string.");
-					
+
 					client.setSoTimeout(10 * 1000);
 					byte[] b = new byte[64];
 					is.read(b);
-					
+
 					/* protocol_name:ip:port\n */
 					String[] str = new String(b).trim().split(":");
 					if (str.length == 3)

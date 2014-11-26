@@ -13,7 +13,7 @@ class Cast
 	public int id;
 	public String channel, voter;
 	public boolean vote;
-	
+
 	public void insert()
 	{
 		try
@@ -30,7 +30,7 @@ class Cast
 			Database.handleException(ex);
 		}
 	}
-	
+
 	public static Cast[] getCastsFor(VoteInfo vote)
 	{
 		try
@@ -38,7 +38,7 @@ class Cast
 			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `vote_casts` WHERE `id` = ? AND `channel` = ?");
 			stmt.setInt(1, vote.id);
 			stmt.setString(2, vote.channel);
-			
+
 			ResultSet rs = Moo.db.executeQuery();
 			LinkedList<Cast> casts = new LinkedList<Cast>();
 			while (rs.next())
@@ -50,7 +50,7 @@ class Cast
 				c.vote = rs.getBoolean("vote");
 				casts.add(c);
 			}
-			
+
 			Cast[] c = new Cast[casts.size()];
 			casts.toArray(c);
 			return c;
@@ -59,7 +59,7 @@ class Cast
 		{
 			Database.handleException(ex);
 		}
-		
+
 		return null;
 	}
 }

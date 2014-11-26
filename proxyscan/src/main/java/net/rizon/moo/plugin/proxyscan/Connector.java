@@ -15,7 +15,7 @@ final class ConnectorThread extends Thread
 {
 	private static final Logger log = Logger.getLogger(ConnectorThread.class.getName());
 	private static final Pattern vars = Pattern.compile("%[^%]+%");
-	
+
 	private String source;
 	private final String ip;
 
@@ -37,7 +37,7 @@ final class ConnectorThread extends Thread
 			while (m.find())
 			{
 				String var = m.group().substring(1, m.group().length() - 1);
-				
+
 				String replacement;
 				if (var.equals("destip"))
 					replacement = this.ip;
@@ -45,17 +45,17 @@ final class ConnectorThread extends Thread
 					replacement = this.source;
 				else
 					replacement = "";
-				
+
 				args = args.replaceAll(m.group(), replacement);
 			}
-			
+
 			ProcessBuilder pb = new ProcessBuilder(args.split(" "));
 
 			for (Iterator<String> it = pb.command().iterator(); it.hasNext();)
 				log.log(Level.FINE, "Command part: " + it.next());
-			
+
 			proc = pb.start();
-			
+
 			String s = null;
 			try
 			{
@@ -72,7 +72,7 @@ final class ConnectorThread extends Thread
 					String[] parts_colon = parts_sp[1].split(":");
 					String port = parts_colon[1];
 					String type = parts_colon[0];
-	
+
 					proxyscan.akill(this.ip, Integer.parseInt(port), type, false);
 				}
 			}

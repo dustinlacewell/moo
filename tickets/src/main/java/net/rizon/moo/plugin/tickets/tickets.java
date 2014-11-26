@@ -19,15 +19,15 @@ public class tickets extends Plugin
 	private Event e;
 	protected static HashMap<Integer, Ticket> tickets = new HashMap<Integer, Ticket>();
 	public static TicketsConfiguration conf;
-	
+
 	public tickets() throws Exception
 	{
 		super("Tickets", "Monitors abuse tickets for changes");
 		conf = TicketsConfiguration.load();
-		
+
 		// This allows us to store cookies so we can properly login via HTTP POST
 		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-		
+
 		tickTimer = new TicketTimer();
 	}
 

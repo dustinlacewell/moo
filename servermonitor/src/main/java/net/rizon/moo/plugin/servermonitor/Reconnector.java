@@ -19,59 +19,59 @@ class Reconnector extends Timer
 	private int tick = 0, tries = 0;
 	private HashSet<String> attempted = new HashSet<String>();
 	private static long last_reconnect = 0;
-	
+
 	public Reconnector(Server serv, Server from)
 	{
 		super(60, true);
 		this.serv = serv;
 		this.from = from;
 		this.sp = serv.getSplit();
-		
+
 		reconnects.add(this);
 	}
-	
+
 	public void destroy()
 	{
 		this.stop();
 		reconnects.remove(this);
 	}
-	
+
 	private boolean isGood(Server up)
 	{
 		return up != null && up.getSplit() == null && up.frozen == false && this.attempted.contains(up.getName()) == false && !hasSplitBefore(up);
 	}
-	
+
 	private boolean hasSplitBefore(Server s)
 	{
 		Split[] splits = this.serv.getSplits();
 		if (splits.length < 2)
 			return false;
-		
+
 		// If the two most recent split were from 's' and they were <10 and <20, move the server
-		
+
 		Split last = splits[splits.length - 1];
 		boolean last1 = last.from.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (10 * 60 * 1000)));
-		
+
 		last = splits[splits.length - 2];
 		boolean last2 = last.from.equals(s.getName()) && last.when.after(new Date(System.currentTimeMillis() - (20 * 60 * 1000)));
-		
+
 		return last1 && last2;
 	}
-	
+
 	public Server findPreferred()
 	{
 		if (this.from.getSplit() != null && findValidReconnectorFor(this.from) != null)
 			return this.serv; // Special case.
-		
+
 		for (Iterator<String> it = this.serv.allowed_clines.iterator(); it.hasNext();)
 		{
 			final String pname = it.next();
 			Server pserver = Server.findServerAbsolute(pname);
-			
+
 			if (isGood(pserver))
 				return pserver;
 		}
-		
+
 		if (isGood(this.from))
 			return this.from;
 
@@ -87,18 +87,18 @@ class Reconnector extends Timer
 					&& (highest == null || altserver.links.size() > highest.links.size()))
 				highest = altserver;
 		}
-		
+
 		return highest;
 	}
-	
+
 	@Override
 	public void run(Date now)
 	{
 		if (last_reconnect + 60 > System.currentTimeMillis() / 1000L)
 			return;
-		
+
 		++this.tick;
-		
+
 		Server s = Server.findServerAbsolute(this.serv.getName());
 		if (s == null || this.sp == null || !this.sp.equals(s.getSplit()))
 		{
@@ -106,23 +106,23 @@ class Reconnector extends Timer
 			this.setRepeating(false);
 			return;
 		}
-		
+
 		if (!servermonitor.conf.reconnect)
 		{
 			Moo.privmsgAll(Moo.conf.split_channels, "Disabling reconnect for frozen server " + s.getName());
-			
+
 			this.destroy();
 			this.setRepeating(false);
 			return;
 		}
-		
+
 		Server targ = this.findPreferred();
 		if (targ == this.serv) // Special case, hold due to the split probably being between me and serv
 		{
 			Moo.privmsgAll(Moo.conf.split_channels, "Delaying reconnect for " + this.serv.getName() + " due to its uplink being split");
 			return;
 		}
-		
+
 		if (this.tries == 7 || targ == null)
 		{
 			for (final String chan : Moo.conf.split_channels)
@@ -154,35 +154,35 @@ class Reconnector extends Timer
 				}
 				Moo.privmsg(chan, "Giving up reconnecting " + s.getName() + ", tried " + this.tries + " times in " + this.tick + " minutes to " + this.attempted.size() + " servers: " + this.attempted.toString());
 			}
-			
+
 			this.destroy();
 			this.setRepeating(false);
-			
+
 			return;
 		}
-		
+
 		int delay = this.serv.isHub() && this.tries == 0 ? 3 : 2;
-		
+
 		if (this.tick % delay != 0)
 		{
-			int wait = 0; 
+			int wait = 0;
 			for (int i = this.tick; i % delay != 0; ++wait, ++i);
 			Moo.privmsgAll(Moo.conf.split_channels, "Will reconnect " + s.getName() + " to " + targ.getName() + " in " + wait + " minute" + (wait != 1 ? "s" : ""));
 			return;
 		}
-		
+
 		++this.tries;
 
 		Moo.privmsgAll(Moo.conf.split_channels, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
-		
+
 		Moo.sock.write("CONNECT " + s.getName() + " " + servermonitor.conf.port + " " + targ.getName());
 		this.sp.reconnectedBy = Moo.conf.general.nick;
-		
+
 		last_reconnect = System.currentTimeMillis() / 1000L;
 		if (this.tries != 1) // Allow two tries on the first server
 			this.attempted.add(targ.getName());
 	}
-	
+
 	public Date reconnectTime()
 	{
 		int delay = this.serv.isHub() ? 3 : 2;
@@ -190,12 +190,12 @@ class Reconnector extends Timer
 		for (int i = this.tick + 1; i % delay != 0; ++wait, ++i);
 		wait *= 60;
 		wait += (int) ((this.getTick().getTime() - System.currentTimeMillis()) / 1000L);
-		
+
 		return new Date(System.currentTimeMillis() + (wait * 1000L));
 	}
-	
+
 	private static LinkedList<Reconnector> reconnects = new LinkedList<Reconnector>();
-	
+
 	public static boolean removeReconnectsFor(Server s)
 	{
 		boolean ret = false;
@@ -211,7 +211,7 @@ class Reconnector extends Timer
 		}
 		return ret;
 	}
-	
+
 	public static Reconnector findValidReconnectorFor(Server s)
 	{
 		for (Iterator<Reconnector> it = reconnects.iterator(); it.hasNext();)
@@ -220,7 +220,7 @@ class Reconnector extends Timer
 			if (r.serv == s && r.sp != null && r.sp.equals(s.getSplit()))
 				return r;
 		}
-		
+
 		return null;
 	}
 }

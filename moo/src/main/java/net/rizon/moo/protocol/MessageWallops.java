@@ -10,7 +10,7 @@ public class MessageWallops extends Message
 {
 	private static final Pattern akillAddPattern = Pattern.compile(".* ([^ ]*) added an AKILL for \\*@([0-9A-Fa-f:.]*) \\(([^)]*)\\).*"),
 			akillRemovePattern = Pattern.compile(".* ([^ ]*) removed an AKILL for \\*@([0-9A-Fa-f:.]*) \\(([^)]*)\\).*");
-	
+
 	public MessageWallops()
 	{
 		super("WALLOPS");
@@ -21,10 +21,10 @@ public class MessageWallops extends Message
 	{
 		if (message.length < 1)
 			return;
-		
+
 		for (Event e : Event.getEvents())
 			e.onWallops(source, message[0]);
-		
+
 		Matcher m = akillAddPattern.matcher(message[0]);
 		if (m.matches())
 		{
@@ -33,7 +33,7 @@ public class MessageWallops extends Message
 				e.onAkillAdd(setter, ip, reason);
 			return;
 		}
-		
+
 		m = akillRemovePattern.matcher(message[0]);
 		if (m.matches())
 		{

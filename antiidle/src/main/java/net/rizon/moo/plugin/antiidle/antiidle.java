@@ -14,7 +14,7 @@ public class antiidle extends Plugin
 	private Message m;
 	public static AntiIdleConfiguration conf;
 	protected static final Logger log = Logger.getLogger(antiidle.class.getName());
-	
+
 	public antiidle() throws Exception
 	{
 		super("Anti idle", "Prevents users from idling in channels");

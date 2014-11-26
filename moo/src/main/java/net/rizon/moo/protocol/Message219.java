@@ -15,11 +15,11 @@ public class Message219 extends Message
 	{
 		super("219");
 	}
-	
+
 	private static String generateFlagDiff(final String oldflags, final String newflags)
 	{
 		String del = null, add = null;
-		
+
 		for (char c : oldflags.toCharArray())
 		{
 			if (newflags.indexOf(c) == -1)
@@ -45,17 +45,17 @@ public class Message219 extends Message
 		}
 		if (add == null)
 			add = "";
-		
+
 		return add + del;
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
 		Server serv = Server.findServerAbsolute(source);
 		if (serv == null)
 			serv = new Server(source);
-		
+
 		if (message[1].equals("c"))
 		{
 			if (serv.clines.isEmpty() == false)
@@ -63,18 +63,18 @@ public class Message219 extends Message
 				for (Iterator<String> it = serv.clines.iterator(); it.hasNext();)
 				{
 					String s = it.next();
-					
+
 					if (serv.clines_work.contains(s) == false)
 					{
 						for (Event e : Event.getEvents())
 							e.OnXLineDel(serv, 'C', s);
 					}
 				}
-				
+
 				for (Iterator<String> it = serv.clines_work.iterator(); it.hasNext();)
 				{
 					String s = it.next();
-					
+
 					if (serv.clines.contains(s) == false)
 					{
 						for (Event e : Event.getEvents())
@@ -82,7 +82,7 @@ public class Message219 extends Message
 					}
 				}
 			}
-			
+
 			serv.clines = serv.clines_work;
 			serv.clines_work = new HashSet<String>();
 		}
@@ -93,7 +93,7 @@ public class Message219 extends Message
 				for (Iterator<String> it = serv.olines.keySet().iterator(); it.hasNext();)
 				{
 					String s = it.next();
-					
+
 					if (serv.olines_work.keySet().contains(s) == false)
 					{
 						for (Event e : Event.getEvents())
@@ -112,11 +112,11 @@ public class Message219 extends Message
 						}
 					}
 				}
-				
+
 				for (Iterator<String> it = serv.olines_work.keySet().iterator(); it.hasNext();)
 				{
 					String s = it.next();
-					
+
 					if (serv.olines.keySet().contains(s) == false)
 					{
 						for (Event e : Event.getEvents())
@@ -126,7 +126,7 @@ public class Message219 extends Message
 					}
 				}
 			}
-			
+
 			serv.olines = serv.olines_work;
 			serv.olines_work = new HashMap<String, String>();
 		}

@@ -15,13 +15,13 @@ class CommandLogSearch extends Command
 {
 	public CommandLogSearch(Plugin pkg)
 	{
-		super(pkg, "!LOGSEARCH", "Search through server logs"); 
-		
+		super(pkg, "!LOGSEARCH", "Search through server logs");
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -45,7 +45,7 @@ class CommandLogSearch extends Command
 		source.notice("Example: !LOGSEARCH type=OLINE target=wof -- searches for all O:line-related");
 		source.notice(" events concerning \"wof\".");
 	}
-	
+
 	private final void replyWithLimit(CommandSource source, int limit, String buffer)
 	{
 		if (limit > 10)
@@ -59,8 +59,8 @@ class CommandLogSearch extends Command
 	{
 		if (params.length < 2)
 			return;
-		
-		final String what = params[1]; 
+
+		final String what = params[1];
 		int limit = 10;
 		boolean hasExplicitLimit = false;
 		if (params.length > 2)
@@ -83,7 +83,7 @@ class CommandLogSearch extends Command
 				if (i < params.length - (hasExplicitLimit ? 2 : 1))
 					searchMessage.append(", ");
 			}
-			
+
 			final String[] splitArgument = params[i].split("=");
 			if (splitArgument.length < 2 || splitArgument[0].isEmpty())
 			{
@@ -92,19 +92,19 @@ class CommandLogSearch extends Command
 					source.reply("Argument " + params[i] + " not in column=argument format.");
 					return;
 				}
-				
+
 				/* Simple !LOGSEARCH target; abort and check below */
 				break;
 			}
-			
+
 			final String column = splitArgument[0].toLowerCase();
 			String argument = splitArgument[1];
-			
+
 			if (column.equals("type"))
 				argument = argument.toUpperCase();
 			else if (column.equals("reason"))
 				argument = "%" + argument + "%";
-			
+
 			if (!column.equals("type")
 					&& !column.equals("source")
 					&& !column.equals("target")
@@ -113,46 +113,46 @@ class CommandLogSearch extends Command
 				source.reply("Unknown column " + column + ".");
 				return;
 			}
-			
+
 			if (column.equals("reason"))
 				queryBuffer.append("`" + column + "` LIKE ? AND");
 			else
 				queryBuffer.append("`" + column + "` = ? COLLATE NOCASE AND");
-			
+
 			arguments.add(argument);
 		}
-		
+
 		if (arguments.size() == 0)
 		{
 			arguments.add(what);
 			queryBuffer.append("`target` = ? COLLATE NOCASE AND");
 		}
-		
+
 		queryBuffer.append(" 1=1 ORDER BY `created` DESC");
-		
+
 		replyWithLimit(source, limit, "Searching for the last " + limit + " events for " + searchMessage.toString());
-		
+
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare(queryBuffer.toString());
 			int i = 1;
 			for (final String argument : arguments)
 				stmt.setString(i++, argument);
-			
+
 			ResultSet rs = Moo.db.executeQuery();
 			int count = 0, shown = 0;
 			while (rs.next())
 			{
 				String d = rs.getString("created");
 				String type = rs.getString("type"), lsource = rs.getString("source"), ltarget = rs.getString("target"), reason = rs.getString("reason");
-				
+
 				++count;
-				
+
 				if (limit > 0)
 				{
 					--limit;
 					++shown;
-					
+
 					if (lsource != null && lsource.isEmpty() == false)
 					{
 						if (reason != null && reason.isEmpty() == false)
@@ -163,9 +163,9 @@ class CommandLogSearch extends Command
 					else
 						replyWithLimit(source, limit, "#" + count + " on " + d + " - " + type + " - For " + ltarget);
 				}
-				
+
 			}
-			
+
 			replyWithLimit(source, limit, "Done, " + shown + "/" + count + " shown");
 		}
 		catch (SQLException ex)

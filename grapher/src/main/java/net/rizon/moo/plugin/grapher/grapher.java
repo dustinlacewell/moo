@@ -17,26 +17,26 @@ public class grapher extends Plugin
 
 	protected HashMap<Server, Graph> serverGraphs = new HashMap<Server, Graph>();
 	protected static final Logger log = Logger.getLogger(grapher.class.getName());
-	
+
 	private Event e;
 	private Graph oline, server, user;
-	
+
 	public grapher() throws Exception
 	{
 		super("Grapher", "Creates graphs");
 		conf = GrapherConfiguration.load();
 	}
-	
+
 
 	@Override
 	public void start() throws Exception
 	{
 		e = new EventGraph(this);
-		
+
 		oline = new TotalOlineGraph();
 		server = new TotalServerGraph();
 		user = new TotalUserGraph();
-		
+
 		oline.start();
 		server.start();
 		user.start();
@@ -47,11 +47,11 @@ public class grapher extends Plugin
 	{
 		for (Graph g : serverGraphs.values())
 			g.stop();
-		
+
 		oline.stop();
 		server.stop();
 		user.stop();
-		
+
 		e.remove();
 	}
 }

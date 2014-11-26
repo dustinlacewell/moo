@@ -23,7 +23,7 @@ class message_303 extends Message
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 			{
 				WatchEntry e = it.next();
-				
+
 				for (final String nick : message[1].split(" "))
 					if (e.nick.equalsIgnoreCase(nick))
 					{
@@ -31,7 +31,7 @@ class message_303 extends Message
 						break;
 					}
 			}
-		
+
 		if (WatchMonitor.request == 0)
 		{
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
@@ -48,20 +48,20 @@ class message_303 extends Message
 class WatchMonitor extends Timer
 {
 	private static final message_303 message303 = new message_303();
-	
+
 	public WatchMonitor()
 	{
 		super(60, true);
 		this.start();
 	}
-	
+
 	@Override
 	public void stop()
 	{
 		message303.remove();
 		super.stop();
 	}
-	
+
 	public static int request;
 
 	@Override
@@ -69,23 +69,23 @@ class WatchMonitor extends Timer
 	{
 		String buffer = "";
 		int count = 0;
-		
+
 		request = 0;
-		
+
 		for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
 			WatchEntry e = it.next();
-			
+
 			if (e.expires.before(now))
 			{
 				it.remove();
 				continue;
 			}
-			
+
 			e.handled = false;
 			buffer += e.nick + " ";
 			++count;
-			
+
 			if (buffer.length() > 450 || count >= 16)
 			{
 				request++;
@@ -94,7 +94,7 @@ class WatchMonitor extends Timer
 				count = 0;
 			}
 		}
-		
+
 		if (buffer.isEmpty() == false)
 		{
 			request++;

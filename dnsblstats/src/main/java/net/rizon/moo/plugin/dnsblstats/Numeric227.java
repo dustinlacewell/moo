@@ -17,10 +17,10 @@ class Numeric227 extends Message
 	{
 		if (message.length < 4)
 			return;
-		
+
 		final String name = message[2];
 		long count;
-		
+
 		try
 		{
 			count = Long.parseLong(message[3]);
@@ -30,7 +30,7 @@ class Numeric227 extends Message
 			Logger.getGlobalLogger().log(ex);
 			return;
 		}
-		
+
 		Server s = Server.findServer(source);
 		if (s == null)
 			s = new Server(source);

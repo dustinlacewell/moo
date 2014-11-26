@@ -7,7 +7,7 @@ import net.rizon.moo.Timer;
 class WikiTimer extends Timer
 {
 	private WikiChecker c;
-	
+
 	public WikiTimer()
 	{
 		super(60, true);
@@ -18,7 +18,7 @@ class WikiTimer extends Timer
 	{
 		if (c != null && c.isAlive())
 			return;
-		
+
 		c = new WikiChecker();
 		c.start();
 	}

@@ -11,12 +11,12 @@ import net.rizon.moo.Timer;
 public class watch extends Plugin
 {
 	public static LinkedList<WatchEntry> watches = new LinkedList<WatchEntry>();
-	
+
 	private Event e;
 	private Message n;
 	private Command w;
 	private Timer m;
-	
+
 	public watch()
 	{
 		super("Watch", "Disallows nicks to be used");
@@ -28,7 +28,7 @@ public class watch extends Plugin
 		e = new EventWatch();
 		n = new MessageNotice();
 		w = new CommandWatch(this);
-		m = new WatchMonitor();		
+		m = new WatchMonitor();
 	}
 
 	@Override

@@ -26,7 +26,7 @@ class EventRandom extends Event
 			for (Iterator<NickData> it = random.getNicks().iterator(); it.hasNext();)
 			{
 				NickData nd = it.next();
-				
+
 				if (ip.equals(nd.ip))
 				{
 					for (Event e : Event.getEvents())
@@ -38,10 +38,10 @@ class EventRandom extends Event
 
 		if (reason.contains("open proxies") || reason.contains("open proxy"))
 			return;
-		
+
 		random.akill(ip);
 	}
-	
+
 	@Override
 	public void onAkillDel(final String setter, final String ip, final String reason)
 	{

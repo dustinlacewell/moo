@@ -10,7 +10,7 @@ public class fun extends Plugin
 {
 	private Command rt;
 	private Event e;
-	
+
 	public fun() throws Exception
 	{
 		super("FUN", "Provides fun features");

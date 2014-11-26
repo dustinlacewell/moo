@@ -65,7 +65,7 @@ public class MessageMode extends Message
 		modes = modes.trim();
 
 		handleModes(Moo.channels.find(message[0]), Arrays.copyOfRange(message, 1, message.length));
-		
+
 		for (Event e : Event.getEvents())
 			e.onMode(source, message[0], modes);
 	}

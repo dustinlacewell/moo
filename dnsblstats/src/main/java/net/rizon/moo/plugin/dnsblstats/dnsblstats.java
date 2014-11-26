@@ -15,9 +15,9 @@ public class dnsblstats extends Plugin
 	private Timer requester;
 	private Message n219, n227;
 	private Event e;
-	
+
 	static HashMap<Server, DnsblInfo> infos = new HashMap<Server, DnsblInfo>();
-	
+
 	public dnsblstats()
 	{
 		super("DNSBL Stats", "Monitors and shows DNSBL hits");
@@ -31,7 +31,7 @@ public class dnsblstats extends Plugin
 		n219 = new Numeric219();
 		n227 = new Numeric227();
 		e = new EventDnsbl();
-		
+
 		requester.start();
 	}
 
@@ -44,7 +44,7 @@ public class dnsblstats extends Plugin
 		n227.remove();
 		e.remove();
 	}
-	
+
 	static DnsblInfo getDnsblInfoFor(Server s)
 	{
 		DnsblInfo i = infos.get(s);

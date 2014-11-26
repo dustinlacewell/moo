@@ -23,18 +23,18 @@ class Server extends Thread
 {
 	private static final Logger log = Logger.getLogger(Server.class.getName());
 	private static final int maxPayload = 65535;
-	
+
 	private ServerSocket sock;
-	
+
 	private String ip;
 	private int port;
-	
+
 	public Server(final String ip, int port)
 	{
 		this.ip = ip;
 		this.port = port;
 	}
-	
+
 	public void stopServer()
 	{
 		try
@@ -46,7 +46,7 @@ class Server extends Thread
 			log.log(Level.SEVERE, "Unable to shutdown commits listener");
 		}
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -59,12 +59,12 @@ class Server extends Thread
 			{
 				BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-				
+
 				try
 				{
 					String str;
 					int len = -1;
-	
+
 					for (; (str = input.readLine()) != null; str = null)
 						if (str.startsWith("Content-Length: "))
 						{
@@ -78,7 +78,7 @@ class Server extends Thread
 								str = null;
 								break;
 							}
-							
+
 							if (len > maxPayload)
 							{
 								log.log(Level.WARNING, "Content length is huge! (" + len + " > " + maxPayload + ")");
@@ -88,10 +88,10 @@ class Server extends Thread
 						}
 						else if (str.isEmpty())
 							break;
-					
+
 					if (str == null || len == -1)
 						continue;
-					
+
 					char[] payload = new char[len];
 					int bytesread = 0;
 					while (bytesread < len)
@@ -101,7 +101,7 @@ class Server extends Thread
 							throw new IOException("End of stream");
 						bytesread += i;
 					}
-					
+
 					str = new String(payload, 0, len);
 
 					final String json;
@@ -121,12 +121,12 @@ class Server extends Thread
 						{
 							ObjectAttributes attrs = p.getObjectAttributes();
 
-							/* 
+							/*
 							 * very sadly gitlab doesn't provide this info, although
 							 * we can try to guess it from the URL, although this still
 							 * doesn't really give us the name of the person who opened
 							 * the issue.
-							 * 
+							 *
 							 * this is kind of bad.
 							 */
 							String[] parts = attrs.getUrl().split("/");
@@ -138,7 +138,7 @@ class Server extends Thread
 						{
 							if (p.getPusher() != null)
 								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
-							
+
 							for (Commit c : p.getCommits())
 							{
 								String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
@@ -156,16 +156,16 @@ class Server extends Thread
 						{
 							log.log(Level.WARNING, "Unknown GitLab event, payload was: " + json);
 						}
-						
+
 					}
 					catch (JsonSyntaxException e)
 					{
 						log.log(Level.WARNING, "Exception while parsing json", e);
 						log.log(Level.WARNING, "Payload: " + json);
-							
+
 						// Don't continue; we need to see the fail only once.
 					}
-					
+
 					output.write("HTTP/1.1 200 OK\r\n");
 					output.write("Content-Type: text/html; charset=UTF-8\r\n");
 					output.write("Server: moo\r\n");
@@ -184,7 +184,7 @@ class Server extends Thread
 					try { client.close(); } catch (IOException ex) { }
 				}
 			}
-			
+
 			this.sock.close();
 		}
 		catch (IOException ex)
@@ -192,7 +192,7 @@ class Server extends Thread
 			log.log(ex);
 		}
 	}
-	
+
 	protected void shutdown()
 	{
 		try

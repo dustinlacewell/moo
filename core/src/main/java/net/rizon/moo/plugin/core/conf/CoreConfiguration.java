@@ -9,7 +9,7 @@ public class CoreConfiguration extends Configuration
 
 	public static CoreConfiguration load() throws Exception
 	{
-		return CoreConfiguration.load("core.yml", CoreConfiguration.class);
+		return Configuration.load("core.yml", CoreConfiguration.class);
 	}
 
 	@Override

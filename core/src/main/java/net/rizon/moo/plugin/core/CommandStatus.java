@@ -12,11 +12,11 @@ class CommandStatus extends Command
 	{
 		super(pkg, "!STATUS", "View " + Moo.conf.general.nick + "'s status");
 	}
-	
+
 	private String convertBytes(long bb)
 	{
 		String what = "bytes";
-		
+
 		if (bb > 1024L)
 		{
 			bb /= 1024L;
@@ -37,7 +37,7 @@ class CommandStatus extends Command
 			bb /= 1024L;
 			what = "TB";
 		}
-		
+
 		String tmp = Long.toString(bb);
 		int dp = tmp.indexOf('.');
 		if (tmp.length() > dp + 2)
@@ -45,13 +45,13 @@ class CommandStatus extends Command
 		else
 			return tmp + " " + what;
 	}
-	
+
 	private final String getMemory()
 	{
 		long mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		return this.convertBytes(mem);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{

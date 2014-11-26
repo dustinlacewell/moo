@@ -11,7 +11,7 @@ public class Message474 extends Message
 	{
 		super("474");
 	}
-	
+
 	private HashSet<String> invited = new HashSet<String>();
 
 	@Override

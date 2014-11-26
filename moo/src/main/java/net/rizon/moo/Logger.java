@@ -61,7 +61,7 @@ public class Logger extends java.util.logging.Logger
 {
 	private static HashMap<String, Logger> loggers = new HashMap<String, Logger>();
 	private static final loggerHandler handler = new loggerHandler();
-	
+
 	protected Logger(String name, String resourceBundleName)
 	{
 		super(name, resourceBundleName);
@@ -72,20 +72,20 @@ public class Logger extends java.util.logging.Logger
 		Logger l = loggers.get(name);
 		if (l != null)
 			return l;
-	
+
 		l = new Logger(name, null);
 		loggers.put(name, l);
-		
+
 		l.setLevel(Level.ALL);
 		l.addHandler(handler);
 		return l;
 	}
-	
+
 	public static Logger getGlobalLogger()
 	{
 		return getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 	}
-	
+
 	public void log(Exception ex)
 	{
 		this.log(Level.SEVERE, null, ex);

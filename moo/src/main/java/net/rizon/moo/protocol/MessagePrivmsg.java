@@ -18,7 +18,7 @@ public class MessagePrivmsg extends Message
 	{
 		if (message.length < 2)
 			return;
-		
+
 		for (Event e : Event.getEvents())
 			e.onPrivmsg(source, message[0], message[1]);
 

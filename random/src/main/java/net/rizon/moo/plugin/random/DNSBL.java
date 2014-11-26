@@ -6,7 +6,7 @@ import java.util.LinkedList;
 class DNSBL extends FloodList
 {
 	private String name;
-	
+
 	private DNSBL(final String name)
 	{
 		this.name = name;
@@ -18,9 +18,9 @@ class DNSBL extends FloodList
 	{
 		return this.name;
 	}
-	
+
 	private static LinkedList<DNSBL> lists = new LinkedList<DNSBL>();
-	
+
 	public static synchronized DNSBL getList(final String name)
 	{
 		for (Iterator<DNSBL> it = lists.iterator(); it.hasNext();)
@@ -39,7 +39,7 @@ class DNSBL extends FloodList
 				}
 			}
 		}
-		
+
 		DNSBL d = new DNSBL(name);
 		d.open();
 		return d;

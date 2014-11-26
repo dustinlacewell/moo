@@ -11,7 +11,7 @@ public class GitLab implements Push
 	private String ref; // refs/heads/branch
 	private List<Commit> commits;
 	private Repository repository;
-	
+
 	private ObjectAttributes object_attributes;
 	private String object_kind;
 
@@ -20,7 +20,7 @@ public class GitLab implements Push
 	{
 		return this.repository.name;
 	}
-	
+
 	@Override
 	public List<net.rizon.moo.plugin.commits.Commit> getCommits()
 	{

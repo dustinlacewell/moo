@@ -12,17 +12,17 @@ import java.util.Date;
 class scheckTimer extends Timer
 {
 	protected static final int delay = 70;
-	
+
 	private Server server;
 	private int port;
 	private boolean ssl;
 	private String[] targets;
 	private boolean use_v6;
-	
+
 	public scheckTimer(int delay, final Server server, final String[] targets, boolean ssl, int port, boolean use_v6)
 	{
 		super(delay * scheckTimer.delay, false);
-		
+
 		this.server = server;
 		this.targets = targets;
 		this.ssl = ssl;
@@ -41,14 +41,14 @@ class scheckTimer extends Timer
 class scheckEndTimer extends Timer
 {
 	private CommandSource source;
-	
+
 	public scheckEndTimer(int delay, CommandSource source)
 	{
 		super(delay * scheckTimer.delay, false);
-		
+
 		this.source = source;
 	}
-	
+
 	@Override
 	public void run(Date now)
 	{
@@ -61,12 +61,12 @@ class CommandScheck extends Command
 	public CommandScheck(Plugin pkg)
 	{
 		super(pkg, "!SCHECK", "Check if a server is online");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -91,7 +91,7 @@ class CommandScheck extends Command
 				int port = 6667;
 				boolean ssl = false, use_v6 = false;
 				int port_pos = 0;
-				
+
 				if (params.length > 2)
 				{
 					if (params[2].equals("+6") || (params.length > 3 && params[3].equals("+6")))
@@ -101,7 +101,7 @@ class CommandScheck extends Command
 					}
 					else
 						port_pos = 2;
-					
+
 					if (port_pos > 0 && port_pos < params.length)
 					{
 						String port_str = params[port_pos];
@@ -110,7 +110,7 @@ class CommandScheck extends Command
 							port_str = port_str.substring(1);
 							ssl = true;
 						}
-						
+
 						try
 						{
 							port = Integer.parseInt(port_str);
@@ -122,7 +122,7 @@ class CommandScheck extends Command
 						}
 					}
 				}
-				
+
 				if (params[1].equalsIgnoreCase("ALL") == false)
 				{
 					SCheck check = new SCheck(serv, new String[] { source.getTargetName() }, ssl, port, false, use_v6);
@@ -131,17 +131,17 @@ class CommandScheck extends Command
 				else
 				{
 					int delay = 0;
-					
+
 					for (Server s : Server.getServers())
 					{
 						if (s.isHub() || s.isServices())
 							continue;
-						
+
 						new scheckTimer(delay++, s, new String[] { source.getTargetName() }, ssl, port, use_v6).start();
 					}
-					
+
 					new scheckEndTimer(delay + 1, source);
-					
+
 					source.reply("[SCHECK] Queued " + delay + " checks in the next " + (delay * scheckTimer.delay) + " seconds");
 				}
 			}

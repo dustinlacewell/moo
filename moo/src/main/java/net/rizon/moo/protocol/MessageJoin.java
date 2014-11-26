@@ -27,7 +27,7 @@ public class MessageJoin extends Message
 
 		c.addUser(mem);
 		u.addChannel(mem);
-		
+
 		for (Event e : Event.getEvents())
 			e.onJoin(source, message[0]);
 	}

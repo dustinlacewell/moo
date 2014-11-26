@@ -7,6 +7,7 @@ import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.conf.Config;
+import net.rizon.moo.conf.Configuration;
 
 class CommandReload extends Command
 {
@@ -17,20 +18,20 @@ class CommandReload extends Command
 		super(pkg, "!RELOAD", "Reloads the configuration file");
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
 		source.notice("Syntax: !RELOAD");
 		source.notice("!RELOAD reloads the configuration file, moo.yml.");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
 		try
 		{
-			Config c = Config.load("moo.yml", Config.class);
+			Config c = Configuration.load("moo.yml", Config.class);
 			for (Event e : Event.getEvents())
 				e.onReload(source);
 

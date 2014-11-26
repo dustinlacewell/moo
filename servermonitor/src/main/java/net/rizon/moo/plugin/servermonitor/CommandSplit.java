@@ -33,12 +33,12 @@ class CommandSplit extends Command
 	public CommandSplit(Plugin pkg)
 	{
 		super(pkg, "!SPLIT", "Views split servers");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -62,7 +62,7 @@ class CommandSplit extends Command
 			{
 				Split sp = s.getSplit();
 				++count;
-				
+
 				if (sp != null || s.links.isEmpty())
 				{
 					++split;
@@ -88,7 +88,7 @@ class CommandSplit extends Command
 					source.reply(buffer);
 				}
 			}
-			
+
 			source.reply("[SPLIT] [" + split + "/" + count + "]");
 		}
 		else if (params[1].equalsIgnoreCase("recent"))
@@ -96,11 +96,11 @@ class CommandSplit extends Command
 			boolean all = params.length > 2 && params[2].equalsIgnoreCase("all");
 			TreeSet<Split> ts = new TreeSet<Split>(new splitComparator());
 			Date now = new Date();
-			
+
 			for (Server s : Server.getServers())
 			{
 				Split[] splits = s.getSplits();
-				
+
 				for (int i = splits.length; i > 0; --i)
 				{
 					Split split = splits[i - 1];
@@ -108,17 +108,17 @@ class CommandSplit extends Command
 						ts.add(split);
 				}
 			}
-			
+
 			int count = 10;
 			try
 			{
 				count = Integer.parseInt(params[2]);
 			}
 			catch (Exception ex) { }
-			
+
 			while (ts.size() > count)
 				ts.remove(ts.first());
-			
+
 			if (ts.isEmpty())
 				source.reply("There are no recent splits");
 			else
@@ -128,7 +128,7 @@ class CommandSplit extends Command
 				for (Iterator<Split> it = ts.descendingIterator(); it.hasNext();)
 				{
 					Split sp = it.next();
-					
+
 					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
 					if (sp.end != null && sp.to != null)
 					{
@@ -147,7 +147,7 @@ class CommandSplit extends Command
 								buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 						}
 					}
-					
+
 					source.reply(buf);
 				}
 			}
@@ -193,7 +193,7 @@ class CommandSplit extends Command
 		{
 			Server s = Server.findServer(params[1]);
 			Date now = new Date();
-			
+
 			if (s == null)
 			{
 				source.reply("No such server " + params[1]);
@@ -205,7 +205,7 @@ class CommandSplit extends Command
 			for (Split split : s.getSplits())
 				if (all || !split.recursive)
 					splits.add(split);
-				
+
 			if (splits.isEmpty())
 			{
 				source.reply(s.getName() + " has never split");
@@ -213,18 +213,18 @@ class CommandSplit extends Command
 			}
 
 			source.reply("Recent splits for " + s.getName() + ":");
-					
+
 			int count = 3;
 			try
 			{
 				count = Integer.parseInt(params[2]);
 			}
 			catch (Exception ex) { }
-					
+
 			for (int i = splits.size(); i > 0 && count > 0; --i, --count)
 			{
 				Split sp = splits.get(i - 1);
-						
+
 				String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
 				if (sp.end != null && sp.to != null)
 				{
@@ -239,7 +239,7 @@ class CommandSplit extends Command
 					if (r != null)
 						buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 				}
-						
+
 				source.reply(buf);
 			}
 		}

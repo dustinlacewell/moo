@@ -20,7 +20,7 @@ class message351 extends Message
 	protected static CommandSource command_source;
 	public static HashSet<String> waiting_for = new HashSet<String>();
 	private static int max_ver = 0;
-	
+
 	private static int dashesFor(Server s)
 	{
 		int longest = 0;
@@ -30,30 +30,30 @@ class message351 extends Message
 			if (l > longest)
 				longest = l;
 		}
-		
+
 		return longest - s.getName().length() + 2;
 	}
-	
+
 	@Override
 	public void run(String source, String[] msg)
 	{
 		Server s = Server.findServerAbsolute(source);
 		if (s == null)
 			s = new Server(source);
-		
+
 		if (commandVersionsBase.want_server != null && commandVersionsBase.want_server != s)
 			return;
 
 		String tok = msg[1];
-		
+
 		int pos = 0;
 		for (; pos < tok.length() && tok.charAt(pos) != '('; ++pos);
 		for (; pos < tok.length() && tok.charAt(pos) != '-'; ++pos);
 		++pos;
-		
+
 		if (pos >= tok.length())
 			return;
-		
+
 		try
 		{
 			String ver = tok.substring(pos, tok.length() - 2);
@@ -65,16 +65,16 @@ class message351 extends Message
 					max_ver = ver_num;
 			}
 			catch (NumberFormatException ex) { }
-			
+
 			// We might just want to update the max_ver, not run a command
 			if (waiting_for.remove(s.getName()) == false)
 				return;
 			if (command_source == null)
 				return;
-			
+
 			if (commandVersionsBase.onlyOld && ver_num == max_ver)
 				return;
-			
+
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
@@ -88,7 +88,7 @@ class message351 extends Message
 			else
 				buf += Message.COLOR_BRIGHTGREEN;
 			buf += ver + Message.COLOR_END;
-			
+
 			int serno_pos1;
 			for (serno_pos1 = 0; serno_pos1 < tok.length() && tok.charAt(serno_pos1) != '('; ++serno_pos1);
 			buf += " (";
@@ -109,13 +109,13 @@ class commandVersionsBase extends Command
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();
 	static Server want_server = null;
-	
+
 	public static boolean onlyOld;
 
 	public commandVersionsBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "View the IRCd versions");
-		
+
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
@@ -128,7 +128,7 @@ class commandVersionsBase extends Command
 		source.notice("If OLD is given as a parameter, only versions that aren't the latest will be shown.");
 		source.notice("If a server name is given, the version for that server will be shown.");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -164,14 +164,14 @@ class commandVersionsBase extends Command
 class CommandVersions
 {
 	private Command vs, v;
-	
+
 	public CommandVersions(Plugin pkg)
 	{
 		vs = new commandVersionsBase(pkg, "!VERSIONS");
 		// Some people can't type for their life...
 		v = new commandVersionsBase(pkg, "!VERSION");
 	}
-	
+
 	public void remove()
 	{
 		vs.remove();

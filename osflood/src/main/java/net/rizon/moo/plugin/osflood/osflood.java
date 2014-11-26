@@ -10,7 +10,7 @@ public class osflood extends Plugin
 	private Event e;
 	public static OsfloodConfiguration conf;
 	protected static final Logger log = Logger.getLogger(osflood.class.getName());
-	
+
 	public osflood() throws Exception
 	{
 		super("OSFlood", "Detects and akills users flooding OperServ");
@@ -28,5 +28,5 @@ public class osflood extends Plugin
 	{
 		e.remove();
 	}
-	
+
 }

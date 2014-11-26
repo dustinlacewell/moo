@@ -17,12 +17,12 @@ class commandVoteBase extends Command
 	public commandVoteBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Vote and manage votes");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -34,13 +34,13 @@ class commandVoteBase extends Command
 		source.notice(this.getCommandName() + " LIST [ALL] -- list known votes. If ALL is given, closed votes will also be shown");
 		source.notice(this.getCommandName() + " <num> yes/no -- vote on a certain vote");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
 		String nick = source.getUser().getNick();
 		String target = source.getTargetName();
-		
+
 		if (params.length < 2 || params[1].equalsIgnoreCase("list"))
 		{
 			boolean all = params.length > 2 && params[2].equalsIgnoreCase("all");
@@ -58,7 +58,7 @@ class commandVoteBase extends Command
 						source.reply("[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
 					any = true;
 				}
-			
+
 			if (any == false)
 			{
 				source.reply("No votes for " + target);
@@ -75,18 +75,18 @@ class commandVoteBase extends Command
 				source.reply("Unable to create vote!");
 				return;
 			}
-			
+
 			v.channel = target;
 			String msg = "";
 			for (int i = 2; i < params.length; ++i)
 				msg += params[i] + " ";
 			v.info = msg.trim();
 			v.owner = nick;
-			
+
 			v.insert();
 
 			source.reply("Added vote #" + v.id);
-			
+
 			String email = vote.getVoteEmailFor(target);
 			if (email != null)
 				Mail.send(email, "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
@@ -103,7 +103,7 @@ class commandVoteBase extends Command
 				source.reply("Vote " + params[2] + " is not a valid number");
 				return;
 			}
-			
+
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
@@ -113,7 +113,7 @@ class commandVoteBase extends Command
 
 			source.reply("Vote #" + vnum + " for " + target + " added by " + v.owner + " " + Moo.difference(new Date(), v.date) + " ago.");
 			source.reply(v.info);
-			
+
 			Cast[] casts = Cast.getCastsFor(v);
 			int negative = 0, positive = 0, total = 0;
 			String voted = "";
@@ -124,10 +124,10 @@ class commandVoteBase extends Command
 				else
 					++negative;
 				++total;
-				
+
 				voted += c.voter + " ";
 			}
-			
+
 			if (total > 0)
 			{
 				source.reply("Total: " + total + ", For: " + positive + " [" + (((float) positive / (float) total) * 100F) + "%], Against: " + negative + " [" + (((float) negative / (float) total) * 100F) + "%]");
@@ -148,14 +148,14 @@ class commandVoteBase extends Command
 				source.reply("Vote " + params[2] + " is not a valid number");
 				return;
 			}
-			
+
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
 				source.reply("Vote " + vnum + " does not exist.");
 				return;
 			}
-			
+
 			v.close();
 			source.reply("Vote " + vnum + " closed.");
 		}
@@ -231,32 +231,32 @@ class commandVoteBase extends Command
 				source.reply("Invalid vote number");
 				return;
 			}
-			
+
 			VoteInfo v = VoteInfo.getVote(vnum, target);
 			if (v == null)
 			{
 				source.reply("Error finding vote " + vnum);
 				return;
 			}
-			
+
 			if (v.findCastFor(nick))
 			{
 				source.reply("You have already voted.");
 				return;
 			}
-			
+
 			if (v.closed)
 			{
 				// Can't let you do that, Starfox.
 				source.reply("This vote is closed.");
 				return;
 			}
-			
+
 			Cast c = new Cast();
 			c.id = v.id;
 			c.channel = v.channel;
 			c.voter = nick;
-			
+
 			if (params[2].equalsIgnoreCase("yes"))
 				c.vote = true;
 			else if (params[2].equalsIgnoreCase("no"))
@@ -280,13 +280,13 @@ class commandVoteBase extends Command
 class CommandVote
 {
 	private Command mv, v;
-	
+
 	public CommandVote(Plugin pkg)
 	{
 		mv = new commandVoteBase(pkg, "!MOO-VOTE");
 		v = new commandVoteBase(pkg, "!VOTE");
 	}
-	
+
 	public void remove()
 	{
 		mv.remove();

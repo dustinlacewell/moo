@@ -16,7 +16,7 @@ class message211 extends Message
 		super("211");
 	}
 
-	/* 
+	/*
 	 * 0: moo
 	 * 1: services.rizon.net[unknown@255.255.255.255]
 	 * 2: 0  // Buf length
@@ -43,11 +43,11 @@ class message219 extends Message
 	{
 		super("219");
 	}
-	
+
 	private String convertBytes(long b)
 	{
 		String what = "bytes";
-		
+
 		if (b > 1024L)
 		{
 			b /= 1024L;
@@ -68,7 +68,7 @@ class message219 extends Message
 			b /= 1024L;
 			what = "TB";
 		}
-		
+
 		String tmp = Long.toString(b);
 		int dp = tmp.indexOf('.');
 		if (tmp.length() > dp + 2)
@@ -76,7 +76,7 @@ class message219 extends Message
 		else
 			return b + " " + what;
 	}
-	
+
 	protected static CommandSource source;
 	public static boolean request_all = false;
 
@@ -84,10 +84,10 @@ class message219 extends Message
 	public void run(String source, String[] message)
 	{
 		Server serv = Server.findServerAbsolute(source);
-		if (serv == null || this.source == null || message[1].equals("?") == false)
+		if (serv == null || message219.source == null || message[1].equals("?") == false)
 			return;
 		else if (request_all || serv.bytes >= 1024)
-			this.source.reply("[MAP] " + source + " " + this.convertBytes(serv.bytes));
+			message219.source.reply("[MAP] " + source + " " + this.convertBytes(serv.bytes));
 	}
 }
 
@@ -104,12 +104,12 @@ class message265 extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		if (this.source == null || message.length < 2)
+		if (message265.source == null || message.length < 2)
 			return;
 
 		int users = Integer.parseInt(message[1]);
 		if (users >= request_users)
-			this.source.reply("[MAP] " + source + " " + users);
+			message265.source.reply("[MAP] " + source + " " + users);
 	}
 }
 
@@ -121,12 +121,12 @@ class commandMapBase extends Command
 	{
 		super(pkg, cmd, "View hub lag and routing information");
 		this.full = full;
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -232,19 +232,19 @@ class CommandMap
 	private message265 msg_265 = new message265();
 	private commandMapRegular map_reg;
 	private commandMapAll map_all;
-	
+
 	public CommandMap(Plugin pkg)
-	{	
+	{
 		this.map_reg = new commandMapRegular(pkg);
 		this.map_all = new commandMapAll(pkg);
 	}
-	
+
 	public void remove()
 	{
 		this.msg_211.remove();
 		this.msg_219.remove();
 		this.msg_265.remove();
-		
+
 		this.map_reg.remove();
 		this.map_all.remove();
 	}

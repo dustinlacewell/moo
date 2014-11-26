@@ -18,7 +18,7 @@ public final class ClassLoader extends URLClassLoader
 		File jar = null;
 
 		this.plugin = plugin;
-		
+
 		if (plugin != null)
 		{
 			File targetFolder = new File(plugin + "/target/");
@@ -98,7 +98,7 @@ public final class ClassLoader extends URLClassLoader
 			log.log(Level.WARNING, "Unable to locate JAR for plugin " + plugin);
 		}
 	}
-	
+
 	public ClassLoader(String classname)
 	{
 		this(null, classname);
@@ -109,7 +109,7 @@ public final class ClassLoader extends URLClassLoader
 	{
 		return loadClassRecurse(name, true);
 	}
-	
+
 	private Class<?> loadClassRecurse(String name, boolean recurse) throws ClassNotFoundException
 	{
 		try
@@ -127,7 +127,7 @@ public final class ClassLoader extends URLClassLoader
 					catch (ClassNotFoundException ex2)
 					{
 					}
-			
+
 			throw ex;
 		}
 	}

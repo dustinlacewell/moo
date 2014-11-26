@@ -14,7 +14,7 @@ public class CommandIdle extends Command
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -29,7 +29,7 @@ public class CommandIdle extends Command
 	{
 		if (params.length != 2)
 			return;
-		
+
 		if (AntiIdleEntry.removeTimerFor(params[1]))
 			source.reply("Antiidle removed for " + params[1]);
 	}

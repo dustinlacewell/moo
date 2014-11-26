@@ -22,7 +22,7 @@ class CommandShutdown extends Command
 		source.notice("Please note that this will show the nick!user@host of the user");
 		source.notice("issuing this command in the quit message.");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{

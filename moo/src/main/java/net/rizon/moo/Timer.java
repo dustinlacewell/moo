@@ -17,31 +17,31 @@ public abstract class Timer
 	{
 		this.tick = new Date(System.currentTimeMillis() + (time_from_now * 1000));
 		this.time_from_now = time_from_now;
-		this.repeating = repeating;	
+		this.repeating = repeating;
 	}
-	
+
 	public void start()
 	{
 		timers.add(this);
 	}
-	
+
 	public void stop()
 	{
 		timers.remove(this);
 	}
-	
+
 	public void setRepeating(boolean r)
 	{
 		this.repeating = r;
 	}
-	
+
 	public final Date getTick()
 	{
 		return this.tick;
 	}
-	
+
 	public abstract void run(final Date now);
-	
+
 	public static void processTimers()
 	{
 		Date now = new Date();
@@ -49,7 +49,7 @@ public abstract class Timer
 		for (int i = timers.size(); i >  0; --i)
 		{
 			Timer t = timers.get(i - 1);
-			
+
 			if (now.after(t.tick))
 			{
 				try
@@ -60,7 +60,7 @@ public abstract class Timer
 				{
 					log.log(Level.WARNING, "Error running timer " + t.toString(), ex);
 				}
-				
+
 				if (t.repeating == false)
 					t.stop();
 				else

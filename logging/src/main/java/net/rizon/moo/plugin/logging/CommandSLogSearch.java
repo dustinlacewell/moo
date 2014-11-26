@@ -16,30 +16,30 @@ class logSearcher extends Thread
 	private CommandSource source;
 	private String search;
 	private int limit;
-	
+
 	public logSearcher(CommandSource source, final String search, final int limit)
 	{
 		this.source = source;
 		this.search = search;
 		this.limit = limit;
 	}
-	
+
 	@Override
 	public void run()
 	{
 		Connection con = Moo.db.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try
 		{
 			stmt = con.prepareStatement("SELECT max(id)+1 AS `max` FROM `services_logs`");
 			rs = stmt.executeQuery();
 			int max = rs.getInt("max");
-			
+
 			stmt.close();
 			rs.close();
-			
+
 			if (this.limit > 0)
 			{
 				stmt = con.prepareStatement("SELECT `date`,`data` FROM `services_logs` WHERE `id` >= ? AND `data` LIKE ?");
@@ -59,7 +59,7 @@ class logSearcher extends Thread
 				++count;
 				source.notice(rs.getString("date") + ": " + rs.getString("data"));
 			}
-			
+
 			if (this.limit > 0)
 				source.reply("Done, " + count + " shown. Searched the last " + this.limit + " entries.");
 			else
@@ -91,7 +91,7 @@ class CommandSLogSearch extends Command
 	{
 		if (params.length <= 1)
 			return;
-		
+
 		int num = 0;
 		if (params.length >= 3)
 			try
@@ -101,7 +101,7 @@ class CommandSLogSearch extends Command
 					return;
 			}
 			catch (NumberFormatException ex) { }
-		
+
 		new logSearcher(source, params[1], num).start();
 	}
 }

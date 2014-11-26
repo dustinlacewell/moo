@@ -15,22 +15,22 @@ class commandServerBase extends Command
 	public commandServerBase(Plugin pkg, final String command)
 	{
 		super(pkg, command, "Views servers");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	private static boolean isLink(Server s, Server targ)
 	{
 		for (Iterator<Server> it = s.links.iterator(); it.hasNext();)
 		{
 			Server s2 = it.next();
-			
+
 			if (targ == s2)
 				return true;
 		}
-		
+
 		return false;
 	}
 
@@ -106,7 +106,7 @@ class commandServerBase extends Command
 			else
 			{
 				boolean modified = false;
-				
+
 				for (int i = 2; i < params.length; ++i)
 				{
 					Server arg = Server.findServer(params[i].substring(1));
@@ -130,7 +130,7 @@ class commandServerBase extends Command
 						source.reply("You may only link servers to hubs");
 						continue;
 					}
-					
+
 					if (modified == false)
 					{
 						s.allowed_clines.clear();
@@ -138,7 +138,7 @@ class commandServerBase extends Command
 					}
 					s.allowed_clines.add(arg.getName());
 				}
-				
+
 				source.reply("Prefered links for " + s.getName() + " set to " + s.allowed_clines.toString());
 			}
 		}
@@ -152,7 +152,7 @@ class commandServerBase extends Command
 			for (Server s : Server.getServers())
 			{
 				boolean output = false;
-				
+
 				if (match != null)
 				{
 					if (Moo.matches(s.getName(), "*" + match + "*"))
@@ -162,7 +162,7 @@ class commandServerBase extends Command
 				}
 				else if (s.isServices())
 					continue;
-				
+
 				int diff = s.users - s.last_users;
 				String change = String.valueOf(diff);
 				if (diff == 0)
@@ -170,14 +170,14 @@ class commandServerBase extends Command
 				else if (change.startsWith("-") == false)
 					change = "+" + change;
 				boolean bigChange = diff >= 50 || diff <= -50;
-				
+
 				String links = "";
 				HashSet<String> why = new HashSet<String>();
 				for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 				{
 					String link_name = it.next();
 					Server link_server = Server.findServerAbsolute(link_name);
-					
+
 					if (link_server == null)
 					{
 						links += Message.COLOR_RED;
@@ -200,7 +200,7 @@ class commandServerBase extends Command
 					}
 					else
 						links += Message.COLOR_GREEN;
-					
+
 					if (link_server != null)
 					{
 						if (isLink(s, link_server))
@@ -216,7 +216,7 @@ class commandServerBase extends Command
 					links = links.substring(0, links.length() - 2);
 				else
 					links = "N/A";
-				
+
 				String msg = "";
 				boolean showAllCLines = false;
 				if (s.getSplit() != null)
@@ -243,7 +243,7 @@ class commandServerBase extends Command
 						if (p_s != null && isLink(s, p_s))
 							good = true;
 					}
-					
+
 					if (good == false)
 					{
 						output = true;
@@ -257,7 +257,7 @@ class commandServerBase extends Command
 					showAllCLines = true;
 					why.add("Only one CLine");
 				}
-				
+
 				if (s.clines.size() > 0)
 				{
 					int frzcount = 0;
@@ -266,11 +266,11 @@ class commandServerBase extends Command
 						Server link = Server.findServerAbsolute(linkname);
 						if (link == null)
 							continue;
-						
+
 						if (link.frozen)
 							frzcount += 1;
 					}
-					
+
 					if (frzcount == s.clines.size())
 					{
 						output = true;
@@ -278,18 +278,18 @@ class commandServerBase extends Command
 						why.add("All CLines frozen");
 					}
 				}
-				
+
 				msg += "[Users: " + s.users + change + "] ";
 				msg += s.getName();
 				msg += Message.COLOR_END;
 				msg += " / " + links;
-				
+
 				links = "";
 				for (Iterator<String> it = s.clines.iterator(); it.hasNext();)
 				{
 					String cline_name = it.next();
 					Server cline_server = Server.findServerAbsolute(cline_name);
-					
+
 					if (cline_server == null)
 						links += Message.COLOR_RED;
 					else if (cline_server.isServices())
@@ -304,9 +304,9 @@ class commandServerBase extends Command
 						continue;
 					else
 						links += Message.COLOR_GREEN;
-					
+
 					output = true;
-					
+
 					if (cline_server != null)
 					{
 						if (isLink(s, cline_server))
@@ -322,35 +322,35 @@ class commandServerBase extends Command
 					links = links.substring(0, links.length() - 2);
 				else
 					links = "N/A";
-				
+
 				msg += " / " + links;
-				
+
 				if (why.isEmpty() == false)
 					msg += " / " + why.toString();
-				
+
 				if (s.getDesc().isEmpty() == false)
 				{
 					msg += " / " + s.getDesc();
 					output = true;
 				}
-				
+
 				if (output || all)
 				{
 					source.reply(msg);
 					all_output = true;
 				}
 			}
-			
+
 			int total_diff = Server.cur_total_users - Server.last_total_users;
 			String change = String.valueOf(total_diff);
 			if (change.startsWith("-") == false)
 				change = "+" + change;
-			
+
 			if (match == null && (all_output || all))
 				source.reply("Total Users: " + Server.cur_total_users + change);
 		}
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -385,7 +385,7 @@ class commandCline extends commandServerBase
 	{
 		super(pkg, "!CLINE");
 	}
-	
+
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
@@ -397,20 +397,20 @@ class commandCline extends commandServerBase
 class CommandServer
 {
 	private Command e, d, c;
-	
+
 	public CommandServer(Plugin pkg)
 	{
 		e = new commandServerBase(pkg, "!SERVER");
 		d = new commandServerBase(pkg, ".SERVER");
-		
+
 		c = new commandCline(pkg);
 	}
-	
+
 	public void remove()
 	{
 		e.remove();
 		d.remove();
-		
+
 		c.remove();
 	}
 }

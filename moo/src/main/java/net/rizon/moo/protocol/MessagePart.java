@@ -13,7 +13,7 @@ public class MessagePart extends Message
 	{
 		super("PART");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
@@ -31,7 +31,7 @@ public class MessagePart extends Message
 				u.removeChannel(mem);
 			}
 		}
-		
+
 		for (Event e : Event.getEvents())
 			e.onPart(source, message[0]);
 	}

@@ -2,7 +2,6 @@ package net.rizon.moo.protocol.plexus;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
-import net.rizon.moo.Plugin;
 import net.rizon.moo.protocol.Message001;
 import net.rizon.moo.protocol.Message213;
 import net.rizon.moo.protocol.Message219;
@@ -30,9 +29,9 @@ public class plexus extends ProtocolPlugin
 	private Message m001, m213, m219, m243, m303, m353, m364, m401, m474, invite, ping, privmsg, join, part,
 					kick, mode, nick, notice, quit, wallops,
 					m015, m017;
-	
+
 	private Event e;
-	
+
 	public plexus()
 	{
 		super("Plexus", "Plexus protocol functions");
@@ -62,11 +61,11 @@ public class plexus extends ProtocolPlugin
 		notice = new MessageNotice();
 		quit = new MessageQuit();
 		wallops = new MessageWallops();
-		
+
 		/* Plexus */
 		m015 = new Message015();
 		m017 = new Message017();
-		
+
 		e = new EventPlexus();
 	}
 
@@ -93,10 +92,10 @@ public class plexus extends ProtocolPlugin
 		notice.remove();
 		quit.remove();
 		wallops.remove();
-		
+
 		m015.remove();
 		m017.remove();
-		
+
 		e.remove();
 	}
 }

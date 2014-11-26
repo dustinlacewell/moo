@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
-import net.rizon.moo.Moo;
 import net.rizon.moo.Timer;
 
 public abstract class Graph extends Timer
 {
 	private static final Logger log = Logger.getLogger(Graph.class.getName());
-	
+
 	private static File rrd_bin = new File(grapher.conf.bin),
 			rrd_graphdir = new File(grapher.conf.dir);
 	private static Runtime rt = Runtime.getRuntime();
@@ -25,7 +24,7 @@ public abstract class Graph extends Timer
 		long min;
 		long max;
 	}
-	
+
 	private String name;
 	private long step;
 	private ArrayList<dataSource> dataSources = new ArrayList<dataSource>();
@@ -39,7 +38,7 @@ public abstract class Graph extends Timer
 		this.name = name + ".rrd";
 		this.step = step;
 	}
-	
+
 	private void exec(final String subcommand, final String args)
 	{
 		if (rrd_bin.exists() == false || rrd_bin.canExecute() == false)
@@ -47,10 +46,10 @@ public abstract class Graph extends Timer
 			log.log(Level.WARNING, "RRDTool binary does not exist or is not executable");
 			return;
 		}
-		
+
 		if (rrd_graphdir.exists() == false)
 			rrd_graphdir.mkdir();
-		
+
 		File database = new File(rrd_graphdir.getAbsolutePath() + File.separatorChar + this.name);
 		if (database.getParentFile() != null && database.getParentFile().exists() == false)
 			database.getParentFile().mkdir();
@@ -58,7 +57,7 @@ public abstract class Graph extends Timer
 		if (database.exists() == false)
 		{
 			String create_command = "create " + database.getAbsolutePath() + " --step " + this.step;
-			
+
 			for (int i = 0; i < this.dataSources.size(); ++i)
 			{
 				dataSource ds = this.dataSources.get(i);
@@ -69,7 +68,7 @@ public abstract class Graph extends Timer
 						ds_type = "GAUGE";
 						break;
 				}
-				
+
 				if (ds_type == null)
 				{
 					log.log(Level.WARNING, "Unknown DataSourceType");
@@ -78,7 +77,7 @@ public abstract class Graph extends Timer
 
 				create_command += " DS:" + ds.name + ":" + ds_type + ":" + ds.heartbeat + ":" + ds.min + ":" + ds.max;
 			}
-			
+
 			String rra_type = null;
 			switch (this.rra_type)
 			{
@@ -86,7 +85,7 @@ public abstract class Graph extends Timer
 					rra_type = "MAX";
 					break;
 			}
-			
+
 			if (rra_type == null)
 			{
 				log.log(Level.WARNING, "Unknown RoundRobinArchiveType");
@@ -94,7 +93,7 @@ public abstract class Graph extends Timer
 			}
 
 			create_command += " RRA:" + rra_type + ":0.5:" + this.rra_steps + ":" + this.rra_rows;
-			
+
 			try
 			{
 				Process p = rt.exec(rrd_bin.getAbsolutePath() + " " + create_command);
@@ -107,9 +106,9 @@ public abstract class Graph extends Timer
 				log.log(Level.WARNING, "Error executing RRDTool with \"" + create_command + "\"", ex);
 			}
 		}
-		
+
 		String command = subcommand + " " + database.getAbsolutePath() + " " + args;
-		
+
 		try
 		{
 			Process p = rt.exec(rrd_bin.getAbsolutePath() + " " + command);
@@ -122,7 +121,7 @@ public abstract class Graph extends Timer
 			log.log(Level.WARNING, "Error executing RRDTool with \"" + command + "\"", ex);
 		}
 	}
-	
+
 	protected void addDataSource(final String name, DataSourceType type, long heartbeat, long min, long max)
 	{
 		dataSource ds = new dataSource();
@@ -133,14 +132,14 @@ public abstract class Graph extends Timer
 		ds.max = max;
 		this.dataSources.add(ds);
 	}
-	
+
 	protected void setRRA(RoundRobinArchiveType rrat, long steps, long rows)
 	{
 		this.rra_type = rrat;
 		this.rra_steps = steps;
 		this.rra_rows = rows;
 	}
-	
+
 	public void update(final String[] values)
 	{
 		String s = "N";
@@ -148,7 +147,7 @@ public abstract class Graph extends Timer
 			s += ":" + v;
 		this.exec("update", s);
 	}
-	
+
 	public void update(long time, final String[] values)
 	{
 		String s = String.valueOf(time);

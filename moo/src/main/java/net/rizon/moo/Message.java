@@ -13,7 +13,7 @@ public abstract class Message
 	public static final String COLOR_BRIGHTBLUE = "\00311";
 	public static final String COLOR_UNDERLINE = "\037";
 	public static final String COLOR_END = "\017";
-	
+
 	private String name;
 
 	public Message(final String name)
@@ -21,21 +21,21 @@ public abstract class Message
 		this.name = name;
 		Message.messages.push(this);
 	}
-	
+
 	public void remove()
 	{
 		Message.messages.remove(this);
 	}
-	
+
 	public final String getName()
 	{
 		return this.name;
 	}
-	
+
 	public abstract void run(final String source, final String[] message);
-	
+
 	public static LinkedList<Message> messages = new LinkedList<Message>();
-	
+
 	public static void runMessage(final String source, final String message, final String[] buffer)
 	{
 		int hash = messages.hashCode(); // XXX

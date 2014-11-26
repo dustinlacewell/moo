@@ -23,13 +23,13 @@ class soaCheck extends Thread
 		this.source = source;
 		this.debug = debug;
 	}
-	
+
 	@Override
 	public void run()
 	{
 		Runtime runtime = Runtime.getRuntime();
-		HashMap<String, Integer> nameservers = new HashMap<String, Integer>(); 
-		
+		HashMap<String, Integer> nameservers = new HashMap<String, Integer>();
+
 		try
 		{
 			Process proc = runtime.exec("dig " + this.domain + " NS");
@@ -40,28 +40,28 @@ class soaCheck extends Thread
 					line = line.replaceAll("	", " ");
 				while (line.indexOf("  ") != -1)
 					line = line.replaceAll("  ", " ");
-				
+
 				if (line.isEmpty() || line.startsWith(this.domain) == false)
 					continue;
-				
+
 				String[] tokens = line.split(" ");
-				
+
 				nameservers.put(tokens[4], 0);
-				
+
 				if (this.debug)
 					source.reply(this.domain + " has nameserver " + tokens[4]);
 			}
-			
+
 			in.close();
 			proc.getOutputStream().close();
 			proc.getErrorStream().close();
-			
+
 			for (Iterator<String> it = nameservers.keySet().iterator(); it.hasNext();)
 			{
 				String nameserver = it.next();
 				proc = runtime.exec("dig soa " + this.domain + " @" + nameserver);
 				in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-				
+
 				for (String line; (line = in.readLine()) != null;)
 				{
 					while (line.indexOf("	") != -1)
@@ -71,31 +71,31 @@ class soaCheck extends Thread
 
 					if (line.isEmpty() || line.startsWith(this.domain) == false || line.indexOf("SOA") == -1)
 						continue;
-					
+
 					String[] tokens = line.split(" ");
 					nameservers.put(nameserver, Integer.parseInt(tokens[6]));
-				
+
 					if (this.debug)
 						source.reply("Got SOA reply from " + nameserver + " for " + this.domain + ", serial " + tokens[6]);
 				}
-				
+
 				in.close();
 				proc.getOutputStream().close();
 				proc.getErrorStream().close();
 			}
-			
+
 			if (nameservers.size() == 1)
 			{
 				source.reply(this.domain + " only has one nameserver");
 				return;
 			}
-			
+
 			int last = -1;
 			for (Iterator<String> it = nameservers.keySet().iterator(); it.hasNext();)
 			{
 				String nameserver = it.next();
 				int value = nameservers.get(nameserver);
-				
+
 				if (last == -1)
 					last = value;
 				else if (last != value)
@@ -126,12 +126,12 @@ class CommandSoa extends Command
 	public CommandSoa(Plugin pkg)
 	{
 		super(pkg, "!SOA", "Check if SOA records for a domain are valid");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -151,9 +151,9 @@ class CommandSoa extends Command
 			source.reply("You must give a valid hostname.");
 			return;
 		}
-		
+
 		boolean debug = params.length > 2 && params[2].equalsIgnoreCase("debug");
-		
+
 		soaCheck soa = new soaCheck(params[1], source, debug);
 		soa.start();
 	}

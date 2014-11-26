@@ -15,38 +15,38 @@ public abstract class Command extends Message
 		this.pkg = pkg;
 		this.cmdname = cmdname;
 		this.description = desc;
-		
+
 		pkg.commands.add(this);
 	}
-	
+
 	@Override
 	public void remove()
 	{
 		pkg.commands.remove(this);
 		super.remove();
 	}
-	
+
 	public Plugin getPackage()
 	{
 		return this.pkg;
 	}
-	
+
 	public final String getCommandName()
 	{
 		return this.cmdname;
 	}
-	
+
 	public final String getDescription()
 	{
 		return this.description;
 	}
-	
+
 	protected void requiresChannel(final String[] chans)
 	{
 		for (String c : chans)
 			channels.add(c.toLowerCase());
 	}
-	
+
 	public boolean isRequiredChannel(String channel)
 	{
 		return channels.isEmpty() || channels.contains(channel.toLowerCase());
@@ -61,7 +61,7 @@ public abstract class Command extends Message
 		String tokens[] = message[1].split(" ");
 		if (!this.cmdname.equalsIgnoreCase(tokens[0]))
 			return;
-		
+
 		if (!this.isRequiredChannel(message[0]))
 			return;
 
@@ -75,7 +75,7 @@ public abstract class Command extends Message
 	}
 
 	public abstract void execute(CommandSource source, String[] params);
-	
+
 	public void onHelpList(CommandSource source)
 	{
 		if (this.getDescription() != null && this.getDescription().isEmpty() == false)
@@ -83,7 +83,7 @@ public abstract class Command extends Message
 		else
 			source.notice(" " + this.getCommandName());
 	}
-	
+
 	public void onHelp(CommandSource source)
 	{
 		source.notice("No help available.");

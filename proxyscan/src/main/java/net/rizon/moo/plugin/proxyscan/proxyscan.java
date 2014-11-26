@@ -14,7 +14,7 @@ import java.util.logging.Level;
 public class proxyscan extends Plugin
 {
 	protected static final Logger log = Logger.getLogger(proxyscan.class.getName());
-	
+
 	private Event e;
 	private ScanListener sc;
 	private Command c;
@@ -44,17 +44,17 @@ public class proxyscan extends Plugin
 		sc.shutdown();
 		c.remove();
 	}
-	
+
 	public static void akill(String ip, int port, String type, boolean input)
 	{
 		if (cache.hit(ip))
 			return;
-		
+
 		String message = conf.ban_message.replace("%i", ip).replace("%p", "" + port).replace("%t", type);
-		
+
 		Moo.privmsgAll(conf.channels, "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
 		Moo.akill(ip, "+3d", message);
-		
+
 		try
 		{
 			PreparedStatement statement = Moo.db.prepare("INSERT INTO `proxies` (protocol, port, ip) VALUES(?, ?, ?)");
@@ -67,8 +67,8 @@ public class proxyscan extends Plugin
 		{
 			log.log(Level.WARNING, "Unable to record proxy hit", ex);
 		}
-		
+
 		if (conf.py_opers)
-			Moo.privmsg("py-opers", "~dnsbl_admin.add " + ip + " 1 " + message); 
+			Moo.privmsg("py-opers", "~dnsbl_admin.add " + ip + " 1 " + message);
 	}
 }

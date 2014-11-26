@@ -12,14 +12,14 @@ public class EventDnsbl extends Event
 		for (Server s : Server.getServers())
 			Moo.sock.write("STATS B " + s.getName());
 	}
-	
+
 	@Override
 	public void onServerLink(Server serv, Server to)
 	{
 		/* Be sure dnsbl stats are up to date, prevents long splits from tripping the dnsbl monitor */
 		Moo.sock.write("STATS B " + serv.getName());
 	}
-	
+
 	@Override
 	public void onServerDestroy(Server serv)
 	{

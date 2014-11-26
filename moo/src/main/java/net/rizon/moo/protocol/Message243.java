@@ -10,15 +10,15 @@ public class Message243 extends Message
 	{
 		super("243");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
 		if (message.length < 6)
 			return;
-		
+
 		String oper = message[4];
-		
+
 		Server s = Server.findServerAbsolute(source);
 		if (s == null)
 			s = new Server(source);

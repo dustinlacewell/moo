@@ -16,7 +16,7 @@ class message242 extends Message
 {
 	protected static CommandSource source;
 	public static HashSet<String> waiting_for = new HashSet<String>();
-	
+
 	public message242()
 	{
 		super("242");
@@ -28,11 +28,11 @@ class message242 extends Message
 		Server s = Server.findServerAbsolute(source);
 		if (s == null)
 			s = new Server(source);
-		
+
 		String upstr = message[1];
 		String[] tokens = upstr.split(" ");
 		String[] times = tokens[4].split(":");
-		
+
 		int days, hours, mins, secs;
 		try
 		{
@@ -46,15 +46,15 @@ class message242 extends Message
 			Logger.getGlobalLogger().log(ex);
 			return;
 		}
-		
+
 		long total_ago = secs + (mins * 60) + (hours * 60 * 60) + (days * 60 * 60 * 24 );
 		s.uptime = new Date(System.currentTimeMillis() - (total_ago * 1000L));
-			
+
 		waiting_for.remove(s.getName());
-		
+
 		if (waiting_for.isEmpty())
 		{
-			CommandUptime.post_update(this.source);
+			CommandUptime.post_update(message242.source);
 		}
 	}
 }
@@ -63,19 +63,19 @@ class CommandUptime extends Command
 {
 	@SuppressWarnings("unused")
 	private static message242 message_242 = new message242();
-	
+
 	public CommandUptime(Plugin pkg)
 	{
 		super(pkg, "!UPTIME", "View server uptimes");
-		
+
 		this.requiresChannel(Moo.conf.staff_channels);
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
-	
+
 	private static boolean only_extremes;
 	private static String want_server;
-	
+
 	@Override
 	public void onHelp(CommandSource source)
 	{
@@ -96,11 +96,11 @@ class CommandUptime extends Command
 	public void execute(CommandSource source, String[] params)
 	{
 		want_server = null;
-		
+
 		if (params.length > 1)
 		{
 			only_extremes = false;
-			
+
 			if (!params[1].equalsIgnoreCase("ALL"))
 			{
 				want_server = params[1];
@@ -108,7 +108,7 @@ class CommandUptime extends Command
 		}
 		else
 			only_extremes = true;
-		
+
 		message242.waiting_for.clear();
 		for (Server s : Server.getServers())
 		{
@@ -121,34 +121,34 @@ class CommandUptime extends Command
 
 		message242.source = source;
 	}
-	
+
 	private static Split findLastSplit(Server s)
 	{
 		for (int i = s.getSplits().length; i > 0; --i)
 		{
 			Split sp = s.getSplits()[i - 1];
-			
+
 			Server serv = Server.findServerAbsolute(sp.from);
 			if (serv == null)
 				continue;
-			
+
 			boolean b = false;
 			for (int j = serv.getSplits().length; j > 0; --j)
 			{
 				Split upsp = serv.getSplits()[j - 1];
-				
+
 				if (upsp.when.equals(sp.when))
 					b = true;
 			}
 			if (b == true)
 				continue;
-			
+
 			return sp;
 		}
-		
+
 		return null;
 	}
-	
+
 	private static int dashesFor(Server s)
 	{
 		int longest = 0;
@@ -158,23 +158,23 @@ class CommandUptime extends Command
 			if (l > longest)
 				longest = l;
 		}
-		
+
 		return longest - s.getName().length() + 2;
 	}
-	
+
 	public static void post_update(CommandSource source)
 	{
 		Date highest = null, lowest = null;
 		Split highest_sp = null, lowest_sp = null;
 		Date now = new Date();
-		
+
 		for (Server s : Server.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			
+
 			Split sp = findLastSplit(s);
-			
+
 			if (highest == null || s.uptime.before(highest))
 				highest = s.uptime;
 			if (lowest == null || s.uptime.after(lowest))
@@ -184,7 +184,7 @@ class CommandUptime extends Command
 			if (lowest_sp == null || (sp != null && sp.when.after(lowest_sp.when)))
 				lowest_sp = sp;
 		}
-		
+
 		boolean shown = false;
 		for (Server s : Server.getServers())
 		{
@@ -194,15 +194,15 @@ class CommandUptime extends Command
 				continue;
 
 			boolean is_extreme = false;
-			
+
 			Split sp = findLastSplit(s);
 			int dashes = dashesFor(s);
-			
+
 			String buffer = "[UPTIME] " + s.getName() + " ";
 			for (int i = 0; i < dashes; ++i)
 				buffer += "-";
 			buffer += " ";
-			
+
 			if (s.uptime == highest)
 			{
 				buffer += Message.COLOR_GREEN;
@@ -215,7 +215,7 @@ class CommandUptime extends Command
 			}
 			buffer += s.uptime.toString();
 			buffer += Message.COLOR_END;
-			
+
 			if (sp != null)
 			{
 				buffer += " - ";
@@ -232,7 +232,7 @@ class CommandUptime extends Command
 				buffer += Moo.difference(now, sp.when);
 				buffer += Message.COLOR_END;
 			}
-			
+
 			if (CommandUptime.only_extremes)
 			{
 				if (is_extreme)
@@ -247,7 +247,7 @@ class CommandUptime extends Command
 				shown = true;
 			}
 		}
-		
+
 		if (shown == false)
 		{
 			if (want_server != null)

@@ -13,7 +13,7 @@ public class MessageKick extends Message
 	{
 		super("KICK");
 	}
-	
+
 	@Override
 	public void run(String source, String[] message)
 	{
@@ -31,7 +31,7 @@ public class MessageKick extends Message
 				u.removeChannel(mem);
 			}
 		}
-		
+
 		for (Event e : Event.getEvents())
 			e.onKick(source, message[1], message[0]);
 	}

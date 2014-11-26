@@ -5,32 +5,32 @@ import java.util.Iterator;
 class Pattern extends FloodList
 {
 	private Field type;
-	
+
 	private short length = 0;
-	
+
 	private short lower = 0, upper = 0, number = 0, other = 0;
-	
+
 	/* 0 = lower, 1 = upper */
 	private int lowerUpperMask = 0;
 	/* 0 = not, 1 = char */
 	private int charMask = 0;
 	/* 0 = not, 1 = number */
 	private int numberMask = 0;
-	
+
 	private Pattern(Field type, final String s)
 	{
 		this.type = type;
-		
+
 		this.length = (short) s.length();
-		
+
 		for (int i = 0; i < this.length; ++i)
 		{
 			char c = s.charAt(i);
-			
+
 			if (Character.isLetter(c))
 			{
 				this.charMask |= 1 << i;
-				
+
 				if (Character.isUpperCase(c))
 				{
 					++this.upper;
@@ -42,7 +42,7 @@ class Pattern extends FloodList
 			else if (Character.isDigit(c))
 			{
 				this.numberMask |= 1 << i;
-				
+
 				++this.number;
 			}
 			else
@@ -51,7 +51,7 @@ class Pattern extends FloodList
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -78,29 +78,29 @@ class Pattern extends FloodList
 			return false;
 		else if (this.other != other.other)
 			return false;
-		
+
 		return true;
 	}
-	
+
 	public static Pattern getOrCreatePattern(final Field type, final String s)
 	{
 		Pattern p = new Pattern(type, s);
 		for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
 		{
 			FloodList fl = it.next();
-			
+
 			if (fl.isClosed)
 				continue;
-			
+
 			if (fl instanceof Pattern)
 			{
 				Pattern pfl = (Pattern) fl;
-				
+
 				if (pfl.equalTo(p))
 					return pfl;
 			}
 		}
-		
+
 		p.open();
 		return p;
 	}
