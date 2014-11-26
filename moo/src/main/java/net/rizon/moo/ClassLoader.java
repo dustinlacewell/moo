@@ -6,14 +6,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 
-import net.rizon.moo.Logger;
-import net.rizon.moo.Plugin;
-
 public final class ClassLoader extends URLClassLoader
 {
 	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
 	private String plugin;
-	
+
 	public ClassLoader(String plugin, String classname)
 	{
 		super(new URL[0]);
@@ -56,7 +53,22 @@ public final class ClassLoader extends URLClassLoader
 
 			if (jar == null)
 			{
-				log.log(Level.WARNING, "Unable to find plugin JAR in " + plugin + "/target/.");
+				File f = new File(targetFolder, "classes/");
+				if (!f.isDirectory())
+				{
+					log.log(Level.WARNING, "Unable to locate plugin JAR/class files for " + plugin);
+					return;
+				}
+
+				log.log(Level.FINE, "Using classes/ for plugin " + plugin);
+				try
+				{
+					this.addURL(f.toURI().toURL());
+				}
+				catch (MalformedURLException ex)
+				{
+					log.log(Level.WARNING, "Unable to add class URL for " + plugin + " [" + f.toURI() + "]", ex);
+				}
 				return;
 			}
 			else
