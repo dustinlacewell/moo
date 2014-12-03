@@ -27,7 +27,7 @@ class EventLogging extends Event
 		Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
 		
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `wallops_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` DATETIME DEFAULT CURRENT_TIMESTAMP, `type`, `source`, `message`);");
-		Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
+		//Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
 	}
 
 	private int count = 0;
@@ -38,7 +38,7 @@ class EventLogging extends Event
 		if (++count == 144)
 		{
 			Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
-			Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
+			//Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
 			count = 0;
 		}
 	}
