@@ -1,6 +1,8 @@
 package net.rizon.moo.plugin.commands;
 
 import java.util.Iterator;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
@@ -100,14 +102,18 @@ class message265 extends Message
 
 	protected static CommandSource source;
 	public static int request_users = 0;
+	private static Pattern p = Pattern.compile("Current local users:? (\\d+)[ ,]*[Mm]ax:? (\\d+)");
 
 	@Override
 	public void run(String source, String[] message)
 	{
 		if (message265.source == null || message.length < 2)
 			return;
+		
+		Matcher m = p.matcher(message[message.length - 1]);
+		m.matches();		
+		int users = Integer.parseInt(m.group(1));		
 
-		int users = Integer.parseInt(message[1]);
 		if (users >= request_users)
 			message265.source.reply("[MAP] " + source + " " + users);
 	}
