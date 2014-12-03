@@ -11,7 +11,7 @@ import net.rizon.moo.Plugin;
 
 public class logging extends Plugin
 {
-	private Command ls, sls;
+	private Command ls, sls, wls;
 	private Event e;
 
 	public logging()
@@ -24,6 +24,7 @@ public class logging extends Plugin
 	{
 		ls = new CommandLogSearch(this);
 		sls = new CommandSLogSearch(this);
+		wls = new CommandWLogSearch(this);
 
 		e = new EventLogging();
 	}
@@ -33,6 +34,7 @@ public class logging extends Plugin
 	{
 		ls.remove();
 		sls.remove();
+		wls.remove();
 
 		e.remove();
 	}

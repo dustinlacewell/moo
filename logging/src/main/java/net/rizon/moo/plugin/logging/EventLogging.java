@@ -25,6 +25,9 @@ class EventLogging extends Event
 
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `services_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` datetime default current_timestamp, `data` collate nocase)");
 		Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
+		
+		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `wallops_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` DATETIME DEFAULT CURRENT_TIMESTAMP, `type`, `source`, `message`);");
+		Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
 	}
 
 	private int count = 0;
@@ -35,6 +38,7 @@ class EventLogging extends Event
 		if (++count == 144)
 		{
 			Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
+			Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
 			count = 0;
 		}
 	}
@@ -213,12 +217,13 @@ class EventLogging extends Event
 		}
 	}
 
-	private static final Pattern akillAddPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)[)\\]]$");
+	private static final Pattern akillAddPattern = Pattern.compile("([^ ]+) added an AKILL for [^@]+@([^ ]+) \\((.*)\\)\\]$");
 	private static final Pattern akillDelPattern = Pattern.compile("([^ ]+) removed an AKILL for [^@]@([^ ]+) \\((.*) - .*\\)$");
-	private static final Pattern operPattern = Pattern.compile("\2([^ ]+)\2 is now an IRC operator");
+	private static final Pattern operPattern = Pattern.compile("\2?([^!]+).*\2? is now an IRC operator");
 	private static final Pattern sessionPattern = Pattern.compile("Added a temporary AKILL for \2[^@]+@([^ ]+)\2");
 	private static final Pattern connectPattern = Pattern.compile("Remote CONNECT ([^ ]*) [0-9]* from ([^ ]*)$");
-
+	private static final Pattern wallTypePattern = Pattern.compile("^([A-Z]+) - (.+)");
+	
 	private static void checkAkill(final String ip)
 	{
 		try
@@ -243,122 +248,177 @@ class EventLogging extends Event
 	@Override
 	public void onWallops(final String source, final String message)
 	{
+		wallopsLog(source, message);
+		
 		if (message.startsWith("OPERWALL") == false && source.indexOf('@') != -1)
 			return;
 
 		Matcher m = akillAddPattern.matcher(message);
 		if (m.find())
 		{
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
-
-				stmt.setString(1, "AKILL");
-				stmt.setString(2, m.group(1));
-				stmt.setString(3, m.group(2));
-				stmt.setString(4, m.group(3));
-
-				Moo.db.executeUpdate();
-
-				checkAkill(m.group(2));
-			}
-			catch (SQLException ex)
-			{
-				Logger.getGlobalLogger().log(ex);
-			}
-
+			addAkillLog(m);
 			return;
 		}
 
 		m = akillDelPattern.matcher(message);
 		if (m.find())
 		{
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
-
-				stmt.setString(1, "AKILLDEL");
-				stmt.setString(2, m.group(1));
-				stmt.setString(3, m.group(2));
-				stmt.setString(4, m.group(3));
-
-				Moo.db.executeUpdate();
-			}
-			catch (SQLException ex)
-			{
-				Logger.getGlobalLogger().log(ex);
-			}
-
+			delAkillLog(m);
 			return;
 		}
 
 		m = operPattern.matcher(message);
 		if (m.find())
 		{
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `target`) VALUES (?, ?)");
-
-				stmt.setString(1, "OPER");
-				stmt.setString(2, m.group(1));
-
-				Moo.db.executeUpdate();
-			}
-			catch (SQLException ex)
-			{
-				Logger.getGlobalLogger().log(ex);
-			}
-
+			operLog(m);
 			return;
 		}
 
 		m = sessionPattern.matcher(message);
 		if (m.find())
 		{
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
-
-				stmt.setString(1, "AKILL");
-				stmt.setString(2, "OperServ");
-				stmt.setString(3, m.group(1));
-				stmt.setString(4, "Session limit exceeded");
-
-				Moo.db.executeUpdate();
-
-				checkAkill(m.group(1));
-			}
-			catch (SQLException ex)
-			{
-				Logger.getGlobalLogger().log(ex);
-			}
-
+			addTempAkillLog(m);
 			return;
 		}
 
 		m = connectPattern.matcher(message);
 		if (m.find())
 		{
-			Server s = Server.findServer(m.group(1));
-			if (s == null)
-				return;
-
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
-
-				stmt.setString(1, "CONNECT");
-				stmt.setString(2, m.group(2));
-				stmt.setString(3, s.getName());
-
-				Moo.db.executeUpdate();
-			}
-			catch (SQLException ex)
-			{
-				Logger.getGlobalLogger().log(ex);
-			}
-
+			remoteConnectLog(m);
 			return;
+		}
+	}
+	
+	private void addAkillLog(Matcher m)
+	{
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
+
+			stmt.setString(1, "AKILL");
+			stmt.setString(2, m.group(1));
+			stmt.setString(3, m.group(2));
+			stmt.setString(4, m.group(3));
+
+			Moo.db.executeUpdate();
+
+			checkAkill(m.group(2));
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
+		}
+	}
+	
+	private void delAkillLog(Matcher m)
+	{
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
+
+			stmt.setString(1, "AKILLDEL");
+			stmt.setString(2, m.group(1));
+			stmt.setString(3, m.group(2));
+			stmt.setString(4, m.group(3));
+
+			Moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
+		}
+	}
+	
+	private void operLog(Matcher m)
+	{
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `target`) VALUES (?, ?)");
+
+			stmt.setString(1, "OPER");
+			stmt.setString(2, m.group(1));
+
+			Moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
+		}
+	}
+	
+	private void addTempAkillLog(Matcher m)
+	{
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`, `reason`) VALUES (?, ?, ?, ?)");
+
+			stmt.setString(1, "AKILL");
+			stmt.setString(2, "OperServ");
+			stmt.setString(3, m.group(1));
+			stmt.setString(4, "Session limit exceeded");
+
+			Moo.db.executeUpdate();
+
+			checkAkill(m.group(1));
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
+		}
+	}
+	
+	private void remoteConnectLog(Matcher m)
+	{
+		Server s = Server.findServer(m.group(1));
+		if (s == null)
+			return;
+
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
+
+			stmt.setString(1, "CONNECT");
+			stmt.setString(2, m.group(2));
+			stmt.setString(3, s.getName());
+
+			Moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
+		}
+	}
+	
+	private void wallopsLog(final String source, final String message)
+	{
+		Matcher m = wallTypePattern.matcher(message);
+		String type;
+		String msg;
+		
+		if (m.find())
+		{
+			type = m.group(1);
+			msg = m.group(2);
+		}
+		else
+		{
+			type = "WALLOPS";
+			msg = message;
+		}
+		
+		try
+		{
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO wallops_logs (`type`, `source`, `message`) VALUES (?, ?, ?)");
+
+			stmt.setString(1, type);
+			stmt.setString(2, source);
+			stmt.setString(3, msg);
+
+			Moo.db.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			Logger.getGlobalLogger().log(ex);
 		}
 	}
 }
