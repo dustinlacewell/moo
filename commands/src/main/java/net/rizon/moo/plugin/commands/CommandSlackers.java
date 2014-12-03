@@ -114,8 +114,8 @@ class CommandSlackers extends Command
 	@Override
 	public void onHelp(CommandSource source)
 	{
-		source.reply("Syntax: !SLACKERS");
-		source.reply("Searches for all online opers who are not in this channel.");
+		source.notice("Syntax: !SLACKERS");
+		source.notice("Searches for all online opers who are not in this channel.");
 	}
 
 	@Override
@@ -124,7 +124,7 @@ class CommandSlackers extends Command
 		opers.clear();
 		waiting_on.clear();
 		for (Server s : Server.getServers())
-			if (s.getSplit() == null && !s.isServices())
+			if (s.isNormal())
 			{
 				Moo.sock.write("STATS p " + s.getName());
 				waiting_on.add(s.getName());

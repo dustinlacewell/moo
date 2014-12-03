@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
@@ -123,10 +122,15 @@ public class Server
 
 		return false;
 	}
+	
+	private boolean isJuped()
+	{
+		return uplink != null && (uplink.isServices() || uplink.isJuped());
+	}
 
 	public boolean isNormal()
 	{
-		return !isServices() && (uplink == null || !uplink.isServices()) && getSplit() == null;
+		return !isServices() && !isJuped() && getSplit() == null;
 	}
 
 	public void link(final Server to)
@@ -312,9 +316,8 @@ public class Server
 
 	public static Server findServer(final String name)
 	{
-		for (Iterator<Server> it = servers.iterator(); it.hasNext();)
+		for (Server s : servers)
 		{
-			Server s = it.next();
 			if (Moo.matches(s.getName(), "*" + name + "*"))
 				return s;
 		}
@@ -323,9 +326,8 @@ public class Server
 
 	public static Server findServerAbsolute(final String name)
 	{
-		for (Iterator<Server> it = servers.iterator(); it.hasNext();)
+		for (Server s : servers)
 		{
-			Server s = it.next();
 			if (s.getName().equalsIgnoreCase(name))
 				return s;
 		}
@@ -394,8 +396,8 @@ public class Server
 					statement.setString(1, s.getName());
 					statement.setString(2, s.desc);
 					String links = "";
-					for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
-						links += it.next() + " ";
+					for (String string : s.allowed_clines)
+						links += string + " ";
 					links = links.trim();
 					statement.setString(3, links);
 					statement.setBoolean(4, s.frozen);
