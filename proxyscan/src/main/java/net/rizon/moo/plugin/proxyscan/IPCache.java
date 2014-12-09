@@ -10,7 +10,6 @@ import net.rizon.moo.Timer;
 final class IPCache extends Timer
 {
 	private static final int tick = 1;
-	protected static final int expiry_time = 16;
 
 	/*
 	 * Using two caches: "cache" is a hashmap for fast lookup; cacheq is a

@@ -13,6 +13,9 @@ bindip:
 - 192.168.1.7
 - 192.168.1.2
 
+# Seconds scan results are cached
+expiry: 60
+
 # Path to the proxyscan binary
 path: /home/rizon/proxyscan/proxyscan
 arguments: "--bindip=%bindip% --targetip=%destip%"

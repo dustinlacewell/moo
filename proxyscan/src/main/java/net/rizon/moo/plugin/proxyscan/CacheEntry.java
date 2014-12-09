@@ -16,6 +16,6 @@ final class CacheEntry
 
 	public boolean isExpired(Date now)
 	{
-		return new Date(this.added + (IPCache.expiry_time * 1000L)).before(now);
+		return new Date(this.added + (proxyscan.conf.expiry * 1000L)).before(now);
 	}
 }
