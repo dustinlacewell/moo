@@ -31,9 +31,13 @@ class WatchEntry
 			this.requested_registered = true;
 		}
 		else if (this.registered == registeredState.RS_NOT_REGISTERED || this.registered == registeredState.RS_MANUAL_AKILL)
+		{
+			Moo.privmsgAll(Moo.conf.spam_channels, "WATCH: Akilling " + this.nick + " for: " + this.reason);
 			Moo.qakill(this.nick, this.reason);
+		}
 		else if (this.registered == registeredState.RS_MANUAL_CAPTURE && this.warned == false)
 		{
+			Moo.privmsgAll(Moo.conf.spam_channels, "WATCH: Capturing " + this.nick + " for: " + this.reason);
 			Moo.capture(this.nick);
 			this.warned = true;
 		}
