@@ -8,15 +8,20 @@ import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
 
 public class logging extends Plugin
 {
 	private Command ls, sls, wls;
 	private Event e;
+	
+	protected static final Logger log = Logger.getLogger(logging.class.getName());
+	public static LoggingConfiguration conf;
 
-	public logging()
+	public logging() throws Exception
 	{
 		super("Logging", "Search server logs");
+		conf = LoggingConfiguration.load();
 	}
 
 	@Override

@@ -1,10 +1,16 @@
 package net.rizon.moo.plugin.logging;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,25 +28,8 @@ class EventLogging extends Event
 		Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `log_created_idx` on `log` (`created`)");
 		Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `log_source_idx` on `log` (`source`)");
 		Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `log_target_idx` on `log` (`target`)");
-
-		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `services_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` datetime default current_timestamp, `data` collate nocase)");
-		Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
 		
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `wallops_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` DATETIME DEFAULT CURRENT_TIMESTAMP, `type`, `source`, `message`);");
-		//Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
-	}
-
-	private int count = 0;
-
-	@Override
-	public void saveDatabases()
-	{
-		if (++count == 144)
-		{
-			Moo.db.executeUpdate("DELETE FROM `services_logs` WHERE `date` < date('now', '-30 day')");
-			//Moo.db.executeUpdate("DELETE FROM `wallops_logs` WHERE `date` < date('now', '-30 day')");
-			count = 0;
-		}
 	}
 
 	@Override
@@ -49,17 +38,28 @@ class EventLogging extends Event
 		if (!Moo.conf.logChannelsContains(channel))
 			return;
 
+		DateFormat format = new SimpleDateFormat(logging.conf.date);
+		Date now = new Date();
+		File logPath = new File(logging.conf.path);
+		File logFilePath = new File(logPath, logging.conf.filename.replace("%DATE%", format.format(now)));
+		
+		logPath.mkdirs();
+		
 		try
 		{
-			PreparedStatement stmt = Moo.db.prepare("INSERT INTO `services_logs` (`data`) VALUES(?)");
-
-			stmt.setString(1, message);
-
-			Moo.db.executeUpdate();
+			FileWriter out = new FileWriter(logFilePath, true);
+			try
+			{
+				out.write(now + ": " + message + "\n");
+			}
+			finally
+			{
+				out.close();
+			}
 		}
-		catch (SQLException ex)
+		catch (Exception e)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logging.log.log(Level.WARNING, "Unable to log", e);
 		}
 	}
 

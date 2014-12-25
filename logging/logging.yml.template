@@ -1,0 +1,4 @@
+path: logs
+filename: services.%DATE%.log 
+date: dd.MM.yyyy
+searchDays: 30

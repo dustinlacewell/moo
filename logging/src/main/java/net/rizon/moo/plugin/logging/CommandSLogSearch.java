@@ -1,13 +1,19 @@
 package net.rizon.moo.plugin.logging;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Deque;
+import java.util.logging.Level;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 
@@ -27,53 +33,55 @@ class logSearcher extends Thread
 	@Override
 	public void run()
 	{
-		Connection con = Moo.db.getConnection();
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-
-		try
+		Deque<String> matches = new ArrayDeque<String>();
+		int nummatches = 0;
+		
+		for (int i = logging.conf.searchDays - 1; i >= 0; --i)
 		{
-			stmt = con.prepareStatement("SELECT max(id)+1 AS `max` FROM `services_logs`");
-			rs = stmt.executeQuery();
-			int max = rs.getInt("max");
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -i);
+			Date then = cal.getTime();
 
-			stmt.close();
-			rs.close();
-
-			if (this.limit > 0)
+			DateFormat format = new SimpleDateFormat(logging.conf.date);
+			File logPath = new File(logging.conf.path);
+			File logFilePath = new File(logPath, logging.conf.filename.replace("%DATE%", format.format(then)));
+			
+			if (!logFilePath.exists())
+				continue;
+			
+			try
 			{
-				stmt = con.prepareStatement("SELECT `date`,`data` FROM `services_logs` WHERE `id` >= ? AND `data` LIKE ?");
-				stmt.setInt(1, max - this.limit);
-				stmt.setString(2, "%" + this.search + "%");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFilePath)));
+				try
+				{
+					for (String line; (line = reader.readLine()) != null;)
+						if (Moo.matches(line, search))
+						{
+							++nummatches;
+							matches.addLast(line);
+							
+							if (limit > 0 && matches.size() > limit)
+								matches.pop();
+						}
+				}
+				finally
+				{
+					reader.close();
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				stmt = con.prepareStatement("SELECT `date`,`data` FROM `services_logs` WHERE `data` LIKE ?");
-				stmt.setString(1, "%" + this.search + "%");
+				logging.log.log(Level.WARNING, "Unable to search logfile", e);
 			}
-			rs = stmt.executeQuery();
+		}
+		
+		for (String match : matches)
+			source.notice(match);
 
-			int count = 0;
-			while (rs.next())
-			{
-				++count;
-				source.notice(rs.getString("date") + ": " + rs.getString("data"));
-			}
-
-			if (this.limit > 0)
-				source.reply("Done, " + count + " shown. Searched the last " + this.limit + " entries.");
-			else
-				source.reply("Done, " + count + " shown.");
-		}
-		catch (SQLException ex)
-		{
-			Logger.getGlobalLogger().log(ex);
-		}
-		finally
-		{
-			try { stmt.close(); } catch (Exception ex) { }
-			try { rs.close(); } catch (Exception ex) { }
-		}
+		if (this.limit > 0)
+			source.reply("Done, " + matches.size() + "/" + nummatches + " shown. Searched the last " + this.limit + " entries.");
+		else
+			source.reply("Done, " + matches.size() + "/" + nummatches + " shown.");
 	}
 }
 
