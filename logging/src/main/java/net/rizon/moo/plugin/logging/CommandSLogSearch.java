@@ -78,10 +78,7 @@ class logSearcher extends Thread
 		for (String match : matches)
 			source.notice(match);
 
-		if (this.limit > 0)
-			source.reply("Done, " + matches.size() + "/" + nummatches + " shown. Searched the last " + this.limit + " entries.");
-		else
-			source.reply("Done, " + matches.size() + "/" + nummatches + " shown.");
+		source.reply("Done, " + matches.size() + "/" + nummatches + " shown.");
 	}
 }
 
