@@ -55,7 +55,7 @@ class logSearcher extends Thread
 				try
 				{
 					for (String line; (line = reader.readLine()) != null;)
-						if (Moo.matches(line, search))
+						if (Moo.matches(line, "*" + search + "*"))
 						{
 							++nummatches;
 							matches.addLast(line);
@@ -93,6 +93,8 @@ class CommandSLogSearch extends Command
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 	}
+	
+	private static final int defaultLimit = 100;
 
 	@Override
 	public void execute(CommandSource source, final String[] params)
@@ -100,16 +102,16 @@ class CommandSLogSearch extends Command
 		if (params.length <= 1)
 			return;
 
-		int num = 0;
+		int limit = defaultLimit;
 		if (params.length >= 3)
 			try
 			{
-				num = Integer.parseInt(params[2]);
-				if (num <= 0)
+				limit = Integer.parseInt(params[2]);
+				if (limit <= 0)
 					return;
 			}
 			catch (NumberFormatException ex) { }
 
-		new logSearcher(source, params[1], num).start();
+		new logSearcher(source, params[1], limit).start();
 	}
 }
