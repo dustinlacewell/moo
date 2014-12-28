@@ -347,6 +347,7 @@ public class Server
 		protected void initDatabases()
 		{
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64), `recursive`);");
+			Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `splits_idx` on `splits` (`name`,`when`,`from`)");
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `desc`, `preferred_links`, `frozen`);");
 			Moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
