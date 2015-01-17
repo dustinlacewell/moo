@@ -10,7 +10,7 @@ import java.util.logging.LogRecord;
 
 final class loggerHandler extends Handler
 {
-	private static final DateFormat format = new SimpleDateFormat("EEE MMM dd kk:mm:ss:SSSS yyyy");
+	private static final DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss:SSSS yyyy");
 
 	public loggerHandler()
 	{
