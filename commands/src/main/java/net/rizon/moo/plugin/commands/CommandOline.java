@@ -105,7 +105,7 @@ class CommandOline extends Command
 			HashMap<String, Integer> oper_map = new HashMap<String, Integer>();
 			for (Server s : Server.getServers())
 			{
-				if (s.isServices())
+				if (s.isServices() || s.olines == null)
 					continue;
 
 				for (Iterator<String> it2 = s.olines.keySet().iterator(); it2.hasNext();)

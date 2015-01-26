@@ -88,7 +88,7 @@ public class Message219 extends Message
 		}
 		else if (message[1].equals("o"))
 		{
-			if (serv.olines.isEmpty() == false)
+			if (serv.olines != null)
 			{
 				for (Iterator<String> it = serv.olines.keySet().iterator(); it.hasNext();)
 				{

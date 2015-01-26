@@ -22,7 +22,7 @@ public class Server
 	private String sid = null;
 	public HashSet<String> clines = new HashSet<String>(), clines_work = new HashSet<String>();
 	// oper name -> flags
-	public HashMap<String, String> olines = new HashMap<String, String>(), olines_work = new HashMap<String, String>();
+	public HashMap<String, String> olines, olines_work = new HashMap<String, String>();
 	public Server uplink;
 	public static Server root;
 	public HashSet<Server> links = new HashSet<Server>();
