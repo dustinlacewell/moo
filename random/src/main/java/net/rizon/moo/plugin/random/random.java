@@ -25,7 +25,7 @@ class deadListChecker extends Timer
 	{
 		long now_l = System.currentTimeMillis() / 1000L;
 
-		for (Iterator<FloodList> it = FloodList.getActiveLists().iterator(); it.hasNext();)
+		for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
 		{
 			FloodList p = it.next();
 
@@ -34,10 +34,19 @@ class deadListChecker extends Timer
 
 			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
 			{
-				Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
+				if (p.isList)
+				{
+					Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
 
-				/* Don't really close this, we want the list to persist forever. */
-				p.isClosed = true;
+					/* Don't really close this, we want the list to persist forever. */
+					p.isClosed = true;
+				}
+				else
+				{
+					/* List hasn't been touched in awhile, delete it */
+					it.remove();
+					p.close();
+				}
 			}
 		}
 	}
