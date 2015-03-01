@@ -70,6 +70,8 @@ class EventRandom extends Event
 	@Override
 	public void onDNSBLHit(final String nick, final String ip, final String dnsbl, final String reason)
 	{
+		/* XXX this is called from a thread */
+		/*
 		NickData nickData = null;
 		for (NickData nd : random.getNicks())
 			if (!nd.dead && !nd.akilled && nd.nick_str.equals(nick))
@@ -80,5 +82,6 @@ class EventRandom extends Event
 
 		DNSBL d = DNSBL.getList(dnsbl);
 		nickData.addList(d);
+		*/
 	}
 }
