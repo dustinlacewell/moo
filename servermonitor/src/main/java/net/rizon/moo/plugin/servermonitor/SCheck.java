@@ -112,7 +112,16 @@ class SCheck extends Thread
 				}
 				else if (token.length > 8 && token[1].equals("266"))
 				{
-					this.users = token[8].replace(",", "");
+					try
+					{
+						// Checks if the 266 message is returned by P3.
+						this.users = Integer.toString(Integer.parseInt(token[3]));
+					}
+					catch (NumberFormatException e)
+					{
+						// Probably P4.
+						this.users = token[6];
+					}
 					s.write("STATS u");
 				}
 				else if (token.length > 7 && token[1].equals("242"))
