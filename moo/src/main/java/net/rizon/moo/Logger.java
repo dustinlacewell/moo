@@ -57,7 +57,7 @@ final class loggerHandler extends Handler
 	}
 }
 
-public class Logger extends java.util.logging.Logger
+public class Logger extends java.util.logging.Logger implements Thread.UncaughtExceptionHandler
 {
 	private static HashMap<String, Logger> loggers = new HashMap<String, Logger>();
 	private static final loggerHandler handler = new loggerHandler();
@@ -86,8 +86,24 @@ public class Logger extends java.util.logging.Logger
 		return getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 	}
 
-	public void log(Exception ex)
+	public void log(Throwable ex)
 	{
 		this.log(Level.SEVERE, null, ex);
+	}
+	
+	/*public static void initThread(Thread t)
+	{
+		t.setUncaughtExceptionHandler(handler);
+	}*/
+	
+	public void initThread(Thread t)
+	{
+		t.setUncaughtExceptionHandler(this);
+	}
+	
+	@Override
+	public void uncaughtException(Thread t, Throwable e)
+	{
+		log(e);
 	}
 }

@@ -20,6 +20,7 @@ class WikiTimer extends Timer
 			return;
 
 		c = new WikiChecker();
+		wiki.log.initThread(c);
 		c.start();
 	}
 }

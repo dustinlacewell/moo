@@ -118,6 +118,7 @@ public final class Connector
 			return;
 
 		ConnectorThread t = new ConnectorThread(source, ip);
+		proxyscan.log.initThread(t);
 		t.start();
 	}
 }

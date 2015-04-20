@@ -168,6 +168,8 @@ class DnsblChecker implements Runnable
 
 	public void runAsynchronous()
 	{
-		new Thread(this).start();
+		Thread t = new Thread(this);
+		dnsbl.log.initThread(t);
+		t.start();
 	}
 }

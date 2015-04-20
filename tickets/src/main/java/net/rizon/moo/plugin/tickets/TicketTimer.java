@@ -20,6 +20,7 @@ class TicketTimer extends Timer
 			return;
 
 		c = new TicketChecker();
+		tickets.log.initThread(c);
 		c.start();
 	}
 }

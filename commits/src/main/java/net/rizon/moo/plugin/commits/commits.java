@@ -22,6 +22,7 @@ public class commits extends Plugin
 	public void start() throws Exception
 	{
 		s = new Server(conf.ip, conf.port);
+		log.initThread(s);
 		s.start();
 
 		e = new EventCommit();
