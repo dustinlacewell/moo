@@ -91,11 +91,6 @@ public class Logger extends java.util.logging.Logger implements Thread.UncaughtE
 		this.log(Level.SEVERE, null, ex);
 	}
 	
-	/*public static void initThread(Thread t)
-	{
-		t.setUncaughtExceptionHandler(handler);
-	}*/
-	
 	public void initThread(Thread t)
 	{
 		t.setUncaughtExceptionHandler(this);
