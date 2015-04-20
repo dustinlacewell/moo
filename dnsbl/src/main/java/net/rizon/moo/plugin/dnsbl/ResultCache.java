@@ -50,7 +50,7 @@ class ResultCache
 			this.entryLifetime = c.lifetime;
 	}
 
-	public void addEntry(String ip, List<DnsblCheckResult> results)
+	public synchronized void addEntry(String ip, List<DnsblCheckResult> results)
 	{
 		if (System.currentTimeMillis() > lastExpired + EXPIRE_TICK)
 		{
@@ -69,7 +69,7 @@ class ResultCache
 		this.entries.put(ip, new Entry(results, expiration));
 	}
 
-	public Entry hasEntry(String ip)
+	public synchronized Entry hasEntry(String ip)
 	{
 		Entry e = this.entries.get(ip);
 		if (e != null && e.hasExpired())
@@ -90,7 +90,7 @@ class ResultCache
 		return e.getResults();
 	}
 
-	private void flush()
+	private synchronized void flush()
 	{
 		for (Iterator<Map.Entry<String, Entry>> it = entries.entrySet().iterator(); it.hasNext();)
 		{
