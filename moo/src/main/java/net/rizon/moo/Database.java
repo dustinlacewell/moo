@@ -27,7 +27,7 @@ public class Database
 		this.con = DriverManager.getConnection(database.connection);
 	}
 
-	public void shutdown()
+	public synchronized void shutdown()
 	{
 		try
 		{
@@ -38,7 +38,7 @@ public class Database
 
 	private PreparedStatement last_statement = null;
 
-	public PreparedStatement prepare(final String statement) throws SQLException
+	public synchronized PreparedStatement prepare(final String statement) throws SQLException
 	{
 		try
 		{
@@ -50,12 +50,12 @@ public class Database
 		return this.last_statement;
 	}
 
-	public void detach()
+	public synchronized void detach()
 	{
 		this.last_statement = null;
 	}
 
-	public int executeUpdate(final String statement)
+	public synchronized int executeUpdate(final String statement)
 	{
 		try
 		{
@@ -69,13 +69,13 @@ public class Database
 		}
 	}
 
-	public ResultSet executeQuery(final String statement) throws SQLException
+	public synchronized ResultSet executeQuery(final String statement) throws SQLException
 	{
 		this.prepare(statement);
 		return this.executeQuery();
 	}
 
-	public int executeUpdate()
+	public synchronized int executeUpdate()
 	{
 		try
 		{
@@ -89,18 +89,18 @@ public class Database
 		}
 	}
 
-	public ResultSet executeQuery() throws SQLException
+	public synchronized ResultSet executeQuery() throws SQLException
 	{
 		log.log(Level.FINE, "Executing query: " + this.last_statement.toString());
 		return this.last_statement.executeQuery();
 	}
 
-	public void setAutoCommit(boolean state) throws SQLException
+	public synchronized void setAutoCommit(boolean state) throws SQLException
 	{
 		this.con.setAutoCommit(state);
 	}
 
-	public Connection getConnection()
+	public synchronized Connection getConnection()
 	{
 		return this.con;
 	}
