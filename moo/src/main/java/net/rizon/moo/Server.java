@@ -67,11 +67,11 @@ public class Server
 		{
 			PreparedStatement statement = Moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
 			statement.setString(1, this.getName());
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(statement);
 
 			statement = Moo.db.prepare("DELETE FROM splits WHERE `name` = ?");
 			statement.setString(1, this.getName());
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(statement);
 		}
 		catch (SQLException ex)
 		{
@@ -166,7 +166,7 @@ public class Server
 					statement.setString(2, sp.me);
 					statement.setString(3, sp.from);
 					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
-					Moo.db.executeUpdate();
+					Moo.db.executeUpdate(statement);
 				}
 				catch (SQLException ex)
 				{
@@ -185,7 +185,7 @@ public class Server
 			statement.setDate(5, (s.end != null ? new java.sql.Date(s.end.getTime()) : null));
 			statement.setString(6, s.reconnectedBy);
 			statement.setBoolean(7, s.recursive);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(statement);
 		}
 		catch (SQLException ex)
 		{
@@ -208,7 +208,7 @@ public class Server
 		{
 			PreparedStatement statement = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ? ORDER BY `when` DESC LIMIT 1");
 			statement.setString(1, this.getName());
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(statement);
 			if (rs.next())
 			{
 				String name = rs.getString("name"), from = rs.getString("from"), to = rs.getString("to"), rBy = rs.getString("reconnectedBy");
@@ -246,7 +246,7 @@ public class Server
 			LinkedList<Split> splits = new LinkedList<Split>();
 			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `splits` WHERE `name` = ?  order by `when` asc");
 			stmt.setString(1, this.getName());
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			while (rs.next())
 			{
 				Split sp = new Split();
@@ -291,7 +291,7 @@ public class Server
 			statement.setString(4, s.me);
 			statement.setString(5, s.from);
 			statement.setDate(6, new java.sql.Date(s.when.getTime()));
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(statement);
 		}
 		catch (SQLException ex)
 		{
@@ -390,10 +390,11 @@ public class Server
 		{
 			try
 			{
-				PreparedStatement statement = Moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)");
+				PreparedStatement statement;
 
 				for (Server s : Server.getServers())
 				{
+					statement = Moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)");
 					statement.setString(1, s.getName());
 					statement.setString(2, s.desc);
 					String links = "";
@@ -403,7 +404,7 @@ public class Server
 					statement.setString(3, links);
 					statement.setBoolean(4, s.frozen);
 
-					Moo.db.executeUpdate();
+					Moo.db.executeUpdate(statement);
 				}
 
 			}

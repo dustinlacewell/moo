@@ -61,7 +61,7 @@ public class proxyscan extends Plugin
 			statement.setString(1, type);
 			statement.setInt(2, port);
 			statement.setString(3, ip);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(statement);
 		}
 		catch (SQLException ex)
 		{
