@@ -17,7 +17,6 @@ class Previous extends FloodList
 		try
 		{
 			stmt = Moo.db.prepare("SELECT `date`,`count` FROM `akills` WHERE `ip` = ?");
-			Moo.db.detach();
 		}
 		catch (SQLException ex)
 		{

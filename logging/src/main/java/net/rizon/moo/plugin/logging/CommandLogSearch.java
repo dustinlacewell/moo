@@ -139,7 +139,7 @@ class CommandLogSearch extends Command
 			for (final String argument : arguments)
 				stmt.setString(i++, argument);
 
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			int count = 0, shown = 0;
 			while (rs.next())
 			{

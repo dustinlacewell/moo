@@ -36,63 +36,69 @@ public class Database
 		catch (SQLException ex) { }
 	}
 
-	private PreparedStatement last_statement = null;
-
 	public synchronized PreparedStatement prepare(final String statement) throws SQLException
 	{
-		try
-		{
-			this.last_statement.close();
-		}
-		catch (Exception ex) { }
-
-		this.last_statement = this.con.prepareStatement(statement);
-		return this.last_statement;
-	}
-
-	public synchronized void detach()
-	{
-		this.last_statement = null;
-	}
-
-	public synchronized int executeUpdate(final String statement)
-	{
-		try
-		{
-			this.prepare(statement);
-			return this.executeUpdate();
-		}
-		catch (SQLException ex)
-		{
-			log.log(Level.SEVERE, "Error executing SQL statement: " + statement, ex);
-			return 0;
-		}
+		return this.con.prepareStatement(statement);
 	}
 
 	public synchronized ResultSet executeQuery(final String statement) throws SQLException
 	{
-		this.prepare(statement);
-		return this.executeQuery();
+		return this.executeQuery(this.prepare(statement));
 	}
 
-	public synchronized int executeUpdate()
+	public synchronized ResultSet executeQuery(PreparedStatement ps) throws SQLException
 	{
+		log.log(Level.FINE, "Executing query: " + ps.toString());
+		ResultSet rs = ps.executeQuery();
+		closeStatement(ps);
+		return rs;
+	}
+
+	public synchronized int executeUpdate(final String statement)
+	{
+		PreparedStatement ps;
+
 		try
 		{
-			log.log(Level.FINE, "Executing query: " + this.last_statement.toString());
-			return this.last_statement.executeUpdate();
+			ps = this.prepare(statement);
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, "Error executing SQL statement: " + this.last_statement.toString(), ex);
+			log.log(Level.SEVERE, "Error preparing SQL statement: " + statement, ex);
 			return 0;
+		}
+
+		return this.executeUpdate(ps);
+	}
+
+	public synchronized int executeUpdate(PreparedStatement ps)
+	{
+		try
+		{
+			log.log(Level.FINE, "Executing query: " + ps.toString());
+			return ps.executeUpdate();
+		}
+		catch (SQLException ex)
+		{
+			log.log(Level.SEVERE, "Error executing SQL statement: " + ps.toString(), ex);
+			return 0;
+		}
+		finally
+		{
+			closeStatement(ps);
 		}
 	}
 
-	public synchronized ResultSet executeQuery() throws SQLException
+	private void closeStatement(PreparedStatement ps)
 	{
-		log.log(Level.FINE, "Executing query: " + this.last_statement.toString());
-		return this.last_statement.executeQuery();
+		try
+		{
+			ps.close();
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, "Failure to close PreparedStatement", e);
+		}
 	}
 
 	public synchronized void setAutoCommit(boolean state) throws SQLException

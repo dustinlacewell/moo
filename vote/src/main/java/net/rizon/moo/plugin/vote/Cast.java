@@ -23,7 +23,7 @@ class Cast
 			stmt.setString(2, this.channel);
 			stmt.setString(3, this.voter);
 			stmt.setBoolean(4, this.vote);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -39,7 +39,7 @@ class Cast
 			stmt.setInt(1, vote.id);
 			stmt.setString(2, vote.channel);
 
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			LinkedList<Cast> casts = new LinkedList<Cast>();
 			while (rs.next())
 			{

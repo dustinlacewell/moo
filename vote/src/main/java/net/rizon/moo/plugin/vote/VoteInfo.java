@@ -28,7 +28,7 @@ class VoteInfo
 			stmt.setDate(5, new java.sql.Date(this.date.getTime()));
 			stmt.setBoolean(6, this.closed);
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -43,7 +43,7 @@ class VoteInfo
 			PreparedStatement stmt = Moo.db.prepare("UPDATE `votes` SET `closed` = 1 WHERE `id` = ? AND `channel` = ?");
 			stmt.setInt(1, this.id);
 			stmt.setString(2, this.channel);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -67,7 +67,7 @@ class VoteInfo
 		{
 			PreparedStatement stmt = Moo.db.prepare("SELECT MAX(`id`) as max FROM votes WHERE channel = ?");
 			stmt.setString(1, chan);
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 
 			int id = 1;
 			if (rs.next())
@@ -90,7 +90,7 @@ class VoteInfo
 			stmt.setInt(1, id);
 			stmt.setString(2, channel);
 
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			if (rs.next())
 			{
 				VoteInfo vi = new VoteInfo();
@@ -118,7 +118,7 @@ class VoteInfo
 			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `votes` WHERE `channel` = ?");
 			stmt.setString(1, channel);
 
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			LinkedList<VoteInfo> vis = new LinkedList<VoteInfo>();
 			while (rs.next())
 			{

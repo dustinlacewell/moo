@@ -114,11 +114,11 @@ public class random extends Plugin
 		{
 			PreparedStatement stmt = Moo.db.prepare("INSERT OR IGNORE INTO `akills` (`ip`, `count`) VALUES(?, 0)");
 			stmt.setString(1, ip);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 
 			stmt = Moo.db.prepare("UPDATE AKILLS SET `count` = `count` + 1 WHERE `ip` = ?");
 			stmt.setString(1, ip);
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -132,7 +132,7 @@ public class random extends Plugin
 		{
 			PreparedStatement stmt = Moo.db.prepare("DELETE FROM `akills` WHERE `ip` = ?");
 			stmt.setString(1, ip);
-			return Moo.db.executeUpdate() == 1;
+			return Moo.db.executeUpdate(stmt) == 1;
 		}
 		catch (SQLException ex)
 		{

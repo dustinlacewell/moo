@@ -55,7 +55,7 @@ public class logging extends Plugin
 			stmt.setString(3, target == null ? "" : target);
 			stmt.setString(4, reason == null ? "" : reason);
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{

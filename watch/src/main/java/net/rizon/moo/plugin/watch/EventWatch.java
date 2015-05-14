@@ -66,7 +66,7 @@ class EventWatch extends Event
 				statement.setDate(5, new java.sql.Date(e.expires.getTime()));
 				statement.setString(6, e.registered.toString());
 
-				Moo.db.executeUpdate();
+				Moo.db.executeUpdate(statement);
 			}
 		}
 		catch (SQLException ex)

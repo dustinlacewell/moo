@@ -81,7 +81,7 @@ final class CommandWLogSearch extends Command
 			for (final String argument : params)
 				stmt.setString(++i, "%" + argument + "%");
 			
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			int count = 0, shown = 0;
 			while (rs.next())
 			{
@@ -103,7 +103,7 @@ final class CommandWLogSearch extends Command
 					}
 				}
 			}
-			
+
 			replyWithLimit(source, limit, "Done, " + shown + "/" + count + " shown");
 		}
 		catch (SQLException ex)

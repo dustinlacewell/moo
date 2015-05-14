@@ -82,7 +82,7 @@ class EventLogging extends Event
 					stmt.setString(3, m.group(1));
 					stmt.setString(4, m.group(3));
 
-					Moo.db.executeUpdate();
+					Moo.db.executeUpdate(stmt);
 				}
 				catch (SQLException ex)
 				{
@@ -127,7 +127,7 @@ class EventLogging extends Event
 			stmt.setString(3, value);
 			stmt.setString(4, "Added");
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -149,7 +149,7 @@ class EventLogging extends Event
 			stmt.setString(3, value);
 			stmt.setString(4, "Removed");
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -171,7 +171,7 @@ class EventLogging extends Event
 			stmt.setString(3, oper);
 			stmt.setString(4, "Changed: " + diff);
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -190,7 +190,7 @@ class EventLogging extends Event
 			stmt.setString(2, serv.getName());
 			stmt.setString(3, to.getName());
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -209,7 +209,7 @@ class EventLogging extends Event
 			stmt.setString(2, serv.getName());
 			stmt.setString(3, from.getName());
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -231,7 +231,7 @@ class EventLogging extends Event
 			PreparedStatement stmt = Moo.db.prepare("SELECT count(*) FROM `log` WHERE `type` = 'AKILL' and `target` = ?");
 			stmt.setString(1, ip);
 
-			ResultSet rs = Moo.db.executeQuery();
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			if (rs.next())
 			{
 				int count = rs.getInt("count(*)");
@@ -300,7 +300,7 @@ class EventLogging extends Event
 			stmt.setString(3, m.group(2));
 			stmt.setString(4, m.group(3));
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 
 			checkAkill(m.group(2));
 		}
@@ -321,7 +321,7 @@ class EventLogging extends Event
 			stmt.setString(3, m.group(2));
 			stmt.setString(4, m.group(3));
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -338,7 +338,7 @@ class EventLogging extends Event
 			stmt.setString(1, "OPER");
 			stmt.setString(2, m.group(1));
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -357,7 +357,7 @@ class EventLogging extends Event
 			stmt.setString(3, m.group(1));
 			stmt.setString(4, "Session limit exceeded");
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 
 			checkAkill(m.group(1));
 		}
@@ -381,7 +381,7 @@ class EventLogging extends Event
 			stmt.setString(2, m.group(2));
 			stmt.setString(3, s.getName());
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
@@ -414,7 +414,7 @@ class EventLogging extends Event
 			stmt.setString(2, source);
 			stmt.setString(3, msg);
 
-			Moo.db.executeUpdate();
+			Moo.db.executeUpdate(stmt);
 		}
 		catch (SQLException ex)
 		{
