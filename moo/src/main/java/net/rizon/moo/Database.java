@@ -97,7 +97,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, "Failure to close PreparedStatement.");
+			log.log(Level.SEVERE, "Failure to close PreparedStatement", e);
 		}
 	}
 
