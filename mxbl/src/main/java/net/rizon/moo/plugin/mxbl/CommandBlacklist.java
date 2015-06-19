@@ -38,7 +38,7 @@ public class CommandBlacklist extends Command
 		source.notice(" ");
 		source.notice("Manipulate the blacklisted mailhost list.");
 		source.notice("Examples:");
-		source.notice(this.getCommandName() + " ADD *.rizon.net");
+		source.notice(this.getCommandName() + " ADD rizon.net");
 		source.notice("    Adds a mailhost to the list.");
 		source.notice(this.getCommandName() + " DEL gmail.com");
 		source.notice("    Deletes a mailhost to the list.");
