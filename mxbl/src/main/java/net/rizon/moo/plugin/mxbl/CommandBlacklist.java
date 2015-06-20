@@ -250,14 +250,17 @@ public class CommandBlacklist extends Command
 
 	private void findIp(CommandSource source, String ip)
 	{
-		MailIP mailIP = MailIP.getMailIP(ip);
-		if (mailIP == null)
+		List<MailIP> ips = MailIP.getAllMailIP(ip);
+		if (ips.isEmpty())
 		{
 			source.reply("This IP is not blocked");
 		}
 		else
 		{
-			source.reply(ip + " belongs to: " + mailIP.getOwner().toString());
+			for (MailIP mailIP : ips)
+			{
+				source.reply(ip + " belongs to: " + mailIP.getOwner().toString());
+			}
 		}
 	}
 }

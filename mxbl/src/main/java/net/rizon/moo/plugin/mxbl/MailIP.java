@@ -5,7 +5,10 @@
  */
 package net.rizon.moo.plugin.mxbl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -13,7 +16,7 @@ import java.util.HashMap;
  */
 public class MailIP
 {
-	private static final HashMap<String, MailIP> ips = new HashMap<String, MailIP>();
+	private static final HashMap<Mailhost, HashSet<MailIP>> ips = new HashMap<Mailhost, HashSet<MailIP>>();
 	public final String ip;
 	private final Mailhost owner;
 
@@ -22,7 +25,13 @@ public class MailIP
 	{
 		this.ip = ip;
 		this.owner = owner;
-		ips.put(ip.trim(), this);
+		HashSet<MailIP> set = ips.get(this.owner);
+		if (set == null)
+		{
+			set = new HashSet<MailIP>();
+			ips.put(this.owner, set);
+		}
+		set.add(this);
 	}
 
 	public Mailhost getOwner()
@@ -32,17 +41,48 @@ public class MailIP
 
 	public static boolean isInList(String ip)
 	{
-		return ips.containsKey(ip.trim());
+		for (HashSet<MailIP> s : ips.values())
+		{
+			for (MailIP mailIP : s)
+			{
+				if (mailIP.ip.equals(ip.trim()))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
-	public static MailIP getMailIP(String ip)
+	public static List<MailIP> getAllMailIP(String ip)
 	{
-		return ips.get(ip);
+		List<MailIP> list = new ArrayList<MailIP>();
+		for (HashSet<MailIP> s : ips.values())
+		{
+			for (MailIP mailIP : s)
+			{
+				if (mailIP.ip.equals(ip.trim()))
+				{
+					list.add(mailIP);
+				}
+			}
+		}
+		return list;
+	}
+
+	public static HashSet<MailIP> getMailIP(Mailhost owner)
+	{
+		return ips.get(owner);
 	}
 
 	public static void delete(MailIP ip)
 	{
-		ips.remove(ip.ip);
+		ips.get(ip.getOwner()).remove(ip);
+	}
+
+	public static void delete(Mailhost m)
+	{
+		ips.remove(m);
 	}
 
 }

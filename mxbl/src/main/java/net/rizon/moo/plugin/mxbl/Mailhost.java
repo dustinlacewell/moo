@@ -104,10 +104,7 @@ public class Mailhost
 
 	public void unblock()
 	{
-		for (MailIP ip : ips)
-		{
-			MailIP.delete(ip);
-		}
+		MailIP.delete(this);
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("DELETE FROM `mxbl` WHERE `host` = ?");
