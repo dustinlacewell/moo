@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
@@ -117,7 +116,7 @@ public class Mailhost
 		}
 		catch (SQLException ex)
 		{
-			Logger.getLogger(Mailhost.class.getName()).log(Level.SEVERE, null, ex);
+			log.log(ex);
 		}
 
 		Mailhost.mailhosts.remove(this.mailhost.toLowerCase());

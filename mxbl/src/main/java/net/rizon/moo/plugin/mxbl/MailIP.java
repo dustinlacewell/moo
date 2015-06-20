@@ -32,7 +32,7 @@ public class MailIP
 
 	public static boolean isInList(String ip)
 	{
-		return ips.containsKey(ip);
+		return ips.containsKey(ip.trim());
 	}
 
 	public static MailIP getMailIP(String ip)
