@@ -34,7 +34,7 @@ public class CommandBlacklist extends Command
 	@Override
 	public void onHelp(CommandSource source)
 	{
-		source.notice("Syntax: " + this.getCommandName() + " <ADD HOST>|<DEL HOST>|<LIST [+LIMIT] [HOST]>|<IP IP>");
+		source.notice("Syntax: " + this.getCommandName() + " <ADD HOST>|<DEL HOST>|<LIST [+LIMIT] [HOST]>|<IP IP>|<CHECK DOMAIN>");
 		source.notice(" ");
 		source.notice("Manipulate the blacklisted mailhost list.");
 		source.notice("Examples:");
@@ -48,6 +48,8 @@ public class CommandBlacklist extends Command
 		source.notice("    LIMIT defaults to 15.");
 		source.notice(this.getCommandName() + " IP 127.0.0.1");
 		source.notice("    Checks which record the IP belongs to, if any.");
+		source.notice(this.getCommandName() + " CHECK hotmail.com");
+		source.notice("    Checks which records block this domain, if any.");
 	}
 
 	@Override
@@ -74,7 +76,11 @@ public class CommandBlacklist extends Command
 		}
 		else if (params.length == 3 && (command.equalsIgnoreCase("ip")))
 		{
-			findIp(source, params[2]);
+			findIp(source, params[2], true);
+		}
+		else if (params.length == 3 && (command.equalsIgnoreCase("check")))
+		{
+			findBlock(source, params[2]);
 		}
 		else if (params.length >= 2 && (command.equalsIgnoreCase("l") || command.equalsIgnoreCase("list")))
 		{
@@ -235,7 +241,7 @@ public class CommandBlacklist extends Command
 			else if (StringCompare.wildcardCompare(arg, mailhost.mailhost))
 			{
 				source.reply(mailhost.toString());
-				for (MailIP ip : mailhost.ips)
+				for (MailIP ip : MailIP.getMailIP(mailhost))
 				{
 					source.reply("|-- " + ip.ip);
 				}
@@ -248,10 +254,10 @@ public class CommandBlacklist extends Command
 		}
 	}
 
-	private void findIp(CommandSource source, String ip)
+	private void findIp(CommandSource source, String ip, boolean reportEmpty)
 	{
 		List<MailIP> ips = MailIP.getAllMailIP(ip);
-		if (ips.isEmpty())
+		if (ips.isEmpty() && reportEmpty)
 		{
 			source.reply("This IP is not blocked");
 		}
@@ -259,7 +265,46 @@ public class CommandBlacklist extends Command
 		{
 			for (MailIP mailIP : ips)
 			{
-				source.reply(ip + " belongs to: " + mailIP.getOwner().toString());
+				source.reply(ip + " blocked by " + mailIP.getOwner().toString());
+			}
+		}
+	}
+
+	private void findBlock(CommandSource source, String domain)
+	{
+		HashMap<RecordType, List<String>> map = NS.lookup(domain, MX_RECORDS);
+		if (map == null)
+		{
+			source.reply("Domain has no MX records.");
+			return;
+		}
+
+		List<String> hosts = map.get(RecordType.MX);
+		for (String s : hosts)
+		{
+			// MX Record returns "10 mx.host.com" for example, where 10 is the priority.
+			String host = s.split(" ")[1];
+			HashMap<RecordType, List<String>> m = NS.lookup(host, IP_RECORDS);
+			if (m == null)
+			{
+				continue;
+			}
+			List<String> l;
+			l = m.get(RecordType.A);
+			if (l != null)
+			{
+				for (String ip : l)
+				{
+					findIp(source, ip, false);
+				}
+			}
+			l = m.get(RecordType.AAAA);
+			if (l != null)
+			{
+				for (String ip : l)
+				{
+					findIp(source, ip, false);
+				}
 			}
 		}
 	}

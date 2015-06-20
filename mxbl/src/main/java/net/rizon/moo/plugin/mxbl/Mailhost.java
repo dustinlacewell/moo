@@ -3,11 +3,9 @@ package net.rizon.moo.plugin.mxbl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
@@ -22,7 +20,6 @@ public class Mailhost
 	public final String mailhost;
 	public final String oper;
 	public final Date date;
-	public List<MailIP> ips;
 
 	public static Mailhost getMailhost(String mailhost)
 	{
@@ -40,7 +37,6 @@ public class Mailhost
 		this.mailhost = mailhost.toLowerCase();
 		this.oper = oper;
 		this.date = new Date();
-		this.ips = new ArrayList<MailIP>();
 		mailhosts.put(mailhost.toLowerCase(), this);
 	}
 
@@ -50,13 +46,32 @@ public class Mailhost
 		this.mailhost = rs.getString("host");
 		this.oper = rs.getString("oper");
 		this.date = rs.getDate("created");
-		this.ips = new ArrayList<MailIP>();
 		mailhosts.put(this.mailhost, this);
 	}
 
 	public void addIP(String ip)
 	{
-		ips.add(new MailIP(ip, this));
+		new MailIP(ip, this);
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Mailhost)
+		{
+			return this.hashCode() == other.hashCode();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 5;
+		hash = 47 * hash + (this.mailhost != null ? this.mailhost.hashCode() : 0);
+		hash = 47 * hash + (this.oper != null ? this.oper.hashCode() : 0);
+		hash = 47 * hash + (this.date != null ? this.date.hashCode() : 0);
+		return hash;
 	}
 
 	@Override
@@ -85,7 +100,7 @@ public class Mailhost
 				stmt.close();
 				Moo.db.setAutoCommit(false);
 				stmt = Moo.db.prepare("REPLACE INTO `mxbl_ips` (`host`, `ip`) VALUES(?, ?)");
-				for (MailIP mailIP : ips)
+				for (MailIP mailIP : MailIP.getMailIP(this))
 				{
 					stmt.setInt(1, id);
 					stmt.setString(2, mailIP.ip);

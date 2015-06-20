@@ -23,7 +23,7 @@ public class MailIP
 	@SuppressWarnings("LeakingThisInConstructor")
 	MailIP(String ip, Mailhost owner)
 	{
-		this.ip = ip;
+		this.ip = ip.trim();
 		this.owner = owner;
 		HashSet<MailIP> set = ips.get(this.owner);
 		if (set == null)
@@ -32,6 +32,24 @@ public class MailIP
 			ips.put(this.owner, set);
 		}
 		set.add(this);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o instanceof MailIP)
+		{
+			return this.hashCode() == o.hashCode();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 5;
+		hash = 67 * hash + (this.ip != null ? this.ip.hashCode() : 0);
+		return hash;
 	}
 
 	public Mailhost getOwner()
