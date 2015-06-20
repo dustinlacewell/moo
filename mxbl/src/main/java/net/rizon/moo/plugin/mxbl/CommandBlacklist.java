@@ -76,7 +76,10 @@ public class CommandBlacklist extends Command
 		}
 		else if (params.length == 3 && (command.equalsIgnoreCase("ip")))
 		{
-			findIp(source, params[2], true);
+			if (!findIp(source, params[2]))
+			{
+				source.reply("This IP is not blocked");
+			}
 		}
 		else if (params.length == 3 && (command.equalsIgnoreCase("check")))
 		{
@@ -254,20 +257,23 @@ public class CommandBlacklist extends Command
 		}
 	}
 
-	private void findIp(CommandSource source, String ip, boolean reportEmpty)
+	private boolean findIp(CommandSource source, String ip)
 	{
 		List<MailIP> ips = MailIP.getAllMailIP(ip);
-		if (ips.isEmpty() && reportEmpty)
+		boolean blocked = false;
+		if (ips.isEmpty())
 		{
-			source.reply("This IP is not blocked");
+			return blocked;
 		}
 		else
 		{
 			for (MailIP mailIP : ips)
 			{
 				source.reply(ip + " blocked by " + mailIP.getOwner().toString());
+				blocked = true;
 			}
 		}
+		return blocked;
 	}
 
 	private void findBlock(CommandSource source, String domain)
@@ -280,6 +286,7 @@ public class CommandBlacklist extends Command
 		}
 
 		List<String> hosts = map.get(RecordType.MX);
+		boolean blocked = false;
 		for (String s : hosts)
 		{
 			// MX Record returns "10 mx.host.com" for example, where 10 is the priority.
@@ -295,7 +302,10 @@ public class CommandBlacklist extends Command
 			{
 				for (String ip : l)
 				{
-					findIp(source, ip, false);
+					if (findIp(source, ip))
+					{
+						blocked = true;
+					}
 				}
 			}
 			l = m.get(RecordType.AAAA);
@@ -303,9 +313,16 @@ public class CommandBlacklist extends Command
 			{
 				for (String ip : l)
 				{
-					findIp(source, ip, false);
+					if (findIp(source, ip))
+					{
+						blocked = true;
+					}
 				}
 			}
+		}
+		if (!blocked)
+		{
+			source.reply("\2" + domain + "\2 not blocked by anything.");
 		}
 	}
 }
