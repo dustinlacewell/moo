@@ -167,7 +167,7 @@ public class EventRegister extends Event
 			HashMap<RecordType, List<String>> map = NS.lookup(host, IP_RECORDS);
 			if (map == null)
 			{
-				return true;
+				continue;
 			}
 			List<String> l;
 			l = map.get(RecordType.A);
