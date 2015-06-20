@@ -1,6 +1,8 @@
 package net.rizon.moo.plugin.mxbl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import net.rizon.moo.Command;
@@ -34,7 +36,7 @@ public class CommandBlacklist extends Command
 	@Override
 	public void onHelp(CommandSource source)
 	{
-		source.notice("Syntax: " + this.getCommandName() + " <ADD HOST>|<DEL HOST>|<LIST [+LIMIT] [HOST]>|<IP IP>|<CHECK DOMAIN>");
+		source.notice("Syntax: " + this.getCommandName() + " <ADD HOST>|<DEL HOST>|<LIST [-WILDCARD] [+LIMIT] [HOST]>|<IP IP>|<CHECK DOMAIN>");
 		source.notice(" ");
 		source.notice("Manipulate the blacklisted mailhost list.");
 		source.notice("Examples:");
@@ -42,7 +44,7 @@ public class CommandBlacklist extends Command
 		source.notice("    Adds a mailhost to the list.");
 		source.notice(this.getCommandName() + " DEL gmail.com");
 		source.notice("    Deletes a mailhost to the list.");
-		source.notice(this.getCommandName() + " LIST +10 *.net");
+		source.notice(this.getCommandName() + " LIST -WILDCARD +10 *.net");
 		source.notice("    Searches for a mailhost in the list of blacklisted");
 		source.notice("    mailhosts.");
 		source.notice("    LIMIT defaults to 15.");
@@ -87,29 +89,48 @@ public class CommandBlacklist extends Command
 		}
 		else if (params.length >= 2 && (command.equalsIgnoreCase("l") || command.equalsIgnoreCase("list")))
 		{
+			// List all normal, default limit.
 			if (params.length == 2)
 			{
-				list(source, 15, null);
+				listNormal(source, 15, null);
 			}
+			// List all wildcards, default limit.
+			else if (params.length == 3 && (params[2].equalsIgnoreCase("-W") || params[2].equalsIgnoreCase("-WILDCARD")))
+			{
+				listWildcards(source, 15, null);
+			}
+			// List all normal, with limit.
 			else if (params.length == 3 && params[2].startsWith("+"))
 			{
 				String s = params[2].substring(1);
-				listWithLimit(source, s, null);
+				listWithLimit(source, s, null, false);
 			}
-			else if (params.length == 3)
+			// List search wilcard, default limit.
+			else if (params.length == 4 && (params[2].equalsIgnoreCase("-W") || params[2].equalsIgnoreCase("-WILDCARD")))
 			{
-				list(source, 15, params[2]);
+				listWildcards(source, 15, params[3]);
 			}
+			// List search normal, with limit.
 			else if (params.length == 4 && params[2].startsWith("+"))
 			{
 				String s = params[2].substring(1);
-				listWithLimit(source, s, params[3]);
+				listWithLimit(source, s, params[3], false);
 			}
-			else if (params.length == 4 && params[3].startsWith("+"))
+			// List all wildcard, with limit.
+			else if (params.length == 4 && (params[2].equalsIgnoreCase("-W") || params[2].equalsIgnoreCase("-WILDCARD")) && params[3].startsWith("+"))
 			{
-				// Noob proofing
+				listWildcards(source, 15, null);
+			}
+			// List search wildcard, with limit.
+			else if (params.length == 5 && (params[2].equalsIgnoreCase("-W") || params[2].equalsIgnoreCase("-WILDCARD")) && params[3].startsWith("+"))
+			{
 				String s = params[3].substring(1);
-				listWithLimit(source, s, params[2]);
+				listWithLimit(source, s, params[4], true);
+			}
+			// List search normal, default limit
+			else if (params.length == 3)
+			{
+				listNormal(source, 15, params[2]);
 			}
 		}
 		else
@@ -118,12 +139,19 @@ public class CommandBlacklist extends Command
 		}
 	}
 
-	private void listWithLimit(CommandSource source, String limit, String mailhost)
+	private void listWithLimit(CommandSource source, String limit, String mailhost, boolean wildcard)
 	{
 		try
 		{
 			int l = Integer.parseInt(limit);
-			list(source, l, null);
+			if (wildcard)
+			{
+				listWildcards(source, l, mailhost);
+			}
+			else
+			{
+				listNormal(source, l, mailhost);
+			}
 		}
 		catch (NumberFormatException ex)
 		{
@@ -133,16 +161,88 @@ public class CommandBlacklist extends Command
 
 	private void add(CommandSource source, String mailhost)
 	{
-		Mailhost m = Mailhost.getMailhost(mailhost);
+		if (mailhost.contains("*") || mailhost.contains("?"))
+		{
+			addWildcard(source, mailhost);
+		}
+		else
+		{
+			addNormal(source, mailhost, null);
+		}
+	}
+
+	private void addWildcard(CommandSource source, String mailhost)
+	{
+		// Anti Kyouka-sama
+		// TODO: Need to improve checks on this, since ** is allowed.
+		if (mailhost.equals("*"))
+		{
+			source.notice("Stop trying to break it.");
+			return;
+		}
+
+		MailhostWildcard mw = MailhostWildcard.getMailhostWildcard(mailhost);
 		boolean updating = false;
+
+		if (mw != null)
+		{
+			source.reply("\2" + mailhost + "\2 already exists, will update all matched hosts instead...");
+			if (mw.getMailhosts().isEmpty())
+			{
+				source.reply("\2" + mailhost + "\2 hasn't been matched against a host yet, no need to update.");
+				return;
+			}
+			for (Mailhost m : mw.getMailhosts())
+			{
+				addNormal(source, m.mailhost, mw);
+			}
+			return;
+		}
+
+		mw = new MailhostWildcard(mailhost, source.getUser().getNick());
+		source.reply("Added " + mailhost + " to wildcard pattern match.");
+		mw.insert();
+	}
+
+	private void addNormal(CommandSource source, String mailhost, MailhostWildcard mw)
+	{
+		Mailhost m = null;
+		if (mw != null)
+		{
+			for (Mailhost ma : mw.getMailhosts())
+			{
+				if (ma.mailhost.equalsIgnoreCase(mailhost))
+				{
+					m = ma;
+					break;
+				}
+			}
+		}
+		else
+		{
+			m = Mailhost.getMailhost(mailhost);
+		}
+		boolean updating = false;
+		String oldOper = source.getUser().getNick();
+		Date oldCreated = new Date();
 
 		if (m != null)
 		{
-			source.reply("\2" + mailhost + "\2 already exists, will update records instead...");
-			m.unblock();
+			oldOper = m.oper;
+			oldCreated = m.date;
+			if (mw == null)
+			{
+				source.reply("\2" + mailhost + "\2 already exists, will update records instead...");
+			}
+			else
+			{
+				source.reply("Updating record for \2" + mailhost + "\2.");
+				mw.removeHost(m);
+			}
+			m.unblock(true);
 			updating = true;
 		}
-		else
+		else if (mw == null)
 		{
 			source.reply("Attempting to look up MX records for: \2" + mailhost + "\2");
 		}
@@ -157,7 +257,7 @@ public class CommandBlacklist extends Command
 			{
 				source.reply("\2" + mailhost + "\2 no longer exists, will delete.");
 			}
-			else
+			else if (mw == null)
 			{
 				source.reply("\2" + mailhost + "\2 is not a valid host.");
 			}
@@ -170,14 +270,22 @@ public class CommandBlacklist extends Command
 			{
 				source.reply("\2" + mailhost + "\2 no longer has an MX record, will delete.");
 			}
-			else
+			else if (mw == null)
 			{
 				source.reply("\2" + mailhost + "\2 does not contain any MX records.");
 			}
 			return;
 		}
 
-		m = new Mailhost(mailhost, source.getUser().getNick());
+		if (mw == null)
+		{
+			m = new Mailhost(mailhost, oldOper, oldCreated, null);
+		}
+		else
+		{
+			m = new Mailhost(mailhost, null, mw);
+			mw.addHost(m);
+		}
 
 		for (String o : l.get(RecordType.MX))
 		{
@@ -200,7 +308,7 @@ public class CommandBlacklist extends Command
 			int total = l.get(RecordType.MX).size();
 			source.reply("Found " + total + " host" + (total == 1 ? "" : "s") + " in the MX record for \2" + mailhost + "\2");
 		}
-		else
+		else if (mw == null)
 		{
 			source.reply("Done updating \2" + mailhost + "\2.");
 		}
@@ -216,11 +324,44 @@ public class CommandBlacklist extends Command
 	 */
 	private void delete(CommandSource source, String mailhost)
 	{
+		if (mailhost.contains("*") || mailhost.contains("?"))
+		{
+			deleteWildcard(source, mailhost);
+		}
+		else
+		{
+			deleteNormal(source, mailhost);
+		}
+	}
+
+	private void deleteWildcard(CommandSource source, String wildcard)
+	{
+		MailhostWildcard mw = MailhostWildcard.getMailhostWildcard(wildcard);
+		if (mw != null)
+		{
+			mw.unblock();
+			source.reply("Deleted \2" + wildcard + "\2 and all associated IPs.");
+		}
+		else
+		{
+			source.reply("\2" + wildcard + "\2 not found.");
+		}
+	}
+
+	private void deleteNormal(CommandSource source, String mailhost)
+	{
 		Mailhost m = Mailhost.getMailhost(mailhost);
 		if (m != null)
 		{
-			m.unblock();
-			source.reply("Deleted \2" + mailhost + "\2 and all associated IPs.");
+			if (m.getOwner() == null)
+			{
+				m.unblock(true);
+				source.reply("Deleted \2" + mailhost + "\2 and all associated IPs.");
+			}
+			else
+			{
+				source.reply("\2" + mailhost + "\2 belongs to \2" + m.getOwner().getWildcard() + "\2, please delete that entry instead.");
+			}
 		}
 		else
 		{
@@ -228,14 +369,50 @@ public class CommandBlacklist extends Command
 		}
 	}
 
-	private void list(CommandSource source, int limit, String arg)
+	private void listWildcards(CommandSource source, int limit, String arg)
 	{
 		int count = 0;
-		if (Mailhost.mailhosts.isEmpty())
+		Collection<MailhostWildcard> wildcards = MailhostWildcard.getMailhostWildcards();
+		if (wildcards.isEmpty())
+		{
+			source.reply("No wildcard mailhosts in database.");
+			return;
+		}
+
+		for (MailhostWildcard mw : wildcards)
+		{
+			if (arg == null)
+			{
+				source.reply(mw.toString());
+			}
+			else if (StringCompare.wildcardCompare(arg, mw.getWildcard()))
+			{
+				source.reply(mw.toString());
+				for (Mailhost m : mw.getMailhosts())
+				{
+					source.reply("|-- " + m.mailhost);
+				}
+			}
+			count++;
+			if (count >= limit)
+			{
+				source.reply("Done showing (" + count + "/" + wildcards.size() + ") results.");
+				return;
+			}
+		}
+		source.reply("Done showing (" + wildcards.size() + "/" + wildcards.size() + ") results.");
+	}
+
+	private void listNormal(CommandSource source, int limit, String arg)
+	{
+		int count = 0;
+		Collection<Mailhost> mailhosts = Mailhost.getMailhosts();
+		if (mailhosts.isEmpty())
 		{
 			source.reply("No mailhosts blocked.");
+			return;
 		}
-		for (Mailhost mailhost : Mailhost.getMailhosts())
+		for (Mailhost mailhost : mailhosts)
 		{
 			if (arg == null)
 			{
@@ -252,9 +429,11 @@ public class CommandBlacklist extends Command
 			count++;
 			if (count >= limit)
 			{
-				break;
+				source.reply("Done showing (" + count + "/" + mailhosts.size() + ") results.");
+				return;
 			}
 		}
+		source.reply("Done showing (" + mailhosts.size() + "/" + mailhosts.size() + ") results.");
 	}
 
 	private boolean findIp(CommandSource source, String ip)

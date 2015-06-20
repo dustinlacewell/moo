@@ -16,10 +16,11 @@ import net.rizon.moo.Moo;
 public class Mailhost
 {
 	private static final Logger log = Logger.getLogger(Mailhost.class.getName());
-	public static final HashMap<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
+	private static final HashMap<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
 	public final String mailhost;
 	public final String oper;
 	public final Date date;
+	private final MailhostWildcard owner;
 
 	public static Mailhost getMailhost(String mailhost)
 	{
@@ -32,26 +33,43 @@ public class Mailhost
 	}
 
 	@SuppressWarnings("LeakingThisInConstructor")
-	public Mailhost(String mailhost, String oper)
+	public Mailhost(String mailhost, String oper, Date date, MailhostWildcard owner)
 	{
 		this.mailhost = mailhost.toLowerCase();
 		this.oper = oper;
-		this.date = new Date();
+		this.date = date;
+		this.owner = owner;
 		mailhosts.put(mailhost.toLowerCase(), this);
 	}
 
 	@SuppressWarnings("LeakingThisInConstructor")
-	public Mailhost(ResultSet rs) throws SQLException
+	public Mailhost(String mailhost, String oper, MailhostWildcard owner)
 	{
-		this.mailhost = rs.getString("host");
+		this.mailhost = mailhost.toLowerCase();
+		this.oper = oper;
+		this.date = new Date();
+		this.owner = owner;
+		mailhosts.put(mailhost.toLowerCase(), this);
+	}
+
+	@SuppressWarnings("LeakingThisInConstructor")
+	public Mailhost(ResultSet rs, MailhostWildcard owner) throws SQLException
+	{
+		this.mailhost = rs.getString("host").toLowerCase();
 		this.oper = rs.getString("oper");
 		this.date = rs.getDate("created");
+		this.owner = owner;
 		mailhosts.put(this.mailhost, this);
 	}
 
 	public void addIP(String ip)
 	{
 		new MailIP(ip, this);
+	}
+
+	public MailhostWildcard getOwner()
+	{
+		return this.owner;
 	}
 
 	@Override
@@ -77,7 +95,14 @@ public class Mailhost
 	@Override
 	public String toString()
 	{
-		return "\2" + mailhost + "\2 set by " + oper + " on " + date.toString();
+		if (this.owner == null)
+		{
+			return "\2" + mailhost + "\2 set by " + oper + " on " + date.toString();
+		}
+		else
+		{
+			return "\2" + this.mailhost + "\2 matched against " + this.owner.toString();
+		}
 	}
 
 	/**
@@ -87,10 +112,18 @@ public class Mailhost
 	{
 		try
 		{
-			PreparedStatement stmt = Moo.db.prepare("INSERT INTO `mxbl` (`host`, `oper`, `created`) VALUES(?, ?, ?)");
-			stmt.setString(1, this.mailhost);
-			stmt.setString(2, this.oper);
-			stmt.setDate(3, new java.sql.Date(this.date.getTime()));
+			PreparedStatement stmt = Moo.db.prepare("INSERT INTO `mxbl` (`wildcard_id`, `host`, `oper`, `created`) VALUES(?, ?, ?, ?)");
+			if (this.owner == null)
+			{
+				stmt.setNull(1, java.sql.Types.INTEGER);
+			}
+			else
+			{
+				stmt.setInt(1, this.owner.getId());
+			}
+			stmt.setString(2, this.mailhost);
+			stmt.setString(3, this.oper);
+			stmt.setDate(4, new java.sql.Date(this.date.getTime()));
 			Moo.db.executeUpdate(stmt);
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next())
@@ -117,20 +150,23 @@ public class Mailhost
 		}
 	}
 
-	public void unblock()
+	public void unblock(boolean sql)
 	{
 		MailIP.delete(this);
-		try
+		if (sql)
 		{
-			PreparedStatement stmt = Moo.db.prepare("DELETE FROM `mxbl` WHERE `host` = ?");
-			stmt.setString(1, this.mailhost);
-			Moo.db.executeUpdate(stmt);
-		}
-		catch (SQLException ex)
-		{
-			log.log(ex);
+			try
+			{
+				PreparedStatement stmt = Moo.db.prepare("DELETE FROM `mxbl` WHERE `host` = ?");
+				stmt.setString(1, this.mailhost);
+				Moo.db.executeUpdate(stmt);
+			}
+			catch (SQLException ex)
+			{
+				log.log(ex);
+			}
 		}
 
-		Mailhost.mailhosts.remove(this.mailhost.toLowerCase());
+		mailhosts.remove(this.mailhost, this);
 	}
 }

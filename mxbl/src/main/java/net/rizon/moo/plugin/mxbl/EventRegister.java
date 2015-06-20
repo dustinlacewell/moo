@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.mxbl;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -102,14 +103,14 @@ public class EventRegister extends Event
 			List<String> list;
 			if (map == null)
 			{
-				return;
+				list = null;
 			}
 			else
 			{
 				list = map.get(RecordType.MX);
 			}
 
-			if (list != null && !mailHostsOkay(list))
+			if (list != null && (!mailHostsOkay(list) || wildcardMatch(mailhost, list)))
 			{
 				suspendNick(nickname);
 			}
@@ -122,7 +123,27 @@ public class EventRegister extends Event
 		{
 			log.log(ex);
 		}
+	}
 
+	private boolean wildcardMatch(String mailhost, List<String> list) throws NamingException, UnknownHostException
+	{
+		Collection<MailhostWildcard> wildcards = MailhostWildcard.getMailhostWildcards();
+		for (MailhostWildcard mw : wildcards)
+		{
+			if (StringCompare.wildcardCompare(mw.getWildcard(), mailhost))
+			{
+				Mailhost m = new Mailhost(mailhost, null, mw);
+				mw.addHost(m);
+				for (String ip : getIPs(list))
+				{
+					m.addIP(ip);
+				}
+				m.insert();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -159,6 +180,11 @@ public class EventRegister extends Event
 	 */
 	private boolean mailHostsOkay(List<String> hosts) throws NamingException, UnknownHostException
 	{
+		return ipsOkay(getIPs(hosts));
+	}
+
+	private List<String> getIPs(List<String> hosts) throws NamingException, UnknownHostException
+	{
 		List<String> list = new ArrayList<String>();
 		for (String s : hosts)
 		{
@@ -182,7 +208,7 @@ public class EventRegister extends Event
 			}
 		}
 
-		return ipsOkay(list);
+		return list;
 	}
 
 	/**
