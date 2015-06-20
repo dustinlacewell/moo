@@ -120,6 +120,6 @@ public class Mailhost
 			Logger.getLogger(Mailhost.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
-		Mailhost.mailhosts.remove(this);
+		Mailhost.mailhosts.remove(this.mailhost.toLowerCase());
 	}
 }
