@@ -2,7 +2,6 @@ package net.rizon.moo.plugin.commits.api.gitlab;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import net.rizon.moo.plugin.commits.Push;
 
 public class GitLab implements Push
@@ -14,6 +13,9 @@ public class GitLab implements Push
 
 	private ObjectAttributes object_attributes;
 	private String object_kind;
+	private User user;
+	private Issue issue;
+	private MergeRequest merge_request;
 
 	@Override
 	public String getProjectName()
@@ -53,5 +55,20 @@ public class GitLab implements Push
 	public String getObjectKind()
 	{
 		return object_kind;
+	}
+
+	public User getUser()
+	{
+		return user;
+	}
+
+	public Issue getIssue()
+	{
+		return issue;
+	}
+
+	public MergeRequest getMergeRequest()
+	{
+		return merge_request;
 	}
 }

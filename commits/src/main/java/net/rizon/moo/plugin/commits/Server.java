@@ -10,7 +10,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.util.logging.Level;
-
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
@@ -132,7 +131,11 @@ class Server extends Thread
 							String[] parts = attrs.getUrl().split("/");
 							String projectName = parts[4];
 
-							Moo.privmsgAll(commits.conf.channels, "\2" + projectName + "\2: \00303" + attrs.getState() + " issue\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
+							if (!attrs.getAction().equals("update"))
+							{
+								// Update events are annoying, they get sent together with close / open.
+								Moo.privmsgAll(commits.conf.channels, "\2" + projectName + "\2: \00303" + attrs.getAction() + " issue\003 by \00303" + p.getUser().name + "\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
+							}
 						}
 						else if (p.getCommits() != null)
 						{
@@ -150,6 +153,44 @@ class Server extends Thread
 								}
 								else if (c.getMessage().length == 1)
 									Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
+							}
+						}
+						else if (p.getObjectKind() != null && p.getObjectKind().equals("note"))
+						{
+							ObjectAttributes attrs = p.getObjectAttributes();
+							if (attrs.getNotableType().equals("Commit"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on commit \00307" + attrs.getCommitId() + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+							}
+							else if (attrs.getNotableType().equals("MergeRequest"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on merge request \00307!" + p.getMergeRequest().iid + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+							}
+							else if (attrs.getNotableType().equals("Issue"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on issue \00307#" + p.getIssue().iid + "\003 " + p.getIssue().title);
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+							}
+							else if (attrs.getNotableType().equals("Snippet"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on snippet \00307#" + attrs.getNotableId() + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+							}
+						}
+						else if (p.getObjectKind() != null && p.getObjectKind().equals("merge_request"))
+						{
+							ObjectAttributes attrs = p.getObjectAttributes();
+							if (attrs.getAction().equals("open"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 opened merge request \00307!" + attrs.getIid() + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
+							}
+							if (attrs.getAction().equals("close"))
+							{
+								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 closed merge request \00307!" + attrs.getIid() + "\003");
+								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
 						else
