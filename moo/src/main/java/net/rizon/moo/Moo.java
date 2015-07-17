@@ -1,5 +1,10 @@
 package net.rizon.moo;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
@@ -56,6 +61,8 @@ public class Moo
 {
 	private static final Logger log = Logger.getLogger(Moo.class.getName());
 	private static Date created = new Date();
+	
+	private EventLoopGroup group;;
 
 	public static Config conf = null;
 	public static Socket sock = null;
@@ -68,8 +75,27 @@ public class Moo
 	public static String akillServ = "GeoServ";
 
 	public static User me = null;
+	
+	Moo()
+	{
+	}
+	
+	private void init()
+	{
+		group = new NioEventLoopGroup(1);
+		//bossGroup = new NioEventLoopGroup();
+		//workerGroup = new NioEventLoopGroup(1);
+		
+		Bootstrap client = new Bootstrap()
+			.group(group)
+			//.group(bossGroup, workerGroup)
+			.channel(NioSocketChannel.class)
+			.handler(new ClientInitializer(this))
+			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
+	}
 
-	public static void main(String[] args)
+	public void start()
+	//public static void main(String[] args)
 	{
 		Version.load();
 
