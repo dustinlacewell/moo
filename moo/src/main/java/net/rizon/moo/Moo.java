@@ -2,6 +2,7 @@ package net.rizon.moo;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -10,6 +11,30 @@ import java.util.regex.Pattern;
 
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.protocol.ProtocolPlugin;
+
+class pingTimer extends Timer
+{
+	private static final int pingfreq = 60;
+	
+	pingTimer()
+	{
+		super(60, true);
+		this.start();
+	}
+	
+	@Override
+	public void run(Date d)
+	{
+		if (Moo.sock == null)
+			return;
+		
+		long now = System.currentTimeMillis() / 1000L;
+		if (now - Moo.sock.getLastRead() > 2 * pingfreq)
+			Moo.sock.shutdown();
+		else if (now - Moo.sock.getLastRead() > pingfreq)
+			Moo.sock.write("PING :moo");
+	}
+}
 
 class databaseTimer extends Timer
 {
@@ -108,6 +133,7 @@ public class Moo
 		for (Event e : Event.getEvents())
 			e.loadDatabases();
 
+		new pingTimer();
 		new databaseTimer();
 
 		while (quitting == false)
@@ -121,6 +147,8 @@ public class Moo
 					sock = Socket.createSSL();
 				else
 					sock = Socket.create();
+                                
+				sock.setSoTimeout(1000);
 
 				if (conf.general.host != null)
 					sock.getSocket().bind(new InetSocketAddress(conf.general.host, 0));
@@ -137,8 +165,21 @@ public class Moo
 
 				long last_timer_check = System.currentTimeMillis() / 1000L;
 
-				for (String in; (in = sock.read()) != null;)
+				for (;;)
 				{
+					String in;
+					try
+					{
+						in = sock.read();
+						
+						if (in == null)
+							break;
+					}
+					catch (SocketTimeoutException ex)
+					{
+						in = null;
+					}
+					
 					try
 					{
 						long now = System.currentTimeMillis() / 1000L;
@@ -152,6 +193,9 @@ public class Moo
 					{
 						log.log(Level.SEVERE, "Error processing timers", ex);
 					}
+					
+					if (in == null)
+						continue;
 
 					try
 					{
@@ -211,9 +255,6 @@ public class Moo
 				Moo.sock = null;
 			}
 
-			for (Event e : Event.getEvents())
-				e.saveDatabases();
-
 			channels = null;
 			users = null;
 			me = null;
@@ -227,6 +268,9 @@ public class Moo
 				quitting = true;
 			}
 		}
+		
+		for (Event e : Event.getEvents())
+			e.saveDatabases();
 
 		for (Event e : Event.getEvents())
 			e.onShutdown();

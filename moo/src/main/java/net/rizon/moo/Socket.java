@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -141,6 +142,7 @@ public class Socket
 	private SSLSocket sslsock;
 	private PrintWriter out;
 	private BufferedReader in;
+	private long lastRead, lastWrite;
 
 	private Socket()
 	{
@@ -160,6 +162,11 @@ public class Socket
 		s.sock = TrustingSSLSocketFactory.sslSocketFactory.createSocket();
 		s.sslsock = (SSLSocket) s.sock;
 		return s;
+	}
+        
+	public void setSoTimeout(int timeout) throws SocketException
+	{
+		sock.setSoTimeout(timeout);
 	}
 
 	public boolean isConnected()
@@ -223,6 +230,7 @@ public class Socket
 	public void write(final String buf)
 	{
 		log.log(Level.FINE, "-> " + buf);
+		lastWrite = System.currentTimeMillis() / 1000L;
 		this.out.println(buf);
 	}
 
@@ -230,6 +238,18 @@ public class Socket
 	{
 		String in = this.in.readLine();
 		log.log(Level.FINE, "<- " + in);
+		if (in != null)
+			lastRead = System.currentTimeMillis() / 1000L;
 		return in;
+	}
+	
+	public long getLastRead()
+	{
+		return lastRead;
+	}
+	
+	public long getLastWrite()
+	{
+		return lastWrite;
 	}
 }
