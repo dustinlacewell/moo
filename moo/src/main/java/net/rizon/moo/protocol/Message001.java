@@ -17,7 +17,7 @@ public class Message001 extends Message
 	public void run(String source, String[] message)
 	{
 		if (Moo.conf.general.oper != null)
-			Moo.sock.write("OPER " + Moo.conf.general.oper.name + " " + Moo.conf.general.oper.pass);
+			Moo.write("OPER", Moo.conf.general.oper.name, Moo.conf.general.oper.pass);
 		if (Moo.conf.general.nickserv != null)
 			Moo.privmsg("NickServ", "IDENTIFY " + Moo.conf.general.nickserv.pass);
 
@@ -27,8 +27,8 @@ public class Message001 extends Message
 		for (String s : Moo.conf.channels)
 			Moo.join(s);
 
-		Moo.sock.write("MAP");
-		Moo.sock.write("LINKS");
+		Moo.write("MAP");
+		Moo.write("LINKS");
 
 		for (Server s : Server.getServers())
 		{
@@ -36,7 +36,7 @@ public class Message001 extends Message
 				continue;
 
 			s.requestStats();
-			Moo.sock.write("VERSION " + s.getName());
+			Moo.write("VERSION", s.getName());
 		}
 
 		for (Event e : Event.getEvents())

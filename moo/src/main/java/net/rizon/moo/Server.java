@@ -44,13 +44,10 @@ public class Server
 
 		log.log(Level.FINE, "Adding server " + this.getName());
 
-		if (Moo.sock != null)
-		{
-			this.requestStats();
-			if (!this.isServices())
-				Moo.sock.write("VERSION " + this.getName());
-			Moo.sock.write("MAP");
-		}
+		this.requestStats();
+		if (!this.isServices())
+			Moo.write("VERSION", this.getName());
+		Moo.write("MAP");
 
 		for (Event e : Event.getEvents())
 			e.onServerCreate(this);
@@ -417,8 +414,8 @@ public class Server
 
 	public void requestStats()
 	{
-		Moo.sock.write("STATS c " + this.getName());
-		Moo.sock.write("STATS o " + this.getName());
+		Moo.write("STATS", "c", this.getName());
+		Moo.write("STATS", "o", this.getName());
 	}
 
 	public static void init()
@@ -433,7 +430,7 @@ public class Server
 				for (Server s : Server.getServers())
 					if (!s.isServices())
 						s.requestStats();
-				Moo.sock.write("MAP");
+				Moo.write("MAP");
 			}
 		}.start();
 	}

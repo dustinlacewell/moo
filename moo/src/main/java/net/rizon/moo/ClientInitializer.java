@@ -7,6 +7,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 class ClientInitializer extends ChannelInitializer<SocketChannel>
 {
@@ -41,7 +43,10 @@ class ClientInitializer extends ChannelInitializer<SocketChannel>
 		pipeline.addLast("encoder", new StringEncoder());
 		pipeline.addLast("encoder", new IRCEncoder());
 		
-		//p.addLast(new LoggingHandler(LogLevel.INFO));
+		pipeline.addLast("idleStateHandler", new IdleStateHandler(120, 60, 0));
+		pipeline.addLast("handler", new Handler(moo));
+		
+		pipeline.addLast(new LoggingHandler());
 
 		pipeline.addLast("handler", new ClientHandler(moo));
 	}

@@ -13,6 +13,6 @@ public class MessagePing extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		Moo.sock.write("PONG :" + message[0]);
+		Moo.write("PONG", message[0]);
 	}
 }

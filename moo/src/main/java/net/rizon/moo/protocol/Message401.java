@@ -24,7 +24,7 @@ class geoChecker extends Timer
 			return;
 		}
 
-		Moo.sock.write("ISON GeoServ");
+		Moo.write("ISON", "GeoServ");
 	}
 }
 

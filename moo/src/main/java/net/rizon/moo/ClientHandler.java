@@ -11,9 +11,16 @@ class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	{
 		this.moo = moo;
 	}
+	
+	@Override
+	public void channelActive(ChannelHandlerContext ctx)
+	{
+		moo.handshake();
+	}
 
 	@Override
-	protected void messageReceived(ChannelHandlerContext arg0, IRCMessage arg1) throws Exception
+	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
+	    Message.runMessage(message);
 	}
 }

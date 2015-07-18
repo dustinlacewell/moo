@@ -29,7 +29,7 @@ class eventAntiIdle extends Event
 		public void run(Date now)
 		{
 			toBeVoiced.remove(this);
-			Moo.sock.write("USERHOST " + ai.nick);
+			Moo.write("USERHOST", ai.nick);
 		}
 	}
 

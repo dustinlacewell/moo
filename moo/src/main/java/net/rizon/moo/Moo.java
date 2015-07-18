@@ -1,6 +1,7 @@
 package net.rizon.moo;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -10,47 +11,19 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static net.rizon.moo.Moo.conf;
 
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.protocol.ProtocolPlugin;
 
-class pingTimer extends Timer
+class DatabaseTimer implements Runnable
 {
-	private static final int pingfreq = 60;
-	
-	pingTimer()
-	{
-		super(60, true);
-		this.start();
-	}
-	
 	@Override
-	public void run(Date d)
-	{
-		if (Moo.sock == null)
-			return;
-		
-		long now = System.currentTimeMillis() / 1000L;
-		if (now - Moo.sock.getLastRead() > 2 * pingfreq)
-			Moo.sock.shutdown();
-		else if (now - Moo.sock.getLastRead() > pingfreq)
-			Moo.sock.write("PING :moo");
-	}
-}
-
-class databaseTimer extends Timer
-{
-	public databaseTimer()
-	{
-		super(600, true);
-		this.start();
-	}
-
-	@Override
-	public void run(Date now)
+	public void run()
 	{
 		for (Event e : Event.getEvents())
 			e.saveDatabases();
@@ -62,10 +35,10 @@ public class Moo
 	private static final Logger log = Logger.getLogger(Moo.class.getName());
 	private static Date created = new Date();
 	
-	private EventLoopGroup group;;
+	private EventLoopGroup group;
+	private io.netty.channel.Channel channel;
 
 	public static Config conf = null;
-	public static Socket sock = null;
 	public static Database db = null;
 	public static ChannelManager channels = null;
 	public static UserManager users = null;
@@ -75,27 +48,63 @@ public class Moo
 	public static String akillServ = "GeoServ";
 
 	public static User me = null;
+	public static Moo moo;
+	
+	public static void main(String[] args)
+	{
+		moo = new Moo();
+		moo.start();
+	}
 	
 	Moo()
 	{
 	}
 	
-	private void init()
+	protected void handshake()
+	{
+		if (conf.general.server_pass != null)
+			write("PASS", conf.general.server_pass);
+
+		write("USER", conf.general.ident, ".", ".", conf.general.realname);
+		write("NICK", conf.general.nick);
+
+		write("PROTOCTL", "UHNAMES NAMESX");
+	}
+	
+	private void run() throws InterruptedException
 	{
 		group = new NioEventLoopGroup(1);
-		//bossGroup = new NioEventLoopGroup();
-		//workerGroup = new NioEventLoopGroup(1);
-		
-		Bootstrap client = new Bootstrap()
-			.group(group)
-			//.group(bossGroup, workerGroup)
-			.channel(NioSocketChannel.class)
-			.handler(new ClientInitializer(this))
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
+		try
+		{
+			Bootstrap client = new Bootstrap()
+			    .group(group)
+			    .channel(NioSocketChannel.class)
+			    .handler(new ClientInitializer(this))
+			    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
+		    
+			channels = new ChannelManager();
+			users = new UserManager();
+
+			client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
+
+			ChannelFuture future = client.connect(conf.general.server, conf.general.port);
+			channel = future.channel();
+
+			// I guess this means we don't save databases when not connected
+			group.scheduleWithFixedDelay(new DatabaseTimer(), 1, 1, TimeUnit.MINUTES);
+
+			channel.closeFuture().sync();
+		}
+		finally
+		{
+		    group.shutdownGracefully();
+		    
+		    channels = null;
+		    users = null;
+		}
 	}
 
 	public void start()
-	//public static void main(String[] args)
 	{
 		Version.load();
 
@@ -159,135 +168,20 @@ public class Moo
 		for (Event e : Event.getEvents())
 			e.loadDatabases();
 
-		new pingTimer();
-		new databaseTimer();
-
 		while (quitting == false)
 		{
-			channels = new ChannelManager();
-			users = new UserManager();
-
 			try
 			{
-				if (conf.general.ssl)
-					sock = Socket.createSSL();
-				else
-					sock = Socket.create();
-                                
-				sock.setSoTimeout(1000);
-
-				if (conf.general.host != null)
-					sock.getSocket().bind(new InetSocketAddress(conf.general.host, 0));
-
-				sock.connect(conf.general.server, conf.general.port);
-
-				if (conf.general.server_pass != null)
-					sock.write("PASS :" + conf.general.server_pass);
-
-				sock.write("USER " + conf.general.ident + " . . :" + conf.general.realname);
-				sock.write("NICK :" + conf.general.nick);
-
-				sock.write("PROTOCTL UHNAMES NAMESX");
-
-				long last_timer_check = System.currentTimeMillis() / 1000L;
-
-				for (;;)
-				{
-					String in;
-					try
-					{
-						in = sock.read();
-						
-						if (in == null)
-							break;
-					}
-					catch (SocketTimeoutException ex)
-					{
-						in = null;
-					}
-					
-					try
-					{
-						long now = System.currentTimeMillis() / 1000L;
-						if (now - last_timer_check >= 5)
-						{
-							Timer.processTimers();
-							last_timer_check = now;
-						}
-					}
-					catch (Exception ex)
-					{
-						log.log(Level.SEVERE, "Error processing timers", ex);
-					}
-					
-					if (in == null)
-						continue;
-
-					try
-					{
-						String[] tokens = in.split(" ");
-						if (tokens.length < 2)
-							continue;
-
-						String source = null;
-						int begin = 0;
-						if (tokens[begin].startsWith(":"))
-							source = tokens[begin++].substring(1);
-
-						String message_name = tokens[begin++];
-
-						int end = begin;
-						for (; end < tokens.length; ++end)
-							if (tokens[end].startsWith(":"))
-								break;
-						if (end == tokens.length)
-							--end;
-
-						String[] buffer = new String[end - begin + 1];
-						int buffer_count = 0;
-
-						for (int i = begin; i < end; ++i)
-							buffer[buffer_count++] = tokens[i];
-
-						if (buffer.length > 0)
-							buffer[buffer_count] = tokens[end].startsWith(":") ? tokens[end].substring(1) : tokens[end];
-						for (int i = end + 1; i < tokens.length; ++i)
-							buffer[buffer_count] += " " + tokens[i];
-
-						/*if (Moo.conf.getDebug() > 2)
-						{
-							log.log(Level.FINEST, "  Source: " + source);
-							log.log(Level.FINEST, "  Message: " + message_name);
-							for (int i = 0; i < buffer.length; ++i)
-								log.log(Level.FINEST, "    " + i + ": " + buffer[i]);
-						}*/
-
-						Message.runMessage(source, message_name, buffer);
-					}
-					catch (Exception ex)
-					{
-						log.log(Level.WARNING, "Error running message: " + in, ex);
-					}
-				}
+				run();
 			}
-			catch (IOException ex)
+			catch (Exception ex)
 			{
-				Logger.getGlobalLogger().log(ex);
+				log.log(Level.SEVERE, "Error thrown out of run()", ex);
 			}
-
-			if (Moo.sock != null)
-			{
-				Moo.sock.shutdown();
-				Moo.sock = null;
-			}
-
-			channels = null;
-			users = null;
-			me = null;
-
+			
 			try
 			{
-				Thread.sleep(10 * 1000);
+				Thread.sleep(60 * 1000);
 			}
 			catch (InterruptedException e)
 			{
@@ -399,12 +293,21 @@ public class Moo
 		return buffer;
 	}
 
+	public static void write(String command, String... args)
+	{
+		if (moo.channel == null)
+			return;
+		
+		IRCMessage message = new IRCMessage(null, command, args);
+		moo.channel.writeAndFlush(message);
+	}
+
 	public static void privmsg(String target, final String buffer)
 	{
 		int ex = target.indexOf('!');
 		if (ex != -1)
 			target = target.substring(0, ex);
-		Moo.sock.write("PRIVMSG " + target + " :" + buffer);
+		write("PRIVMSG", target, buffer);
 	}
 
 	/**
@@ -423,7 +326,7 @@ public class Moo
 		int ex = target.indexOf('!');
 		if (ex != -1)
 			target = target.substring(0, ex);
-		Moo.sock.write("NOTICE " + target + " :" + buffer);
+		write("NOTICE", target, buffer);
 	}
 
 	public static void reply(String source, String target, final String buffer)
@@ -436,22 +339,22 @@ public class Moo
 
 	public static void join(String target)
 	{
-		Moo.sock.write("JOIN " + target);
+		write("JOIN", target);
 	}
 
 	public static void kick(final String target, final String channel, final String reason)
 	{
-		Moo.sock.write("KICK " + channel + " " + target + " :" + reason);
+		write("KICK", channel, target, reason);
 	}
 
 	public static void mode(final String target, final String modes)
 	{
-		Moo.sock.write("MODE " + target + " " + modes);
+		write("MODE", target, modes);
 	}
 
 	public static void kill(final String nick, final String reason)
 	{
-		Moo.sock.write("KILL " + nick + " :" + reason);
+		write("KILL", nick, reason);
 	}
 
 	public static void akill(final String host, final String time, final String reason)
@@ -474,6 +377,6 @@ public class Moo
 
 	public static void operwall(final String message)
 	{
-		Moo.sock.write("OPERWALL :" + message);
+		write("OPERWALL", message);
 	}
 }

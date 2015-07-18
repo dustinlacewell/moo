@@ -36,14 +36,14 @@ public abstract class Message
 
 	public static LinkedList<Message> messages = new LinkedList<Message>();
 
-	public static void runMessage(final String source, final String message, final String[] buffer)
+	public static void runMessage(IRCMessage message)
 	{
 		int hash = messages.hashCode(); // XXX
 		for (Iterator<Message> it = messages.iterator(); it.hasNext() && hash == messages.hashCode();)
 		{
 			Message m = it.next();
-			if (m.getName().equalsIgnoreCase(message))
-				m.run(source, buffer);
+			if (m.getName().equalsIgnoreCase(message.getCommand()))
+				m.run(message.getSource(), message.getParams());
 		}
 	}
 }
