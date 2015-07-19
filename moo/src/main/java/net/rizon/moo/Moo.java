@@ -85,7 +85,8 @@ public class Moo
 			channels = new ChannelManager();
 			users = new UserManager();
 
-			client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
+			if (conf.general.host != null)
+				client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
 
 			ChannelFuture future = client.connect(conf.general.server, conf.general.port);
 			channel = future.channel();

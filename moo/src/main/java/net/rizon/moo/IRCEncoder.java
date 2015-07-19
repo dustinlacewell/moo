@@ -11,7 +11,7 @@ class IRCEncoder extends MessageToMessageEncoder<IRCMessage>
 	{
 		StringBuilder builder = new StringBuilder();
 		
-		if (!msg.getSource().isEmpty())
+		if (msg.getSource() != null)
 			builder.append(':').append(msg.getSource()).append(' ');
 		
 		builder.append(msg.getCommand());

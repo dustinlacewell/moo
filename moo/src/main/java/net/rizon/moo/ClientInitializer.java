@@ -5,6 +5,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LoggingHandler;
@@ -35,19 +36,19 @@ class ClientInitializer extends ChannelInitializer<SocketChannel>
 //			pipeline.addLast("ssl", new SslHandler(engine));
 		}
 
-		pipeline.addLast("framer", new DelimiterBasedFrameDecoder(MAXBUF, Delimiters.lineDelimiter()));
-
-		pipeline.addLast("decoder", new StringDecoder());
-		pipeline.addLast("decoder", new IRCDecoder());
+		pipeline.addLast("frameDecoder", new LineBasedFrameDecoder(MAXBUF));
+		pipeline.addLast("stringDecoder", new StringDecoder());
+		pipeline.addLast("ircDecoder", new IRCDecoder());
 		
-		pipeline.addLast("encoder", new StringEncoder());
-		pipeline.addLast("encoder", new IRCEncoder());
+		pipeline.addLast("stringEncoder", new StringEncoder());
+		pipeline.addLast("frameEncoder", new LineBasedFrameEncoder());
+		pipeline.addLast("ircEncoder", new IRCEncoder());
 		
 		pipeline.addLast("idleStateHandler", new IdleStateHandler(120, 60, 0));
 		pipeline.addLast("handler", new Handler(moo));
 		
-		pipeline.addLast(new LoggingHandler());
+		//pipeline.addLast(new LoggingHandler());
 
-		pipeline.addLast("handler", new ClientHandler(moo));
+		pipeline.addLast("clientHandler", new ClientHandler(moo));
 	}
 }
