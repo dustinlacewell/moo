@@ -1,23 +1,19 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
+import io.netty.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 
-class requester extends Timer
+class Requester implements Runnable
 {
-	public requester()
-	{
-		super(300, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		new DNSChecker().start();
 
@@ -33,7 +29,7 @@ public class servermonitor extends Plugin
 	private CommandServer server;
 	private Command split;
 	private Event e;
-	private Timer r;
+	private ScheduledFuture requester;
 	public static ServerMonitorConfiguration conf;
 
 	public servermonitor() throws Exception
@@ -51,9 +47,7 @@ public class servermonitor extends Plugin
 
 		e = new EventSplit();
 
-		r = new requester();
-
-		r.start();
+		requester = Moo.scheduleWithFixedDelay(new Requester(), 5, TimeUnit.MINUTES);
 	}
 
 	@Override
@@ -65,6 +59,6 @@ public class servermonitor extends Plugin
 
 		e.remove();
 
-		r.stop();
+		requester.cancel(false);
 	}
 }

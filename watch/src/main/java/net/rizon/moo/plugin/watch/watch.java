@@ -42,7 +42,7 @@ public class watch extends Plugin
 		e.remove();
 		n.remove();
 		w.remove();
-		watchMonitor.cancel(true);
+		watchMonitor.cancel(false);
 		watchReply.remove();
 	}
 }

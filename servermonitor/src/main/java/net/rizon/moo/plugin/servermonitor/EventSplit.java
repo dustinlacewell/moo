@@ -1,9 +1,10 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,18 +15,14 @@ import net.rizon.moo.Mail;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
-import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 
-class textDelay extends Timer
+class TextDelay implements Runnable
 {
-	public textDelay()
-	{
-		super(5, false);
-	}
+	public static final int delay = 5;
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		String buf = "";
 		for (String s : messages)
@@ -46,7 +43,7 @@ class textDelay extends Timer
 
 class EventSplit extends Event
 {
-	protected static textDelay texts;
+	protected static TextDelay texts;
 
 	@Override
 	public void onServerLink(Server serv, Server to)
@@ -64,8 +61,8 @@ class EventSplit extends Event
 		{
 			if (texts == null)
 			{
-				texts = new textDelay();
-				texts.start();
+				texts = new TextDelay();
+				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
 			}
 			texts.messages.add(serv.getName() + " introduced by " + to.getName());
 		}
@@ -114,8 +111,8 @@ class EventSplit extends Event
 		{
 			if (texts == null)
 			{
-				texts = new textDelay();
-				texts.start();
+				texts = new TextDelay();
+				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
 			}
 			texts.messages.add(serv.getName() + " split from " + from.getName());
 		}
@@ -123,7 +120,8 @@ class EventSplit extends Event
 		if (servermonitor.conf.reconnect && !serv.isServices())
 		{
 			Reconnector r = new Reconnector(serv, from);
-			r.start();
+			ScheduledFuture future = Moo.scheduleAtFixedRate(r, 1, TimeUnit.MINUTES);
+			r.future = future;
 		}
 	}
 

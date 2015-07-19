@@ -47,7 +47,7 @@ public class proxyscan extends Plugin
 		e.remove();
 		sc.shutdown();
 		c.remove();
-		cacheFuture.cancel(true);
+		cacheFuture.cancel(false);
 	}
 
 	public static void akill(String ip, int port, String type, boolean input)

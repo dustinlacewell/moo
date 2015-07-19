@@ -39,7 +39,7 @@ public class dnsblstats extends Plugin
 	public void stop()
 	{
 		dnsbl.remove();
-		requester.cancel(true);
+		requester.cancel(false);
 		n219.remove();
 		n227.remove();
 		e.remove();

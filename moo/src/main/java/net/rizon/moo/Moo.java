@@ -369,12 +369,17 @@ public class Moo
 		return moo.group.schedule(r, t, unit);
 	}
 
-	public static void write(String command, String... args)
+	public static void write(String command, Object... args)
 	{
 		if (moo.channel == null)
 			return;
 		
-		IRCMessage message = new IRCMessage(null, command, args);
+		String[] params = new String[args.length];
+		int i = 0;
+		for (Object o : args)
+			params[i++] = o.toString();
+		
+		IRCMessage message = new IRCMessage(null, command, params);
 		moo.channel.writeAndFlush(message);
 	}
 

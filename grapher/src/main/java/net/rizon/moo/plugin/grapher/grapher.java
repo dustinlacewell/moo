@@ -47,11 +47,11 @@ public class grapher extends Plugin
 	public void stop()
 	{
 		for (ServerUserGraph g : serverGraphs.values())
-			g.future.cancel(true);
+			g.future.cancel(false);
 
-		oline.cancel(true);
-		server.cancel(true);
-		user.cancel(true);
+		oline.cancel(false);
+		server.cancel(false);
+		user.cancel(false);
 
 		e.remove();
 	}

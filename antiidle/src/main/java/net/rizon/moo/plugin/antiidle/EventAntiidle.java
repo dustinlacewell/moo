@@ -67,7 +67,7 @@ class EventAntiidle extends Event
 				Voicer av = it.next();
 				if (av.ai.nick.equals(s))
 				{
-					av.future.cancel(true);
+					av.future.cancel(false);
 					it.remove();
 					break;
 				}

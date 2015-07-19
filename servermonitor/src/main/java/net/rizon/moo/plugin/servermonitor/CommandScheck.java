@@ -1,15 +1,14 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
-class scheckTimer extends Timer
+class SCheckTimer implements Runnable
 {
 	protected static final int delay = 70;
 
@@ -19,10 +18,8 @@ class scheckTimer extends Timer
 	private String[] targets;
 	private boolean use_v6;
 
-	public scheckTimer(int delay, final Server server, final String[] targets, boolean ssl, int port, boolean use_v6)
+	public SCheckTimer(final Server server, final String[] targets, boolean ssl, int port, boolean use_v6)
 	{
-		super(delay * scheckTimer.delay, false);
-
 		this.server = server;
 		this.targets = targets;
 		this.ssl = ssl;
@@ -31,26 +28,24 @@ class scheckTimer extends Timer
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		SCheck check = new SCheck(this.server, this.targets, this.ssl, this.port, true, this.use_v6);
 		check.start();
 	}
 }
 
-class scheckEndTimer extends Timer
+class SCheckEndTimer implements Runnable
 {
 	private CommandSource source;
 
-	public scheckEndTimer(int delay, CommandSource source)
+	public SCheckEndTimer(CommandSource source)
 	{
-		super(delay * scheckTimer.delay, false);
-
 		this.source = source;
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		source.reply("[SCHECK] All server checks completed.");
 	}
@@ -137,12 +132,12 @@ class CommandScheck extends Command
 						if (s.isHub() || s.isServices())
 							continue;
 
-						new scheckTimer(delay++, s, new String[] { source.getTargetName() }, ssl, port, use_v6).start();
+						Moo.schedule(new SCheckTimer(s, new String[] { source.getTargetName() }, ssl, port, use_v6), delay++ * SCheckTimer.delay, TimeUnit.SECONDS);
 					}
 
-					new scheckEndTimer(delay + 1, source);
+					Moo.schedule(new SCheckEndTimer(source), delay * SCheckTimer.delay, TimeUnit.SECONDS);
 
-					source.reply("[SCHECK] Queued " + delay + " checks in the next " + (delay * scheckTimer.delay) + " seconds");
+					source.reply("[SCHECK] Queued " + delay + " checks in the next " + (delay * SCheckTimer.delay) + " seconds");
 				}
 			}
 		}

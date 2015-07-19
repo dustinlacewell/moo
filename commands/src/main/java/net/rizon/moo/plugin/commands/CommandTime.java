@@ -182,7 +182,7 @@ class CommandTime extends Command
 	
 	public void remove()
 	{
-		this.check_times_timer.cancel(true);
+		this.check_times_timer.cancel(false);
 	}
 
 	@Override

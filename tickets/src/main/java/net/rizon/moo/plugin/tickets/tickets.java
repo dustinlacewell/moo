@@ -41,7 +41,7 @@ public class tickets extends Plugin
 	@Override
 	public void stop()
 	{
-		ticketTimer.cancel(true);
+		ticketTimer.cancel(false);
 		e.remove();
 	}
 }

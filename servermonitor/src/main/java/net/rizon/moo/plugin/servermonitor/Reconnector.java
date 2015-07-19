@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,19 +11,18 @@ import java.util.List;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
-import net.rizon.moo.Timer;
 
-class Reconnector extends Timer
+class Reconnector implements Runnable
 {
 	private Server serv, from;
 	private Split sp;
 	private int tick = 0, tries = 0;
 	private HashSet<String> attempted = new HashSet<String>();
 	private static long last_reconnect = 0;
+	protected ScheduledFuture future;
 
 	public Reconnector(Server serv, Server from)
 	{
-		super(60, true);
 		this.serv = serv;
 		this.from = from;
 		this.sp = serv.getSplit();
@@ -32,7 +32,7 @@ class Reconnector extends Timer
 
 	public void destroy()
 	{
-		this.stop();
+		future.cancel(false);
 		reconnects.remove(this);
 	}
 
@@ -92,7 +92,7 @@ class Reconnector extends Timer
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		if (last_reconnect + 60 > System.currentTimeMillis() / 1000L)
 			return;
@@ -103,7 +103,6 @@ class Reconnector extends Timer
 		if (s == null || this.sp == null || !this.sp.equals(s.getSplit()))
 		{
 			this.destroy();
-			this.setRepeating(false);
 			return;
 		}
 
@@ -112,7 +111,6 @@ class Reconnector extends Timer
 			Moo.privmsgAll(Moo.conf.split_channels, "Disabling reconnect for frozen server " + s.getName());
 
 			this.destroy();
-			this.setRepeating(false);
 			return;
 		}
 
@@ -156,7 +154,6 @@ class Reconnector extends Timer
 			}
 
 			this.destroy();
-			this.setRepeating(false);
 
 			return;
 		}
@@ -175,7 +172,7 @@ class Reconnector extends Timer
 
 		Moo.privmsgAll(Moo.conf.split_channels, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
 
-		Moo.sock.write("CONNECT " + s.getName() + " " + servermonitor.conf.port + " " + targ.getName());
+		Moo.write("CONNECT", s.getName(), servermonitor.conf.port, targ.getName());
 		this.sp.reconnectedBy = Moo.conf.general.nick;
 
 		last_reconnect = System.currentTimeMillis() / 1000L;
@@ -199,13 +196,11 @@ class Reconnector extends Timer
 	public static boolean removeReconnectsFor(Server s)
 	{
 		boolean ret = false;
-		for (Iterator<Reconnector> it = reconnects.iterator(); it.hasNext();)
+		for (Reconnector r : new ArrayList<Reconnector>(reconnects))
 		{
-			Reconnector r = it.next();
 			if (r.serv == s)
 			{
-				r.stop();
-				it.remove();
+				r.destroy();
 				ret = true;
 			}
 		}

@@ -2,19 +2,12 @@ package net.rizon.moo.plugin.wiki;
 
 import java.util.Date;
 
-import net.rizon.moo.Timer;
-
-class WikiTimer extends Timer
+class WikiTimer implements Runnable
 {
 	private WikiChecker c;
-
-	public WikiTimer()
-	{
-		super(60, true);
-	}
-
+	
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		if (c != null && c.isAlive())
 			return;

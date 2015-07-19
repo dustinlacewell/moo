@@ -32,7 +32,7 @@ class EventGraph extends Event
 	@Override
 	public void onServerDestroy(Server serv)
 	{
-		this.pkg.serverGraphs.remove(serv).future.cancel(true);
+		this.pkg.serverGraphs.remove(serv).future.cancel(false);
 	}
 
 	@Override

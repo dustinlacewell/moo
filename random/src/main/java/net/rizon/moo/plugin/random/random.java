@@ -75,7 +75,7 @@ public class random extends Plugin
 	{
 		flood.remove();
 		e.remove();
-		dl.cancel(true);
+		dl.cancel(false);
 	}
 
 	private static LinkedList<NickData> nicks = new LinkedList<NickData>();
