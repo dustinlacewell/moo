@@ -27,8 +27,8 @@ class CommandShutdown extends Command
 	public void execute(CommandSource source, String[] params)
 	{
 		source.reply("Shutting down");
-		Moo.sock.write("QUIT :SHUTDOWN from " + source.getUser().getName());
-		Moo.sock.shutdown();
+		Moo.write("QUIT", "SHUTDOWN from " + source.getUser().getName());
+		Moo.stop();
 		Moo.quitting = true;
 	}
 }

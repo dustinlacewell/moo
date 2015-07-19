@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.CommandSource;
@@ -11,19 +12,6 @@ import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 class EventProxyScan extends Event
 {
 	private static final Logger log = Logger.getLogger(EventProxyScan.class.getName());
-
-	EventProxyScan()
-	{
-		proxyscan.cache.start();
-	}
-
-
-	@Override
-	public void remove()
-	{
-		super.remove();
-		proxyscan.cache.stop();
-	}
 
 	private static boolean isReserved(String ip)
 	{

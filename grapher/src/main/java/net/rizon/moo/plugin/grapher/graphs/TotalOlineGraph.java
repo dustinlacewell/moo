@@ -1,6 +1,5 @@
 package net.rizon.moo.plugin.grapher.graphs;
 
-import java.util.Date;
 import java.util.HashSet;
 
 import net.rizon.moo.Server;
@@ -12,14 +11,14 @@ public class TotalOlineGraph extends Graph
 {
 	public TotalOlineGraph()
 	{
-		super("opers", 60);
+		super("opers");
 
 		this.addDataSource("opers", DataSourceType.DST_GAUGE, 120, 0, 1000);
 		this.setRRA(RoundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		HashSet<String> olines = new HashSet<String>();
 		for (Server s : Server.getServers())

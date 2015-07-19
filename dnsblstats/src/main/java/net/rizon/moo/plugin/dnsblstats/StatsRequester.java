@@ -7,9 +7,8 @@ import java.util.Iterator;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
-class StatsRequester extends Timer
+class StatsRequester implements Runnable
 {
 	private static boolean check_requested;
 	private static boolean first_run = true;
@@ -17,13 +16,8 @@ class StatsRequester extends Timer
 	private static long before_total_count;
 	private static HashMap<String, Long> before_count = new HashMap<String, Long>();
 
-	public StatsRequester()
-	{
-		super(60, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		check_requested = true;
 		requested.clear();
@@ -34,7 +28,7 @@ class StatsRequester extends Timer
 		for (Server s : Server.getServers())
 			if (s.isNormal() && !s.isHub())
 			{
-				Moo.sock.write("STATS B " + s.getName());
+				Moo.write("STATS", "B", s.getName());
 
 				requested.add(s.getName());
 				check_waiting_on.add(s.getName());

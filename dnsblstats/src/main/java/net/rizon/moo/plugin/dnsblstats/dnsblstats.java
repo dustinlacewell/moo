@@ -1,18 +1,20 @@
 package net.rizon.moo.plugin.dnsblstats;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
 public class dnsblstats extends Plugin
 {
 	private Command dnsbl;
-	private Timer requester;
+	private ScheduledFuture requester;
 	private Message n219, n227;
 	private Event e;
 
@@ -27,19 +29,17 @@ public class dnsblstats extends Plugin
 	public void start() throws Exception
 	{
 		dnsbl = new CommandDnsblStats(this);
-		requester = new StatsRequester();
+		requester = Moo.scheduleWithFixedDelay(new StatsRequester(), 1, TimeUnit.MINUTES);
 		n219 = new Numeric219();
 		n227 = new Numeric227();
 		e = new EventDnsbl();
-
-		requester.start();
 	}
 
 	@Override
 	public void stop()
 	{
 		dnsbl.remove();
-		requester.stop();
+		requester.cancel(true);
 		n219.remove();
 		n227.remove();
 		e.remove();

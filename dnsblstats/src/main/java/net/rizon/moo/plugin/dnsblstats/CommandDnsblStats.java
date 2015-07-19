@@ -56,7 +56,7 @@ class CommandDnsblStats extends Command
 		for (Server s : Server.getServers())
 			if (s.isNormal() && !s.isHub())
 			{
-				Moo.sock.write("STATS B " + s.getName());
+				Moo.write("STATS", "B", s.getName());
 				command_waiting_on.add(s.getName());
 			}
 	}

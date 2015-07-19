@@ -37,7 +37,7 @@ public class Moo
 	private static final Logger log = Logger.getLogger(Moo.class.getName());
 	private static Date created = new Date();
 	
-	private EventLoopGroup group;
+	private EventLoopGroup group = new NioEventLoopGroup(1);
 	private io.netty.channel.Channel channel;
 
 	public static Config conf = null;
@@ -75,7 +75,7 @@ public class Moo
 	
 	private void run() throws InterruptedException
 	{
-		group = new NioEventLoopGroup(1);
+		//group = new NioEventLoopGroup(1);
 		try
 		{
 			Bootstrap client = new Bootstrap()
@@ -93,15 +93,10 @@ public class Moo
 			ChannelFuture future = client.connect(conf.general.server, conf.general.port);
 			channel = future.channel();
 
-			// I guess this means we don't save databases when not connected
-			group.scheduleWithFixedDelay(new DatabaseTimer(), 1, 1, TimeUnit.MINUTES);
-
 			channel.closeFuture().sync();
 		}
 		finally
 		{
-		    group.shutdownGracefully();
-		    
 		    channels = null;
 		    users = null;
 		}
@@ -170,6 +165,8 @@ public class Moo
 
 		for (Event e : Event.getEvents())
 			e.loadDatabases();
+		
+		group.scheduleWithFixedDelay(new DatabaseTimer(), 1, 1, TimeUnit.MINUTES);
 
 		while (quitting == false)
 		{
@@ -201,6 +198,11 @@ public class Moo
 		db.shutdown();
 
 		System.exit(0);
+	}
+	
+	public static void stop()
+	{
+		moo.channel.close();
 	}
 
 	public static final String getCreated()
@@ -316,6 +318,39 @@ public class Moo
 					{
 						log.log(Level.WARNING, "Error while running task", ex);
 						scheduleWithFixedDelay(r, t, unit);
+						return;
+					}
+					catch (InterruptedException ex)
+					{
+						log.log(Level.WARNING, "Error while running task", ex);
+					}
+				}
+			}
+		};
+		watch.start();
+		return future;
+	}
+	
+	public static ScheduledFuture scheduleAtFixedRate(final Runnable r, final long t, final TimeUnit unit)
+	{
+		final ScheduledFuture future = moo.group.scheduleAtFixedRate(r, t, t, unit);
+		
+		// watch for an exception and resubmit
+		Thread watch = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				for (;;)
+				{
+					try
+					{
+						future.get();
+					}
+					catch (ExecutionException ex)
+					{
+						log.log(Level.WARNING, "Error while running task", ex);
+						scheduleAtFixedRate(r, t, unit);
 						return;
 					}
 					catch (InterruptedException ex)

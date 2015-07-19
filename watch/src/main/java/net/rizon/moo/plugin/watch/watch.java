@@ -1,21 +1,25 @@
 package net.rizon.moo.plugin.watch;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Timer;
 
 public class watch extends Plugin
 {
 	public static LinkedList<WatchEntry> watches = new LinkedList<WatchEntry>();
 
+	private Message watchReply;
 	private Event e;
 	private Message n;
 	private Command w;
-	private Timer m;
+	private ScheduledFuture watchMonitor;
 
 	public watch()
 	{
@@ -28,7 +32,8 @@ public class watch extends Plugin
 		e = new EventWatch();
 		n = new MessageNotice();
 		w = new CommandWatch(this);
-		m = new WatchMonitor();
+		watchMonitor = Moo.scheduleWithFixedDelay(new WatchMonitor(), 1, TimeUnit.MINUTES);
+		watchReply = new WatchReply();
 	}
 
 	@Override
@@ -37,6 +42,7 @@ public class watch extends Plugin
 		e.remove();
 		n.remove();
 		w.remove();
-		m.stop();
+		watchMonitor.cancel(true);
+		watchReply.remove();
 	}
 }

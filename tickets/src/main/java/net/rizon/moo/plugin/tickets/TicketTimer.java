@@ -2,19 +2,12 @@ package net.rizon.moo.plugin.tickets;
 
 import java.util.Date;
 
-import net.rizon.moo.Timer;
-
-class TicketTimer extends Timer
+class TicketTimer implements Runnable
 {
 	private TicketChecker c;
 
-	public TicketTimer()
-	{
-		super(60, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		if (c != null && c.isAlive())
 			return;

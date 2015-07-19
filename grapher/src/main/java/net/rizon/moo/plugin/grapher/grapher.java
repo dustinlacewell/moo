@@ -1,12 +1,17 @@
 package net.rizon.moo.plugin.grapher;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
+import net.rizon.moo.plugin.grapher.graphs.ServerUserGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalOlineGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalServerGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalUserGraph;
@@ -15,11 +20,11 @@ public class grapher extends Plugin
 {
 	public static GrapherConfiguration conf;
 
-	protected HashMap<Server, Graph> serverGraphs = new HashMap<Server, Graph>();
+	protected Map<Server, ServerUserGraph> serverGraphs = new HashMap<Server, ServerUserGraph>();
 	protected static final Logger log = Logger.getLogger(grapher.class.getName());
 
 	private Event e;
-	private Graph oline, server, user;
+	private ScheduledFuture oline, server, user;
 
 	public grapher() throws Exception
 	{
@@ -33,24 +38,20 @@ public class grapher extends Plugin
 	{
 		e = new EventGraph(this);
 
-		oline = new TotalOlineGraph();
-		server = new TotalServerGraph();
-		user = new TotalUserGraph();
-
-		oline.start();
-		server.start();
-		user.start();
+		oline = Moo.scheduleAtFixedRate(new TotalOlineGraph(), 1, TimeUnit.MINUTES);
+		server = Moo.scheduleAtFixedRate(new TotalServerGraph(), 1, TimeUnit.MINUTES);
+		user = Moo.scheduleAtFixedRate(new TotalUserGraph(), 1, TimeUnit.MINUTES);
 	}
 
 	@Override
 	public void stop()
 	{
-		for (Graph g : serverGraphs.values())
-			g.stop();
+		for (ServerUserGraph g : serverGraphs.values())
+			g.future.cancel(true);
 
-		oline.stop();
-		server.stop();
-		user.stop();
+		oline.cancel(true);
+		server.cancel(true);
+		user.cancel(true);
 
 		e.remove();
 	}

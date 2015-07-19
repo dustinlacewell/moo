@@ -1,21 +1,23 @@
 package net.rizon.moo.plugin.tickets;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
 
 public class tickets extends Plugin
 {
 	protected static final Logger log = Logger.getLogger(tickets.class.getName());
 
-	private Timer tickTimer;
+	private ScheduledFuture ticketTimer;
 	private Event e;
 	protected static HashMap<Integer, Ticket> tickets = new HashMap<Integer, Ticket>();
 	public static TicketsConfiguration conf;
@@ -27,21 +29,19 @@ public class tickets extends Plugin
 
 		// This allows us to store cookies so we can properly login via HTTP POST
 		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-
-		tickTimer = new TicketTimer();
 	}
 
 	@Override
 	public void start() throws Exception
 	{
-		tickTimer.start();
+		ticketTimer = Moo.scheduleWithFixedDelay(new TicketTimer(), 1, TimeUnit.MINUTES);
 		e = new EventTicket();
 	}
 
 	@Override
 	public void stop()
 	{
-		tickTimer.stop();
+		ticketTimer.cancel(true);
 		e.remove();
 	}
 }

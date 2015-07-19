@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
-import net.rizon.moo.Timer;
 
-public abstract class Graph extends Timer
+public abstract class Graph implements Runnable
 {
 	private static final Logger log = Logger.getLogger(Graph.class.getName());
 
@@ -32,9 +31,8 @@ public abstract class Graph extends Timer
 	private long rra_steps;
 	private long rra_rows;
 
-	public Graph(final String name, long step)
+	public Graph(final String name)
 	{
-		super(step, true);
 		this.name = name + ".rrd";
 		this.step = step;
 	}

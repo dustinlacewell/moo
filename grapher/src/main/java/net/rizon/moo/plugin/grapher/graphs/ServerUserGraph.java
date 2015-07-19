@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.grapher.graphs;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Date;
 
 import net.rizon.moo.Server;
@@ -10,10 +11,11 @@ import net.rizon.moo.plugin.grapher.RoundRobinArchiveType;
 public class ServerUserGraph extends Graph
 {
 	Server serv;
+	public ScheduledFuture future;
 
 	public ServerUserGraph(Server s)
 	{
-		super(s.getName() + "-users", 60);
+		super(s.getName() + "-users");
 
 		this.serv = s;
 
@@ -22,7 +24,7 @@ public class ServerUserGraph extends Graph
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		final String[] data = { String.valueOf(serv.users) };
 		this.update(data);

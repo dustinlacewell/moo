@@ -1,7 +1,9 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.Command;
@@ -19,6 +21,7 @@ public class proxyscan extends Plugin
 	private ScanListener sc;
 	private Command c;
 	protected static final IPCache cache = new IPCache();
+	private ScheduledFuture cacheFuture;
 	public static ProxyscanConfiguration conf;
 
 	public proxyscan() throws Exception
@@ -35,6 +38,7 @@ public class proxyscan extends Plugin
 		sc = new ScanListener(conf.server.ip, conf.server.port);
 		c = new ProxyStats(this);
 		sc.start();
+		cacheFuture = Moo.scheduleWithFixedDelay(cache, 1, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -43,6 +47,7 @@ public class proxyscan extends Plugin
 		e.remove();
 		sc.shutdown();
 		c.remove();
+		cacheFuture.cancel(true);
 	}
 
 	public static void akill(String ip, int port, String type, boolean input)

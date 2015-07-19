@@ -2,31 +2,25 @@ package net.rizon.moo.plugin.proxyscan;
 
 import java.util.ArrayDeque;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-import net.rizon.moo.Timer;
-
-final class IPCache extends Timer
+final class IPCache implements Runnable
 {
-	private static final int tick = 1;
-
 	/*
 	 * Using two caches: "cache" is a hashmap for fast lookup; cacheq is a
 	 * queue for faster expiry by only looping over the items that are likely to
 	 * have expired.
 	 */
-	private final ArrayDeque<CacheEntry> cacheq = new ArrayDeque<CacheEntry>();
-	private final HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
-
-	IPCache()
-	{
-		super(tick, true);
-	}
+	private final Deque<CacheEntry> cacheq = new ArrayDeque<CacheEntry>();
+	private final Map<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
 
 	@Override
-	public synchronized void run(Date now)
+	public synchronized void run()
 	{
+		Date now = new Date();
 		for (Iterator<CacheEntry> it = cacheq.iterator(); it.hasNext();)
 		{
 			CacheEntry e = it.next();

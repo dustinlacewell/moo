@@ -1,27 +1,22 @@
 package net.rizon.moo.plugin.random;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Timer;
 
-class deadListChecker extends Timer
+class DeadListChecker implements Runnable
 {
-	public deadListChecker()
-	{
-		super(30, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		long now_l = System.currentTimeMillis() / 1000L;
 
@@ -58,7 +53,7 @@ public class random extends Plugin
 
 	private Command flood;
 	private Event e;
-	private Timer dl;
+	private ScheduledFuture dl;
 
 	public random()
 	{
@@ -71,9 +66,8 @@ public class random extends Plugin
 	{
 		flood = new CommandFlood(this);
 		e = new EventRandom();
-		dl = new deadListChecker();
-
-		dl.start();
+		
+		dl = Moo.scheduleWithFixedDelay(new DeadListChecker(), 30, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -81,7 +75,7 @@ public class random extends Plugin
 	{
 		flood.remove();
 		e.remove();
-		dl.stop();
+		dl.cancel(true);
 	}
 
 	private static LinkedList<NickData> nicks = new LinkedList<NickData>();

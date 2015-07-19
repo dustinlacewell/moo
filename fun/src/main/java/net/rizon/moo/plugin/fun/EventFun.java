@@ -3,27 +3,25 @@ package net.rizon.moo.plugin.fun;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 
-class timedKill extends Timer
+class TimedKill implements Runnable
 {
 	private String dest, reason;
 
-	public timedKill(final String dest, final String reason)
+	public TimedKill(final String dest, final String reason)
 	{
-		super(new Random().nextInt(250) + 60, false);
-
 		this.dest = dest;
 		this.reason = reason;
 	}
 
 	@Override
-	public void run(final Date now)
+	public void run()
 	{
 		Moo.kill(this.dest, this.reason);
 	}
@@ -107,7 +105,7 @@ class EventFun extends Event
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					new timedKill(killee, my_kill_reason).start();
+					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 			else if (kill_reason.toLowerCase().indexOf("welcome") > -1)
@@ -128,7 +126,7 @@ class EventFun extends Event
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					new timedKill(killee, my_kill_reason).start();
+					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 			else if (kill_reason.toLowerCase().indexOf("congrat") > -1 || kill_reason.toLowerCase().indexOf("gratz") > -1)
@@ -143,7 +141,7 @@ class EventFun extends Event
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					new timedKill(killee, my_kill_reason).start();
+					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 		}
