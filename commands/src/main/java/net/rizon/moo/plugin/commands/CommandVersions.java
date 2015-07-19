@@ -152,7 +152,7 @@ class commandVersionsBase extends Command
 		{
 			if (s.isServices() == false)
 			{
-				Moo.sock.write("VERSION " + s.getName());
+				Moo.write("VERSION", s.getName());
 				message351.waiting_for.add(s.getName());
 			}
 		}

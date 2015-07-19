@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.commands;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
@@ -15,7 +17,6 @@ import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
-import net.rizon.moo.Timer;
 
 class message391 extends Message
 {
@@ -145,15 +146,10 @@ class message391 extends Message
 	}
 }
 
-class checkTimesTimer extends Timer
+class CheckTimesTimer implements Runnable
 {
-	public checkTimesTimer()
-	{
-		super(60 * 15, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		message391.known_times.clear();
 		message391.hourly_check = true;
@@ -162,7 +158,7 @@ class checkTimesTimer extends Timer
 		{
 			if (s.isServices())
 				continue;
-			Moo.sock.write("TIME " + s.getName());
+			Moo.write("TIME", s.getName());
 			message391.waiting_for.add(s.getName());
 		}
 	}
@@ -172,7 +168,7 @@ class CommandTime extends Command
 {
 	@SuppressWarnings("unused")
 	private static message391 message_391 = new message391("391");
-	private checkTimesTimer check_times_timer;
+	private ScheduledFuture check_times_timer;
 
 	public CommandTime(Plugin pkg)
 	{
@@ -181,8 +177,12 @@ class CommandTime extends Command
 		this.requiresChannel(Moo.conf.oper_channels);
 		this.requiresChannel(Moo.conf.admin_channels);
 
-		this.check_times_timer = new checkTimesTimer();
-		this.check_times_timer.start();
+		this.check_times_timer = Moo.scheduleWithFixedDelay(new CheckTimesTimer(), 15, TimeUnit.MINUTES);
+	}
+	
+	public void remove()
+	{
+		this.check_times_timer.cancel(true);
 	}
 
 	@Override
@@ -201,7 +201,7 @@ class CommandTime extends Command
 		{
 			if (s.isServices())
 				continue;
-			Moo.sock.write("TIME " + s.getName());
+			Moo.write("TIME", s.getName());
 			message391.waiting_for.add(s.getName());
 		}
 

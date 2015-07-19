@@ -2,23 +2,24 @@ package net.rizon.moo.plugin.antiidle;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 
-class AntiIdleEntry extends Timer
+class AntiIdleEntry implements Runnable
 {
 	private static final Logger log = Logger.getLogger(AntiIdleEntry.class.getName());
+	private static Map<String, AntiIdleEntry> entries = new HashMap<String, AntiIdleEntry>();
 
 	public String nick;
 	public String mask;
+	private boolean defunct;
 
 	public AntiIdleEntry(final String mask)
 	{
-		super(antiidle.conf.time * 60, false);
-
 		String nick = mask;
 		int e = mask.indexOf('!');
 		if (e != -1)
@@ -33,16 +34,17 @@ class AntiIdleEntry extends Timer
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
+		if (defunct)
+			return;
+		
 		if (antiidle.conf.bantime > 0)
-			new AntiIdleUnbanner(this.mask).start();
+			Moo.schedule(new AntiIdleUnbanner(this.mask), antiidle.conf.bantime, TimeUnit.MINUTES);
 		Moo.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
 
 		entries.remove(this.nick.toLowerCase());
 	}
-
-	private static HashMap<String, AntiIdleEntry> entries = new HashMap<String, AntiIdleEntry>();
 
 	public static boolean removeTimerFor(final String mask)
 	{
@@ -56,7 +58,7 @@ class AntiIdleEntry extends Timer
 		{
 			log.log(Level.FINER, "Removing antiidle for " + nick);
 
-			a.stop();
+			a.defunct = true;
 			entries.remove(nick.toLowerCase());
 			return true;
 		}

@@ -96,7 +96,7 @@ class CommandClimit extends Command
 			if (!s.isNormal())
 				continue;
 
-			Moo.sock.write("VERSION " + s.getName());
+			Moo.write("VERSION", s.getName());
 			message_limit.waiting_for.add(s.getName());
 		}
 

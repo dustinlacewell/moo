@@ -114,7 +114,7 @@ class CommandUptime extends Command
 		{
 			if (s.isServices() == false && s.getSplit() == null)
 			{
-				Moo.sock.write("STATS u " + s.getName());
+				Moo.write("STATS", "u", s.getName());
 				message242.waiting_for.add(s.getName());
 			}
 		}

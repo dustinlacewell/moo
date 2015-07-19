@@ -156,7 +156,7 @@ class commandMapBase extends Command
 				if (s.isHub())
 				{
 					s.bytes = 0;
-					Moo.sock.write("STATS ? " + s.getName());
+					Moo.write("STATS", "?", s.getName());
 				}
 			message219.request_all = this.full;
 			message219.source = source;
@@ -192,7 +192,7 @@ class commandMapBase extends Command
 					int users = Integer.parseInt(params[1]);
 
 					for (Server s : Server.getServers())
-						Moo.sock.write("USERS " + s.getName());
+						Moo.write("USERS", s.getName());
 
 					message265.source = source;
 					message265.request_users = users;
@@ -205,7 +205,7 @@ class commandMapBase extends Command
 					else
 					{
 						s.bytes = 0;
-						Moo.sock.write("STATS ? " + s.getName());;
+						Moo.write("STATS", "?", s.getName());;
 						message219.request_all = this.full;
 						message219.source = source;
 					}

@@ -6,11 +6,13 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.ScheduledFuture;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -292,6 +294,44 @@ public class Moo
 		buffer = buffer.trim();
 
 		return buffer;
+	}
+	
+	public static ScheduledFuture scheduleWithFixedDelay(final Runnable r, final long t, final TimeUnit unit)
+	{
+		final ScheduledFuture future = moo.group.scheduleWithFixedDelay(r, t, t, unit);
+		
+		// watch for an exception and resubmit
+		Thread watch = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				for (;;)
+				{
+					try
+					{
+						future.get();
+					}
+					catch (ExecutionException ex)
+					{
+						log.log(Level.WARNING, "Error while running task", ex);
+						scheduleWithFixedDelay(r, t, unit);
+						return;
+					}
+					catch (InterruptedException ex)
+					{
+						log.log(Level.WARNING, "Error while running task", ex);
+					}
+				}
+			}
+		};
+		watch.start();
+		return future;
+	}
+	
+	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
+	{
+		return moo.group.schedule(r, t, unit);
 	}
 
 	public static void write(String command, String... args)

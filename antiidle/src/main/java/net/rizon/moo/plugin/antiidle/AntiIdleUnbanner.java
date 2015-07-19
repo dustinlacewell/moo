@@ -3,16 +3,13 @@ package net.rizon.moo.plugin.antiidle;
 import java.util.Date;
 
 import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 
-class AntiIdleUnbanner extends Timer
+class AntiIdleUnbanner implements Runnable
 {
 	private String host;
 
 	public AntiIdleUnbanner(final String mask)
 	{
-		super(antiidle.conf.bantime * 60, false);
-
 		String host = mask;
 		int a = mask.indexOf('@');
 		if (a != -1)
@@ -23,7 +20,7 @@ class AntiIdleUnbanner extends Timer
 	}
 
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		Moo.mode(antiidle.conf.channel, "-b " + this.host);
 	}

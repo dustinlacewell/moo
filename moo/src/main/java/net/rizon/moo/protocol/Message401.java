@@ -1,30 +1,24 @@
 package net.rizon.moo.protocol;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 
-class geoChecker extends Timer
+class GeoChecker implements Runnable
 {
-	public geoChecker()
-	{
-		super(10, true);
-	}
-
 	@Override
-	public void run(Date now)
+	public void run()
 	{
 		if (Moo.akillServ.equalsIgnoreCase("GeoServ"))
-		{
-			this.setRepeating(false);
 			return;
-		}
 
 		Moo.write("ISON", "GeoServ");
+		Moo.schedule(this, 10, TimeUnit.SECONDS);
 	}
 }
 
@@ -45,7 +39,7 @@ public class Message401 extends Message
 			Moo.akillServ = "OperServ";
 
 			log.log(Level.INFO, "GeoServ has gone away! Changing akillserv to OperServ");
-			new geoChecker().start();
+			Moo.schedule(new GeoChecker(), 10, TimeUnit.SECONDS);
 		}
 		else if (message[1].equalsIgnoreCase("OperServ"))
 			Moo.akillServ = "GeoServ";

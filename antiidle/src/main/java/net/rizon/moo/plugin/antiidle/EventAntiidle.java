@@ -1,38 +1,22 @@
 package net.rizon.moo.plugin.antiidle;
 
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Timer;
 import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
 
-class eventAntiIdle extends Event
+class EventAntiidle extends Event
 {
-	protected static final ArrayList<antiIdleVoicer> toBeVoiced = new ArrayList<antiIdleVoicer>();
-
-	class antiIdleVoicer extends Timer
-	{
-		private final AntiIdleEntry ai;
-
-		private antiIdleVoicer(AntiIdleEntry ai)
-		{
-			super(5, false);
-			this.ai = ai;
-		}
-
-		@Override
-		public void run(Date now)
-		{
-			toBeVoiced.remove(this);
-			Moo.write("USERHOST", ai.nick);
-		}
-	}
-
+	protected static final List<Voicer> toBeVoiced = new ArrayList<Voicer>();
+	
 	@Override
 	public void onJoin(final String source, final String channel)
 	{
@@ -40,10 +24,14 @@ class eventAntiIdle extends Event
 			return;
 
 		AntiIdleEntry ai = new AntiIdleEntry(source);
-		antiIdleVoicer av = new antiIdleVoicer(ai);
+		Voicer av = new Voicer(ai);
+		
 		toBeVoiced.add(av);
-		ai.start();
-		av.start();
+		
+		ScheduledFuture future = Moo.schedule(av, 5, TimeUnit.SECONDS);
+		av.future = future;
+		
+		Moo.schedule(ai, antiidle.conf.time, TimeUnit.MINUTES);
 	}
 
 	@Override
@@ -74,12 +62,12 @@ class eventAntiIdle extends Event
 		{
 			AntiIdleEntry.removeTimerFor(s);
 
-			for (Iterator<antiIdleVoicer> it = toBeVoiced.iterator(); it.hasNext();)
+			for (Iterator<Voicer> it = toBeVoiced.iterator(); it.hasNext();)
 			{
-				antiIdleVoicer av = it.next();
+				Voicer av = it.next();
 				if (av.ai.nick.equals(s))
 				{
-					av.stop();
+					av.future.cancel(true);
 					it.remove();
 					break;
 				}

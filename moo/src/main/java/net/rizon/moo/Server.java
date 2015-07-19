@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class Server
@@ -422,16 +423,17 @@ public class Server
 	{
 		new db();
 
-		new Timer(300, true)
+		Runnable r = new Runnable()
 		{
 			@Override
-			public void run(Date now)
+			public void run()
 			{
 				for (Server s : Server.getServers())
 					if (!s.isServices())
 						s.requestStats();
 				Moo.write("MAP");
 			}
-		}.start();
+		};
+		Moo.scheduleWithFixedDelay(r, 5, TimeUnit.MINUTES);
 	}
 }

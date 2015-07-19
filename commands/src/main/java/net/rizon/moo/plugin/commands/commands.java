@@ -7,7 +7,8 @@ import net.rizon.moo.conf.Protocol;
 
 public class commands extends Plugin
 {
-	private Command climit, oline, slackers, soa, time, uptime, why;
+	private Command climit, oline, slackers, soa, uptime, why;
+	private CommandTime time;
 	private CommandMap map;
 	private CommandSid sid;
 	private CommandVersions version;
@@ -58,5 +59,7 @@ public class commands extends Plugin
 			this.version.remove();
 		if (why != null)
 			this.why.remove();
+		if (time != null)
+			time.remove();
 	}
 }

@@ -126,7 +126,7 @@ class CommandSlackers extends Command
 		for (Server s : Server.getServers())
 			if (s.isNormal())
 			{
-				Moo.sock.write("STATS p " + s.getName());
+				Moo.write("STATS", "p", s.getName());
 				waiting_on.add(s.getName());
 			}
 		command_source = source;

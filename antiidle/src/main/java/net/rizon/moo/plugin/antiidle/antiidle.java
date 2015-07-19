@@ -25,7 +25,7 @@ public class antiidle extends Plugin
 	public void start() throws Exception
 	{
 		idle = new CommandIdle(this);
-		e = new eventAntiIdle();
+		e = new EventAntiidle();
 		m = new MessageUserhost();
 	}
 
