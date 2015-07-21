@@ -32,6 +32,24 @@ class DatabaseTimer implements Runnable
 	}
 }
 
+class RunnableContainer implements Runnable {
+	private static final Logger log = Logger.getLogger(RunnableContainer.class.getName());
+	private final Runnable runnable;
+
+	public RunnableContainer(Runnable r) {
+		this.runnable = r;
+	}
+
+	@Override
+	public void run() {
+		try {
+			this.runnable.run();
+		} catch (Exception e) {
+			log.log(e);
+		}
+	}
+}
+
 public class Moo
 {
 	private static final Logger log = Logger.getLogger(Moo.class.getName());
@@ -299,67 +317,14 @@ public class Moo
 	
 	public static ScheduledFuture scheduleWithFixedDelay(final Runnable r, final long t, final TimeUnit unit)
 	{
-		final ScheduledFuture future = moo.group.scheduleWithFixedDelay(r, t, t, unit);
-		
-		// watch for an exception and resubmit
-		Thread watch = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				for (;;)
-				{
-					try
-					{
-						future.get();
-					}
-					catch (ExecutionException ex)
-					{
-						log.log(Level.WARNING, "Error while running task", ex);
-						scheduleWithFixedDelay(r, t, unit);
-						return;
-					}
-					catch (InterruptedException ex)
-					{
-						log.log(Level.WARNING, "Error while running task", ex);
-					}
-				}
-			}
-		};
-		watch.start();
+		final ScheduledFuture future = moo.group.scheduleWithFixedDelay(new RunnableContainer(r), t, t, unit);
 		return future;
 	}
 	
 	public static ScheduledFuture scheduleAtFixedRate(final Runnable r, final long t, final TimeUnit unit)
 	{
-		final ScheduledFuture future = moo.group.scheduleAtFixedRate(r, t, t, unit);
 		
-		// watch for an exception and resubmit
-		Thread watch = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				for (;;)
-				{
-					try
-					{
-						future.get();
-					}
-					catch (ExecutionException ex)
-					{
-						log.log(Level.WARNING, "Error while running task", ex);
-						scheduleAtFixedRate(r, t, unit);
-						return;
-					}
-					catch (InterruptedException ex)
-					{
-						log.log(Level.WARNING, "Error while running task", ex);
-					}
-				}
-			}
-		};
-		watch.start();
+		final ScheduledFuture future = moo.group.scheduleAtFixedRate(new RunnableContainer(r), t, t, unit);
 		return future;
 	}
 	
