@@ -32,20 +32,26 @@ class DatabaseTimer implements Runnable
 	}
 }
 
-class RunnableContainer implements Runnable {
+class RunnableContainer implements Runnable
+{
 	private static final Logger log = Logger.getLogger(RunnableContainer.class.getName());
 	private final Runnable runnable;
 
-	public RunnableContainer(Runnable r) {
+	public RunnableContainer(Runnable r)
+	{
 		this.runnable = r;
 	}
 
 	@Override
-	public void run() {
-		try {
+	public void run()
+	{
+		try
+		{
 			this.runnable.run();
-		} catch (Exception e) {
-			log.log(e);
+		}
+		catch (Exception ex)
+		{
+			log.log(Level.WARNING, "Erorr while running scheduled event", ex);
 		}
 	}
 }
@@ -315,17 +321,14 @@ public class Moo
 		return buffer;
 	}
 	
-	public static ScheduledFuture scheduleWithFixedDelay(final Runnable r, final long t, final TimeUnit unit)
+	public static ScheduledFuture scheduleWithFixedDelay(Runnable r, long t, TimeUnit unit)
 	{
-		final ScheduledFuture future = moo.group.scheduleWithFixedDelay(new RunnableContainer(r), t, t, unit);
-		return future;
+		return moo.group.scheduleWithFixedDelay(new RunnableContainer(r), t, t, unit);
 	}
 	
-	public static ScheduledFuture scheduleAtFixedRate(final Runnable r, final long t, final TimeUnit unit)
+	public static ScheduledFuture scheduleAtFixedRate(Runnable r, long t, TimeUnit unit)
 	{
-		
-		final ScheduledFuture future = moo.group.scheduleAtFixedRate(new RunnableContainer(r), t, t, unit);
-		return future;
+		return moo.group.scheduleAtFixedRate(new RunnableContainer(r), t, t, unit);
 	}
 	
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
