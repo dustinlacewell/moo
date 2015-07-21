@@ -17,12 +17,15 @@ class Reconnector implements Runnable
 	private Server serv, from;
 	private Split sp;
 	private int tick = 0, tries = 0;
+	private long last_tick;
 	private HashSet<String> attempted = new HashSet<String>();
 	private static long last_reconnect = 0;
 	protected ScheduledFuture future;
 
 	public Reconnector(Server serv, Server from)
 	{
+		last_tick = System.currentTimeMillis() / 1000L;
+		
 		this.serv = serv;
 		this.from = from;
 		this.sp = serv.getSplit();
@@ -94,6 +97,8 @@ class Reconnector implements Runnable
 	@Override
 	public void run()
 	{
+		last_tick = System.currentTimeMillis() / 1000L;
+		
 		if (last_reconnect + 60 > System.currentTimeMillis() / 1000L)
 			return;
 
@@ -186,7 +191,9 @@ class Reconnector implements Runnable
 		int wait = 0;
 		for (int i = this.tick + 1; i % delay != 0; ++wait, ++i);
 		wait *= 60;
-		wait += (int) ((this.getTick().getTime() - System.currentTimeMillis()) / 1000L);
+		
+		long now = System.currentTimeMillis() / 1000L;
+		wait += (last_tick + 60) - now; // next tick - now
 
 		return new Date(System.currentTimeMillis() + (wait * 1000L));
 	}

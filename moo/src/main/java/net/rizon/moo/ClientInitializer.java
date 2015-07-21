@@ -3,12 +3,11 @@ package net.rizon.moo;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
 
 class ClientInitializer extends ChannelInitializer<SocketChannel>
@@ -27,13 +26,11 @@ class ClientInitializer extends ChannelInitializer<SocketChannel>
 	{
 		ChannelPipeline pipeline = ch.pipeline();
 		
-		//if (ssl)
+		if (Moo.conf.general.ssl)
 		{
-//			SSLEngine engine = SSL.ctx.createSSLEngine();
-//			engine.setUseClientMode(false);
-//			engine.setWantClientAuth(true); // Allows clients to send us a cert
+			SslContext sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
 
-//			pipeline.addLast("ssl", new SslHandler(engine));
+			pipeline.addLast(sslCtx.newHandler(ch.alloc()));
 		}
 
 		pipeline.addLast("frameDecoder", new LineBasedFrameDecoder(MAXBUF));

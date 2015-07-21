@@ -75,7 +75,6 @@ public class Moo
 	
 	private void run() throws InterruptedException
 	{
-		//group = new NioEventLoopGroup(1);
 		try
 		{
 			Bootstrap client = new Bootstrap()
