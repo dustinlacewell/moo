@@ -21,6 +21,6 @@ class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
-	    Message.runMessage(message);
+		Message.runMessage(message);
 	}
 }
