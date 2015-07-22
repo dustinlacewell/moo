@@ -1,11 +1,12 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import java.util.logging.Level;
+import net.rizon.moo.Logger;
 
-class LoggingHandler extends ChannelHandlerAdapter
+public class LoggingHandler extends ChannelHandlerAdapter
 {
 	private static final Logger log = Logger.getLogger(LoggingHandler.class.getName());
 	

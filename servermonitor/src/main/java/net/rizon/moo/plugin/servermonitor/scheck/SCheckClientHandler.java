@@ -2,7 +2,7 @@ package net.rizon.moo.plugin.servermonitor.scheck;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.rizon.moo.IRCMessage;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.Message;
 
 class SCheckClientHandler extends SimpleChannelInboundHandler<IRCMessage>

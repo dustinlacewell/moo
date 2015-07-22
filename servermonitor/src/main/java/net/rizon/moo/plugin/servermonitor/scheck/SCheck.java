@@ -5,6 +5,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.cert.Certificate;
@@ -18,7 +19,6 @@ import java.util.Random;
 import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
-import net.rizon.moo.Socket;
 
 class SCheck extends Thread
 {
@@ -226,7 +226,7 @@ class SCheck extends Thread
 		Bootstrap client = new Bootstrap()
 		    .group(Moo.moo.getGroup())
 		    .channel(NioSocketChannel.class)
-		    .handler(new SCheckInitializer(this))
+		    .handler(new SCheckInitializer())
 		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15 * 1000);
 	}
 }

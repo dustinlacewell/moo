@@ -1,5 +1,7 @@
 package net.rizon.moo;
 
+import net.rizon.moo.io.ClientInitializer;
+import net.rizon.moo.io.IRCMessage;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -86,7 +88,7 @@ public class Moo
 	{
 	}
 	
-	protected void handshake()
+	public void handshake()
 	{
 		if (conf.general.server_pass != null)
 			write("PASS", conf.general.server_pass);

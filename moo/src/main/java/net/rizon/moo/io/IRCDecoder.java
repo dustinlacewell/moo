@@ -1,10 +1,10 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
-class IRCDecoder extends MessageToMessageDecoder<String>
+public class IRCDecoder extends MessageToMessageDecoder<String>
 {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, String message, List<Object> out) throws Exception

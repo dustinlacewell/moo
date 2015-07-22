@@ -1,9 +1,10 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import net.rizon.moo.Moo;
 
 public class Handler extends ChannelHandlerAdapter
 {

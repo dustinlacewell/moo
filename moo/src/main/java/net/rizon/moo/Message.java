@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import net.rizon.moo.io.IRCMessage;
 import java.util.Iterator;
 import java.util.LinkedList;
 

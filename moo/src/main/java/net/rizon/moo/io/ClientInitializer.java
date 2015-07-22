@@ -1,5 +1,9 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
+import net.rizon.moo.io.IRCDecoder;
+import net.rizon.moo.io.LoggingHandler;
+import net.rizon.moo.io.IRCEncoder;
+import net.rizon.moo.io.LineBasedFrameEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -9,8 +13,9 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
+import net.rizon.moo.Moo;
 
-class ClientInitializer extends ChannelInitializer<SocketChannel>
+public class ClientInitializer extends ChannelInitializer<SocketChannel>
 {
 	private static final int MAXBUF = 512;
 	

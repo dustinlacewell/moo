@@ -1,4 +1,4 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
 public class IRCMessage
 {

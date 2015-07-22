@@ -1,10 +1,10 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import java.util.List;
 
-class IRCEncoder extends MessageToMessageEncoder<IRCMessage>
+public class IRCEncoder extends MessageToMessageEncoder<IRCMessage>
 {
 	@Override
 	protected void encode(ChannelHandlerContext ctx, IRCMessage msg, List<Object> out) throws Exception

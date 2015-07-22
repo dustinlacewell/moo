@@ -1,7 +1,10 @@
-package net.rizon.moo;
+package net.rizon.moo.io;
 
+import net.rizon.moo.io.IRCMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
 
 class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {

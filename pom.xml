@@ -12,6 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    
+    <netty.version>5.0.0.Alpha2</netty.version>
   </properties>
 
   <modules>

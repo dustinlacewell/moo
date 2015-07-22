@@ -10,8 +10,9 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
-import net.rizon.moo.IRCDecoder;
-import net.rizon.moo.IRCEncoder;
+import net.rizon.moo.io.IRCDecoder;
+import net.rizon.moo.io.IRCEncoder;
+import net.rizon.moo.io.LineBasedFrameEncoder;
 
 class SCheckInitializer extends ChannelInitializer<SocketChannel>
 {
