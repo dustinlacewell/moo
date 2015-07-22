@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.servermonitor;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+import net.rizon.moo.plugin.servermonitor.scheck.SCheck;
 
 class CertChecker
 {

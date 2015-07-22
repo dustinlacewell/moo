@@ -35,7 +35,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		{
 			SslContext sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
 
-			pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+			pipeline.addLast("ssl", sslCtx.newHandler(ch.alloc()));
 		}
 
 		pipeline.addLast("frameDecoder", new LineBasedFrameDecoder(MAXBUF));

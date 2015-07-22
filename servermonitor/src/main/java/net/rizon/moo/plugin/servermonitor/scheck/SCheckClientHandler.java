@@ -7,14 +7,22 @@ import net.rizon.moo.Message;
 
 class SCheckClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {
+	private SCheck scheck;
+	
+	public SCheckClientHandler(SCheck scheck)
+	{
+		this.scheck = scheck;
+	}
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx)
 	{
-		//moo.handshake();
+		scheck.handshake();
 	}
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
+		scheck.process(message);
 	}
 }

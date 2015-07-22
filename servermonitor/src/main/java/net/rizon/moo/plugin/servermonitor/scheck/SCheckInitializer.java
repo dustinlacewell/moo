@@ -18,11 +18,11 @@ class SCheckInitializer extends ChannelInitializer<SocketChannel>
 {
 	private static final int MAXBUF = 512;
 	
-	private boolean ssl;
+	private SCheck scheck;
 	
-	public SCheckInitializer(boolean ssl)
+	public SCheckInitializer(SCheck scheck)
 	{
-		this.ssl = ssl;
+		this.scheck = scheck;
 	}
 	
 	@Override
@@ -30,11 +30,11 @@ class SCheckInitializer extends ChannelInitializer<SocketChannel>
 	{
 		ChannelPipeline pipeline = ch.pipeline();
 		
-		if (ssl)
+		if (scheck.isSsl())
 		{
 			SslContext sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
 
-			pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+			pipeline.addLast("ssl", sslCtx.newHandler(ch.alloc()));
 		}
 
 		pipeline.addLast("frameDecoder", new LineBasedFrameDecoder(MAXBUF));
@@ -50,6 +50,6 @@ class SCheckInitializer extends ChannelInitializer<SocketChannel>
 		
 		pipeline.addLast(new LoggingHandler());
 
-		pipeline.addLast("clientHandler", new SCheckClientHandler());
+		pipeline.addLast("clientHandler", new SCheckClientHandler(scheck));
 	}
 }

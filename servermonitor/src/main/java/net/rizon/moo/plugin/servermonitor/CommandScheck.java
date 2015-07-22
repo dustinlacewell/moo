@@ -7,6 +7,7 @@ import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+import net.rizon.moo.plugin.servermonitor.scheck.SCheck;
 
 class SCheckTimer implements Runnable
 {
