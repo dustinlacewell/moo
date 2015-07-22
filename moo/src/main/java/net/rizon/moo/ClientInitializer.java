@@ -44,7 +44,7 @@ class ClientInitializer extends ChannelInitializer<SocketChannel>
 		pipeline.addLast("idleStateHandler", new IdleStateHandler(120, 60, 0));
 		pipeline.addLast("handler", new Handler(moo));
 		
-		//pipeline.addLast(new LoggingHandler());
+		pipeline.addLast(new LoggingHandler());
 
 		pipeline.addLast("clientHandler", new ClientHandler(moo));
 	}

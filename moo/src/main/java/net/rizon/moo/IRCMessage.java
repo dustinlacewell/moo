@@ -27,4 +27,25 @@ public class IRCMessage
 	{
 		return params;
 	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		if (source != null)
+			sb.append('[').append(source).append("] ");
+		
+		sb.append(command);
+		
+		for (int i = 0; i < params.length; ++i)
+		{
+			sb.append(' ');
+			if (i + 1 == params.length)
+				sb.append(':');
+			sb.append(params[i]);
+		}
+		
+		return sb.toString();
+	}
 }
