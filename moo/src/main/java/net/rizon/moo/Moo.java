@@ -404,7 +404,8 @@ public class Moo
 
 	public static void mode(final String target, final String modes)
 	{
-		write("MODE", target, modes);
+		String str = target + " " + modes;
+		write("MODE", (Object[]) str.split(" "));
 	}
 
 	public static void kill(final String nick, final String reason)

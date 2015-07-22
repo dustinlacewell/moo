@@ -3,10 +3,15 @@ package net.rizon.moo.plugin.servermonitor.scheck;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslHandler;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.NoRouteToHostException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -370,8 +375,36 @@ public class SCheck
 			}
 			catch (InterruptedException ex) { }
 
-		ChannelFuture future = client.connect(Moo.conf.general.server, Moo.conf.general.port);
+		ChannelFuture future = client.connect(server.getName(), port);
 		this.channel = future.channel();
+		
+		future.addListener(new ChannelFutureListener()
+		{	
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception
+			{
+				Throwable ex = future.cause();
+				if (ex == null)
+					return;
+				
+				if (ex instanceof UnknownHostException)
+				{
+					reply(prefix + "Unable to connect to " + server.getName() + ", unknown host");
+				}
+				else if (ex instanceof NoRouteToHostException)
+				{
+					reply(prefix + "Unable to connect to " + server.getName() + ", no route to host");
+				}
+				else if (ex instanceof SocketTimeoutException)
+				{
+					reply(prefix + "Unable to connect to " + server.getName() + ", connection timeout");
+				}
+				else
+				{
+					reply(prefix + "Unable to connect to " + server.getName() + ": " + ex);
+				}
+			}
+		});
 	}
 	
 	public boolean isSsl()
