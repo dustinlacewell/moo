@@ -223,6 +223,11 @@ public class Moo
 		System.exit(0);
 	}
 	
+	public EventLoopGroup getGroup()
+	{
+		return group;
+	}
+	
 	public static void stop()
 	{
 		moo.channel.close();

@@ -1,5 +1,8 @@
-package net.rizon.moo.plugin.servermonitor;
+package net.rizon.moo.plugin.servermonitor.scheck;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
@@ -216,5 +219,14 @@ class SCheck extends Thread
 			}
 			catch (Exception ex) { }
 		}
+	}
+	
+	public static void start()
+	{
+		Bootstrap client = new Bootstrap()
+		    .group(Moo.moo.getGroup())
+		    .channel(NioSocketChannel.class)
+		    .handler(new SCheckInitializer(this))
+		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15 * 1000);
 	}
 }
