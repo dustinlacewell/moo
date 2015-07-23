@@ -238,6 +238,9 @@ class EventLogging extends Event
 				if (count > 0 && count % 50 == 0)
 					Moo.operwall(ip + " has been akilled " + count + " times - consider akilling it longer");
 			}
+			
+			rs.close();
+			stmt.close();
 		}
 		catch (SQLException ex)
 		{

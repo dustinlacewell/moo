@@ -50,6 +50,9 @@ class Cast
 				c.vote = rs.getBoolean("vote");
 				casts.add(c);
 			}
+			
+			rs.close();
+			stmt.close();
 
 			Cast[] c = new Cast[casts.size()];
 			casts.toArray(c);

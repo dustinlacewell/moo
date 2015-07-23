@@ -228,6 +228,9 @@ public class Server
 					return sp;
 				}
 			}
+			
+			rs.close();
+			statement.close();
 		}
 		catch (SQLException ex)
 		{
@@ -256,6 +259,8 @@ public class Server
 				sp.reconnectedBy = rs.getString("reconnectedBy");
 				splits.add(sp);
 			}
+			rs.close();
+			stmt.close();
 
 			// Most recent split is at the end
 			Split[] s = new Split[splits.size()];
@@ -355,7 +360,8 @@ public class Server
 		{
 			try
 			{
-				ResultSet rs = Moo.db.executeQuery("SELECT * FROM servers");
+				PreparedStatement stmt = Moo.db.prepare("SELECT * FROM servers");
+				ResultSet rs = Moo.db.executeQuery(stmt);
 				while (rs.next())
 				{
 					String name = rs.getString("name"), desc = rs.getString("desc"), pl = rs.getString("preferred_links");
@@ -376,6 +382,8 @@ public class Server
 							s.allowed_clines.add(l.trim());
 					s.frozen = frozen;
 				}
+				rs.close();
+				stmt.close();
 			}
 			catch (SQLException ex)
 			{

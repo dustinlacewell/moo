@@ -41,17 +41,10 @@ public class Database
 		return this.con.prepareStatement(statement);
 	}
 
-	public synchronized ResultSet executeQuery(final String statement) throws SQLException
-	{
-		return this.executeQuery(this.prepare(statement));
-	}
-
 	public synchronized ResultSet executeQuery(PreparedStatement ps) throws SQLException
 	{
 		log.log(Level.FINE, "Executing query: " + ps.toString());
-		ResultSet rs = ps.executeQuery();
-		//closeStatement(ps);
-		return rs;
+		return ps.executeQuery();
 	}
 
 	public synchronized int executeUpdate(final String statement)

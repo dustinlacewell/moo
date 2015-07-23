@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -24,9 +25,12 @@ public class ProxyStats extends Command
 		source.reply("Proxy stats:");
 		try
 		{
-			ResultSet rs = Moo.db.executeQuery("select protocol,port,count(*) from proxies group by protocol, port order by count(*) desc");
+			PreparedStatement ps = Moo.db.prepare("select protocol,port,count(*) from proxies group by protocol, port order by count(*) desc");
+			ResultSet rs = Moo.db.executeQuery(ps);
 			while (rs.next())
 				source.reply(rs.getString("protocol") + " " + rs.getString("port") + ": " + rs.getString("count(*)"));
+			rs.close();
+			ps.close();
 		}
 		catch (SQLException ex)
 		{

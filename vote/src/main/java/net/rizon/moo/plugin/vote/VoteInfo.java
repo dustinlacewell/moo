@@ -72,6 +72,9 @@ class VoteInfo
 			int id = 1;
 			if (rs.next())
 				id = rs.getInt("max") + 1;
+			
+			rs.close();
+			stmt.close();
 
 			return id;
 		}
@@ -100,8 +103,13 @@ class VoteInfo
 				vi.owner = rs.getString("owner");
 				vi.date = rs.getDate("date");
 				vi.closed = rs.getBoolean("closed");
+				rs.close();
+				stmt.close();
 				return vi;
 			}
+			
+			rs.close();
+			stmt.close();
 		}
 		catch (SQLException ex)
 		{
@@ -132,6 +140,9 @@ class VoteInfo
 
 				vis.add(vi);
 			}
+			
+			rs.close();
+			stmt.close();
 
 			VoteInfo[] votes = new VoteInfo[vis.size()];
 			vis.toArray(votes);
