@@ -9,12 +9,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.ScheduledFuture;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -191,7 +188,7 @@ public class Moo
 		for (Event e : Event.getEvents())
 			e.loadDatabases();
 		
-		group.scheduleWithFixedDelay(new DatabaseTimer(), 1, 1, TimeUnit.MINUTES);
+		scheduleWithFixedDelay(new DatabaseTimer(), 1, TimeUnit.MINUTES);
 
 		while (quitting == false)
 		{
