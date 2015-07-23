@@ -12,7 +12,7 @@ class Voicer implements Runnable
 	{
 		this.ai = ai;
 	}
-		
+
 	@Override
 	public void run()
 	{

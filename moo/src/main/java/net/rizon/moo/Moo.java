@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static net.rizon.moo.Moo.conf;
 
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.protocol.ProtocolPlugin;
