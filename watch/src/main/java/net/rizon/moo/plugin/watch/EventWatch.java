@@ -25,7 +25,8 @@ class EventWatch extends Event
 	{
 		try
 		{
-			ResultSet rs = Moo.db.executeQuery("SELECT * FROM `watches`");
+			PreparedStatement stmt = Moo.db.prepare("SELECT * FROM `watches`");
+			ResultSet rs = Moo.db.executeQuery(stmt);
 			while (rs.next())
 			{
 				WatchEntry we = new WatchEntry();
@@ -39,6 +40,8 @@ class EventWatch extends Event
 
 				watch.watches.add(we);
 			}
+			rs.close();
+			stmt.close();
 		}
 		catch (Exception ex)
 		{

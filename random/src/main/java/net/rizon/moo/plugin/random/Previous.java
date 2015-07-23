@@ -36,7 +36,9 @@ class Previous extends FloodList
 		{
 			stmt.setString(1, nd.ip);
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next())
+			boolean has = rs.next();
+			rs.close();
+			if (has)
 			{
 				if (self == null || self.isClosed)
 				{

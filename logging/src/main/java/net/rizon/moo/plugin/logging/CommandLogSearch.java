@@ -165,6 +165,9 @@ class CommandLogSearch extends Command
 				}
 
 			}
+			
+			rs.close();
+			stmt.close();
 
 			replyWithLimit(source, limit, "Done, " + shown + "/" + count + " shown");
 		}
