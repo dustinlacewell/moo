@@ -50,7 +50,7 @@ public class Database
 	{
 		log.log(Level.FINE, "Executing query: " + ps.toString());
 		ResultSet rs = ps.executeQuery();
-		closeStatement(ps);
+		//closeStatement(ps);
 		return rs;
 	}
 

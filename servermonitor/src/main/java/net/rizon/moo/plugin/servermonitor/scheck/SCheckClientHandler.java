@@ -25,4 +25,10 @@ class SCheckClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	{
 		scheck.process(message);
 	}
+	
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+	{
+		scheck.exceptionCaught(cause);
+	}
 }

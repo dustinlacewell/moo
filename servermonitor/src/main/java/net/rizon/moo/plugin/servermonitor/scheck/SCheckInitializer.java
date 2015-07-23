@@ -6,13 +6,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
 import net.rizon.moo.io.IRCDecoder;
 import net.rizon.moo.io.IRCEncoder;
 import net.rizon.moo.io.LineBasedFrameEncoder;
+import net.rizon.moo.io.LoggingHandler;
 
 class SCheckInitializer extends ChannelInitializer<SocketChannel>
 {
