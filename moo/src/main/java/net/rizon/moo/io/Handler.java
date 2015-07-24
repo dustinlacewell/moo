@@ -28,7 +28,7 @@ public class Handler extends ChannelHandlerAdapter
 			}
 			else if (e.state() == IdleState.WRITER_IDLE)
 			{
-				moo.write("PING", "moo");
+				Moo.write("PING", "moo");
 			}
 		}
 	}

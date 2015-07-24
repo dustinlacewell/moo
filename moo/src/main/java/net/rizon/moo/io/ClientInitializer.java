@@ -10,6 +10,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.ssl.IdentityCipherSuiteFilter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -33,7 +34,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		
 		if (Moo.conf.general.ssl)
 		{
-			SslContext sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
+			SslContext sslCtx = SslContext.newClientContext(null, null, InsecureTrustManagerFactory.INSTANCE, null, null, null, null, null, IdentityCipherSuiteFilter.INSTANCE, null, 16, 10);
 
 			pipeline.addLast("ssl", sslCtx.newHandler(ch.alloc()));
 		}
