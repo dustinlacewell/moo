@@ -242,10 +242,13 @@ public class SCheck
 	
 	public void start()
 	{
-		if (this.ssl == true || this.port != 6667)
-			reply(this.prefix + "Connecting to " + this.server.getName() + ":" + (this.ssl == true ? "+" : "") + this.port);
-		else
-			reply(this.prefix + "Connecting to " + this.server.getName() + "...");
+		if (!quiet)
+		{
+			if (this.ssl == true || this.port != 6667)
+				reply(this.prefix + "Connecting to " + this.server.getName() + ":" + (this.ssl == true ? "+" : "") + this.port);
+			else
+				reply(this.prefix + "Connecting to " + this.server.getName() + "...");
+		}
 				
 		Bootstrap client = new Bootstrap()
 		    .group(Moo.moo.getGroup())
