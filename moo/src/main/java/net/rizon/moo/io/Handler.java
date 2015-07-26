@@ -4,15 +4,20 @@ import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import java.util.logging.Level;
+import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 
 public class Handler extends ChannelHandlerAdapter
 {
-	private final Moo moo;
+	private static final Logger log = Logger.getLogger(Handler.class.getName());
+	private boolean idle;
 	
-	public Handler(Moo moo)
+	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
 	{
-		this.moo = moo;
+		idle = false;
+		super.channelRead(ctx, msg);
 	}
 	
 	@Override
@@ -24,11 +29,16 @@ public class Handler extends ChannelHandlerAdapter
 
 			if (e.state() == IdleState.READER_IDLE)
 			{
-				ctx.close();
-			}
-			else if (e.state() == IdleState.WRITER_IDLE)
-			{
-				Moo.write("PING", "moo");
+				if (!idle)
+				{
+					Moo.write("PING", "moo");
+					idle = true;
+				}
+				else
+				{
+					log.log(Level.WARNING, "No read from uplink in 120 seconds, closing connection");
+					ctx.close();
+				}
 			}
 		}
 	}

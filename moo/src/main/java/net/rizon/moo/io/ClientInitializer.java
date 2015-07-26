@@ -47,8 +47,8 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		pipeline.addLast("frameEncoder", new LineBasedFrameEncoder());
 		pipeline.addLast("ircEncoder", new IRCEncoder());
 		
-		pipeline.addLast("idleStateHandler", new IdleStateHandler(120, 60, 0));
-		pipeline.addLast("handler", new Handler(moo));
+		pipeline.addLast("idleStateHandler", new IdleStateHandler(60, 0, 0));
+		pipeline.addLast("handler", new Handler());
 		
 		pipeline.addLast(new LoggingHandler());
 
