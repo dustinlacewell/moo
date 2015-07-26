@@ -56,11 +56,11 @@ class EventWatch extends Event
 		{
 			Moo.db.executeUpdate("DELETE FROM `watches`");
 
-			PreparedStatement statement = Moo.db.prepare("INSERT INTO `watches` (`nick`, `creator`, `reason`, `created`, `expires`, `registered`) VALUES(?, ?, ?, ?, ?, ?);");
-
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 			{
 				WatchEntry e = it.next();
+				
+				PreparedStatement statement = Moo.db.prepare("INSERT INTO `watches` (`nick`, `creator`, `reason`, `created`, `expires`, `registered`) VALUES(?, ?, ?, ?, ?, ?);");
 
 				statement.setString(1, e.nick);
 				statement.setString(2, e.creator);
