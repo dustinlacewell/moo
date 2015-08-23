@@ -31,7 +31,7 @@ public class EventRegister extends Event
 	private final String hostnameRegex = "[^\\u0020]+?";
 	private final String emailHostRegex = "(?:(?:[A-z0-9]|[A-z0-9][A-z0-9\\-]*[A-z0-9])\\.)*(?:[A-z0-9]|[A-z0-9][A-z0-9\\-]*[A-z0-9])";
 	private final String registerRegex = "(" + nickServRegex + "): '(" + nicknameRegex + ")' registered by ("
-			+ usernameRegex + ")@(" + hostnameRegex + ") \\(e-mail: [^\\s]+?@(" + emailHostRegex + ")\\)";
+		+ usernameRegex + ")@(" + hostnameRegex + ") \\(e-mail: [^\\s]+?@(" + emailHostRegex + ")\\)";
 
 	private final Pattern p = Pattern.compile(registerRegex);
 	private final List<RecordType> MX_RECORDS = new ArrayList<RecordType>();
@@ -49,12 +49,6 @@ public class EventRegister extends Event
 	{
 		boolean isLogChannel = true;
 		if (channel == null)
-		{
-			return;
-		}
-
-		// Message must come from services, to prevent trolling.
-		if (!source.equals("NickServ"))
 		{
 			return;
 		}
@@ -127,13 +121,13 @@ public class EventRegister extends Event
 
 	private boolean wildcardMatch(String mailhost, List<String> list) throws NamingException, UnknownHostException
 	{
-		Collection<MailhostWildcard> wildcards = MailhostWildcard.getMailhostWildcards();
-		for (MailhostWildcard mw : wildcards)
+		System.out.println("Matching wildcards " + mailhost);
+		Collection<Mailhost> wildcards = Mailhost.getMailhosts();
+		for (Mailhost mw : wildcards)
 		{
-			if (StringCompare.wildcardCompare(mw.getWildcard(), mailhost))
+			if (mw.isWildcard() && StringCompare.wildcardCompare(mw.mailhost, mailhost))
 			{
-				Mailhost m = new Mailhost(mailhost, null, mw);
-				mw.addHost(m);
+				Mailhost m = new Mailhost(mailhost, null, false, mw);
 				for (String ip : getIPs(list))
 				{
 					m.addIP(ip);
@@ -162,8 +156,8 @@ public class EventRegister extends Event
 	 * <p>
 	 * @param mailhost The name of the mailhost to check.
 	 * <p>
-	 * @return <code>true</code> if mailhost is okay, <code>false</code> if the
-	 *         mailhost is blocked.
+	 * @return <code>true</code> if mailhost is okay, <code>false</code> if
+	 *         the mailhost is blocked.
 	 */
 	private boolean mailHostOkay(String mailhost)
 	{
@@ -175,8 +169,8 @@ public class EventRegister extends Event
 	 * <p>
 	 * @param hosts list of hosts to check.
 	 * <p>
-	 * @return <code>true</code> if mailhosts are okay, <code>false</code> if
-	 *         any of the mailhosts are blocked.
+	 * @return <code>true</code> if mailhosts are okay, <code>false</code>
+	 *         if any of the mailhosts are blocked.
 	 */
 	private boolean mailHostsOkay(List<String> hosts) throws NamingException, UnknownHostException
 	{
@@ -216,8 +210,8 @@ public class EventRegister extends Event
 	 * <p>
 	 * @param ips List of IPs to check.
 	 * <p>
-	 * @return <code>true</code> if ips are okay, <code>false</code> if any of
-	 *         the ips are blocked.
+	 * @return <code>true</code> if ips are okay, <code>false</code> if any
+	 *         of the ips are blocked.
 	 */
 	private boolean ipsOkay(List<String> ips)
 	{

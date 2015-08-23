@@ -15,6 +15,7 @@ import net.rizon.moo.Plugin;
  */
 public class mxbl extends Plugin
 {
+
 	private Command blacklist;
 	private Event register;
 
@@ -26,46 +27,28 @@ public class mxbl extends Plugin
 		// TODO: Should really enable this by default.
 		Moo.db.executeUpdate("PRAGMA foreign_keys = ON");
 
-		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS mxbl_wildcard ("
-				+ "`id` INTEGER PRIMARY KEY,"
-				+ "`wildcard` VARCHAR(128) UNIQUE COLLATE NOCASE,"
-				+ "`oper` VARCHAR(64),"
-				+ "`created` INTEGER)");
-
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS mxbl ("
-				+ "`id` INTEGER PRIMARY KEY,"
-				+ "`wildcard_id` INTEGER REFERENCES mxbl_wildcard(id) ON DELETE CASCADE,"
-				+ "`host` VARCHAR(128) COLLATE NOCASE,"
-				+ "`oper` VARCHAR(64),"
-				+ "`created` INTEGER)");
+			+ "`id` INTEGER PRIMARY KEY,"
+			+ "`parent_id` INTEGER REFERENCES mxbl(id) ON DELETE CASCADE,"
+			+ "`host` VARCHAR(128) COLLATE NOCASE,"
+			+ "`oper` VARCHAR(64),"
+			+ "`wildcard` TINYINT(1),"
+			+ "`created` LONG)");
 
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS mxbl_ips ("
-				+ "`host` INTEGER,"
-				+ "`ip` VARCHAR(64),"
-				+ "FOREIGN KEY(host) REFERENCES mxbl(id) ON DELETE CASCADE)");
+			+ "`host` INTEGER,"
+			+ "`ip` VARCHAR(64),"
+			+ "FOREIGN KEY(host) REFERENCES mxbl(id) ON DELETE CASCADE)");
 	}
 
 	@Override
 	public void start() throws Exception
 	{
-		PreparedStatement ps = Moo.db.prepare("SELECT * FROM `mxbl_wildcard`");
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps;
+		ResultSet rs;
 
-		while (rs.next())
-		{
-			PreparedStatement stmt;
-			ResultSet rset;
-			MailhostWildcard mw = new MailhostWildcard(rs);
-			stmt = Moo.db.prepare("SELECT * FROM `mxbl` WHERE `wildcard_id` = ?");
-			stmt.setInt(1, rs.getInt("id"));
-			rset = stmt.executeQuery();
-			while (rset.next())
-			{
-				buildMailhosts(rset, mw);
-			}
-		}
-
-		ps = Moo.db.prepare("SELECT * FROM `mxbl` WHERE `wildcard_id` IS NULL");
+		// Load parent objects first.
+		ps = Moo.db.prepare("SELECT * FROM `mxbl` WHERE `parent_id` IS NULL");
 		rs = ps.executeQuery();
 
 		while (rs.next())
@@ -73,16 +56,26 @@ public class mxbl extends Plugin
 			buildMailhosts(rs, null);
 		}
 
+		// Load child objects next.
+		ps = Moo.db.prepare("SELECT * FROM `mxbl` WHERE `parent_id` IS NOT NULL");
+		rs = ps.executeQuery();
+
+		while (rs.next())
+		{
+			Mailhost owner = Mailhost.getMailhost(rs.getInt("parent_id"));
+			buildMailhosts(rs, owner);
+		}
+
 		blacklist = new CommandBlacklist(this);
 		register = new EventRegister();
 	}
 
-	private void buildMailhosts(ResultSet rs, MailhostWildcard mw) throws SQLException
+	private void buildMailhosts(ResultSet rs, Mailhost mw) throws SQLException
 	{
 		Mailhost m = new Mailhost(rs, mw);
 		if (mw != null)
 		{
-			mw.addHost(m);
+			//mw.setOwner(m);
 		}
 		PreparedStatement stmt = Moo.db.prepare("SELECT `ip` FROM `mxbl_ips` WHERE `host` = ?");
 		stmt.setInt(1, rs.getInt("id"));
