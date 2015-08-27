@@ -1,6 +1,8 @@
 package net.rizon.moo.plugin.commands;
 
+import java.util.Map;
 import java.util.HashSet;
+import java.util.HashMap;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
@@ -19,7 +21,68 @@ class message351 extends Message
 
 	protected static CommandSource command_source;
 	public static HashSet<String> waiting_for = new HashSet<String>();
-	private static int max_ver = 0;
+	private static Map<Integer, Integer> max_vers = new HashMap<>();
+
+	final class ServerVersion
+	{
+		public final int major;
+		public final int release;
+
+		public ServerVersion(int major_version, int release)
+		{
+			this.major = major_version;
+			this.release = release;
+		}
+	}
+
+	private ServerVersion splitVersion(int ver)
+	{
+		int major_version = ver / 100;
+		int release = ver % 100;
+
+		return new ServerVersion(major_version, release);
+	}
+
+	private void updateMaxVersion(int ver)
+	{
+		ServerVersion version = splitVersion(ver);
+
+		if ((!max_vers.containsKey(version.major)) || (max_vers.get(version.major) < version.release))
+			max_vers.put(version.major, version.release);
+
+	}
+
+	private boolean isMaxVersion(int ver)
+	{
+		ServerVersion version = splitVersion(ver);
+
+		if (!max_vers.containsKey(version.major))
+			return true;
+		else if (version.release >= max_vers.get(version.major))
+			return true;
+		else
+			return false;
+	}
+
+	private String versionColor(int ver)
+	{
+		ServerVersion version = splitVersion(ver);
+		int rel = version.release;
+		int max_rel = max_vers.get(version.major);
+
+		String color;
+
+		if (rel >= 0 && rel < max_rel - 4)
+			color = Message.COLOR_RED;
+		else if (rel >= 0 && rel < max_rel - 1)
+			color = Message.COLOR_YELLOW;
+		else if (rel < max_rel)
+			color = Message.COLOR_GREEN;
+		else
+			color = Message.COLOR_BRIGHTGREEN;
+
+		return color;
+	}
 
 	private static int dashesFor(Server s)
 	{
@@ -46,8 +109,8 @@ class message351 extends Message
 
 		String tok = msg[1];
 
-		int pos = 0;
-		for (; pos < tok.length() && tok.charAt(pos) != '('; ++pos);
+		int pos = tok.length() - 1;
+		for (; pos > 0 && tok.charAt(pos) != '('; --pos);
 		for (; pos < tok.length() && tok.charAt(pos) != '-'; ++pos);
 		++pos;
 
@@ -58,39 +121,32 @@ class message351 extends Message
 		{
 			String ver = tok.substring(pos, tok.length() - 2);
 			int ver_num = -1;
+
 			try
 			{
 				ver_num = Integer.parseInt(ver);
-				if (ver_num > max_ver)
-					max_ver = ver_num;
+				updateMaxVersion(ver_num);
 			}
 			catch (NumberFormatException ex) { }
 
-			// We might just want to update the max_ver, not run a command
+			// We might just want to update the max version, not run a command
 			if (waiting_for.remove(s.getName()) == false)
 				return;
 			if (command_source == null)
 				return;
 
-			if (commandVersionsBase.onlyOld && ver_num == max_ver)
+			if (commandVersionsBase.onlyOld && isMaxVersion(ver_num))
 				return;
 
 			String buf = "[VERSION] " + source + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
 			buf += " ";
-			if (ver_num >= 0 && ver_num < max_ver - 4)
-				buf += Message.COLOR_RED;
-			else if (ver_num >= 0 && ver_num < max_ver - 1)
-				buf += Message.COLOR_YELLOW;
-			else if (ver_num < max_ver)
-				buf += Message.COLOR_GREEN;
-			else
-				buf += Message.COLOR_BRIGHTGREEN;
+			buf += versionColor(ver_num);
 			buf += ver + Message.COLOR_END;
 
 			int serno_pos1;
-			for (serno_pos1 = 0; serno_pos1 < tok.length() && tok.charAt(serno_pos1) != '('; ++serno_pos1);
+			for (serno_pos1 = tok.length() - 1; serno_pos1 > 0 && tok.charAt(serno_pos1) != '('; --serno_pos1);
 			buf += " (";
 			buf += tok.substring(serno_pos1+1, pos-1);
 			buf += ")";
