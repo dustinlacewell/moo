@@ -1,15 +1,17 @@
 package net.rizon.moo.plugin.vote;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.vote.conf.Vote;
 import net.rizon.moo.plugin.vote.conf.VoteConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class vote extends Plugin
 {
-	protected static final Logger log = Logger.getLogger(vote.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(EventVote.class);
+
 	public static VoteConfiguration conf;
 
 	private CommandVote vote;

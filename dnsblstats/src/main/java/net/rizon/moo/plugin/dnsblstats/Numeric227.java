@@ -1,12 +1,15 @@
 package net.rizon.moo.plugin.dnsblstats;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /* /stats b */
 class Numeric227 extends Message
 {
+	private static final Logger logger = LoggerFactory.getLogger(Numeric227.class);
+		
 	public Numeric227()
 	{
 		super("227");
@@ -27,7 +30,7 @@ class Numeric227 extends Message
 		}
 		catch (Exception ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to parse 277", ex);
 			return;
 		}
 

@@ -6,11 +6,12 @@ import java.util.HashMap;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class message351 extends Message
 {
@@ -155,13 +156,15 @@ class message351 extends Message
 		}
 		catch (Exception ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			commandVersionsBase.logger.warn("Unable to parse 351", ex);
 		}
 	}
 }
 
 class commandVersionsBase extends Command
 {
+	static final Logger logger = LoggerFactory.getLogger(commandVersionsBase.class);
+	
 	@SuppressWarnings("unused")
 	private static message351 msg_351 = new message351();
 	static Server want_server = null;

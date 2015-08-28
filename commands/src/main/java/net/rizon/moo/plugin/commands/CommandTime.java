@@ -12,11 +12,12 @@ import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class message391 extends Message
 {
@@ -141,7 +142,8 @@ class message391 extends Message
 		}
 		catch (ParseException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			CommandTime.logger.warn("Unable to parse time", ex);
+
 		}
 	}
 }
@@ -166,6 +168,8 @@ class CheckTimesTimer implements Runnable
 
 class CommandTime extends Command
 {
+	static final Logger logger = LoggerFactory.getLogger(CommandTime.class);
+	
 	@SuppressWarnings("unused")
 	private static message391 message_391 = new message391("391");
 	private ScheduledFuture check_times_timer;

@@ -8,14 +8,15 @@ import java.util.logging.Level;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class proxyscan extends Plugin
 {
-	protected static final Logger log = Logger.getLogger(proxyscan.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ScanListener.class);
 
 	private Event e;
 	private ScanListener sc;
@@ -70,7 +71,7 @@ public class proxyscan extends Plugin
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.WARNING, "Unable to record proxy hit", ex);
+			logger.warn("Unable to record proxy hit", ex);
 		}
 
 		if (conf.py_opers)

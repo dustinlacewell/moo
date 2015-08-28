@@ -9,11 +9,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Server
 {
-	private static final Logger log = Logger.getLogger(Server.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	public static long lastSplit = 0;
 	public static int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
 
@@ -43,7 +44,7 @@ public class Server
 		this.name = name;
 		servers.push(this);
 
-		log.log(Level.FINE, "Adding server " + this.getName());
+		logger.debug("Adding server {}", this.getName());
 
 		this.requestStats();
 		if (!this.isServices())
@@ -56,7 +57,7 @@ public class Server
 
 	public void destroy()
 	{
-		log.log(Level.FINE, "Removing server " + this.getName());
+		logger.debug("Removing server {}", this.getName());
 
 		for (Event e : Event.getEvents())
 			e.onServerDestroy(this);
@@ -73,7 +74,7 @@ public class Server
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, "Error removing server from database", ex);
+			logger.error("Error removing server from database", ex);
 		}
 
 		servers.remove(this);
@@ -416,7 +417,7 @@ public class Server
 			}
 			catch (SQLException ex)
 			{
-				log.log(Level.WARNING, "Error saving servers", ex);
+				logger.warn("Error saving servers", ex);
 			}
 		}
 	}

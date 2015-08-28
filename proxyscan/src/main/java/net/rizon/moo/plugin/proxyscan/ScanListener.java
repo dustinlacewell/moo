@@ -9,12 +9,14 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
 
-import net.rizon.moo.Logger;
+import org.slf4j.LoggerFactory;
 
 final class ScanListener extends Thread
 {
-	private static final Logger log = Logger.getLogger(ScanListener.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ScanListener.class);
+	
 	private static final Pattern typeMatchPatter = Pattern.compile("[a-z0-9_]+");
 
 	private final String ip;
@@ -32,14 +34,14 @@ final class ScanListener extends Thread
 	{
 		try
 		{
-			log.log(Level.FINE, "Trying to create listener");
+			logger.debug("Trying to create listener");
 			this.listener = new ServerSocket();
 			this.listener.bind(new InetSocketAddress(this.ip, this.port));
-			log.log(Level.FINE, "Bound to " + this.ip + ":" + this.port);
+			logger.debug("Bound to {}:{}", this.ip, this.port);
 
 			for (Socket client; (client = this.listener.accept()) != null;)
 			{
-				log.log(Level.FINE, "Accepted client");
+				logger.debug("Accepted client");
 				InputStream is = client.getInputStream();
 				OutputStream s = client.getOutputStream();
 
@@ -47,7 +49,7 @@ final class ScanListener extends Thread
 				{
 					s.write((proxyscan.conf.check_string + "\r\n").getBytes());
 					s.flush();
-					log.log(Level.FINE, "Wrote check string.");
+					logger.debug("Wrote check string.");
 
 					client.setSoTimeout(10 * 1000);
 					byte[] b = new byte[64];
@@ -74,7 +76,7 @@ final class ScanListener extends Thread
 						}
 						catch (NumberFormatException ex)
 						{
-							log.log(Level.FINE, "Non numeric port for proxy: " + str[2]);
+							logger.debug("Non numeric port for proxy: {}", str[2]);
 						}
 					}
 				}
@@ -90,7 +92,7 @@ final class ScanListener extends Thread
 		}
 		catch (Exception ex)
 		{
-			log.log(ex);
+			logger.warn("Error running scan listener", ex);
 		}
 	}
 
@@ -102,7 +104,7 @@ final class ScanListener extends Thread
 		}
 		catch (Exception ex)
 		{
-			log.log(ex);
+			logger.error("Unable to shutdown listener", ex);
 		}
 	}
 }

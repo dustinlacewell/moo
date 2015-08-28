@@ -9,9 +9,10 @@ import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class DeadListChecker implements Runnable
 {
@@ -50,6 +51,8 @@ class DeadListChecker implements Runnable
 public class random extends Plugin
 {
 	protected static final int maxSize = 100, matchesForFlood = 20, timeforMatches = 60, scoreForRandom = 3, reconnectFloodLimit = 200;
+	
+	private static final Logger logger = LoggerFactory.getLogger(random.class);
 
 	private Command flood;
 	private Event e;
@@ -116,7 +119,7 @@ public class random extends Plugin
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log akill", ip);
 		}
 	}
 
@@ -130,7 +133,7 @@ public class random extends Plugin
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to remove akill", ip);
 		}
 
 		return false;

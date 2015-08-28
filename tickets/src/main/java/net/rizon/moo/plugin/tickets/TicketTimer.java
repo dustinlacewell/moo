@@ -1,9 +1,13 @@
 package net.rizon.moo.plugin.tickets;
 
-import java.util.Date;
+import net.rizon.moo.logging.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TicketTimer implements Runnable
 {
+	private static final Logger logger = LoggerFactory.getLogger(TicketTimer.class);
+	
 	private TicketChecker c;
 
 	@Override
@@ -13,7 +17,7 @@ class TicketTimer implements Runnable
 			return;
 
 		c = new TicketChecker();
-		tickets.log.initThread(c);
+		LoggerUtils.initThread(logger, c);
 		c.start();
 	}
 }

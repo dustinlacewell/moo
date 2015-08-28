@@ -5,12 +5,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.util.logging.Level;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Handler extends ChannelHandlerAdapter
 {
-	private static final Logger log = Logger.getLogger(Handler.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 	private boolean idle;
 	
 	@Override
@@ -36,7 +37,8 @@ public class Handler extends ChannelHandlerAdapter
 				}
 				else
 				{
-					log.log(Level.WARNING, "No read from uplink in 120 seconds, closing connection");
+					logger.warn("No read from uplink in 120 seconds, closing connection");
+
 					ctx.close();
 				}
 			}

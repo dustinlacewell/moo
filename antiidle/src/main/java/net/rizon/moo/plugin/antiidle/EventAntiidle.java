@@ -12,9 +12,13 @@ import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventAntiidle extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventAntiidle.class);
+	
 	protected static final List<Voicer> toBeVoiced = new ArrayList<Voicer>();
 	
 	@Override
@@ -110,7 +114,8 @@ class EventAntiidle extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading antiidle configuration: " + ex.getMessage());
-			antiidle.log.log(Level.WARNING, "Unable to reload antiidle configuration", ex);
+			
+			logger.warn("Unable to reload antiidle configuration", ex);
 		}
 	}
 }

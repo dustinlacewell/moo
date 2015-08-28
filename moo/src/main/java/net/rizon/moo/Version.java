@@ -4,11 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.logging.Level;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Version
 {
-	private static final Logger log = Logger.getLogger(Version.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	private static HashMap<String, String> values = new HashMap<String, String>();
 
 	public static void load()
@@ -55,7 +56,7 @@ public class Version
 		}
 		catch (IOException ex)
 		{
-			log.log(Level.INFO, "Unable to load GIT version data", ex);
+			logger.info("Unable to load GIT version data", ex);
 		}
 	}
 

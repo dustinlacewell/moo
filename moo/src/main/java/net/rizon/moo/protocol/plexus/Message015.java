@@ -1,17 +1,17 @@
 package net.rizon.moo.protocol.plexus;
 
-import java.util.logging.Level;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /* Map
  * <- :adam.home 015 Adam :adam.home[00C] ----------------------------------- | Users:     1 (100.0%)
  */
 class Message015 extends Message
 {
-	private static final Logger log = Logger.getLogger(Message015.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Message015.class);
 
 	public Message015()
 	{
@@ -60,7 +60,7 @@ class Message015 extends Message
 			}
 			catch (NumberFormatException ex)
 			{
-				log.log(Level.WARNING, "Invalid user count in map 015: " + s);
+				logger.warn("Invalid user count in map 015: {}", s);
 			}
 		}
 

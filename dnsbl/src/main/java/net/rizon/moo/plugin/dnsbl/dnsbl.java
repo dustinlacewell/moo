@@ -1,13 +1,10 @@
 package net.rizon.moo.plugin.dnsbl;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 public class dnsbl extends Plugin
 {
-	protected static final Logger log = Logger.getLogger(dnsbl.class.getName());
-
 	private CommandDnsbl command;
 	private BlacklistManager blacklistManager;
 	private ResultCache cache;

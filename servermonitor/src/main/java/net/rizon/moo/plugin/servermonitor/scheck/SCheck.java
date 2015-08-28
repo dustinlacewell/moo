@@ -7,7 +7,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslHandler;
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -22,17 +21,17 @@ import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.logging.Level;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import net.rizon.moo.Logger;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.io.IRCMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SCheck
 {
-	private static final Logger log = Logger.getLogger(SCheck.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(SCheck.class);
 	
 	private Server server;
 	private int port;
@@ -214,7 +213,7 @@ public class SCheck
 	public void exceptionCaught(Throwable cause)
 	{
 		reply(this.prefix + "Error caught in scheck: " + cause);
-		log.log(Level.WARNING, "Error caught in scheck", cause);
+		logger.error("Error in scheck", cause);
 		channel.close();
 	}
 	

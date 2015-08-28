@@ -7,9 +7,10 @@ import java.util.Iterator;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class soaCheck extends Thread
 {
@@ -116,13 +117,15 @@ class soaCheck extends Thread
 		}
 		catch (Exception ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			CommandSoa.logger.warn("Unable to check soa", ex);
 		}
 	}
 }
 
 class CommandSoa extends Command
 {
+	static final Logger logger = LoggerFactory.getLogger(CommandSoa.class);
+	
 	public CommandSoa(Plugin pkg)
 	{
 		super(pkg, "!SOA", "Check if SOA records for a domain are valid");

@@ -16,6 +16,8 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TextDelay implements Runnable
 {
@@ -43,6 +45,8 @@ class TextDelay implements Runnable
 
 class EventSplit extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventSplit.class);
+	
 	protected static TextDelay texts;
 
 	@Override
@@ -164,7 +168,8 @@ class EventSplit extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading servermonitor configuration: " + ex.getMessage());
-			servermonitor.log.log(Level.WARNING, "Unable to reload servermonitor configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

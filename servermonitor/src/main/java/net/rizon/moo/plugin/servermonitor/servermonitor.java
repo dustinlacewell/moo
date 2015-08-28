@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
@@ -23,8 +22,6 @@ class Requester implements Runnable
 
 public class servermonitor extends Plugin
 {
-	protected static final Logger log = Logger.getLogger(servermonitor.class.getName());
-
 	private Command scheck;
 	private CommandServer server;
 	private Command split;

@@ -5,13 +5,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.rizon.moo.conf.DatabaseConfiguration;
 
 public class Database
 {
-	private static final Logger log = Logger.getLogger(Database.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
 	private Connection con = null;
 
@@ -43,7 +44,7 @@ public class Database
 
 	public synchronized ResultSet executeQuery(PreparedStatement ps) throws SQLException
 	{
-		log.log(Level.FINE, "Executing query: " + ps.toString());
+		logger.debug("Executing query: {}", ps.toString());
 		return ps.executeQuery();
 	}
 
@@ -57,7 +58,7 @@ public class Database
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, "Error preparing SQL statement: " + statement, ex);
+			logger.error("Error preparing SQL statement: " + statement, ex);
 			return 0;
 		}
 
@@ -68,12 +69,12 @@ public class Database
 	{
 		try
 		{
-			log.log(Level.FINE, "Executing query: " + ps.toString());
+			logger.debug("Executing query: {}", ps.toString());
 			return ps.executeUpdate();
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, "Error executing SQL statement: " + ps.toString(), ex);
+			logger.error("Error executing SQL statement: " + ps.toString(), ex);
 			return 0;
 		}
 		finally
@@ -90,7 +91,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, "Failure to close PreparedStatement", e);
+			logger.error("Failure to close PreparedStatement", e);
 		}
 	}
 
@@ -106,6 +107,6 @@ public class Database
 
 	public static void handleException(SQLException ex)
 	{
-		Logger.getGlobalLogger().log(ex);
+		logger.error("Database exception", ex);
 	}
 }

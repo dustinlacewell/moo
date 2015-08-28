@@ -1,17 +1,17 @@
 package net.rizon.moo.plugin.proxyscan;
 
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventProxyScan extends Event
 {
-	private static final Logger log = Logger.getLogger(EventProxyScan.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(EventProxyScan.class);
 
 	private static boolean isReserved(String ip)
 	{
@@ -34,7 +34,7 @@ class EventProxyScan extends Event
 	@Override
 	public void onClientConnect(final String nick, final String ident, final String ip, final String realname)
 	{
-		log.log(Level.FINE, "Client connection from " + ip);
+		logger.debug("Client connecting from {}", ip);
 
 		if (isReserved(ip) || proxyscan.cache.isCached(ip))
 			return;
@@ -42,7 +42,7 @@ class EventProxyScan extends Event
 		if (!nickOk(nick))
 			return;
 
-		log.log(Level.FINE, "Scanning " + ip);
+		logger.debug("Scanning {}", ip);
 
 		String[] ips = ip.contains(":") ? proxyscan.conf.bindip6 : proxyscan.conf.bindip;
 		if (ips.length == 0)
@@ -70,7 +70,8 @@ class EventProxyScan extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading proxyscan configuration: " + ex.getMessage());
-			proxyscan.log.log(Level.WARNING, "Unable to reload proxyscan configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

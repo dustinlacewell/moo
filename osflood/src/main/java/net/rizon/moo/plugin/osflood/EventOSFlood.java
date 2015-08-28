@@ -3,7 +3,6 @@ package net.rizon.moo.plugin.osflood;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,9 +10,13 @@ import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.osflood.conf.OsfloodConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventOSFlood extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventOSFlood.class);
+	
 	private static final Pattern badOSPattern = Pattern.compile("Denied access to OperServ from [^@]+@([^ ]+) .*$");
 	protected static final HashMap<String, OperServFlood> osFlooders = new HashMap<String, OperServFlood>();
 	private static long lastexpirycheck = 0;
@@ -84,7 +87,8 @@ class EventOSFlood extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading osflood configuration: " + ex.getMessage());
-			osflood.log.log(Level.WARNING, "Unable to reload osflood configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

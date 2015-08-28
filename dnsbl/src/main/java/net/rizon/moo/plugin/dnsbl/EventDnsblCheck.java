@@ -11,9 +11,13 @@ import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventDnsblCheck extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventDnsblCheck.class);
+	
 	private BlacklistManager rules;
 	private ResultCache cache;
 
@@ -106,7 +110,8 @@ class EventDnsblCheck extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading dnsbl configuration: " + ex.getMessage());
-			dnsbl.log.log(Level.WARNING, "Unable to reload dnsbl configuration", ex);
+			
+			logger.warn("Unable to reload dnsbl configuration", ex);
 		}
 	}
 }

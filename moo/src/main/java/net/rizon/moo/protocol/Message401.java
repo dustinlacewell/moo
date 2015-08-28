@@ -1,13 +1,12 @@
 package net.rizon.moo.protocol;
 
-import io.netty.util.concurrent.ScheduledFuture;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.io.Handler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class GeoChecker implements Runnable
 {
@@ -24,7 +23,7 @@ class GeoChecker implements Runnable
 
 public class Message401 extends Message
 {
-	private static final Logger log = Logger.getLogger(Message401.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Message401.class);
 
 	public Message401()
 	{
@@ -38,7 +37,7 @@ public class Message401 extends Message
 		{
 			Moo.akillServ = "OperServ";
 
-			log.log(Level.INFO, "GeoServ has gone away! Changing akillserv to OperServ");
+			logger.info("GeoServ has gone away! Changing akillserv to OperServ");
 			Moo.schedule(new GeoChecker(), 10, TimeUnit.SECONDS);
 		}
 		else if (message[1].equalsIgnoreCase("OperServ"))

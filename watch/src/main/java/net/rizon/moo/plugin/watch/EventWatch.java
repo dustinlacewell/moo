@@ -7,12 +7,13 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventWatch extends Event
 {
-	private static final Logger log = Logger.getLogger(EventWatch.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(EventWatch.class);
 
 	@Override
 	protected void initDatabases()
@@ -45,7 +46,7 @@ class EventWatch extends Event
 		}
 		catch (Exception ex)
 		{
-			log.log(ex);
+			logger.warn("Unable to load watch database", ex);
 		}
 	}
 
@@ -74,7 +75,7 @@ class EventWatch extends Event
 		}
 		catch (SQLException ex)
 		{
-			log.log(ex);
+			logger.warn("Unable to save watch database", ex);
 		}
 	}
 

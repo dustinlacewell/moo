@@ -8,14 +8,15 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class tickets extends Plugin
 {
-	protected static final Logger log = Logger.getLogger(tickets.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(tickets.class);
 
 	private ScheduledFuture ticketTimer;
 	private Event e;

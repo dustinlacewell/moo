@@ -3,15 +3,18 @@ package net.rizon.moo.plugin.proxyscan;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProxyStats extends Command
 {
+	private static final Logger logger = LoggerFactory.getLogger(ProxyStats.class);
+	
 	public ProxyStats(Plugin pkg)
 	{
 		super(pkg, "!PROXYSTATS", "View proxy hit statistics");
@@ -34,7 +37,7 @@ public class ProxyStats extends Command
 		}
 		catch (SQLException ex)
 		{
-			proxyscan.log.log(Level.WARNING, "Unable to get proxyscan stats", ex);
+			logger.warn("Unable to get proxyscan stats", ex);
 		}
 	}
 }

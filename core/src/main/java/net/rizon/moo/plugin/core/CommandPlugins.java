@@ -1,15 +1,17 @@
 package net.rizon.moo.plugin.core;
 
-import java.util.logging.Level;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class CommandPlugins extends Command
 {
+	private static final Logger logger = LoggerFactory.getLogger(CommandPlugins.class);
+	
 	public CommandPlugins(Plugin pkg)
 	{
 		super(pkg, "!PLUGINS", "Manage plugins");
@@ -36,7 +38,8 @@ class CommandPlugins extends Command
 			catch (Throwable ex)
 			{
 				source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
-				Logger.getGlobalLogger().log(Level.WARNING, "Unable to load plugin " + params[2], ex);
+				
+				logger.warn("Unable to load plugin " + params[2], ex);
 			}
 		}
 		else if (params[1].equalsIgnoreCase("unload"))
@@ -71,7 +74,8 @@ class CommandPlugins extends Command
 				catch (Throwable ex)
 				{
 					source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
-					Logger.getGlobalLogger().log(Level.WARNING, "Unable to reload plugin " + params[2], ex);
+					
+					logger.warn("Unable to reload plugin " + params[2], ex);
 				}
 			}
 		}

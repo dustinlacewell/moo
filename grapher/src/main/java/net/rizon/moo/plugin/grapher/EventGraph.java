@@ -10,9 +10,13 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 import net.rizon.moo.plugin.grapher.graphs.ServerUserGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventGraph extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventGraph.class);
+	
 	private grapher pkg;
 
 	public EventGraph(grapher pkg)
@@ -45,7 +49,8 @@ class EventGraph extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading grapher configuration: " + ex.getMessage());
-			grapher.log.log(Level.WARNING, "Unable to reload grapher configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

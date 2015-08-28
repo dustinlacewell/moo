@@ -1,9 +1,13 @@
 package net.rizon.moo.plugin.wiki;
 
-import java.util.Date;
+import net.rizon.moo.logging.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class WikiTimer implements Runnable
 {
+	private static final Logger logger = LoggerFactory.getLogger(WikiTimer.class);
+	
 	private WikiChecker c;
 	
 	@Override
@@ -13,7 +17,7 @@ class WikiTimer implements Runnable
 			return;
 
 		c = new WikiChecker();
-		wiki.log.initThread(c);
+		LoggerUtils.initThread(logger, c);
 		c.start();
 	}
 }

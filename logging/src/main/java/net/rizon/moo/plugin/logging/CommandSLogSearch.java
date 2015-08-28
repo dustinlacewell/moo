@@ -16,6 +16,8 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class logSearcher extends Thread
 {
@@ -71,7 +73,7 @@ class logSearcher extends Thread
 			}
 			catch (Exception e)
 			{
-				logging.log.log(Level.WARNING, "Unable to search logfile", e);
+				CommandSLogSearch.logger.warn("Unable to search logfile", e);
 			}
 		}
 		
@@ -84,6 +86,8 @@ class logSearcher extends Thread
 
 class CommandSLogSearch extends Command
 {
+	static final Logger logger = LoggerFactory.getLogger(CommandSLogSearch.class);
+	
 	public CommandSLogSearch(Plugin pkg)
 	{
 		super(pkg, "!SLOGSEARCH", "Search through services logs");

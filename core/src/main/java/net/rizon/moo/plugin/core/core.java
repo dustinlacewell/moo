@@ -2,15 +2,14 @@ package net.rizon.moo.plugin.core;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.core.conf.CoreConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class core extends Plugin
 {
 	public static CoreConfiguration conf;
-
-	protected static final Logger log = Logger.getLogger(core.class.getName());
 
 	private CommandHelp help;
 	private Command host, plugins, rand, reload, shell, shutdown, status;

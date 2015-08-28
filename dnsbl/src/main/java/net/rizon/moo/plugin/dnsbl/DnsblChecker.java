@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import net.rizon.moo.logging.LoggerUtils;
 
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
@@ -24,6 +27,8 @@ interface DnsblCallback
 
 class DnsblChecker implements Runnable
 {
+	private static final Logger logger = LoggerFactory.getLogger(DnsblChecker.class);
+	
 	private static SimpleResolver resolver;
 
 	private DnsblCheckTarget target;
@@ -44,7 +49,7 @@ class DnsblChecker implements Runnable
 		}
 		catch (UnknownHostException ex)
 		{
-			dnsbl.log.log(Level.SEVERE, "Unable to create dnsbl resolver", ex);
+			logger.error("Unable to create dnsbl resolver", ex);
 		}
 	}
 
@@ -76,7 +81,7 @@ class DnsblChecker implements Runnable
 		}
 		catch (TextParseException ex)
 		{
-			dnsbl.log.log(Level.WARNING, "Unable to get dnsbl response", ex);
+			logger.warn("Unable to get dnsbl response", ex);
 		}
 
 		return null;
@@ -169,7 +174,7 @@ class DnsblChecker implements Runnable
 	public void runAsynchronous()
 	{
 		Thread t = new Thread(this);
-		dnsbl.log.initThread(t);
+		LoggerUtils.initThread(logger, t);
 		t.start();
 	}
 }

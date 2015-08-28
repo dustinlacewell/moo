@@ -11,11 +11,14 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TicketChecker extends Thread
 {
+	private static final Logger logger = LoggerFactory.getLogger(TicketChecker.class);
+	
 	private static final int reminder = 30; // minutes
 	private static final Pattern pattern = Pattern.compile("<tr><td><a href=\"/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
 	private static boolean firstRun = true;
@@ -114,7 +117,7 @@ class TicketChecker extends Thread
 		}
 		catch (Exception ex)
 		{
-			Logger.getGlobalLogger().log(Level.WARNING, "Unable to check tickets", ex);
+			logger.warn("Unable to check tickets", ex);
 		}
 		finally
 		{

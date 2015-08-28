@@ -1,17 +1,16 @@
 package net.rizon.moo.plugin.antiidle;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class AntiIdleEntry implements Runnable
 {
-	private static final Logger log = Logger.getLogger(AntiIdleEntry.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(AntiIdleEntry.class);
 	private static Map<String, AntiIdleEntry> entries = new HashMap<String, AntiIdleEntry>();
 
 	public String nick;
@@ -30,7 +29,7 @@ class AntiIdleEntry implements Runnable
 
 		entries.put(this.nick.toLowerCase(), this);
 
-		log.log(Level.FINER, "Adding antiidle for " + this.nick);
+		logger.debug("Adding antiidle for {}", this.nick);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ class AntiIdleEntry implements Runnable
 		AntiIdleEntry a = entries.get(nick.toLowerCase());
 		if (a != null)
 		{
-			log.log(Level.FINER, "Removing antiidle for " + nick);
+			logger.debug("Removing antiidle for {}", nick);
 
 			a.defunct = true;
 			entries.remove(nick.toLowerCase());
@@ -78,7 +77,7 @@ class AntiIdleEntry implements Runnable
 		{
 			entries.remove(nick.toLowerCase());
 
-			log.log(Level.FINER, "Renaming antiidle for " + nick + " to " + to);
+			logger.debug("Renaming antiidle for {} to {}", nick, to);
 
 			a.nick = to;
 			a.mask = mask;

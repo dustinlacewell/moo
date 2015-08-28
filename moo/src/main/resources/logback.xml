@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<timestamp key="byDay" datePattern="yyyyMMdd"/>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="net.rizon.moo.logging.ConsoleFilter" />
+
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<filter class="net.rizon.moo.logging.ConsoleFilter" />
+		<file>moo-${byDay}.log</file>
+		<append>true</append>
+		
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="IRC" class="net.rizon.moo.logging.Logger" />
+
+	<root level="DEBUG">          
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="IRC" />
+	</root>
+  
+</configuration>

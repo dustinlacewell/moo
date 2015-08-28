@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.logging.Level;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 class outputWriter extends OutputStreamWriter
 {
@@ -22,7 +23,7 @@ class outputWriter extends OutputStreamWriter
 
 class mailThread extends Thread
 {
-	private static final Logger log = Logger.getLogger(mailThread.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(mailThread.class);
 
 	private String path;
 	private String to;
@@ -55,11 +56,11 @@ class mailThread extends Thread
 			proc.getInputStream().close();
 			proc.getErrorStream().close();
 
-			log.log(Level.FINER, "Successfully sent message to {0}", this.to);
+			logger.debug("Successfully sent message to {}", this.to);
 		}
 		catch (IOException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.error("Error sending mail", ex);
 		}
 	}
 }

@@ -10,17 +10,19 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EventLogging extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventLogging.class);
+		
 	@Override
 	protected void initDatabases()
 	{
@@ -59,7 +61,7 @@ class EventLogging extends Event
 		}
 		catch (Exception e)
 		{
-			logging.log.log(Level.WARNING, "Unable to log", e);
+			logger.warn("Unable to log", e);
 		}
 	}
 
@@ -86,7 +88,7 @@ class EventLogging extends Event
 				}
 				catch (SQLException ex)
 				{
-					Logger.getGlobalLogger().log(ex);
+					logger.warn("Unable to log kill", ex);
 				}
 			}
 		}
@@ -131,7 +133,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log xline", ex);
 		}
 	}
 
@@ -153,7 +155,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log xline", ex);
 		}
 	}
 
@@ -175,7 +177,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log xline", ex);
 		}
 	}
 
@@ -194,7 +196,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log server link", ex);
 		}
 	}
 
@@ -213,7 +215,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log server split", ex);
 		}
 	}
 
@@ -244,7 +246,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to check akill", ex);
 		}
 	}
 
@@ -309,7 +311,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log akill", ex);
 		}
 	}
 	
@@ -328,7 +330,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log akill del", ex);
 		}
 	}
 	
@@ -345,7 +347,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log oper", ex);
 		}
 	}
 	
@@ -366,7 +368,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log akill", ex);
 		}
 	}
 	
@@ -388,7 +390,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log connect", ex);
 		}
 	}
 	
@@ -421,7 +423,7 @@ class EventLogging extends Event
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log wallops", ex);
 		}
 	}
 }

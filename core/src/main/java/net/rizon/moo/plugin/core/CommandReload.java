@@ -5,15 +5,16 @@ import java.util.logging.Level;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.conf.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class CommandReload extends Command
 {
-	private static final Logger log = Logger.getLogger(CommandReload.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(CommandReload.class);
 
 	public CommandReload(Plugin pkg)
 	{
@@ -43,7 +44,8 @@ class CommandReload extends Command
 		catch (Exception ex)
 		{
 			source.reply("Error reloading configuration: " + ex.getMessage());
-			log.log(Level.WARNING, "Error reloading configuration", ex);
+			
+			logger.warn("Error reloading configuration", ex);
 		}
 	}
 }

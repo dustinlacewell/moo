@@ -1,16 +1,19 @@
 package net.rizon.moo.plugin.commits;
 
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
+import net.rizon.moo.logging.LoggerUtils;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class commits extends Plugin
 {
+	protected static final Logger logger = LoggerFactory.getLogger(commits.class);
+
 	protected static Server s;
 	private Event e;
 	public static CommitsConfiguration conf;
-	protected static final Logger log = Logger.getLogger(commits.class.getName());
 
 	public commits() throws Exception
 	{
@@ -22,7 +25,7 @@ public class commits extends Plugin
 	public void start() throws Exception
 	{
 		s = new Server(conf.ip, conf.port);
-		log.initThread(s);
+		LoggerUtils.initThread(logger, s);
 		s.start();
 
 		e = new EventCommit();

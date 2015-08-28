@@ -9,10 +9,14 @@ import java.util.logging.Level;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblServerConfiguration;
 import net.rizon.moo.plugin.dnsbl.conf.RuleConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 class BlacklistManager
 {
+	private static final Logger logger = LoggerFactory.getLogger(BlacklistManager.class);
+	
 	private Map<String, Blacklist> blacklists = new HashMap<String, Blacklist>();
 
 	/**
@@ -38,7 +42,7 @@ class BlacklistManager
 				if (action == null)
 				{
 					// Invalid config item, ignore it.
-					dnsbl.log.log(Level.WARNING, "Invalid action ''{0}'' in rule: {1}", new Object[]{rule.action, rule.toString()});
+					logger.warn("Invalid action ''{}'' in rule: {}", rule.action, rule.toString());
 					continue;
 				}
 

@@ -5,12 +5,13 @@ import java.util.HashSet;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
 import net.rizon.moo.Split;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class message242 extends Message
 {
@@ -43,7 +44,7 @@ class message242 extends Message
 		}
 		catch (NumberFormatException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			CommandUptime.logger.warn("Unable to parse 242", ex);
 			return;
 		}
 
@@ -61,6 +62,8 @@ class message242 extends Message
 
 class CommandUptime extends Command
 {
+	static final Logger logger = LoggerFactory.getLogger(CommandUptime.class);
+	
 	@SuppressWarnings("unused")
 	private static message242 message_242 = new message242();
 

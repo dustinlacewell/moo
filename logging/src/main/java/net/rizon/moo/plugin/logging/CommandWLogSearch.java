@@ -6,12 +6,15 @@ import java.sql.SQLException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class CommandWLogSearch extends Command
 {
+	private static final Logger logger = LoggerFactory.getLogger(CommandWLogSearch.class);
+	
 	public CommandWLogSearch(Plugin pkg)
 	{
 		super(pkg, "!WLOGSEARCH", "Search through WALLOPS logs");
@@ -112,7 +115,8 @@ final class CommandWLogSearch extends Command
 		catch (SQLException ex)
 		{
 			source.reply("Error processing request");
-			Logger.getGlobalLogger().log(ex);
+			
+			logger.warn("Error processing request", ex);
 		}
 	}
 }

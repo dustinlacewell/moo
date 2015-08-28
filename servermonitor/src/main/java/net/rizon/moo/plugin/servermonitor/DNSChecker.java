@@ -10,11 +10,14 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class DNSChecker extends Thread
 {
+	private static final Logger logger = LoggerFactory.getLogger(DNSChecker.class);
+	
 	@Override
 	public void run()
 	{
@@ -63,12 +66,12 @@ class DNSChecker extends Thread
 				catch (NamingException ex)
 				{
 					Moo.privmsgAll(Moo.conf.admin_channels, "DNS: NamingError checking serial for " + ns + ": " + ex);
-					Logger.getGlobalLogger().log(ex);
+					logger.warn("Unable to check serial for " + ns, ex);
 				}
 				catch (Exception ex)
 				{
 					Moo.privmsgAll(Moo.conf.admin_channels, "DNS: Error checking serial for " + ns + ": " + ex);
-					Logger.getGlobalLogger().log(ex);
+					logger.warn("Unable to check serial for " + ns, ex);
 				}
 				finally
 				{
@@ -79,12 +82,12 @@ class DNSChecker extends Thread
 		catch (NamingException ex)
 		{
 			Moo.privmsgAll(Moo.conf.admin_channels, "DNS: NamingError checking nameserver serials: " + ex);
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to nameserver serials", ex);
 		}
 		catch (Exception ex)
 		{
 			Moo.privmsgAll(Moo.conf.admin_channels, "DNS: Error checking nameserver serials: " + ex);
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to nameserver serials", ex);
 		}
 		finally
 		{

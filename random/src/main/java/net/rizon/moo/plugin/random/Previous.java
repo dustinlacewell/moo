@@ -4,11 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class Previous extends FloodList
 {
+	private static final Logger logger = LoggerFactory.getLogger(Previous.class);
+	
 	private static PreparedStatement stmt;
 	private static Previous self;
 
@@ -20,7 +23,7 @@ class Previous extends FloodList
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.error("Unable to load previous akills", ex);
 		}
 	}
 
@@ -52,7 +55,7 @@ class Previous extends FloodList
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to check prevoius match", ex);
 		}
 
 		return null;

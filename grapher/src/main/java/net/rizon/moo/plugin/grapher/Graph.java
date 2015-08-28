@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
-
-import net.rizon.moo.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Graph implements Runnable
 {
-	private static final Logger log = Logger.getLogger(Graph.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
 	private static File rrd_bin = new File(grapher.conf.bin),
 			rrd_graphdir = new File(grapher.conf.dir);
@@ -41,7 +41,7 @@ public abstract class Graph implements Runnable
 	{
 		if (rrd_bin.exists() == false || rrd_bin.canExecute() == false)
 		{
-			log.log(Level.WARNING, "RRDTool binary does not exist or is not executable");
+			logger.warn("RRDTool binary does not exist or is not executable");
 			return;
 		}
 
@@ -69,7 +69,7 @@ public abstract class Graph implements Runnable
 
 				if (ds_type == null)
 				{
-					log.log(Level.WARNING, "Unknown DataSourceType");
+					logger.warn("Unknown DataSourceType");
 					continue;
 				}
 
@@ -86,7 +86,7 @@ public abstract class Graph implements Runnable
 
 			if (rra_type == null)
 			{
-				log.log(Level.WARNING, "Unknown RoundRobinArchiveType");
+				logger.warn("Unknown RoundRobinArchiveType");
 				return;
 			}
 
@@ -101,7 +101,7 @@ public abstract class Graph implements Runnable
 			}
 			catch (IOException ex)
 			{
-				log.log(Level.WARNING, "Error executing RRDTool with \"" + create_command + "\"", ex);
+				logger.warn("Error executing RRDTool with \"" + create_command + "\"", ex);
 			}
 		}
 
@@ -116,7 +116,7 @@ public abstract class Graph implements Runnable
 		}
 		catch (IOException ex)
 		{
-			log.log(Level.WARNING, "Error executing RRDTool with \"" + command + "\"", ex);
+			logger.warn("Error executing RRDTool with \"" + command + "\"", ex);
 		}
 	}
 

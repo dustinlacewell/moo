@@ -4,11 +4,12 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.logging.Level;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public final class ClassLoader extends URLClassLoader
 {
-	private static final Logger log = Logger.getLogger(ClassLoader.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ClassLoader.class);
 
 	public ClassLoader(String plugin, String classname)
 	{
@@ -25,7 +26,7 @@ public final class ClassLoader extends URLClassLoader
 			/* can't find the directory where we expect it */
 			if (!targetFolder.exists())
 			{
-				log.log(Level.WARNING, "Unable to find " + plugin + "/target/ directory to source the JAR from.");
+				logger.warn("Unable to find {}/target/ directory to source the JAR from.", plugin);
 				return;
 			}
 
@@ -53,24 +54,24 @@ public final class ClassLoader extends URLClassLoader
 				File f = new File(targetFolder, "classes/");
 				if (!f.isDirectory())
 				{
-					log.log(Level.WARNING, "Unable to locate plugin JAR/class files for " + plugin);
+					logger.warn("Unable to locate plugin JAR/class files for {}", plugin);
 					return;
 				}
 
-				log.log(Level.FINE, "Using classes/ for plugin " + plugin);
+				logger.debug("Using classes/ for plugin {}", plugin);
 				try
 				{
 					this.addURL(f.toURI().toURL());
 				}
 				catch (MalformedURLException ex)
 				{
-					log.log(Level.WARNING, "Unable to add class URL for " + plugin + " [" + f.toURI() + "]", ex);
+					logger.warn("Unable to add class URL for " + plugin + " [" + f.toURI() + "]", ex);
 				}
 				return;
 			}
 			else
 			{
-				log.log(Level.FINE, "Found load candidate " + jar.getName() + " for plugin `" + plugin + "`");
+				logger.debug("Found load candidate {} for plugin `{}`", jar.getName(), plugin);
 			}
 		}
 		else
@@ -87,12 +88,12 @@ public final class ClassLoader extends URLClassLoader
 			}
 			catch (MalformedURLException ex)
 			{
-				log.log(Level.WARNING, "Unable to add plugin JAR URL for " + plugin + " [" + jar.toURI() + "]", ex);
+				logger.warn("Unable to add plugin JAR URL for " + plugin + " [" + jar.toURI() + "]", ex);
 			}
 		}
 		else
 		{
-			log.log(Level.WARNING, "Unable to locate JAR for plugin " + plugin);
+			logger.warn("Unable to locate JAR for plugin {}", plugin);
 		}
 	}
 

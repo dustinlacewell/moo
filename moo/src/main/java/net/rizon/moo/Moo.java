@@ -13,9 +13,10 @@ import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.protocol.ProtocolPlugin;
@@ -32,7 +33,7 @@ class DatabaseTimer implements Runnable
 
 class RunnableContainer implements Runnable
 {
-	private static final Logger log = Logger.getLogger(RunnableContainer.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(RunnableContainer.class);
 	private final Runnable runnable;
 
 	public RunnableContainer(Runnable r)
@@ -49,14 +50,14 @@ class RunnableContainer implements Runnable
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.WARNING, "Erorr while running scheduled event", ex);
+			logger.warn("Error while running scheduled event", ex);
 		}
 	}
 }
 
 public class Moo
 {
-	private static final Logger log = Logger.getLogger(Moo.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(Moo.class);
 	private static Date created = new Date();
 	
 	private EventLoopGroup group = new NioEventLoopGroup(1);
@@ -133,7 +134,7 @@ public class Moo
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.SEVERE, "Error loading configuration", ex);
+			logger.error("Error loading configuration", ex);
 			System.exit(-1);
 		}
 
@@ -144,12 +145,12 @@ public class Moo
 		}
 		catch (ClassNotFoundException ex)
 		{
-			log.log(Level.SEVERE, "Error loading database driver", ex);
+			logger.error("Error loading database driver", ex);
 			System.exit(-1);
 		}
 		catch (SQLException ex)
 		{
-			log.log(Level.SEVERE, "Error initializing database", ex);
+			logger.error("Error initializing database", ex);
 			System.exit(-1);
 		}
 
@@ -161,25 +162,25 @@ public class Moo
 		}
 		catch (Throwable ex)
 		{
-			log.log(Level.SEVERE, "Error loading protocol", ex);
+			logger.error("Error loading protocol", ex);
 			System.exit(-1);
 		}
 
 		for (String pkg : conf.plugins)
 		{
-			log.log(Level.INFO, "Loading plugin: " + pkg);
+			logger.debug("Loading plugin: {}", pkg);
 			try
 			{
 				Plugin.loadPlugin(pkg);
 			}
 			catch (Throwable ex)
 			{
-				log.log(Level.SEVERE, "Error loading plugin " + pkg, ex);
+				logger.error("Error loading plugin " + pkg, ex);
 				System.exit(-1);
 			}
 		}
 
-		log.log(Level.INFO, "moo v" + Version.getFullVersion() + " starting up");
+		logger.info("moo v{} starting up", Version.getFullVersion());
 
 		for (Event e : Event.getEvents())
 			e.initDatabases();
@@ -197,7 +198,7 @@ public class Moo
 			}
 			catch (Exception ex)
 			{
-				log.log(Level.SEVERE, "Error thrown out of run()", ex);
+				logger.error("Error thrown out of run()", ex);
 			}
 			
 			try

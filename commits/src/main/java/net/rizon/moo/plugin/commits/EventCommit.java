@@ -28,7 +28,8 @@ class EventCommit extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading commits configuration: " + ex.getMessage());
-			commits.log.log(Level.WARNING, "Unable to reload commits configuration", ex);
+			
+			commits.logger.warn("Unable to reload commits configuration", ex);
 		}
 	}
 }

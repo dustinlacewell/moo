@@ -5,17 +5,18 @@ import java.sql.SQLException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class logging extends Plugin
 {
+	private static final Logger logger = LoggerFactory.getLogger(logging.class);
+	
 	private Command ls, sls, wls;
 	private Event e;
-	
-	protected static final Logger log = Logger.getLogger(logging.class.getName());
 	public static LoggingConfiguration conf;
 
 	public logging() throws Exception
@@ -59,7 +60,7 @@ public class logging extends Plugin
 		}
 		catch (SQLException ex)
 		{
-			Logger.getGlobalLogger().log(ex);
+			logger.warn("Unable to log log entry", ex);
 		}
 	}
 }

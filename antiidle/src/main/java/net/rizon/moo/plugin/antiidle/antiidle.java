@@ -2,7 +2,6 @@ package net.rizon.moo.plugin.antiidle;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Message;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
@@ -13,7 +12,6 @@ public class antiidle extends Plugin
 	private Event e;
 	private Message m;
 	public static AntiIdleConfiguration conf;
-	protected static final Logger log = Logger.getLogger(antiidle.class.getName());
 
 	public antiidle() throws Exception
 	{

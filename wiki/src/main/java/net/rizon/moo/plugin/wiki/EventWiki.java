@@ -5,9 +5,13 @@ import java.util.logging.Level;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.wiki.conf.WikiConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventWiki extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventWiki.class);
+	
 	@Override
 	public void onReload(CommandSource source)
 	{
@@ -19,7 +23,8 @@ public class EventWiki extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading wiki configuration: " + ex.getMessage());
-			wiki.log.log(Level.WARNING, "Unable to reload wiki configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

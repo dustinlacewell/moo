@@ -5,15 +5,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.rizon.moo.Logger;
+import net.rizon.moo.logging.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class ConnectorThread extends Thread
 {
-	private static final Logger log = Logger.getLogger(ConnectorThread.class.getName());
+	static final Logger logger = LoggerFactory.getLogger(ConnectorThread.class);
+
 	private static final Pattern vars = Pattern.compile("%[^%]+%");
 
 	private String source;
@@ -52,14 +53,14 @@ final class ConnectorThread extends Thread
 			ProcessBuilder pb = new ProcessBuilder(args.split(" "));
 
 			for (Iterator<String> it = pb.command().iterator(); it.hasNext();)
-				log.log(Level.FINE, "Command part: " + it.next());
+				logger.debug("Command part: {}", it.next());
 
 			proc = pb.start();
 
 			String s = null;
 			try
 			{
-				log.log(Level.FINE, "Running process, getting lines...");
+				logger.debug("Running process, getting lines...");
 				InputStreamReader isr = new InputStreamReader(proc.getInputStream());
 				BufferedReader in = new BufferedReader(isr);
 				if ((s = in.readLine()) != null)
@@ -79,7 +80,7 @@ final class ConnectorThread extends Thread
 			catch (Exception ex)
 			{
 				if (s != null)
-					log.log(Level.INFO, "Exception while processing untrusted proxy scan input: " + s);
+					logger.info("Exception while processing untrusted proxy scan input", ex);
 				throw ex;
 			}
 			finally
@@ -91,7 +92,7 @@ final class ConnectorThread extends Thread
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.INFO, "Exception processing untrusted proxy connection", ex);
+			logger.warn("Exception processing untrusted proxy connection", ex);
 		}
 		finally
 		{
@@ -118,7 +119,7 @@ public final class Connector
 			return;
 
 		ConnectorThread t = new ConnectorThread(source, ip);
-		proxyscan.log.initThread(t);
+		LoggerUtils.initThread(ConnectorThread.logger, t);
 		t.start();
 	}
 }

@@ -1,13 +1,16 @@
 package net.rizon.moo.plugin.tickets;
 
-import java.util.logging.Level;
 
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventTicket extends Event
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventTicket.class);
+	
 	@Override
 	public void onReload(CommandSource source)
 	{
@@ -18,7 +21,8 @@ public class EventTicket extends Event
 		catch (Exception ex)
 		{
 			source.reply("Error reloading tickets configuration: " + ex.getMessage());
-			tickets.log.log(Level.WARNING, "Unable to reload tickets configuration", ex);
+			
+			logger.warn("Unable to reload configuration", ex);
 		}
 	}
 }

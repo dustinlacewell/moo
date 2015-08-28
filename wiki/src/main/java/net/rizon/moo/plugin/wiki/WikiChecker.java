@@ -9,8 +9,9 @@ import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,6 +19,8 @@ import org.w3c.dom.NodeList;
 
 class WikiChecker extends Thread
 {
+	private static final Logger logger = LoggerFactory.getLogger(EventWiki.class);
+	
 	private static final SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -64,7 +67,7 @@ class WikiChecker extends Thread
 		}
 		catch (Exception ex)
 		{
-			Logger.getGlobalLogger().log(Level.WARNING, "Unable to check wiki", ex);
+			logger.warn("Unable to check wiki", ex);
 		}
 		finally
 		{

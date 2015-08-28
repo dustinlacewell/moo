@@ -9,18 +9,18 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.util.logging.Level;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
 import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class Server extends Thread
 {
-	private static final Logger log = Logger.getLogger(Server.class.getName());
+	protected static final Logger logger = LoggerFactory.getLogger(commits.class);
 	private static final int maxPayload = 65535;
 
 	private ServerSocket sock;
@@ -42,7 +42,7 @@ class Server extends Thread
 		}
 		catch (Exception ex)
 		{
-			log.log(Level.SEVERE, "Unable to shutdown commits listener");
+			logger.error("Unable to shutdown commits listener", ex);
 		}
 	}
 
@@ -73,14 +73,14 @@ class Server extends Thread
 							}
 							catch (NumberFormatException ex)
 							{
-								log.log(Level.WARNING, "Invalid content length (" + str + ")");
+								logger.warn("Invalid content length ({})", str);
 								str = null;
 								break;
 							}
 
 							if (len > maxPayload)
 							{
-								log.log(Level.WARNING, "Content length is huge! (" + len + " > " + maxPayload + ")");
+								logger.warn("Content length is huge! ({} > {})", len, maxPayload);
 								str = null;
 								break;
 							}
@@ -195,14 +195,14 @@ class Server extends Thread
 						}
 						else
 						{
-							log.log(Level.WARNING, "Unknown GitLab event, payload was: " + json);
+							logger.warn("Unknown GitLab event, payload was: {}", json);
 						}
 
 					}
 					catch (JsonSyntaxException e)
 					{
-						log.log(Level.WARNING, "Exception while parsing json", e);
-						log.log(Level.WARNING, "Payload: " + json);
+						logger.warn("Exception while parsing json", e);
+						logger.warn("Payload: {}", json);
 
 						// Don't continue; we need to see the fail only once.
 					}
@@ -216,7 +216,7 @@ class Server extends Thread
 				}
 				catch (Exception ex)
 				{
-					log.log(ex);
+					logger.warn("Unable to process commits message", ex);
 				}
 				finally
 				{
@@ -230,7 +230,7 @@ class Server extends Thread
 		}
 		catch (IOException ex)
 		{
-			log.log(ex);
+			logger.warn("Error in commits server", ex);
 		}
 	}
 
@@ -242,7 +242,7 @@ class Server extends Thread
 		}
 		catch (IOException e)
 		{
-			log.log(e);
+			logger.error("Unable to shutdown commits server", e);
 		}
 	}
 }
