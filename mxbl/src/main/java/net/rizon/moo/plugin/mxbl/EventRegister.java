@@ -94,15 +94,7 @@ public class EventRegister extends Event
 		try
 		{
 			HashMap<RecordType, List<String>> map = NS.lookup(mailhost, MX_RECORDS);
-			List<String> list;
-			if (map == null)
-			{
-				list = null;
-			}
-			else
-			{
-				list = map.get(RecordType.MX);
-			}
+			List<String> list = map != null ? map.get(RecordType.MX) : null; // list of mx hostnames
 
 			if (list != null && (!mailHostsOkay(list) || wildcardMatch(mailhost, list)))
 			{
@@ -217,7 +209,7 @@ public class EventRegister extends Event
 	{
 		for (String s : ips)
 		{
-			if (MailIP.isInList(s))
+			if (Mailhost.isInList(s))
 			{
 				return false;
 			}

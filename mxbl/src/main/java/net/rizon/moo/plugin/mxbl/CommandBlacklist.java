@@ -58,16 +58,13 @@ public class CommandBlacklist extends Command
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		String command;
-		if (params.length >= 2)
-		{
-			command = params[1];
-		}
-		else
+		if (params.length < 2)
 		{
 			onHelp(source);
 			return;
 		}
+		
+		String command = params[1];
 
 		if (params.length == 3 && (command.equalsIgnoreCase("a") || command.equalsIgnoreCase("add")))
 		{
@@ -390,7 +387,7 @@ public class CommandBlacklist extends Command
 			else if (StringCompare.wildcardCompare(arg, mailhost.mailhost))
 			{
 				source.reply(mailhost.toString());
-				for (MailIP ip : MailIP.getMailIP(mailhost))
+				for (MailIP ip : mailhost.getIps())
 				{
 					source.reply("|-- " + ip.ip);
 				}
@@ -407,7 +404,7 @@ public class CommandBlacklist extends Command
 
 	private boolean findIp(CommandSource source, String ip)
 	{
-		List<MailIP> ips = MailIP.getAllMailIP(ip);
+		List<MailIP> ips = Mailhost.getAllMailIP(ip);
 		boolean blocked = false;
 		if (ips.isEmpty())
 		{

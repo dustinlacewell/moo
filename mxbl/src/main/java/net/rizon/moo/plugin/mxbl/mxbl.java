@@ -55,6 +55,9 @@ public class mxbl extends Plugin
 		{
 			buildMailhosts(rs, null);
 		}
+		
+		rs.close();
+		ps.close();
 
 		// Load child objects next.
 		ps = Moo.db.prepare("SELECT * FROM `mxbl` WHERE `parent_id` IS NOT NULL");
@@ -65,6 +68,9 @@ public class mxbl extends Plugin
 			Mailhost owner = Mailhost.getMailhost(rs.getInt("parent_id"));
 			buildMailhosts(rs, owner);
 		}
+		
+		rs.close();
+		ps.close();
 
 		blacklist = new CommandBlacklist(this);
 		register = new EventRegister();
@@ -73,10 +79,7 @@ public class mxbl extends Plugin
 	private void buildMailhosts(ResultSet rs, Mailhost mw) throws SQLException
 	{
 		Mailhost m = new Mailhost(rs, mw);
-		if (mw != null)
-		{
-			//mw.setOwner(m);
-		}
+
 		PreparedStatement stmt = Moo.db.prepare("SELECT `ip` FROM `mxbl_ips` WHERE `host` = ?");
 		stmt.setInt(1, rs.getInt("id"));
 		ResultSet rset = stmt.executeQuery();
@@ -84,6 +87,9 @@ public class mxbl extends Plugin
 		{
 			m.addIP(rset.getString("ip"));
 		}
+		
+		rset.close();
+		stmt.close();
 	}
 
 	@Override

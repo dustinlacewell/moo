@@ -3,10 +3,12 @@ package net.rizon.moo.plugin.mxbl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.rizon.moo.Logger;
@@ -18,17 +20,20 @@ import net.rizon.moo.Moo;
  */
 public class Mailhost
 {
-
 	private static final Logger log = Logger.getLogger(Mailhost.class.getName());
+	
 	private static final Map<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
 	private static final Map<Integer, Mailhost> mailhostsIds = new HashMap<Integer, Mailhost>();
+	
+	private List<MailIP> ips = new ArrayList<MailIP>();
 	private final Set<Mailhost> childs = new HashSet<Mailhost>();
-	public final String mailhost;
+	public final String mailhost; // eg gmail.com (hostname mx records are associated with, or wildcard name?)
 	public final String oper;
 	public final Date created;
 	private Mailhost owner;
 	private int id;
 	private final boolean isWildcard;
+	//private List
 
 	public static Mailhost getMailhost(String mailhost)
 	{
@@ -104,6 +109,11 @@ public class Mailhost
 		mailhosts.put(this.mailhost, this);
 	}
 
+	public List<MailIP> getIps()
+	{
+		return ips;
+	}
+
 	public void addIP(String ip)
 	{
 		new MailIP(ip, this);
@@ -175,6 +185,7 @@ public class Mailhost
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("INSERT INTO `mxbl` (`parent_id`, `host`, `oper`, `wildcard`, `created`) VALUES(?, ?, ?, ?, ?)");
+			
 			if (this.owner == null)
 			{
 				stmt.setNull(1, java.sql.Types.INTEGER);
@@ -183,33 +194,35 @@ public class Mailhost
 			{
 				stmt.setInt(1, this.owner.getId());
 			}
+			
 			stmt.setString(2, this.mailhost);
 			stmt.setString(3, this.oper);
 			stmt.setBoolean(4, this.isWildcard);
 			stmt.setLong(5, this.created.getTime());
 			Moo.db.executeUpdate(stmt);
+			
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next())
 			{
 				this.id = rs.getInt(1);
 				mailhostsIds.put(this.id, this);
-				rs.close();
-				stmt.close();
+
 				Moo.db.setAutoCommit(false);
-				stmt = Moo.db.prepare("REPLACE INTO `mxbl_ips` (`host`, `ip`) VALUES(?, ?)");
-				Collection<MailIP> mailIPs = MailIP.getMailIP(this);
-				if (mailIPs != null)
+				PreparedStatement stmt2 = Moo.db.prepare("REPLACE INTO `mxbl_ips` (`host`, `ip`) VALUES(?, ?)");
+				for (MailIP mailIP : this.getIps())
 				{
-					for (MailIP mailIP : MailIP.getMailIP(this))
-					{
-						stmt.setInt(1, this.id);
-						stmt.setString(2, mailIP.ip);
-						stmt.addBatch();
-					}
-					stmt.executeBatch();
+					stmt2.setInt(1, this.id);
+					stmt2.setString(2, mailIP.ip);
+					stmt2.addBatch();
 				}
+				stmt2.executeBatch();
 				Moo.db.setAutoCommit(true);
+				
+				stmt2.close();
 			}
+			
+			rs.close();
+			stmt.close();
 
 		}
 		catch (SQLException ex)
@@ -220,7 +233,6 @@ public class Mailhost
 
 	public void unblock()
 	{
-		MailIP.delete(this);
 		for (Mailhost child : this.childs)
 		{
 			child.unblock();
@@ -237,6 +249,37 @@ public class Mailhost
 			log.log(ex);
 		}
 
-		mailhosts.remove(this.mailhost, this);
+		mailhosts.remove(this.mailhost);
 	}
+	
+	public static boolean isInList(String ip)
+	{
+		return !getAllMailIP(ip).isEmpty();
+	}
+
+	public static List<MailIP> getAllMailIP(String ip)
+	{
+		List<MailIP> list = new ArrayList<MailIP>();
+		for (Mailhost mh : mailhosts.values())
+		{
+			for (MailIP mailIP : mh.getIps())
+			{
+				if (mailIP.ip.equals(ip.trim()))
+				{
+					list.add(mailIP);
+				}
+			}
+		}
+		return list;
+	}
+
+//	public static void delete(MailIP ip)
+//	{
+//		ips.get(ip.getOwner()).remove(ip);
+//	}
+//
+//	public static void delete(Mailhost m)
+//	{
+//		ips.remove(m);
+//	}
 }
