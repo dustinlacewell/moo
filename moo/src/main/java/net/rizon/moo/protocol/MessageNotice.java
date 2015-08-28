@@ -8,7 +8,7 @@ import net.rizon.moo.Message;
 
 public class MessageNotice extends Message
 {
-	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([0-9.]*)\\] (?:\\{[^}]*\\} )?\\[(.*)\\]");
+	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([AaBbCcDdEeFf0-9.:]*)\\] (?:\\{[^}]*\\} )?\\[(.*)\\]");
 
 	public MessageNotice()
 	{

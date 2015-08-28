@@ -40,9 +40,9 @@ final class ConnectorThread extends Thread
 
 				String replacement;
 				if (var.equals("destip"))
-					replacement = this.ip;
+					replacement = this.ip.contains(":") ? "[" + this.ip + "]" : this.ip;
 				else if (var.equals("bindip"))
-					replacement = this.source;
+					replacement = this.source.contains(":") ? "[" + this.source + "]" : this.source;
 				else
 					replacement = "";
 

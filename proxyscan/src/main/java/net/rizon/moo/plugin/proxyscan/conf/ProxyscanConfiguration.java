@@ -8,7 +8,7 @@ public class ProxyscanConfiguration extends Configuration
 {
 	public ProxyscanServerConfiguration server;
 	public ProxyscanConnectConfiguration connect;
-	public String[] bindip;
+	public String[] bindip, bindip6;
 	public int expiry;
 	public String path, arguments, check_string, ban_message, scan_notice;
 	public boolean py_opers;
@@ -30,7 +30,8 @@ public class ProxyscanConfiguration extends Configuration
 		server.validate();
 		connect.validate();
 
-		Validator.validateHostList("Proxyscan bindips", bindip);
+		Validator.validateHostList("Proxyscan bindipsv4", bindip);
+		Validator.validateHostList("Proxyscan bindipsv6", bindip6);
 		Validator.validateNotZero("expiry", expiry);
 		Validator.validatePath("Proxyscan path", path);
 		Validator.validateNullOrNotEmpty("Proxyscan arguments", arguments);

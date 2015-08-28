@@ -13,6 +13,10 @@ bindip:
 - 192.168.1.7
 - 192.168.1.2
 
+bindip6:
+- cafe::
+- b00b::cafe
+
 # Seconds scan results are cached
 expiry: 60
 

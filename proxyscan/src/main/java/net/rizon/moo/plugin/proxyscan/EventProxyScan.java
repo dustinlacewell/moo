@@ -15,7 +15,13 @@ class EventProxyScan extends Event
 
 	private static boolean isReserved(String ip)
 	{
-		return ip.startsWith("10.") || ip.startsWith("127.") || ip.startsWith("172.16.") || ip.startsWith("192.168.") || ip.equals("255.255.255.255");
+		return ip.startsWith("10.") ||
+				ip.startsWith("127.") ||
+				ip.startsWith("172.16.") ||
+				ip.startsWith("192.168.") ||
+				ip.equals("255.255.255.255") ||
+				ip.equals("::") ||
+				ip.equals("::1");
 	}
 
 	private static boolean nickOk(String nick)
@@ -30,8 +36,7 @@ class EventProxyScan extends Event
 	{
 		log.log(Level.FINE, "Client connection from " + ip);
 
-		// We only scan IPv4
-		if (ip.indexOf('.') == -1 || isReserved(ip) || proxyscan.cache.isCached(ip))
+		if (isReserved(ip) || proxyscan.cache.isCached(ip))
 			return;
 
 		if (!nickOk(nick))
@@ -39,7 +44,7 @@ class EventProxyScan extends Event
 
 		log.log(Level.FINE, "Scanning " + ip);
 
-		String[] ips = proxyscan.conf.bindip;
+		String[] ips = ip.contains(":") ? proxyscan.conf.bindip6 : proxyscan.conf.bindip;
 		if (ips.length == 0)
 			return;
 
