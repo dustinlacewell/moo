@@ -1,9 +1,5 @@
 package net.rizon.moo.io;
 
-import net.rizon.moo.io.IRCDecoder;
-import net.rizon.moo.io.LoggingHandler;
-import net.rizon.moo.io.IRCEncoder;
-import net.rizon.moo.io.LineBasedFrameEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
