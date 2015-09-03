@@ -10,6 +10,7 @@ import io.netty.handler.ssl.IdentityCipherSuiteFilter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
+import java.io.File;
 import net.rizon.moo.Moo;
 
 public class ClientInitializer extends ChannelInitializer<SocketChannel>
@@ -30,8 +31,13 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		
 		if (Moo.conf.general.ssl)
 		{
-			SslContext sslCtx = SslContext.newClientContext(null, null, InsecureTrustManagerFactory.INSTANCE, null, null, null, null, null, IdentityCipherSuiteFilter.INSTANCE, null, 16, 10);
-
+			SslContext sslCtx;
+			File certificate = null;
+			if (Moo.conf.general.cert != null)
+			{
+				certificate = new File(Moo.conf.general.cert);
+			}
+			sslCtx = SslContext.newClientContext(certificate, InsecureTrustManagerFactory.INSTANCE, null, IdentityCipherSuiteFilter.INSTANCE, null, 16, 10);
 			pipeline.addLast("ssl", sslCtx.newHandler(ch.alloc()));
 		}
 
