@@ -1,7 +1,9 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.common.eventbus.Subscribe;
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
+import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.core.conf.CoreConfiguration;
 import org.slf4j.Logger;
@@ -9,11 +11,12 @@ import org.slf4j.LoggerFactory;
 
 public class core extends Plugin
 {
+	private static final Logger logger = LoggerFactory.getLogger(core.class);
+	
 	public static CoreConfiguration conf;
 
 	private CommandHelp help;
 	private Command host, plugins, rand, reload, shell, shutdown, status;
-	private Event e;
 
 	public core() throws Exception
 	{
@@ -33,7 +36,7 @@ public class core extends Plugin
 		shutdown = new CommandShutdown(this);
 		status = new CommandStatus(this);
 
-		e = new EventCore();
+		Moo.getEventBus().register(this);
 	}
 
 	@Override
@@ -47,6 +50,22 @@ public class core extends Plugin
 		shell.remove();
 		shutdown.remove();
 		status.remove();
-		e.remove();
+		
+		Moo.getEventBus().unregister(this);
+	}
+	
+	@Subscribe
+	public void onReload(CommandSource source)
+	{
+		try
+		{
+			core.conf = CoreConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			source.reply("Error reloading core configuration: " + ex.getMessage());
+			
+			logger.warn("Unable to reload core configuration", ex);
+		}
 	}
 }

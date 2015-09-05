@@ -6,7 +6,11 @@ import java.util.Iterator;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+import net.rizon.moo.events.OnOLineChange;
+import net.rizon.moo.events.OnXLineAdd;
+import net.rizon.moo.events.OnXLineDel;
 
 /* end of stats */
 public class Message219 extends Message
@@ -66,8 +70,7 @@ public class Message219 extends Message
 
 					if (serv.clines_work.contains(s) == false)
 					{
-						for (Event e : Event.getEvents())
-							e.OnXLineDel(serv, 'C', s);
+						Moo.getEventBus().post(new OnXLineDel(serv, 'C', s));
 					}
 				}
 
@@ -77,8 +80,7 @@ public class Message219 extends Message
 
 					if (serv.clines.contains(s) == false)
 					{
-						for (Event e : Event.getEvents())
-							e.OnXLineAdd(serv, 'C', s);
+						Moo.getEventBus().post(new OnXLineAdd(serv, 'C', s));
 					}
 				}
 			}
@@ -96,10 +98,7 @@ public class Message219 extends Message
 
 					if (serv.olines_work.keySet().contains(s) == false)
 					{
-						for (Event e : Event.getEvents())
-						{
-							e.OnXLineDel(serv, 'O', s);
-						}
+						Moo.getEventBus().post(new OnXLineDel(serv, 'O', s));
 					}
 					else
 					{
@@ -107,8 +106,7 @@ public class Message219 extends Message
 						String newflags = serv.olines_work.get(s);
 						if (oldflags != null && !newflags.equals(oldflags))
 						{
-							for (Event e : Event.getEvents())
-								e.OnOLineChange(serv, s, generateFlagDiff(oldflags, newflags));
+							Moo.getEventBus().post(new OnOLineChange(serv, s, generateFlagDiff(oldflags, newflags)));
 						}
 					}
 				}
@@ -119,10 +117,7 @@ public class Message219 extends Message
 
 					if (serv.olines.keySet().contains(s) == false)
 					{
-						for (Event e : Event.getEvents())
-						{
-							e.OnXLineAdd(serv, 'O', s);
-						}
+						Moo.getEventBus().post(new OnXLineAdd(serv, 'O', s));
 					}
 				}
 			}

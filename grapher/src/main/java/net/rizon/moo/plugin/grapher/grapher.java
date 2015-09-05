@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.grapher;
 
+import com.google.common.eventbus.Subscribe;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,9 @@ import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Server;
+import net.rizon.moo.events.OnReload;
+import net.rizon.moo.events.OnServerCreate;
+import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 import net.rizon.moo.plugin.grapher.graphs.ServerUserGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalOlineGraph;
@@ -18,12 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class grapher extends Plugin
-{	
+{
+	private static final Logger logger = LoggerFactory.getLogger(grapher.class);
+	
 	public static GrapherConfiguration conf;
 
 	protected Map<Server, ServerUserGraph> serverGraphs = new HashMap<Server, ServerUserGraph>();
 
-	private Event e;
 	private ScheduledFuture oline, server, user;
 
 	public grapher() throws Exception
@@ -36,7 +41,7 @@ public class grapher extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		e = new EventGraph(this);
+		Moo.getEventBus().register(this);
 
 		oline = Moo.scheduleAtFixedRate(new TotalOlineGraph(), 1, TimeUnit.MINUTES);
 		server = Moo.scheduleAtFixedRate(new TotalServerGraph(), 1, TimeUnit.MINUTES);
@@ -53,6 +58,41 @@ public class grapher extends Plugin
 		server.cancel(false);
 		user.cancel(false);
 
-		e.remove();
+		Moo.getEventBus().unregister(this);
+	}
+	
+	@Subscribe
+	public void onServerCreate(OnServerCreate evt)
+	{
+		Server serv = evt.getServer();
+		
+		ServerUserGraph g = new ServerUserGraph(serv);
+		ScheduledFuture future = Moo.scheduleAtFixedRate(g, 1, TimeUnit.MINUTES);
+		g.future = future;
+		
+		serverGraphs.put(serv, g);
+	}
+
+	@Subscribe
+	public void onServerDestroy(OnServerDestroy evt)
+	{
+		Server serv = evt.getServer();
+		
+		serverGraphs.remove(serv).future.cancel(false);
+	}
+
+	@Subscribe
+	public void onReload(OnReload evt)
+	{
+		try
+		{
+			grapher.conf = GrapherConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			evt.getSource().reply("Error reloading grapher configuration: " + ex.getMessage());
+			
+			logger.warn("Unable to reload configuration", ex);
+		}
 	}
 }

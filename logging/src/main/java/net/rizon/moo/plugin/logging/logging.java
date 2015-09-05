@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
@@ -16,7 +15,7 @@ public class logging extends Plugin
 	private static final Logger logger = LoggerFactory.getLogger(logging.class);
 	
 	private Command ls, sls, wls;
-	private Event e;
+	private EventLogging e;
 	public static LoggingConfiguration conf;
 
 	public logging() throws Exception
@@ -33,6 +32,7 @@ public class logging extends Plugin
 		wls = new CommandWLogSearch(this);
 
 		e = new EventLogging();
+		Moo.getEventBus().register(e);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class logging extends Plugin
 		sls.remove();
 		wls.remove();
 
-		e.remove();
+		Moo.getEventBus().unregister(e);
 	}
 
 	public static void addEntry(String type, String source, String target, String reason)

@@ -55,7 +55,7 @@ public class random extends Plugin
 	private static final Logger logger = LoggerFactory.getLogger(random.class);
 
 	private Command flood;
-	private Event e;
+	private EventRandom e;
 	private ScheduledFuture dl;
 
 	public random()
@@ -68,7 +68,9 @@ public class random extends Plugin
 	public void start() throws Exception
 	{
 		flood = new CommandFlood(this);
+		
 		e = new EventRandom();
+		Moo.getEventBus().register(e);
 		
 		dl = Moo.scheduleWithFixedDelay(new DeadListChecker(), 30, TimeUnit.SECONDS);
 	}
@@ -77,7 +79,7 @@ public class random extends Plugin
 	public void stop()
 	{
 		flood.remove();
-		e.remove();
+		Moo.getEventBus().unregister(e);
 		dl.cancel(false);
 	}
 

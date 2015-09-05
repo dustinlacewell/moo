@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import com.google.common.eventbus.Subscribe;
 import java.security.cert.X509Certificate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import net.rizon.moo.events.InitDatabases;
+import net.rizon.moo.events.LoadDatabases;
+import net.rizon.moo.events.OnServerCreate;
+import net.rizon.moo.events.OnServerDestroy;
+import net.rizon.moo.events.SaveDatabases;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -51,16 +57,14 @@ public class Server
 			Moo.write("VERSION", this.getName());
 		Moo.write("MAP");
 
-		for (Event e : Event.getEvents())
-			e.onServerCreate(this);
+		Moo.getEventBus().post(new OnServerCreate(this));
 	}
 
 	public void destroy()
 	{
 		logger.debug("Removing server {}", this.getName());
 
-		for (Event e : Event.getEvents())
-			e.onServerDestroy(this);
+		Moo.getEventBus().post(new OnServerDestroy(this));
 
 		try
 		{
@@ -345,10 +349,10 @@ public class Server
 		return s;
 	}
 
-	public static class db extends Event
+	public static class db
 	{
-		@Override
-		protected void initDatabases()
+		@Subscribe
+		public void initDatabases(InitDatabases evt)
 		{
 			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64), `recursive`);");
 			Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `splits_idx` on `splits` (`name`,`when`,`from`)");
@@ -356,8 +360,8 @@ public class Server
 			Moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
 		}
 
-		@Override
-		public void loadDatabases()
+		@Subscribe
+		public void loadDatabases(LoadDatabases evt)
 		{
 			try
 			{
@@ -392,8 +396,8 @@ public class Server
 			}
 		}
 
-		@Override
-		public void saveDatabases()
+		@Subscribe
+		public void saveDatabases(SaveDatabases evt)
 		{
 			try
 			{
@@ -430,7 +434,7 @@ public class Server
 
 	public static void init()
 	{
-		new db();
+		Moo.getEventBus().register(new db());
 
 		Runnable r = new Runnable()
 		{

@@ -9,6 +9,7 @@ import net.rizon.moo.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
+import net.rizon.moo.events.EventMode;
 
 public class MessageMode extends Message
 {
@@ -66,7 +67,6 @@ public class MessageMode extends Message
 
 		handleModes(Moo.channels.find(message[0]), Arrays.copyOfRange(message, 1, message.length));
 
-		for (Event e : Event.getEvents())
-			e.onMode(source, message[0], modes);
+		Moo.getEventBus().post(new EventMode(source, message[0], modes));
 	}
 }

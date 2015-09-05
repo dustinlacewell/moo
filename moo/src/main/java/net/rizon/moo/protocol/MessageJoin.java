@@ -6,6 +6,7 @@ import net.rizon.moo.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
+import net.rizon.moo.events.EventJoin;
 
 public class MessageJoin extends Message
 {
@@ -28,7 +29,6 @@ public class MessageJoin extends Message
 		c.addUser(mem);
 		u.addChannel(mem);
 
-		for (Event e : Event.getEvents())
-			e.onJoin(source, message[0]);
+		Moo.getEventBus().post(new EventJoin(source, message[0]));
 	}
 }

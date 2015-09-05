@@ -1,28 +1,33 @@
 package net.rizon.moo.plugin.watch;
 
+import com.google.common.eventbus.Subscribe;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventAkillDel;
+import net.rizon.moo.events.EventOPMHit;
+import net.rizon.moo.events.InitDatabases;
+import net.rizon.moo.events.LoadDatabases;
+import net.rizon.moo.events.SaveDatabases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EventWatch extends Event
+class EventWatch
 {
 	private static final Logger logger = LoggerFactory.getLogger(EventWatch.class);
 
-	@Override
-	protected void initDatabases()
+	@Subscribe
+	public void initDatabases(InitDatabases evt)
 	{
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `watches` (`nick` varchar(64), `creator` varchar(64), `reason` varchar(64), `created` date, `expires` date, `registered` varchar(64));");
 	}
 
-	@Override
-	public void loadDatabases()
+	@Subscribe
+	public void loadDatabases(LoadDatabases evt)
 	{
 		try
 		{
@@ -50,8 +55,8 @@ class EventWatch extends Event
 		}
 	}
 
-	@Override
-	public void saveDatabases()
+	@Subscribe
+	public void saveDatabases(SaveDatabases evt)
 	{
 		try
 		{
@@ -81,9 +86,11 @@ class EventWatch extends Event
 
 	private static final long ban_time = 86400 * 3 * 1000L; // 3d
 
-	@Override
-	public void onOPMHit(final String nick, final String ip, final String reason)
+	@Subscribe
+	public void onOPMHit(EventOPMHit evt)
 	{
+		String nick = evt.getNick(), ip = evt.getIp(), reason = evt.getReason();
+		
 		for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
 			WatchEntry e = it.next();
@@ -106,9 +113,11 @@ class EventWatch extends Event
 		Moo.privmsgAll(Moo.conf.spam_channels, "Added watch for " + nick + " due to hitting the OPM.");
 	}
 
-	@Override
-	public void onAkillDel(final String setter, final String ip, final String reason)
+	@Subscribe
+	public void onAkillDel(EventAkillDel evt)
 	{
+		String ip = evt.getIp();
+		
 		for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
 		{
 			WatchEntry e = it.next();
