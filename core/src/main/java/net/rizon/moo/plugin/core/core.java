@@ -2,9 +2,9 @@ package net.rizon.moo.plugin.core;
 
 import com.google.common.eventbus.Subscribe;
 import net.rizon.moo.Command;
-import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.core.conf.CoreConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class core extends Plugin
 	}
 	
 	@Subscribe
-	public void onReload(CommandSource source)
+	public void onReload(OnReload evt)
 	{
 		try
 		{
@@ -63,7 +63,7 @@ public class core extends Plugin
 		}
 		catch (Exception ex)
 		{
-			source.reply("Error reloading core configuration: " + ex.getMessage());
+			evt.getSource().reply("Error reloading core configuration: " + ex.getMessage());
 			
 			logger.warn("Unable to reload core configuration", ex);
 		}
