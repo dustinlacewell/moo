@@ -24,8 +24,8 @@ public class Mailhost
 	
 	private static final Map<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
 	private static final Map<Integer, Mailhost> mailhostsIds = new HashMap<Integer, Mailhost>();
-	
-	private List<MailIP> ips = new ArrayList<MailIP>();
+
+	private final List<MailIP> ips = new ArrayList<MailIP>();
 	private final Set<Mailhost> childs = new HashSet<Mailhost>();
 	public final String mailhost; // eg gmail.com (hostname mx records are associated with, or wildcard name?)
 	public final String oper;
@@ -116,7 +116,7 @@ public class Mailhost
 
 	public void addIP(String ip)
 	{
-		new MailIP(ip, this);
+		ips.add(new MailIP(ip, this));
 	}
 
 	public Mailhost getOwner()
@@ -250,6 +250,10 @@ public class Mailhost
 		}
 
 		mailhosts.remove(this.mailhost);
+		for (MailIP ip : ips)
+		{
+			MailIP.deleteIP(ip);
+		}
 	}
 	
 	public static boolean isInList(String ip)

@@ -404,21 +404,14 @@ public class CommandBlacklist extends Command
 
 	private boolean findIp(CommandSource source, String ip)
 	{
-		List<MailIP> ips = Mailhost.getAllMailIP(ip);
-		boolean blocked = false;
-		if (ips.isEmpty())
+		MailIP mailIP = MailIP.getIP(ip);
+		if (mailIP != null)
 		{
-			return blocked;
+			source.reply(ip + " blocked by " + mailIP.getOwner().toString());
+			return true;
 		}
-		else
-		{
-			for (MailIP mailIP : ips)
-			{
-				source.reply(ip + " blocked by " + mailIP.getOwner().toString());
-				blocked = true;
-			}
-		}
-		return blocked;
+		return false;
+
 	}
 
 	private void findBlock(CommandSource source, String domain)

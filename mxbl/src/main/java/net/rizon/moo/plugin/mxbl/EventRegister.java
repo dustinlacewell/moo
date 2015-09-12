@@ -209,7 +209,7 @@ public class EventRegister extends Event
 	{
 		for (String s : ips)
 		{
-			if (Mailhost.isInList(s))
+			if (MailIP.getIP(s.trim()) != null)
 			{
 				return false;
 			}
