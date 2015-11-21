@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.mxbl;
 
+import com.google.common.eventbus.Subscribe;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,10 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.naming.NamingException;
 import net.rizon.moo.Event;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.plugin.mxbl.dns.NS;
 import net.rizon.moo.plugin.mxbl.dns.RecordType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,7 +23,7 @@ import net.rizon.moo.plugin.mxbl.dns.RecordType;
  */
 public class EventRegister extends Event
 {
-	private final static Logger log = Logger.getLogger(EventRegister.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(EventRegister.class);
 	// "%s: '%s' registered by %s@%s (e-mail: %s)", s_NickServ, u->nick, u->username, u->host, (email ? email : "none")
 	private final String nickServRegex = "NickServ";
 	// Assumes nicks are valid (else they can't connect to the server anyway)
@@ -44,18 +47,14 @@ public class EventRegister extends Event
 		IP_RECORDS.add(RecordType.AAAA);
 	}
 
-	@Override
-	public void onPrivmsg(final String source, final String channel, final String message)
+	@Subscribe
+	public void onPrivmsg(EventPrivmsg evt)
 	{
 		boolean isLogChannel = true;
-		if (channel == null)
-		{
-			return;
-		}
 
 		for (String s : Moo.conf.log_channels)
 		{
-			if (channel.equalsIgnoreCase(s))
+			if (evt.getChannel().equalsIgnoreCase(s))
 			{
 				isLogChannel = true;
 				break;
@@ -68,7 +67,7 @@ public class EventRegister extends Event
 			return;
 		}
 
-		Matcher m = p.matcher(message);
+		Matcher m = p.matcher(evt.getMessage());
 
 		// Message does not match a nickname register message.
 		if (!m.matches())
@@ -103,11 +102,11 @@ public class EventRegister extends Event
 		}
 		catch (NamingException ex)
 		{
-			log.log(ex);
+			logger.info("Naming Exception: ", ex.getMessage());
 		}
 		catch (UnknownHostException ex)
 		{
-			log.log(ex);
+			logger.info("Unknown Host Exception: ", ex.getMessage());
 		}
 	}
 

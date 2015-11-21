@@ -74,6 +74,7 @@ public class mxbl extends Plugin
 
 		blacklist = new CommandBlacklist(this);
 		register = new EventRegister();
+		Moo.getEventBus().register(register);
 	}
 
 	private void buildMailhosts(ResultSet rs, Mailhost mw) throws SQLException
@@ -101,7 +102,7 @@ public class mxbl extends Plugin
 		}
 		if (register != null)
 		{
-			register.remove();
+			Moo.getEventBus().unregister(register);
 		}
 	}
 

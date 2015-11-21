@@ -11,8 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.rizon.moo.Logger;
 import net.rizon.moo.Moo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,8 +21,8 @@ import net.rizon.moo.Moo;
  */
 public class Mailhost
 {
-	private static final Logger log = Logger.getLogger(Mailhost.class.getName());
-	
+	private static final Logger logger = LoggerFactory.getLogger(Mailhost.class);
+
 	private static final Map<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
 	private static final Map<Integer, Mailhost> mailhostsIds = new HashMap<Integer, Mailhost>();
 
@@ -227,7 +228,7 @@ public class Mailhost
 		}
 		catch (SQLException ex)
 		{
-			log.log(ex);
+			logger.info("SQL Exception: ", ex.getMessage());
 		}
 	}
 
@@ -246,7 +247,7 @@ public class Mailhost
 		}
 		catch (SQLException ex)
 		{
-			log.log(ex);
+			logger.info("SQL Exception: ", ex.getMessage());
 		}
 
 		mailhosts.remove(this.mailhost);

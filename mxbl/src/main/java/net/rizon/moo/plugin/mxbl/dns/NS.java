@@ -10,7 +10,8 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import net.rizon.moo.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,7 +19,7 @@ import net.rizon.moo.Logger;
  */
 public class NS
 {
-	private static final Logger log = Logger.getLogger(NS.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(NS.class);
 
 	/**
 	 * Looks up the specified {@link RecordType}s for the given hostname.
@@ -81,7 +82,7 @@ public class NS
 			}
 			catch (NamingException ex)
 			{
-				log.log(ex);
+				logger.info("Naming Exception: ", ex.getMessage());
 			}
 		}
 		return list;
