@@ -2,7 +2,7 @@ package net.rizon.moo.conf;
 
 public class General extends Configuration
 {
-	public String nick, ident, realname, server, host, server_pass;
+	public String nick, ident, realname, server, host, server_pass, cert, key;
 	public Protocol protocol;
 	public Oper oper;
 	public NickServ nickserv;

@@ -11,6 +11,8 @@ general:
   server: 192.168.1.2
   port: 6667
   ssl: false
+  cert: certs/moo.cer
+  key: certs/moo.pkcs
   protocol: PLEXUS
   # Optional settings
   #host: 127.0.0.1
