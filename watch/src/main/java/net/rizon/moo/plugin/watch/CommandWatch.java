@@ -149,12 +149,13 @@ class CommandWatch extends Command
 			try
 			{
 				WatchEntry e = watch.watches.get(Integer.parseInt(params[2]) - 1);
-				if (watch.watches.remove(e)) {
+				if (watch.watches.remove(e))
+				{
 					source.reply("Watch for " + e.nick + " removed");
 					return;
 				}
 			}
-			catch (NumberFormatException|IndexOutOfBoundsException ex) {}
+			catch (NumberFormatException | IndexOutOfBoundsException ex) { }
 
 			source.reply("No watch for " + params[2] + " found");
 		}
