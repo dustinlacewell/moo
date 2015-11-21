@@ -9,7 +9,6 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.ssl.IdentityCipherSuiteFilter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleStateHandler;
 import java.io.ByteArrayInputStream;
@@ -46,24 +45,31 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		if (Moo.conf.general.ssl)
 		{
 			SslContext sslCtx;
-			File certificate = null;
+			
 			if (Moo.conf.general.cert != null && Moo.conf.general.key != null)
 			{
 				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+				
 				byte[] certBytes = Files.readAllBytes(new File(Moo.conf.general.cert).toPath());
 				byte[] keyBytes = Files.readAllBytes(new File(Moo.conf.general.key).toPath());
+				
 				X509Certificate cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certBytes));
 				PrivateKey key = (PrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(keyBytes));
+				
 				KeyStore ks = KeyStore.getInstance("JKS");
 				ks.load(null);
 				ks.setCertificateEntry("moo", cert);
 				ks.setKeyEntry("moo", key, "".toCharArray(), new Certificate[] { cert });
+				
 				KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 				kmf.init(ks, "".toCharArray());
+				
 				SSLContext clientContext = SSLContext.getInstance("TLS");
 				clientContext.init(kmf.getKeyManagers(), InsecureTrustManagerFactory.INSTANCE.getTrustManagers(), null);
+				
 				SSLEngine engine = clientContext.createSSLEngine();
 				engine.setUseClientMode(true);
+				
 				pipeline.addLast("ssl", new SslHandler(engine));
 			}
 			else
