@@ -16,7 +16,7 @@ class Voicer implements Runnable
 	@Override
 	public void run()
 	{
-		EventAntiidle.toBeVoiced.remove(this);
+		antiidle.toBeVoiced.remove(this);
 		Moo.write("USERHOST", ai.nick);
 	}
 }

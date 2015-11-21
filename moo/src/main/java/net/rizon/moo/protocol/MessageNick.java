@@ -3,6 +3,7 @@ package net.rizon.moo.protocol;
 import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventNickChange;
 
 public class MessageNick extends Message
 {
@@ -17,8 +18,7 @@ public class MessageNick extends Message
 		if (message.length != 1)
 			return;
 
-		for (Event e : Event.getEvents())
-			e.onNick(source, message[0]);
+		Moo.getEventBus().post(new EventNickChange(source, message[0]));
 
 		Moo.users.renameUser(Moo.users.find(source), message[0]);
 	}

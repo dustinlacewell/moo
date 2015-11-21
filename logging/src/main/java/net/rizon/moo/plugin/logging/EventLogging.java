@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.logging;
 
+import com.google.common.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.PreparedStatement;
@@ -13,18 +14,26 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
+import net.rizon.moo.events.EventNotice;
+import net.rizon.moo.events.EventPrivmsg;
+import net.rizon.moo.events.EventWallops;
+import net.rizon.moo.events.InitDatabases;
+import net.rizon.moo.events.OnOLineChange;
+import net.rizon.moo.events.OnServerLink;
+import net.rizon.moo.events.OnServerSplit;
+import net.rizon.moo.events.OnXLineAdd;
+import net.rizon.moo.events.OnXLineDel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EventLogging extends Event
+class EventLogging
 {
 	private static final Logger logger = LoggerFactory.getLogger(EventLogging.class);
 		
-	@Override
-	protected void initDatabases()
+	@Subscribe
+	public void initDatabases(InitDatabases evt)
 	{
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `log` (`created` DATE DEFAULT CURRENT_TIMESTAMP, `type`, `source`, `target`, `reason`);");
 		Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `log_created_idx` on `log` (`created`)");
@@ -34,9 +43,11 @@ class EventLogging extends Event
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `wallops_logs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` DATETIME DEFAULT CURRENT_TIMESTAMP, `type`, `source`, `message`);");
 	}
 
-	@Override
-	public void onPrivmsg(final String source, final String channel, final String message)
+	@Subscribe
+	public void onPrivmsg(EventPrivmsg evt)
 	{
+		String channel = evt.getChannel(), message = evt.getMessage();
+		
 		if (!Moo.conf.logChannelsContains(channel))
 			return;
 
@@ -67,9 +78,11 @@ class EventLogging extends Event
 
 	private static final Pattern killPattern = Pattern.compile("Received KILL message for ([^ ]+)\\. From ([^ ]+) Path: [^ ]+ \\((.*)\\)");
 
-	@Override
-	public void onNotice(final String source, final String channel, final String message)
+	@Subscribe
+	public void onNotice(EventNotice evt)
 	{
+		String source = evt.getSource(), message = evt.getMessage();
+		
 		if (source.indexOf('.') != -1)
 		{
 			Matcher m = killPattern.matcher(message);
@@ -115,9 +128,13 @@ class EventLogging extends Event
 			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " " + message);
 	}
 
-	@Override
-	public void OnXLineAdd(Server serv, char type, final String value)
+	@Subscribe
+	public void OnXLineAdd(OnXLineAdd evt)
 	{
+		Server serv = evt.getServer();
+		char type = evt.getType();
+		String value = evt.getValue();
+		
 		NotifyXLineChanges(serv, type, "has a new " + type + "-Line for " + value + (type == 'O' ? " with flags " + serv.olines_work.get(value) : ""));
 
 		try
@@ -137,9 +154,13 @@ class EventLogging extends Event
 		}
 	}
 
-	@Override
-	public void OnXLineDel(Server serv, char type, final String value)
+	@Subscribe
+	public void OnXLineDel(OnXLineDel evt)
 	{
+		Server serv = evt.getServer();
+		char type = evt.getType();
+		String value = evt.getValue();
+		
 		NotifyXLineChanges(serv, type, "removed " + type + "-Line for " + value);
 
 		try
@@ -159,9 +180,13 @@ class EventLogging extends Event
 		}
 	}
 
-	@Override
-	public void OnOLineChange(final Server serv, final String oper, final String diff)
+	@Subscribe
+	public void OnOLineChange(OnOLineChange evt)
 	{
+		Server serv = evt.getServer();
+		String oper = evt.getOper();
+		String diff = evt.getDiff();
+		
 		NotifyXLineChanges(serv, 'O', "changed flags for " + oper + ": " + diff);
 
 		try
@@ -181,9 +206,11 @@ class EventLogging extends Event
 		}
 	}
 
-	@Override
-	public void onServerLink(Server serv, Server to)
+	@Subscribe
+	public void onServerLink(OnServerLink evt)
 	{
+		Server serv = evt.getServer(), to = evt.getTo();
+		
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
@@ -200,9 +227,11 @@ class EventLogging extends Event
 		}
 	}
 
-	@Override
-	public void onServerSplit(Server serv, Server from)
+	@Subscribe
+	public void onServerSplit(OnServerSplit evt)
 	{
+		Server serv = evt.getServer(), from = evt.getFrom();
+		
 		try
 		{
 			PreparedStatement stmt = Moo.db.prepare("INSERT INTO log (`type`, `source`, `target`) VALUES (?, ?, ?)");
@@ -250,9 +279,11 @@ class EventLogging extends Event
 		}
 	}
 
-	@Override
-	public void onWallops(final String source, final String message)
+	@Subscribe
+	public void onWallops(EventWallops evt)
 	{
+		String source = evt.getSource(), message = evt.getMessage();
+		
 		wallopsLog(source, message);
 		
 		if (message.startsWith("OPERWALL") == false && source.indexOf('@') != -1)

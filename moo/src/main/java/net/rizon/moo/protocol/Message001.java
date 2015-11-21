@@ -5,6 +5,7 @@ import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Server;
 import net.rizon.moo.User;
+import net.rizon.moo.events.OnConnect;
 
 public class Message001 extends Message
 {
@@ -39,7 +40,6 @@ public class Message001 extends Message
 			Moo.write("VERSION", s.getName());
 		}
 
-		for (Event e : Event.getEvents())
-			e.onConnect();
+		Moo.getEventBus().post(new OnConnect());
 	}
 }

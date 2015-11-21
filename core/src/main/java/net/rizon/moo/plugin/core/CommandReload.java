@@ -1,14 +1,13 @@
 package net.rizon.moo.plugin.core;
 
-import java.util.logging.Level;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.conf.Configuration;
+import net.rizon.moo.events.OnReload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +34,8 @@ class CommandReload extends Command
 		try
 		{
 			Config c = Configuration.load("moo.yml", Config.class);
-			for (Event e : Event.getEvents())
-				e.onReload(source);
+			
+			Moo.getEventBus().post(new OnReload(source));
 
 			Moo.conf = c;
 			source.reply("Successfully reloaded configuration");

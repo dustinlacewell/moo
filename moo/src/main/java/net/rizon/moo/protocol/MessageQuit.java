@@ -4,6 +4,7 @@ import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
+import net.rizon.moo.events.EventQuit;
 
 
 public class MessageQuit extends Message
@@ -16,8 +17,7 @@ public class MessageQuit extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		for (Event e : Event.getEvents())
-			e.onQuit(source, message[0]);
+		Moo.getEventBus().post(new EventQuit(source, message[0]));
 
 		User u = Moo.users.find(source);
 		if (u != null)

@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import com.google.common.eventbus.EventBus;
 import net.rizon.moo.io.ClientInitializer;
 import net.rizon.moo.io.IRCMessage;
 import io.netty.bootstrap.Bootstrap;
@@ -19,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import net.rizon.moo.conf.Config;
+import net.rizon.moo.events.InitDatabases;
+import net.rizon.moo.events.LoadDatabases;
+import net.rizon.moo.events.OnShutdown;
+import net.rizon.moo.events.SaveDatabases;
 import net.rizon.moo.protocol.ProtocolPlugin;
 
 class DatabaseTimer implements Runnable
@@ -26,8 +31,7 @@ class DatabaseTimer implements Runnable
 	@Override
 	public void run()
 	{
-		for (Event e : Event.getEvents())
-			e.saveDatabases();
+		Moo.getEventBus().post(new SaveDatabases());
 	}
 }
 
@@ -62,6 +66,8 @@ public class Moo
 	
 	private EventLoopGroup group = new NioEventLoopGroup(1);
 	private io.netty.channel.Channel channel;
+	
+	public static EventBus eventBus = new EventBus();
 
 	public static Config conf = null;
 	public static Database db = null;
@@ -182,11 +188,9 @@ public class Moo
 
 		logger.info("moo v{} starting up", Version.getFullVersion());
 
-		for (Event e : Event.getEvents())
-			e.initDatabases();
+		eventBus.post(new InitDatabases());
 
-		for (Event e : Event.getEvents())
-			e.loadDatabases();
+		eventBus.post(new LoadDatabases());
 		
 		scheduleWithFixedDelay(new DatabaseTimer(), 1, TimeUnit.MINUTES);
 
@@ -211,11 +215,9 @@ public class Moo
 			}
 		}
 		
-		for (Event e : Event.getEvents())
-			e.saveDatabases();
+		eventBus.post(new SaveDatabases());
 
-		for (Event e : Event.getEvents())
-			e.onShutdown();
+		eventBus.post(new OnShutdown());
 
 		db.shutdown();
 
@@ -338,6 +340,11 @@ public class Moo
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
 	{
 		return moo.group.schedule(r, t, unit);
+	}
+	
+	public static EventBus getEventBus()
+	{
+		return eventBus;
 	}
 
 	public static void write(String command, Object... args)

@@ -26,7 +26,7 @@ class CommandWatch extends Command
 		source.notice("Syntax:");
 		source.notice(this.getCommandName() + " LIST -- shows the watch list");
 		source.notice(this.getCommandName() + " ADD <nick> [+expiry] [+C] <reason> -- adds an entry to the watch list");
-		source.notice(this.getCommandName() + " DEL <nick> -- deletes an entry from the watch list");
+		source.notice(this.getCommandName() + " DEL <nick/num> -- deletes an entry from the watch list");
 	}
 
 	@Override
@@ -145,6 +145,17 @@ class CommandWatch extends Command
 					return;
 				}
 			}
+
+			try
+			{
+				WatchEntry e = watch.watches.get(Integer.parseInt(params[2]) - 1);
+				if (watch.watches.remove(e))
+				{
+					source.reply("Watch for " + e.nick + " removed");
+					return;
+				}
+			}
+			catch (NumberFormatException | IndexOutOfBoundsException ex) { }
 
 			source.reply("No watch for " + params[2] + " found");
 		}

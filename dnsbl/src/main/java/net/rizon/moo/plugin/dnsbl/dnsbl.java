@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
@@ -24,6 +25,8 @@ public class dnsbl extends Plugin
 		this.cache = new ResultCache();
 		this.command = new CommandDnsbl(this, this.blacklistManager, this.cache);
 		this.event = new EventDnsblCheck(this.blacklistManager, this.cache);
+		
+		Moo.getEventBus().register(event);
 
 		DnsblChecker.load(conf);
 		this.cache.load(conf.cache);
@@ -34,6 +37,6 @@ public class dnsbl extends Plugin
 	public void stop()
 	{
 		this.command.remove();
-		this.event.remove();
+		Moo.getEventBus().unregister(event);
 	}
 }

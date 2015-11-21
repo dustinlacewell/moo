@@ -6,6 +6,7 @@ import net.rizon.moo.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
+import net.rizon.moo.events.EventKick;
 
 public class MessageKick extends Message
 {
@@ -32,7 +33,6 @@ public class MessageKick extends Message
 			}
 		}
 
-		for (Event e : Event.getEvents())
-			e.onKick(source, message[1], message[0]);
+		Moo.getEventBus().post(new EventKick(source, message[1], message[0]));
 	}
 }
