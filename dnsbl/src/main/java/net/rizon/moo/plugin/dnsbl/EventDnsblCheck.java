@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.common.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,18 +10,21 @@ import java.util.logging.Level;
 
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Event;
+import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventClientConnect;
+import net.rizon.moo.events.EventDNSBLHit;
+import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EventDnsblCheck extends Event
+class EventDnsblCheck
 {
 	private static final Logger logger = LoggerFactory.getLogger(EventDnsblCheck.class);
 	
 	private BlacklistManager rules;
 	private ResultCache cache;
-
 
 	public EventDnsblCheck(BlacklistManager rules, ResultCache cache)
 	{
@@ -34,7 +38,7 @@ class EventDnsblCheck extends Event
 			return;
 
 		// Unique actions can only be executed once.
-		Set<String> takenActions = new HashSet<String>();
+		Set<String> takenActions = new HashSet<>();
 
 		// Iterate over results and execute all the actions.
 		// We have multiple DNSBL server results for an IP...
@@ -42,8 +46,8 @@ class EventDnsblCheck extends Event
 			// Each result contains multiple DNS responses... (e.g. multiple infractions or categories)
 			for (Map.Entry<String, List<Action>> dnsblResult : result.getActions().entrySet())
 			{
-				for (Event e : Event.getEvents())
-					e.onDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey());
+				// XXX this is calling event from a thread
+				Moo.getEventBus().post(new EventDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey()));
 
 				// And those responses each have a set of actions.
 				for (Action a : dnsblResult.getValue())
@@ -56,9 +60,11 @@ class EventDnsblCheck extends Event
 			}
 	}
 
-	@Override
-	public void onClientConnect(final String nick, final String ident, final String ip, final String realname)
+	@Subscribe
+	public void onClientConnect(EventClientConnect evt)
 	{
+		final String ip = evt.getIp(), nick = evt.getNick();
+		
 		ResultCache.Entry entry = this.cache.hasEntry(ip);
 		if (entry != null)
 		{
@@ -95,8 +101,8 @@ class EventDnsblCheck extends Event
 		checker.runAsynchronous();
 	}
 
-	@Override
-	public void onReload(CommandSource source)
+	@Subscribe
+	public void onReload(OnReload evt)
 	{
 		try
 		{
@@ -109,7 +115,7 @@ class EventDnsblCheck extends Event
 		}
 		catch (Exception ex)
 		{
-			source.reply("Error reloading dnsbl configuration: " + ex.getMessage());
+			evt.getSource().reply("Error reloading dnsbl configuration: " + ex.getMessage());
 			
 			logger.warn("Unable to reload dnsbl configuration", ex);
 		}

@@ -1,7 +1,6 @@
 package net.rizon.moo.plugin.fun;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.conf.Protocol;
@@ -9,7 +8,7 @@ import net.rizon.moo.conf.Protocol;
 public class fun extends Plugin
 {
 	private Command rt;
-	private Event e;
+	private EventFun e;
 
 	public fun() throws Exception
 	{
@@ -23,6 +22,7 @@ public class fun extends Plugin
 		{
 			rt = new CommandRizonTime(this);
 			e = new EventFun();
+			Moo.getEventBus().register(e);
 		}
 	}
 
@@ -32,6 +32,6 @@ public class fun extends Plugin
 		if (rt != null)
 			rt.remove();
 		if (e != null)
-			e.remove();
+			Moo.getEventBus().unregister(e);
 	}
 }

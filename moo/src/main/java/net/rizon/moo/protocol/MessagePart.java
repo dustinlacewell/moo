@@ -1,11 +1,11 @@
 package net.rizon.moo.protocol;
 
 import net.rizon.moo.Channel;
-import net.rizon.moo.Event;
 import net.rizon.moo.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.User;
+import net.rizon.moo.events.EventPart;
 
 public class MessagePart extends Message
 {
@@ -32,7 +32,6 @@ public class MessagePart extends Message
 			}
 		}
 
-		for (Event e : Event.getEvents())
-			e.onPart(source, message[0]);
+		Moo.getEventBus().post(new EventPart(source, message[0]));
 	}
 }

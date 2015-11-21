@@ -1,14 +1,15 @@
 package net.rizon.moo.plugin.fun;
 
-import java.util.Date;
+import com.google.common.eventbus.Subscribe;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventPrivmsg;
+import net.rizon.moo.events.EventQuit;
 
 class TimedKill implements Runnable
 {
@@ -27,7 +28,7 @@ class TimedKill implements Runnable
 	}
 }
 
-class EventFun extends Event
+class EventFun
 {
 	private static final Pattern killPattern = Pattern.compile("Killed \\(([^ ]*) \\(([^)]*)\\)\\)");
 
@@ -35,9 +36,11 @@ class EventFun extends Event
 			welcome = new HashMap<String, Integer>(),
 			gratz = new HashMap<String, Integer>();
 
-	@Override
-	public void onPrivmsg(final String source, final String channel, final String message)
+	@Subscribe
+	public void onPrivmsg(EventPrivmsg evt)
 	{
+		String message = evt.getMessage(), source = evt.getSource(), channel = evt.getChannel();
+		
 		if (message.startsWith("\1ACTION pets " + Moo.me.getNick()))
 			Moo.privmsg(channel, "\1ACTION moos\1");
 		else if (message.startsWith("\1ACTION milks " + Moo.me.getNick()))
@@ -82,9 +85,11 @@ class EventFun extends Event
 		}
 	}
 
-	@Override
-	public void onQuit(final String source, final String reason)
+	@Subscribe
+	public void onQuit(EventQuit evt)
 	{
+		String reason = evt.getReason(), source = evt.getSource();
+		
 		Matcher m = killPattern.matcher(reason);
 		if (m.find())
 		{

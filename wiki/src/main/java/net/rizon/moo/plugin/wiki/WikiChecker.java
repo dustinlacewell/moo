@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 
 class WikiChecker extends Thread
 {
-	private static final Logger logger = LoggerFactory.getLogger(EventWiki.class);
+	private static final Logger logger = LoggerFactory.getLogger(WikiChecker.class);
 	
 	private static final SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
