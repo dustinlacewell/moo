@@ -52,6 +52,11 @@ public class EventRegister extends Event
 	{
 		boolean isLogChannel = true;
 
+		if (evt.getChannel() == null)
+		{
+			return;
+		}
+
 		for (String s : Moo.conf.log_channels)
 		{
 			if (evt.getChannel().equalsIgnoreCase(s))
