@@ -19,8 +19,8 @@ import net.rizon.moo.plugin.mxbl.dns.RecordType;
 public class CommandBlacklist extends Command
 {
 
-	private final List<RecordType> MX_RECORDS = new ArrayList<RecordType>();
-	private final List<RecordType> IP_RECORDS = new ArrayList<RecordType>();
+	private final List<RecordType> MX_RECORDS = new ArrayList<>();
+	private final List<RecordType> IP_RECORDS = new ArrayList<>();
 
 	public CommandBlacklist(Plugin pkg)
 	{

@@ -37,8 +37,8 @@ public class EventRegister extends Event
 		+ usernameRegex + ")@(" + hostnameRegex + ") \\(e-mail: [^\\s]+?@(" + emailHostRegex + ")\\)";
 
 	private final Pattern p = Pattern.compile(registerRegex);
-	private final List<RecordType> MX_RECORDS = new ArrayList<RecordType>();
-	private final List<RecordType> IP_RECORDS = new ArrayList<RecordType>();
+	private final List<RecordType> MX_RECORDS = new ArrayList<>();
+	private final List<RecordType> IP_RECORDS = new ArrayList<>();
 
 	public EventRegister()
 	{

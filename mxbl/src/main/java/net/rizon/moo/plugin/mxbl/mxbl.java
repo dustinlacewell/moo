@@ -15,7 +15,6 @@ import net.rizon.moo.Plugin;
  */
 public class mxbl extends Plugin
 {
-
 	private Command blacklist;
 	private Event register;
 

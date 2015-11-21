@@ -23,18 +23,17 @@ public class Mailhost
 {
 	private static final Logger logger = LoggerFactory.getLogger(Mailhost.class);
 
-	private static final Map<String, Mailhost> mailhosts = new HashMap<String, Mailhost>();
-	private static final Map<Integer, Mailhost> mailhostsIds = new HashMap<Integer, Mailhost>();
+	private static final Map<String, Mailhost> mailhosts = new HashMap<>();
+	private static final Map<Integer, Mailhost> mailhostsIds = new HashMap<>();
 
-	private final List<MailIP> ips = new ArrayList<MailIP>();
-	private final Set<Mailhost> childs = new HashSet<Mailhost>();
+	private final List<MailIP> ips = new ArrayList<>();
+	private final Set<Mailhost> childs = new HashSet<>();
 	public final String mailhost; // eg gmail.com (hostname mx records are associated with, or wildcard name?)
 	public final String oper;
 	public final Date created;
 	private Mailhost owner;
 	private int id;
 	private final boolean isWildcard;
-	//private List
 
 	public static Mailhost getMailhost(String mailhost)
 	{

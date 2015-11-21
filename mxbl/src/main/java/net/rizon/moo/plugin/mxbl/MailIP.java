@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class MailIP
 {
-	private static final Map<String, MailIP> ips = new HashMap<String, MailIP>();
+	private static final Map<String, MailIP> ips = new HashMap<>();
 	public final String ip;
 	private final Mailhost owner;
 
