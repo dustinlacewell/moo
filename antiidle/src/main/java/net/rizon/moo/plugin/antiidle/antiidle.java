@@ -143,7 +143,7 @@ public class antiidle extends Plugin
 	@Subscribe
 	public void onQuit(EventQuit evt)
 	{
-		String source = evt.getReason();
+		String source = evt.getSource();
 			
 		AntiIdleEntry.removeTimerFor(source);
 	}
