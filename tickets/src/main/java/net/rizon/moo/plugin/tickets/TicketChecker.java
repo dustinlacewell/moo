@@ -20,7 +20,7 @@ class TicketChecker extends Thread
 	private static final Logger logger = LoggerFactory.getLogger(TicketChecker.class);
 	
 	private static final int reminder = 30; // minutes
-	private static final Pattern pattern = Pattern.compile("<tr><td><a href=\"/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
+	private static final Pattern pattern = Pattern.compile("<tr(?: class=\"closed\"){0,1}><td><a href=\"/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
 	private static boolean firstRun = true;
 
 	@Override
@@ -58,6 +58,8 @@ class TicketChecker extends Thread
 							date = m.group(5), state = m.group(6), lastReplier = m.group(7);
 
 					int ticket;
+					TicketState ticketState = TicketState.create(state);
+
 					try
 					{
 						ticket = Integer.parseInt(id);
@@ -74,16 +76,28 @@ class TicketChecker extends Thread
 					{
 						message = "new ticket";
 					}
-					else if (!t.lastReplier.equalsIgnoreCase(lastReplier))
+					else if (ticketState == TicketState.RESOLVED && t.state != TicketState.RESOLVED)
+					{
+						// Notify overlords that ticket has been resolved.
+						message = "resolved by " + lastReplier;
+					}
+					else if (ticketState == TicketState.CLOSED && t.state != TicketState.CLOSED)
+					{
+						// Notify overlords that ticket has been closed.
+						message = "closed by " + lastReplier;
+					}
+					else if (ticketState != TicketState.CLOSED && t.state == TicketState.CLOSED)
+					{
+						// Notify overlords that ticket has been reopened.
+						message = "reopened by " + lastReplier;
+					}
+					else if ((ticketState == TicketState.PENDING || ticketState == TicketState.IN_PROGRESS) && !t.lastReplier.equalsIgnoreCase(lastReplier))
 					{
 						message = "new reply from " + lastReplier;
 						t.lastReplier = lastReplier;
 					}
-					else if (t.nextReminder.before(now))
+					else if (ticketState == TicketState.PENDING && t.nextReminder.before(now))
 					{
-						if (!state.equals("Pending"))
-							continue;
-
 						if (reminded++ > 0)
 							continue;
 
@@ -92,7 +106,9 @@ class TicketChecker extends Thread
 					}
 
 					if (message == null)
+					{
 						continue;
+					}
 
 					message = "#" + id + ": " + message + " (" + date + ") :: " + type + " :: " + ip + " :: " + contact + " :: http://abuse.rizon.net/" + id;
 
@@ -104,6 +120,7 @@ class TicketChecker extends Thread
 						t = new Ticket();
 						t.lastReplier = lastReplier;
 						t.nextReminder = new Date(now.getTime() + (reminder * 60 * 1000));
+						t.state = ticketState;
 						tickets.tickets.put(ticket, t);
 					}
 				}
