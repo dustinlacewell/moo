@@ -20,7 +20,7 @@ public class tickets extends Plugin
 	private static final Logger logger = LoggerFactory.getLogger(tickets.class);
 
 	private ScheduledFuture ticketTimer;
-	protected static HashMap<Integer, Ticket> tickets = new HashMap<Integer, Ticket>();
+	static HashMap<Integer, Ticket> tickets = new HashMap<Integer, Ticket>();
 	public static TicketsConfiguration conf;
 
 	public tickets() throws Exception
