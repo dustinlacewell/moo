@@ -90,4 +90,12 @@ public class watch extends Plugin
 			logger.warn("unable to remove watch " + e, ex);
 		}
 	}
+	
+	public static WatchEntry find(String nick)
+	{
+		for (WatchEntry e : watches)
+			if (e.nick.equals(nick))
+				return e;
+		return null;
+	}
 }

@@ -17,10 +17,8 @@ class WatchReply extends Message
 		WatchMonitor.request--;
 
 		if (message.length > 1)
-			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
+			for (WatchEntry e : watch.watches)
 			{
-				WatchEntry e = it.next();
-
 				for (final String nick : message[1].split(" "))
 					if (e.nick.equalsIgnoreCase(nick))
 					{
@@ -31,10 +29,8 @@ class WatchReply extends Message
 
 		if (WatchMonitor.request == 0)
 		{
-			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
+			for (WatchEntry e : watch.watches)
 			{
-				WatchEntry e = it.next();
-
 				if (e.handled == false)
 					e.handleOffline();
 			}

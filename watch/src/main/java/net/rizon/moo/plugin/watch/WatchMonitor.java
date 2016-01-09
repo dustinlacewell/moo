@@ -24,6 +24,7 @@ class WatchMonitor implements Runnable
 
 			if (e.expires.before(now))
 			{
+				watch.remove(e);
 				it.remove();
 				continue;
 			}

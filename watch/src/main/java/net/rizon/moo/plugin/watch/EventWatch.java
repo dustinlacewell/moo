@@ -99,6 +99,7 @@ class EventWatch
 
 			Moo.privmsgAll(Moo.conf.spam_channels, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
 
+			watch.remove(e);
 			it.remove();
 		}
 	}

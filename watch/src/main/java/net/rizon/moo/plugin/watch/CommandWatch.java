@@ -35,38 +35,31 @@ class CommandWatch extends Command
 		if (params.length <= 1 || params[1].equalsIgnoreCase("list"))
 		{
 			if (watch.watches.isEmpty())
-				source.reply("The watch list is empty");
-			else
 			{
-				Date now = new Date();
-				int count = 0;
+				source.reply("The watch list is empty");
+				return;
+			}
+			
+			Date now = new Date();
+			int count = 0;
 
-				for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
+			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
+			{
+				WatchEntry e = it.next();
+
+				if (e.expires.before(now))
 				{
-					WatchEntry e = it.next();
-
-					if (e.expires.before(now))
-					{
-						it.remove();
-						continue;
-					}
-
-					source.notice("" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
+					watch.remove(e);
+					it.remove();
+					continue;
 				}
+
+				source.notice("" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
 			}
 		}
 		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.adminChannelsContains(source.getTargetName()) || Moo.conf.operChannelsContains(source.getTargetName())))
 		{
-			WatchEntry we = null;
-			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
-			{
-				WatchEntry e = it.next();
-				if (e.nick.equalsIgnoreCase(params[2]))
-				{
-					we = e;
-					break;
-				}
-			}
+			WatchEntry we = watch.find(params[2]);
 
 			boolean add = false;
 			if (we == null)
@@ -144,6 +137,7 @@ class CommandWatch extends Command
 				WatchEntry e = it.next();
 				if (e.nick.equalsIgnoreCase(params[2]))
 				{
+					watch.remove(e);
 					it.remove();
 					source.reply("Watch for " + e.nick + " removed");
 					return;
