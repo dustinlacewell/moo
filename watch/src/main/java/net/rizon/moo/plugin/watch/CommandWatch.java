@@ -127,11 +127,15 @@ class CommandWatch extends Command
 
 			source.reply("Watch added for " + we.nick + " to expire on " + we.expires);
 			Moo.operwall(we.creator + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
+			
 			if (Plugin.findPlugin("logging") != null)
 				logging.addEntry("WATCH", we.creator, we.nick, reason);
+			
+			// does insert or replace
+			watch.insert(we);
 
 			if (add)
-				watch.watches.push(we);
+				watch.watches.add(we);
 		}
 		else if (params[1].equals("del") && params.length > 2)
 		{
@@ -149,6 +153,7 @@ class CommandWatch extends Command
 			try
 			{
 				WatchEntry e = watch.watches.get(Integer.parseInt(params[2]) - 1);
+				watch.remove(e);
 				if (watch.watches.remove(e))
 				{
 					source.reply("Watch for " + e.nick + " removed");
