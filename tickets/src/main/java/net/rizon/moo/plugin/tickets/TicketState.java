@@ -29,13 +29,17 @@ enum TicketState
 	 */
 	public static TicketState create(String text)
 	{
-		try
+		if (text != null)
 		{
-			return TicketState.valueOf(text.toUpperCase());
+			for (TicketState t : TicketState.values())
+			{
+				if (text.equalsIgnoreCase(t.text))
+				{
+					return t;
+				}
+			}
 		}
-		catch (IllegalArgumentException ex)
-		{
-			return UNKNOWN;
-		}
+
+		return UNKNOWN;
 	}
 }
