@@ -192,7 +192,7 @@ public class Moo
 
 		eventBus.post(new LoadDatabases());
 		
-		scheduleWithFixedDelay(new DatabaseTimer(), 1, TimeUnit.MINUTES);
+		scheduleWithFixedDelay(new DatabaseTimer(), 5, TimeUnit.MINUTES);
 
 		while (quitting == false)
 		{
