@@ -123,6 +123,10 @@ class TicketChecker extends Thread
 						t.state = ticketState;
 						tickets.tickets.put(ticket, t);
 					}
+					else
+					{
+						t.state = ticketState;
+					}
 				}
 			}
 
