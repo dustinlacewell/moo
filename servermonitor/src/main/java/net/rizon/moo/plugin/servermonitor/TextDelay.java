@@ -7,6 +7,13 @@ import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 
 class TextDelay implements Runnable
 {
+	enum LinkType
+	{
+		SPLIT,
+		RELINK,
+		UNKNOWN
+	}
+
 	public static final int delay = 5;
 	
 	@Inject
@@ -30,10 +37,23 @@ class TextDelay implements Runnable
 		}
 
 		for (String email : conf.split_emails)
-			mail.send(email, "Split", buf);
-
-		servermonitor.texts = null;
+		{
+			switch (this.type)
+			{
+				case SPLIT:
+					mail.send(email, "Split", buf);
+					servermonitor.splitTexts = null;
+					break;
+				case RELINK:
+					mail.send(email, "Relink", buf);
+					servermonitor.linkTexts = null;
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	protected LinkedList<String> messages = new LinkedList<String>();
+	protected LinkType type = LinkType.UNKNOWN;
 }
