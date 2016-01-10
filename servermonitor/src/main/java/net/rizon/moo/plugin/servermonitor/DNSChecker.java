@@ -73,7 +73,7 @@ class DNSChecker extends Thread
 
 					if (serial == -1)
 						serial = soa_serial;
-					else if (serial != soa_serial)
+					else if (Math.abs(serial - soa_serial) > 5)
 						protocol.privmsgAll(config.admin_channels, "DNS: SOA mismatch for " + ns + ": Expected " + serial + " but got " + soa_serial);
 				}
 				catch (NamingException ex)
