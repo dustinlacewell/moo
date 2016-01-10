@@ -98,9 +98,8 @@ final class CommandWLogSearch extends Command
 				
 				++count;
 				
-				if (limit > 0)
+				if (count <= limit)
 				{
-					--limit;
 					++shown;
 					
 					if (src != null && !src.isEmpty())
