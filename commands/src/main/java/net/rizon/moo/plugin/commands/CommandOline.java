@@ -40,7 +40,13 @@ final class serverComparator implements Comparator<Server>
 	@Override
 	public int compare(Server arg0, Server arg1)
 	{
-		if (arg0.olines.size() < arg1.olines.size())
+		if (arg0.olines == null && arg1.olines != null)
+			return -1;
+		else if (arg0.olines != null && arg1.olines == null)
+			return 1;
+		else if (arg0.olines == null && arg1.olines == null)
+			return 0;
+		else if (arg0.olines.size() < arg1.olines.size())
 			return -1;
 		else if (arg0.olines.size() > arg1.olines.size())
 			return 1;
@@ -207,7 +213,11 @@ class CommandOline extends Command
 				{
 					count = Integer.parseInt(params[2].substring(offset));
 				}
-				catch (NumberFormatException ex) { }
+				catch (NumberFormatException ex)
+				{
+					source.reply("[" + params[2].substring(offset) + "] is not an integer, use \002!oline <server>\002 to request the o:lines on a specific server.");
+					return;
+				}
 			}
 
 			Server servers[] = serverManager.getServers();
@@ -259,7 +269,7 @@ class CommandOline extends Command
 			if (s != null)
 			{
 				String buffer = "o:lines for " + s.getName() + ": ";
-				if (s.olines.isEmpty())
+				if (s.olines == null || s.olines.isEmpty())
 					buffer += "none";
 				else
 				{
@@ -278,7 +288,7 @@ class CommandOline extends Command
 			String servers = "";
 			for (Server s2 : serverManager.getServers())
 			{
-				if (s2.isServices())
+				if (s2.isServices() || s2.olines == null)
 					continue;
 
 				if (s2.olines.keySet().contains(params[1]))
