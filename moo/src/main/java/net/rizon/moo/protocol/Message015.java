@@ -1,4 +1,4 @@
-package net.rizon.moo.protocol.plexus;
+package net.rizon.moo.protocol;
 
 
 import net.rizon.moo.Message;

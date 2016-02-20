@@ -2,7 +2,7 @@ package net.rizon.moo;
 
 import java.util.ArrayList;
 
-public abstract class Command extends Message
+public abstract class Command
 {
 	private Plugin pkg;
 	private String cmdname;
@@ -11,7 +11,6 @@ public abstract class Command extends Message
 
 	public Command(Plugin pkg, final String cmdname, final String desc)
 	{
-		super("PRIVMSG");
 		this.pkg = pkg;
 		this.cmdname = cmdname;
 		this.description = desc;
@@ -19,11 +18,11 @@ public abstract class Command extends Message
 		pkg.commands.add(this);
 	}
 
-	@Override
+	//@Override
 	public void remove()
 	{
 		pkg.commands.remove(this);
-		super.remove();
+		//super.remove();
 	}
 
 	public Plugin getPackage()
@@ -50,28 +49,6 @@ public abstract class Command extends Message
 	public boolean isRequiredChannel(String channel)
 	{
 		return channels.isEmpty() || channels.contains(channel.toLowerCase());
-	}
-
-	@Override
-	public void run(String source, String[] message)
-	{
-		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
-			return;
-
-		String tokens[] = message[1].split(" ");
-		if (!this.cmdname.equalsIgnoreCase(tokens[0]))
-			return;
-
-		if (!this.isRequiredChannel(message[0]))
-			return;
-
-		User user = Moo.users.findOrCreateUser(source);
-		CommandSource csource = new CommandSource(user, Moo.channels.find(message[0]));
-
-		this.execute(csource, tokens);
-
-		if (user.getChannels().isEmpty())
-			Moo.users.remove(user);
 	}
 
 	public abstract void execute(CommandSource source, String[] params);

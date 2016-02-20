@@ -1,14 +1,14 @@
-package net.rizon.moo.protocol.unreal;
+package net.rizon.moo.protocol;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Server;
 
 /* End of map */
-class Message007 extends Message
+class Message017 extends Message
 {
-	public Message007()
+	public Message017()
 	{
-		super("007");
+		super("017");
 	}
 
 	@Override

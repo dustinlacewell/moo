@@ -1,9 +1,5 @@
 package net.rizon.moo;
 
-import net.rizon.moo.io.IRCMessage;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 public abstract class Message
 {
 	public static final String COLOR_GREEN = "\00303";
@@ -20,12 +16,6 @@ public abstract class Message
 	public Message(final String name)
 	{
 		this.name = name;
-		Message.messages.push(this);
-	}
-
-	public void remove()
-	{
-		Message.messages.remove(this);
 	}
 
 	public final String getName()
@@ -34,17 +24,4 @@ public abstract class Message
 	}
 
 	public abstract void run(final String source, final String[] message);
-
-	public static LinkedList<Message> messages = new LinkedList<Message>();
-
-	public static void runMessage(IRCMessage message)
-	{
-		int hash = messages.hashCode(); // XXX
-		for (Iterator<Message> it = messages.iterator(); it.hasNext() && hash == messages.hashCode();)
-		{
-			Message m = it.next();
-			if (m.getName().equalsIgnoreCase(message.getCommand()))
-				m.run(message.getSource(), message.getParams());
-		}
-	}
 }

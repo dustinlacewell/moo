@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.core;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.multibindings.Multibinder;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
@@ -23,9 +24,10 @@ public class core extends Plugin
 		super("Commands", "Core commands");
 		conf = CoreConfiguration.load();
 	}
-
+	
+	
 	@Override
-	public void start() throws Exception
+	protected void configure()
 	{
 		help = new CommandHelp(this);
 		host = new CommandHost(this);
@@ -35,7 +37,21 @@ public class core extends Plugin
 		shell = new CommandShell(this);
 		shutdown = new CommandShutdown(this);
 		status = new CommandStatus(this);
+		
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().toInstance(help);
+		commandBinder.addBinding().toInstance(host);
+		commandBinder.addBinding().toInstance(plugins);
+		commandBinder.addBinding().toInstance(rand);
+		commandBinder.addBinding().toInstance(reload);
+		commandBinder.addBinding().toInstance(shell);
+		commandBinder.addBinding().toInstance(shutdown);
+		commandBinder.addBinding().toInstance(status);
+	}
 
+	@Override
+	public void start() throws Exception
+	{
 		Moo.getEventBus().register(this);
 	}
 

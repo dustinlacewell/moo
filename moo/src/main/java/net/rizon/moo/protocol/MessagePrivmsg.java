@@ -1,6 +1,8 @@
 package net.rizon.moo.protocol;
 
+import com.google.inject.Inject;
 import java.util.Date;
+import net.rizon.moo.CommandManager;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
@@ -8,6 +10,9 @@ import net.rizon.moo.events.EventPrivmsg;
 
 public class MessagePrivmsg extends Message
 {
+	@Inject
+	private CommandManager manager;
+	
 	public MessagePrivmsg()
 	{
 		super("PRIVMSG");
@@ -25,5 +30,7 @@ public class MessagePrivmsg extends Message
 			Moo.notice(source, "\1VERSION " + Moo.conf.version + "\1");
 		else if (message[1].equals("\1TIME\1"))
 			Moo.notice(source, "\1TIME " + (new Date().toString()) + "\1");
+		
+		manager.run(source, message);
 	}
 }

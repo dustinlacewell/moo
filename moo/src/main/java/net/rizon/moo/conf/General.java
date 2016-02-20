@@ -3,7 +3,6 @@ package net.rizon.moo.conf;
 public class General extends Configuration
 {
 	public String nick, ident, realname, server, host, server_pass, cert, key;
-	public Protocol protocol;
 	public Oper oper;
 	public NickServ nickserv;
 	public int port;
@@ -20,7 +19,6 @@ public class General extends Configuration
 		Validator.validateNotEmpty("nick", nick);
 		Validator.validateNotEmpty("ident", ident);
 		Validator.validateNotEmpty("realname", realname);
-		Validator.validateNotNull("protocol", protocol);
 		Validator.validateHost("server", server);
 		Validator.validatePort("port", port, true);
 

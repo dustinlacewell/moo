@@ -1,17 +1,18 @@
 package net.rizon.moo;
 
+import com.google.inject.AbstractModule;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
-public abstract class Plugin
+public abstract class Plugin extends AbstractModule
 {
 	/*private static final Logger log = Logger.getLogger(Plugin.class.getName());*/
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
 
 	private String name, desc;
 	public String pname;
-	protected ClassLoader loader; // Loader for this class
+	protected ClassLoader loader; // Loader for this plugin
 	public LinkedList<Command> commands = new LinkedList<Command>();
 
 	protected Plugin(String name, String desc)

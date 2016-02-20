@@ -4,11 +4,11 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
 
-class commandHelpBase extends Command
+public class CommandHelp extends Command
 {
-	public commandHelpBase(Plugin pkg, final String command)
+	public CommandHelp(Plugin pkg)
 	{
-		super(pkg, command, "Shows this list");
+		super(pkg, "!HELP", "Shows this list");
 	}
 
 	@Override
@@ -48,22 +48,5 @@ class commandHelpBase extends Command
 				}
 			}
 		}
-	}
-}
-
-class CommandHelp
-{
-	private Command mo, h;
-
-	public CommandHelp(Plugin pkg)
-	{
-		mo = new commandHelpBase(pkg, "!MOO-HELP");
-		h = new commandHelpBase(pkg, "!HELP");
-	}
-
-	public void remove()
-	{
-		mo.remove();
-		h.remove();
 	}
 }

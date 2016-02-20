@@ -3,6 +3,7 @@ package net.rizon.moo.io;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.rizon.moo.Message;
+import net.rizon.moo.MessageManager;
 import net.rizon.moo.Moo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,8 @@ class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
-		Message.runMessage(message);
+		MessageManager mm = moo.injector.getInstance(MessageManager.class);// XXX
+		mm.run(message);
 	}
 	
 	@Override

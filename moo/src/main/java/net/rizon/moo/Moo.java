@@ -1,6 +1,10 @@
 package net.rizon.moo;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import net.rizon.moo.io.ClientInitializer;
 import net.rizon.moo.io.IRCMessage;
 import io.netty.bootstrap.Bootstrap;
@@ -12,7 +16,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +32,7 @@ import net.rizon.moo.events.LoadDatabases;
 import net.rizon.moo.events.OnShutdown;
 import net.rizon.moo.events.SaveDatabases;
 import net.rizon.moo.protocol.ProtocolPlugin;
+import net.rizon.moo.protocol.plexus;
 
 class DatabaseTimer implements Runnable
 {
@@ -80,6 +88,8 @@ public class Moo
 
 	public static User me = null;
 	public static Moo moo;
+	
+	public static Injector injector;
 	
 	public static void main(String[] args)
 	{
@@ -164,7 +174,7 @@ public class Moo
 
 		try
 		{
-			Moo.protocol = (ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.general.protocol.getName());
+			Moo.protocol = new plexus();//(ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.general.protocol.getName());
 		}
 		catch (Throwable ex)
 		{
@@ -185,6 +195,16 @@ public class Moo
 				System.exit(-1);
 			}
 		}
+		
+		List<Module> modules = new ArrayList<>();
+		modules.add(protocol);
+		for (Plugin p : Plugin.getPlugins())
+			modules.add(p);
+		modules.add(new MooModule());
+		injector = Guice.createInjector(modules);
+		
+		CommandManager cm = injector.getInstance(CommandManager.class);
+//		injector.injectMembers(this);
 
 		logger.info("moo v{} starting up", Version.getFullVersion());
 
@@ -237,94 +257,6 @@ public class Moo
 	public static final String getCreated()
 	{
 		return created.toString();
-	}
-
-	public static boolean matches(String text, String pattern)
-	{
-		text = text.toLowerCase();
-		pattern = pattern.toLowerCase();
-
-		pattern = pattern.replaceAll("\\.", "\\\\.");
-		pattern = pattern.replaceAll("\\*", "\\.\\*");
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(text);
-		return m.matches();
-	}
-
-	public static boolean wmatch(String matchtxt, String txt)
-	{
-		String mt = "";
-
-		for (int x = 0; x < matchtxt.length(); x++)
-			switch (matchtxt.charAt(x))
-			{
-				case '*':
-					mt += ".*";
-					break;
-				case '?':
-					mt += ".";
-					break;
-				case '^':
-				case '$':
-				case '(':
-				case ')':
-				case '[':
-				case ']':
-				case '.':
-				case '|':
-				case '+':
-				case '{':
-				case '}':
-				case '\\':
-					mt += "\\" + matchtxt.charAt(x);
-					break;
-				default:
-					mt += matchtxt.substring(x, x + 1);
-			}
-
-		Pattern p = Pattern.compile("(?uis)^" + mt + "$");
-		Matcher m = p.matcher(txt);
-		return m.find() == true;
-	}
-
-	public static String difference(Date now, Date then)
-	{
-		long lnow = now.getTime() / 1000L, lthen = then.getTime() / 1000L;
-
-		long ldiff = now.compareTo(then) > 0 ? lnow - lthen : lthen - lnow;
-		int days = 0, hours = 0, minutes = 0;
-
-		if (ldiff == 0)
-			return "0 seconds";
-
-		while (ldiff > 86400)
-		{
-			++days;
-			ldiff -= 86400;
-		}
-		while (ldiff > 3600)
-		{
-			++hours;
-			ldiff -= 3600;
-		}
-		while (ldiff > 60)
-		{
-			++minutes;
-			ldiff -= 60;
-		}
-
-		String buffer = "";
-		if (days > 0)
-			buffer += days + " day" + (days == 1 ? "" : "s") + " ";
-		if (hours > 0)
-			buffer += hours + " hour" + (hours == 1 ? "" : "s") + " ";
-		if (minutes > 0)
-			buffer += minutes + " minute" + (minutes == 1 ? "" : "s") + " ";
-		if (ldiff > 0)
-			buffer += ldiff + " second" + (ldiff == 1 ? "" : "s") + " ";
-		buffer = buffer.trim();
-
-		return buffer;
 	}
 	
 	public static ScheduledFuture scheduleWithFixedDelay(Runnable r, long t, TimeUnit unit)
