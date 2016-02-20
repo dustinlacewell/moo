@@ -1,7 +1,6 @@
 package net.rizon.moo;
 
 import com.google.common.eventbus.EventBus;
-import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.User;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -59,7 +58,7 @@ class RunnableContainer implements Runnable
 public class Moo
 {
 	private static final Logger logger = LoggerFactory.getLogger(Moo.class);
-	private static Date created = new Date();
+	private static final Date created = new Date();
 	
 	private EventLoopGroup group = new NioEventLoopGroup(1);
 	public static io.netty.channel.Channel channel;
@@ -89,10 +88,10 @@ public class Moo
 		moo = new Moo();
 		moo.start();
 	}
-	
+
+	// Don't allow guice to JIT bind Moo
 	private Moo()
 	{
-		int i =5;
 	}
 	
 	private void run() throws InterruptedException
@@ -142,18 +141,6 @@ public class Moo
 			System.exit(-1);
 		}
 
-//		Server.init();
-
-//		try
-//		{
-//			Moo.protocol = new Plexus();//(ProtocolPlugin) Plugin.loadPluginCore("net.rizon.moo.protocol.", Moo.conf.general.protocol.getName());
-//		}
-//		catch (Throwable ex)
-//		{
-//			logger.error("Error loading protocol", ex);
-//			System.exit(-1);
-//		}
-
 		for (String pkg : conf.plugins)
 		{
 			logger.debug("Loading plugin: {}", pkg);
@@ -167,17 +154,18 @@ public class Moo
 				System.exit(-1);
 			}
 		}
-		
-		List<Module> modules = new ArrayList<>();
-		for (Plugin p : Plugin.getPlugins())
-			modules.add(p);
-		modules.add(new MooModule());
-		modules.add(new NettyModule());
-		modules.add(new Plexus());
-		
-		injector = Guice.createInjector(modules);
-		
-		injector.injectMembers(this);
+
+		this.rebuildInjector();
+//		List<Module> modules = new ArrayList<>();
+//		for (Plugin p : Plugin.getPlugins())
+//			modules.add(p);
+//		modules.add(new MooModule());
+//		modules.add(new NettyModule());
+//		modules.add(new Plexus());
+//
+//		injector = Guice.createInjector(modules);
+//
+//		injector.injectMembers(this);
 
 		logger.info("moo v{} starting up", Version.getFullVersion());
 
@@ -245,5 +233,23 @@ public class Moo
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
 	{
 		return moo.group.schedule(r, t, unit);
+	}
+
+	private void rebuildInjector()
+	{
+		List<Module> modules = new ArrayList<>();
+
+		modules.add(new MooModule());
+		modules.add(new NettyModule());
+		modules.add(new Plexus());
+
+		for (Plugin p : Plugin.getPlugins())
+			modules.add(p);
+
+		injector = Guice.createInjector(modules);
+
+		injector.injectMembers(this);
+
+		// XXX these are scheduler stuff here
 	}
 }
