@@ -6,14 +6,9 @@ import net.rizon.moo.io.IRCMessage;
 
 public class MessageManager
 {
-	private final Set<Message> messages;
-
 	@Inject
-	MessageManager(Set<Message> messages)
-	{
-		this.messages = messages;
-	}
-	
+	private Set<Message> messages;
+
 	public void run(IRCMessage message)
 	{
 		for (Message m : messages)

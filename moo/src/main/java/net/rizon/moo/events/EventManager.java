@@ -7,7 +7,12 @@ import java.util.Set;
 public class EventManager
 {
 	@Inject
-	EventManager(EventBus bus, Set<EventListener> eventListeners)
+	private EventBus bus;
+
+	@Inject
+	private Set<EventListener> eventListeners;
+
+	public void build()
 	{
 		for (EventListener l : eventListeners)
 			bus.register(bus);

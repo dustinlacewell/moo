@@ -6,6 +6,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Stage;
 import net.rizon.moo.io.ClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import net.rizon.moo.conf.Config;
+import net.rizon.moo.events.EventManager;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
 import net.rizon.moo.events.OnShutdown;
@@ -82,6 +84,9 @@ public class Moo
 
 	@Inject
 	private DatabaseTimer databaseTimer;
+
+	@Inject
+	private EventManager eventManager;
 	
 	public static void main(String[] args)
 	{
@@ -246,9 +251,11 @@ public class Moo
 		for (Plugin p : Plugin.getPlugins())
 			modules.add(p);
 
-		injector = Guice.createInjector(modules);
+		injector = Guice.createInjector(Stage.PRODUCTION, modules);
 
 		injector.injectMembers(this);
+
+		eventManager.build();
 
 		// XXX these are scheduler stuff here
 	}
