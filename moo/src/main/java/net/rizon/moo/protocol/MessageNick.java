@@ -5,9 +5,15 @@ import com.google.inject.Inject;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventNickChange;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.User;
 
 public class MessageNick extends Message
 {
+	@Inject
+	private IRC irc;
+
 	@Inject
 	private EventBus eventBus;
 	
@@ -17,13 +23,16 @@ public class MessageNick extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length != 1)
+		if (message.getParams().length != 1)
 			return;
 
-		eventBus.post(new EventNickChange(source, message[0]));
+		String to = message.getParams()[0];
 
-		Moo.users.renameUser(Moo.users.find(source), message[0]);
+		eventBus.post(new EventNickChange(message.getSource(), to));
+
+		User source = irc.findUser(message.getNick());
+		Moo.users.renameUser(Moo.users.find(source), to);
 	}
 }

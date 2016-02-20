@@ -7,10 +7,15 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.User;
 import net.rizon.moo.events.OnConnect;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
 import net.rizon.moo.irc.Protocol;
 
 public class Message001 extends Message
 {
+	@Inject
+	private IRC irc;
+
 	@Inject
 	private Protocol protocol;
 	
@@ -23,7 +28,7 @@ public class Message001 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		if (Moo.conf.general.oper != null)
 			protocol.write("OPER", Moo.conf.general.oper.name, Moo.conf.general.oper.pass);
@@ -31,7 +36,7 @@ public class Message001 extends Message
 			protocol.privmsg("NickServ", "IDENTIFY " + Moo.conf.general.nickserv.pass);
 
 		Moo.me = new User(Moo.conf.general.nick);
-		Moo.users.add(Moo.me);
+		irc.insertUser(Moo.me);
 
 		for (String s : Moo.conf.channels)
 			protocol.join(s);

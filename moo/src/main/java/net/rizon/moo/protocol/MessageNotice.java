@@ -12,6 +12,7 @@ import net.rizon.moo.events.EventClientConnect;
 import net.rizon.moo.events.EventNotice;
 import net.rizon.moo.events.OnServerLink;
 import net.rizon.moo.events.OnServerSplit;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 
@@ -31,26 +32,29 @@ public class MessageNotice extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 2)
+		if (message.getParams().length < 2)
 			return;
 
-		eventBus.post(new EventNotice(source, message[0], message[1]));
-		
-		process(source, message[1]);
+		String target = message.getParams()[0], text = message.getParams()[1];
 
-		Matcher m = connectPattern.matcher(message[1]);
+		eventBus.post(new EventNotice(message.getSource(), target, text));
+		
+		process(message.getSource(), text);
+
+		Matcher m = connectPattern.matcher(text);
 		if (m.matches())
 		{
-			if (source.indexOf('@') != -1)
-				return;
+			if (message.getNick() != null)
+				return; // only from servers
 
 			final String nick = m.group(1), ident = m.group(2), ip = m.group(3), realname = m.group(4);
 			eventBus.post(new EventClientConnect(nick, ident, ip, realname));
 		}
 	}
-	
+
+	// XXX this should be in a plugin
 	private void process(String source, String message)
 	{
 		if (Moo.conf.general.nickserv != null && source.equals(Moo.conf.general.nickserv.mask))

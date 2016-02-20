@@ -1,13 +1,24 @@
 package net.rizon.moo.protocol;
 
+import com.google.inject.Inject;
 import net.rizon.moo.irc.Channel;
 import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.User;
+import net.rizon.moo.util.irc.Mask;
+import net.rizon.moo.util.irc.MaskParser;
 
 public class Message353 extends Message
 {
+	@Inject
+	private IRC irc;
+
+	@Inject
+	private Protocol protocol;
+
 	public Message353()
 	{
 		super("353");
@@ -20,7 +31,7 @@ public class Message353 extends Message
 
 		for (char ch : entry.toCharArray())
 		{
-			if (!Moo.protocol.isCUSDisplayCharacter(ch))
+			if (!protocol.isCUSDisplayCharacter(ch))
 				break;
 
 			offset++;
@@ -28,8 +39,15 @@ public class Message353 extends Message
 
 		String cus = entry.substring(0, offset);
 		String nuh = entry.substring(offset);
+		Mask mask = MaskParser.parse(nuh);
 
-		User user = Moo.users.findOrCreateUser(nuh);
+		User user = irc.findUser(mask.getNick());
+		if (user == null)
+		{
+			user = new User(mask.getNick());
+			irc.insertUser(user);
+		}
+
 		Membership mem = c.findUser(user);
 		if (mem == null)
 		{
@@ -38,18 +56,18 @@ public class Message353 extends Message
 			c.addUser(mem);
 		}
 
-		mem.setStatus(Moo.protocol.CUSDisplayCharacterToEnumSet(cus));
+		mem.setStatus(protocol.CUSDisplayCharacterToEnumSet(cus));
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 4)
+		if (message.getParams().length < 4)
 			return;
 
 		/* The incoming JOIN should have created the channel already. */
-		Channel c = Moo.channels.find(message[2]);
-		for (String entry : message[3].split(" "))
+		Channel c = irc.findChannel(message.getParams()[2]);
+		for (String entry : message.getParams()[3].split(" "))
 			parseNamesEntry(c, entry);
 	}
 }

@@ -34,7 +34,7 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 				for (final String ch : Moo.conf.moo_log_channels)
 				{
 					if (message != null)
-						Moo.privmsg(ch, message);
+						Moo.privmsg(ch, message); // XXX logback makes this so can't really inject? post event? cant get eventbus.
 					if (stes != null)
 					{
 						if (throwable != null)

@@ -1,6 +1,7 @@
 package net.rizon.moo.protocol;
 
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
 
 /* /stats c */
@@ -12,7 +13,7 @@ public class Message213 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		Server serv = Server.findServerAbsolute(source);
 		if (serv == null)

@@ -8,9 +8,14 @@ import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.irc.User;
 import net.rizon.moo.events.EventKick;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
 
 public class MessageKick extends Message
 {
+	@Inject
+	private IRC irc;
+	
 	@Inject
 	private EventBus eventBus;
 	
@@ -20,13 +25,13 @@ public class MessageKick extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 2)
+		if (message.getParams().length < 2)
 			return;
 
-		User u = Moo.users.find(message[1]);
-		Channel c = Moo.channels.find(message[0]);
+		User u = irc.findUser(message.getParams()[1]);
+		Channel c = irc.findChannel(message.getParams()[0]);
 		if (u != null && c != null)
 		{
 			Membership mem = u.findChannel(c);
@@ -37,6 +42,6 @@ public class MessageKick extends Message
 			}
 		}
 
-		eventBus.post(new EventKick(source, message[1], message[0]));
+		eventBus.post(new EventKick(message.getSource(), message.getParams()[1], message.getParams()[0]));
 	}
 }

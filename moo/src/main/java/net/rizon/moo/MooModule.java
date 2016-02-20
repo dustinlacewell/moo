@@ -26,10 +26,4 @@ public class MooModule extends AbstractModule
 	{
 		return moo.channel;
 	}
-	
-	@Provides
-	EventBus provideEventBus(EventManager eventMangager)
-	{
-		return eventMangager.getEventBus();
-	}
 }

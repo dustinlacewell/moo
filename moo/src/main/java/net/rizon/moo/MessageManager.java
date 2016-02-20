@@ -19,7 +19,7 @@ public class MessageManager
 		for (Message m : messages)
 		{
 			if (m.getName().equalsIgnoreCase(message.getCommand()))
-				m.run(message.getSource(), message.getParams());
+				m.run(message);
 		}
 	}
 }

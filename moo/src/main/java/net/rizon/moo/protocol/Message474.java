@@ -2,8 +2,10 @@ package net.rizon.moo.protocol;
 
 import com.google.inject.Inject;
 import java.util.HashSet;
+import java.util.Set;
 
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 
 public class Message474 extends Message
@@ -16,22 +18,22 @@ public class Message474 extends Message
 		super("474");
 	}
 
-	private HashSet<String> invited = new HashSet<String>();
+	private final Set<String> invited = new HashSet<>();
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (this.invited.contains(message[1]))
+		String channel = message.getParams()[1];
+
+		if (this.invited.contains(channel))
 		{
-			this.invited.remove(message[1]);
+			this.invited.remove(channel);
 			return;
 		}
-		else if (message.length > 1)
-		{
-			protocol.privmsg("ChanServ", "UNBAN " + message[1]);
-			protocol.privmsg("ChanServ", "INVITE " + message[1]);
-			protocol.join(message[1]);
-			this.invited.add(message[1]);
-		}
+
+		protocol.privmsg("ChanServ", "UNBAN " + channel);
+		protocol.privmsg("ChanServ", "INVITE " + channel);
+		protocol.join(channel);
+		this.invited.add(channel);
 	}
 }

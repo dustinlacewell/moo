@@ -2,6 +2,7 @@ package net.rizon.moo.protocol;
 
 import com.google.inject.Inject;
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 
 public class MessagePing extends Message
@@ -15,8 +16,8 @@ public class MessagePing extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		protocol.write("PONG", message[0]);
+		protocol.write("PONG", message.getParams()[0]);
 	}
 }

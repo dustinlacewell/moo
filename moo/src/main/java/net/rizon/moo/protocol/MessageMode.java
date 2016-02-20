@@ -8,12 +8,20 @@ import net.rizon.moo.irc.Channel;
 import net.rizon.moo.irc.ChannelUserStatus;
 import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
 import net.rizon.moo.irc.User;
 import net.rizon.moo.events.EventMode;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.Protocol;
 
 public class MessageMode extends Message
 {
+	@Inject
+	private IRC irc;
+
+	@Inject
+	private Protocol protocol;
+	
 	@Inject
 	private EventBus eventBus;
 	
@@ -22,7 +30,7 @@ public class MessageMode extends Message
 		super("MODE");
 	}
 
-	private final void handleModes(Channel c, String[] modes)
+	private void handleModes(Channel c, String[] modes)
 	{
 		if (c == null)
 			return;
@@ -42,10 +50,10 @@ public class MessageMode extends Message
 					break;
 			}
 
-			ChannelUserStatus cus = Moo.protocol.modeToCUS(m);
+			ChannelUserStatus cus = protocol.modeToCUS(m);
 			if (cus != null)
 			{
-				User u = Moo.users.find(modes[offset++]);
+				User u = irc.findUser(modes[offset++]);
 				if (u == null)
 					continue;
 
@@ -62,15 +70,16 @@ public class MessageMode extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		String modes = "";
-		for (int i = 1; i < message.length; ++i)
-			modes += message[i] + " ";
+		for (int i = 1; i < message.getParams().length; ++i)
+			modes += message.getParams()[i] + " ";
 		modes = modes.trim();
 
-		handleModes(Moo.channels.find(message[0]), Arrays.copyOfRange(message, 1, message.length));
+		Channel c = irc.findChannel(message.getParams()[0]);
+		handleModes(c, Arrays.copyOfRange(message.getParams(), 1, message.getParams().length));
 
-		eventBus.post(new EventMode(source, message[0], modes));
+		eventBus.post(new EventMode(message.getSource(), message.getParams()[0], modes));
 	}
 }

@@ -1,6 +1,7 @@
 package net.rizon.moo.protocol;
 
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
 
 /* End of map */
@@ -12,7 +13,7 @@ class Message017 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		Server.last_total_users = Server.cur_total_users;
 		Server.cur_total_users = Server.work_total_users;

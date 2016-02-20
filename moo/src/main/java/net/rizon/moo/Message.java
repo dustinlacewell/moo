@@ -1,5 +1,7 @@
 package net.rizon.moo;
 
+import net.rizon.moo.io.IRCMessage;
+
 public abstract class Message
 {
 	public static final String COLOR_GREEN = "\00303";
@@ -23,5 +25,5 @@ public abstract class Message
 		return this.name;
 	}
 
-	public abstract void run(final String source, final String[] message);
+	public abstract void run(IRCMessage message);
 }

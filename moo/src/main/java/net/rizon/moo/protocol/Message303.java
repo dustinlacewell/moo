@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.io.IRCMessage;
 import org.slf4j.Logger;
 
 public class Message303 extends Message
@@ -17,9 +18,9 @@ public class Message303 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		for (final String nick : message[1].split(" "))
+		for (final String nick : message.getParams()[1].split(" "))
 			if (nick.equalsIgnoreCase("GeoServ"))
 			{
 				logger.info("GeoServ has come back! Changing akillserv back to GeoServ");

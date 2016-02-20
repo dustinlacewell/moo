@@ -3,16 +3,16 @@ package net.rizon.moo;
 import net.rizon.moo.irc.User;
 import com.google.inject.Inject;
 import java.util.Set;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
 
 public class CommandManager
 {
-	private final Set<Command> commands;
-	
 	@Inject
-	CommandManager(Set<Command> commands)
-	{
-		this.commands = commands;
-	}
+	private Set<Command> commands;
+
+	@Inject
+	private IRC irc;
 	
 	private Command find(String name)
 	{
@@ -22,8 +22,10 @@ public class CommandManager
 		return null;
 	}
 	
-	public void run(String source, String[] message)
+	public void run(IRCMessage m)
 	{
+		String[] message = m.getParams();
+		
 		if (message.length < 2 || message[0].startsWith("#") == false || (message[1].startsWith("!") == false && message[1].startsWith(".") == false))
 			return;
 
@@ -35,12 +37,12 @@ public class CommandManager
 		if (!c.isRequiredChannel(message[0]))
 			return;
 
-		User user = Moo.users.findOrCreateUser(source);
-		CommandSource csource = new CommandSource(user, Moo.channels.find(message[0]));
+		User user = irc.findUser(m.getNick());
+		if (user == null)
+			user = new User(m.getNick());
+
+		CommandSource csource = new CommandSource(user, irc.findChannel(message[0]));
 
 		c.execute(csource, tokens);
-
-		if (user.getChannels().isEmpty())
-			Moo.users.remove(user);
 	}
 }

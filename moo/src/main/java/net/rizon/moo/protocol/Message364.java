@@ -1,6 +1,7 @@
 package net.rizon.moo.protocol;
 
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
 
 /* LINKS */
@@ -12,13 +13,13 @@ public class Message364 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 3)
+		if (message.getParams().length < 3)
 			return;
 
-		String from = message[1];
-		String to = message[2];
+		String from = message.getParams()[1];
+		String to = message.getParams()[2];
 
 		if (from.equals(to))
 			return;

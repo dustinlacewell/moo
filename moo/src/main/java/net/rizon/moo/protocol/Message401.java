@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
 
@@ -35,16 +36,18 @@ public class Message401 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message[1].equalsIgnoreCase("GeoServ"))
+		if (message.getParams()[1].equalsIgnoreCase("GeoServ"))
 		{
 			Moo.akillServ = "OperServ";
 
 			logger.info("GeoServ has gone away! Changing akillserv to OperServ");
 			Moo.schedule(new GeoChecker(), 10, TimeUnit.SECONDS);
 		}
-		else if (message[1].equalsIgnoreCase("OperServ"))
+		else if (message.getParams()[1].equalsIgnoreCase("OperServ"))
+		{
 			Moo.akillServ = "GeoServ";
+		}
 	}
 }

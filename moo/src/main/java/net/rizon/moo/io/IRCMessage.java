@@ -1,5 +1,8 @@
 package net.rizon.moo.io;
 
+import net.rizon.moo.util.irc.Mask;
+import net.rizon.moo.util.irc.MaskParser;
+
 public class IRCMessage
 {
 	private final String source;
@@ -16,6 +19,12 @@ public class IRCMessage
 	public String getSource()
 	{
 		return source;
+	}
+
+	public String getNick()
+	{
+		Mask m = MaskParser.parse(source);
+		return m.getNick();
 	}
 
 	public String getCommand()

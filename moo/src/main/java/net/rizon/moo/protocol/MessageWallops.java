@@ -10,6 +10,7 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventAkillAdd;
 import net.rizon.moo.events.EventAkillDel;
 import net.rizon.moo.events.EventWallops;
+import net.rizon.moo.io.IRCMessage;
 
 public class MessageWallops extends Message
 {
@@ -25,14 +26,14 @@ public class MessageWallops extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 1)
+		if (message.getParams().length < 1)
 			return;
 
-		eventBus.post(new EventWallops(source, message[0]));
+		eventBus.post(new EventWallops(message.getSource(), message.getParams()[0]));
 
-		Matcher m = akillAddPattern.matcher(message[0]);
+		Matcher m = akillAddPattern.matcher(message.getParams()[0]);
 		if (m.matches())
 		{
 			String setter = m.group(1), ip = m.group(2), reason = m.group(3);
@@ -40,7 +41,7 @@ public class MessageWallops extends Message
 			return;
 		}
 
-		m = akillRemovePattern.matcher(message[0]);
+		m = akillRemovePattern.matcher(message.getParams()[0]);
 		if (m.matches())
 		{
 			String setter = m.group(1), ip = m.group(2), reason = m.group(3);

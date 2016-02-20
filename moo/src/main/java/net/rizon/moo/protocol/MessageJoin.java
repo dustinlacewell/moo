@@ -5,12 +5,16 @@ import com.google.inject.Inject;
 import net.rizon.moo.irc.Channel;
 import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
-import net.rizon.moo.irc.User;
 import net.rizon.moo.events.EventJoin;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.User;
 
 public class MessageJoin extends Message
 {
+	@Inject
+	private IRC irc;
+	
 	@Inject
 	private EventBus eventBus;
 	
@@ -20,19 +24,32 @@ public class MessageJoin extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length != 1)
+		if (message.getParams().length != 1)
 			return;
 
-		Channel c = Moo.channels.findOrCreateChannel(message[0]);
-		User u = Moo.users.findOrCreateUser(source);
+		String channelName = message.getParams()[0];
+
+		Channel c = irc.findChannel(channelName);
+		if (c == null)
+		{
+			c = new Channel(channelName);
+			irc.insertChannel(c);
+		}
+
+		User u = irc.findUser(message.getNick());
+		if (u == null)
+		{
+			u = new User(message.getNick());
+			irc.insertUser(u);
+		}
 
 		Membership mem = new Membership(u, c);
 
 		c.addUser(mem);
 		u.addChannel(mem);
 
-		eventBus.post(new EventJoin(source, message[0]));
+		eventBus.post(new EventJoin(message.getSource(), channelName));
 	}
 }

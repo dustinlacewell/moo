@@ -8,6 +8,7 @@ import net.rizon.moo.CommandManager;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventPrivmsg;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 
 public class MessagePrivmsg extends Message
@@ -27,18 +28,20 @@ public class MessagePrivmsg extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 2)
+		if (message.getParams().length < 2)
 			return;
 
-		eventBus.post(new EventPrivmsg(source, message[0], message[1]));
+		String target = message.getParams()[0], text = message.getParams()[1];
 
-		if (message[1].equals("\1VERSION\1"))
-			protocol.notice(source, "\1VERSION " + Moo.conf.version + "\1");
-		else if (message[1].equals("\1TIME\1"))
-			protocol.notice(source, "\1TIME " + (new Date().toString()) + "\1");
+		eventBus.post(new EventPrivmsg(message.getSource(), target, text));
+
+		if (text.equals("\1VERSION\1"))
+			protocol.notice(message.getNick(), "\1VERSION " + Moo.conf.version + "\1");
+		else if (text.equals("\1TIME\1"))
+			protocol.notice(message.getNick(), "\1TIME " + (new Date().toString()) + "\1");
 		
-		manager.run(source, message);
+		manager.run(message);
 	}
 }

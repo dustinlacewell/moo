@@ -3,6 +3,7 @@ package net.rizon.moo.protocol;
 
 import com.google.inject.Inject;
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
 import org.slf4j.Logger;
 
@@ -25,12 +26,12 @@ class Message015 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 2)
+		if (message.getParams().length < 2)
 			return;
 
-		String map = message[1];
+		String map = message.getParams()[1];
 
 		int i = 0;
 		for (; i < map.length(); ++i)

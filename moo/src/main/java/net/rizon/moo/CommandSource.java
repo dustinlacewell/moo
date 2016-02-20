@@ -1,5 +1,6 @@
 package net.rizon.moo;
 
+import net.rizon.moo.irc.Channel;
 import net.rizon.moo.irc.Nameable;
 import net.rizon.moo.irc.User;
 
@@ -12,7 +13,13 @@ public class CommandSource
 	public CommandSource(User user, User dest)
 	{
 		this.user = user;
-		this.dest = dest;
+		this.destUser = dest;
+	}
+
+	public CommandSource(User user, Channel channel)
+	{
+		this.user = user;
+		this.destChannel = channel;
 	}
 
 	public User getUser()
@@ -22,12 +29,12 @@ public class CommandSource
 
 	public String getTargetName()
 	{
-		return dest.getName();
+		return destUser != null ? destUser.getNick() : destChannel.getName();
 	}
 
 	public void reply(String message)
 	{
-		Moo.reply(user.getNick(), dest.getName(), message);
+		Moo.reply(user.getNick(), getTargetName(), message);
 	}
 
 	public void notice(String message)

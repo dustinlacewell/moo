@@ -11,6 +11,7 @@ import net.rizon.moo.irc.Server;
 import net.rizon.moo.events.OnOLineChange;
 import net.rizon.moo.events.OnXLineAdd;
 import net.rizon.moo.events.OnXLineDel;
+import net.rizon.moo.io.IRCMessage;
 
 /* end of stats */
 public class Message219 extends Message
@@ -57,13 +58,13 @@ public class Message219 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		Server serv = Server.findServerAbsolute(source);
 		if (serv == null)
 			serv = new Server(source);
 
-		if (message[1].equals("c"))
+		if (message.getParams()[1].equals("c"))
 		{
 			if (serv.clines.isEmpty() == false)
 			{
@@ -91,7 +92,7 @@ public class Message219 extends Message
 			serv.clines = serv.clines_work;
 			serv.clines_work = new HashSet<String>();
 		}
-		else if (message[1].equals("o"))
+		else if (message.getParams()[1].equals("o"))
 		{
 			if (serv.olines != null)
 			{
