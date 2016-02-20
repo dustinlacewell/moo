@@ -33,6 +33,8 @@ public class MessageNick extends Message
 		eventBus.post(new EventNickChange(message.getSource(), to));
 
 		User source = irc.findUser(message.getNick());
-		Moo.users.renameUser(Moo.users.find(source), to);
+		irc.removeUser(source);
+		source.setNick(to);
+		irc.insertUser(source);
 	}
 }

@@ -23,9 +23,9 @@ public class IRC
 		return channels.get(ircToLower(name));
 	}
 	
-	public void removeChannel(String name)
+	public void removeChannel(Channel channel)
 	{
-		channels.remove(ircToLower(name));
+		channels.remove(ircToLower(channel.getName()));
 	}
 	
 	public void insertUser(User u)
@@ -38,8 +38,8 @@ public class IRC
 		return users.get(ircToLower(name));
 	}
 	
-	public void removeUser(String name)
+	public void removeUser(User user)
 	{
-		users.remove(ircToLower(name));
+		users.remove(ircToLower(user.getNick()));
 	}
 }

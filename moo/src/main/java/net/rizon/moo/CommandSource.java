@@ -1,25 +1,20 @@
 package net.rizon.moo;
 
 import net.rizon.moo.irc.Channel;
-import net.rizon.moo.irc.Nameable;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.User;
 
 public class CommandSource
 {
-	private User user;
-	private User destUser;
-	private Channel destChannel;
+	private final Protocol protocol;
+	private final User user;
+	private final Channel channel;
 
-	public CommandSource(User user, User dest)
+	public CommandSource(Protocol protocol, User user, Channel channel)
 	{
+		this.protocol = protocol;
 		this.user = user;
-		this.destUser = dest;
-	}
-
-	public CommandSource(User user, Channel channel)
-	{
-		this.user = user;
-		this.destChannel = channel;
+		this.channel = channel;
 	}
 
 	public User getUser()
@@ -29,16 +24,16 @@ public class CommandSource
 
 	public String getTargetName()
 	{
-		return destUser != null ? destUser.getNick() : destChannel.getName();
+		return channel.getName();
 	}
 
 	public void reply(String message)
 	{
-		Moo.reply(user.getNick(), getTargetName(), message);
+		protocol.reply(user.getNick(), getTargetName(), message);
 	}
 
 	public void notice(String message)
 	{
-		Moo.notice(user.getNick(), message);
+		protocol.notice(user.getNick(), message);
 	}
 }

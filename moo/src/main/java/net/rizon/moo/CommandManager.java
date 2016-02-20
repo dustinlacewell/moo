@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.util.Set;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.Protocol;
 
 public class CommandManager
 {
@@ -13,6 +14,9 @@ public class CommandManager
 
 	@Inject
 	private IRC irc;
+
+	@Inject
+	private Protocol protocol;
 	
 	private Command find(String name)
 	{
@@ -41,7 +45,7 @@ public class CommandManager
 		if (user == null)
 			user = new User(m.getNick());
 
-		CommandSource csource = new CommandSource(user, irc.findChannel(message[0]));
+		CommandSource csource = new CommandSource(protocol, user, irc.findChannel(message[0]));
 
 		c.execute(csource, tokens);
 	}
