@@ -9,7 +9,7 @@ public class MessageManager
 	private final Set<Message> messages;
 
 	@Inject
-	public MessageManager(Set<Message> messages)
+	MessageManager(Set<Message> messages)
 	{
 		this.messages = messages;
 	}

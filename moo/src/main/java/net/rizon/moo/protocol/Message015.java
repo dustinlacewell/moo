@@ -1,17 +1,18 @@
 package net.rizon.moo.protocol;
 
 
+import com.google.inject.Inject;
 import net.rizon.moo.Message;
-import net.rizon.moo.Server;
+import net.rizon.moo.irc.Server;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /* Map
  * <- :adam.home 015 Adam :adam.home[00C] ----------------------------------- | Users:     1 (100.0%)
  */
 class Message015 extends Message
 {
-	private static final Logger logger = LoggerFactory.getLogger(Message015.class);
+	@Inject
+	private static Logger logger;
 
 	public Message015()
 	{

@@ -1,16 +1,15 @@
 package net.rizon.moo.protocol;
 
-import java.util.logging.Level;
+import com.google.inject.Inject;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.io.Handler;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Message303 extends Message
 {
-	private static final Logger logger = LoggerFactory.getLogger(Message303.class);
+	@Inject
+	private static Logger logger;
 
 	public Message303()
 	{

@@ -1,35 +1,33 @@
 package net.rizon.moo.io;
 
+import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.rizon.moo.Message;
 import net.rizon.moo.MessageManager;
-import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {
-	private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
-
-	private Moo moo;
+	@Inject
+	private Logger logger;
 	
-	public ClientHandler(Moo moo)
-	{
-		this.moo = moo;
-	}
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private MessageManager messageManager;
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx)
 	{
-		moo.handshake();
+		protocol.handshake();
 	}
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
-		MessageManager mm = moo.injector.getInstance(MessageManager.class);// XXX
-		mm.run(message);
+		messageManager.run(message);
 	}
 	
 	@Override

@@ -1,15 +1,15 @@
 package net.rizon.moo;
 
+import net.rizon.moo.irc.User;
 import com.google.inject.Inject;
 import java.util.Set;
-import org.slf4j.Logger;
 
 public class CommandManager
 {
 	private final Set<Command> commands;
 	
 	@Inject
-	public CommandManager(Set<Command> commands)
+	CommandManager(Set<Command> commands)
 	{
 		this.commands = commands;
 	}

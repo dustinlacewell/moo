@@ -1,14 +1,15 @@
 package net.rizon.moo.io;
 
+import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LoggingHandler extends ChannelHandlerAdapter
 {
-	private static final Logger logger = LoggerFactory.getLogger(LoggingHandler.class);
+	@Inject
+	private static Logger logger;
 	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception

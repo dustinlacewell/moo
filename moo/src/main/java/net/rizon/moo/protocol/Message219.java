@@ -1,13 +1,13 @@
 package net.rizon.moo.protocol;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
+import net.rizon.moo.irc.Server;
 import net.rizon.moo.events.OnOLineChange;
 import net.rizon.moo.events.OnXLineAdd;
 import net.rizon.moo.events.OnXLineDel;
@@ -15,6 +15,9 @@ import net.rizon.moo.events.OnXLineDel;
 /* end of stats */
 public class Message219 extends Message
 {
+	@Inject
+	private EventBus eventBus;
+	
 	public Message219()
 	{
 		super("219");
@@ -70,7 +73,7 @@ public class Message219 extends Message
 
 					if (serv.clines_work.contains(s) == false)
 					{
-						Moo.getEventBus().post(new OnXLineDel(serv, 'C', s));
+						eventBus.post(new OnXLineDel(serv, 'C', s));
 					}
 				}
 
@@ -80,7 +83,7 @@ public class Message219 extends Message
 
 					if (serv.clines.contains(s) == false)
 					{
-						Moo.getEventBus().post(new OnXLineAdd(serv, 'C', s));
+						eventBus.post(new OnXLineAdd(serv, 'C', s));
 					}
 				}
 			}
@@ -98,7 +101,7 @@ public class Message219 extends Message
 
 					if (serv.olines_work.keySet().contains(s) == false)
 					{
-						Moo.getEventBus().post(new OnXLineDel(serv, 'O', s));
+						eventBus.post(new OnXLineDel(serv, 'O', s));
 					}
 					else
 					{
@@ -106,7 +109,7 @@ public class Message219 extends Message
 						String newflags = serv.olines_work.get(s);
 						if (oldflags != null && !newflags.equals(oldflags))
 						{
-							Moo.getEventBus().post(new OnOLineChange(serv, s, generateFlagDiff(oldflags, newflags)));
+							eventBus.post(new OnOLineChange(serv, s, generateFlagDiff(oldflags, newflags)));
 						}
 					}
 				}
@@ -117,7 +120,7 @@ public class Message219 extends Message
 
 					if (serv.olines.keySet().contains(s) == false)
 					{
-						Moo.getEventBus().post(new OnXLineAdd(serv, 'O', s));
+						eventBus.post(new OnXLineAdd(serv, 'O', s));
 					}
 				}
 			}

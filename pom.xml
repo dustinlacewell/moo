@@ -22,11 +22,11 @@
   <modules>
     <module>moo</module>
 
-<!--    <module>antiidle</module>
+    <module>antiidle</module>
     <module>commands</module>
-    <module>commits</module>-->
+    <module>commits</module>
     <module>core</module>
-<!--    <module>dnsbl</module>
+    <module>dnsbl</module>
     <module>dnsblstats</module>
     <module>fun</module>
     <module>grapher</module>
@@ -41,7 +41,7 @@
     <module>tinc</module>
     <module>vote</module>
     <module>watch</module>
-    <module>wiki</module>-->
+    <module>wiki</module>
   </modules>
   
   <dependencies>

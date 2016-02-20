@@ -1,12 +1,16 @@
 package net.rizon.moo.protocol;
 
+import com.google.inject.Inject;
 import java.util.HashSet;
 
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 
 public class Message474 extends Message
 {
+	@Inject
+	private Protocol protocol;
+	
 	public Message474()
 	{
 		super("474");
@@ -24,9 +28,9 @@ public class Message474 extends Message
 		}
 		else if (message.length > 1)
 		{
-			Moo.privmsg("ChanServ", "UNBAN " + message[1]);
-			Moo.privmsg("ChanServ", "INVITE " + message[1]);
-			Moo.join(message[1]);
+			protocol.privmsg("ChanServ", "UNBAN " + message[1]);
+			protocol.privmsg("ChanServ", "INVITE " + message[1]);
+			protocol.join(message[1]);
 			this.invited.add(message[1]);
 		}
 	}

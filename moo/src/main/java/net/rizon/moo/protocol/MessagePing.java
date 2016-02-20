@@ -1,10 +1,14 @@
 package net.rizon.moo.protocol;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 
 public class MessagePing extends Message
 {
+	@Inject
+	private Protocol protocol;
+	
 	public MessagePing()
 	{
 		super("PING");
@@ -13,6 +17,6 @@ public class MessagePing extends Message
 	@Override
 	public void run(String source, String[] message)
 	{
-		Moo.write("PONG", message[0]);
+		protocol.write("PONG", message[0]);
 	}
 }

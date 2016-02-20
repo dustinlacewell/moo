@@ -1,14 +1,19 @@
 package net.rizon.moo.protocol;
 
-import net.rizon.moo.Channel;
-import net.rizon.moo.Membership;
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
+import net.rizon.moo.irc.Channel;
+import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.User;
+import net.rizon.moo.irc.User;
 import net.rizon.moo.events.EventPart;
 
 public class MessagePart extends Message
 {
+	@Inject
+	private EventBus eventBus;
+	
 	public MessagePart()
 	{
 		super("PART");
@@ -32,6 +37,6 @@ public class MessagePart extends Message
 			}
 		}
 
-		Moo.getEventBus().post(new EventPart(source, message[0]));
+		eventBus.post(new EventPart(source, message[0]));
 	}
 }

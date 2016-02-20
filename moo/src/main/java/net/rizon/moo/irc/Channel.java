@@ -1,27 +1,27 @@
-package net.rizon.moo;
+package net.rizon.moo.irc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Tracks IRC channels and their users.
  */
-public class Channel implements Nameable
+public class Channel
 {
 	private final String name;
-	private final HashMap<User, Membership> users = new HashMap<User, Membership>();
+	private final Map<User, Membership> users = new HashMap<>();
 
 	public Channel(final String name)
 	{
 		this.name = name;
 	}
-
-	@Override
+	
 	public String getName()
 	{
-		return this.name;
+		return name;
 	}
-
+	
 	public void addUser(Membership mem)
 	{
 		assert mem.getChannel() == this;

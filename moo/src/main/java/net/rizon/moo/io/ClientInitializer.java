@@ -1,5 +1,6 @@
 package net.rizon.moo.io;
 
+import com.google.inject.Inject;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -30,12 +31,14 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 {
 	private static final int MAXBUF = 512;
 	
-	private Moo moo;
+	@Inject
+	private Handler handler;
 	
-	public ClientInitializer(Moo moo)
-	{
-		this.moo = moo;
-	}
+	@Inject
+	private LoggingHandler loggingHandler;
+	
+	@Inject
+	private ClientHandler clientHandler;	
 	
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception
@@ -88,10 +91,10 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		pipeline.addLast("ircEncoder", new IRCEncoder());
 		
 		pipeline.addLast("idleStateHandler", new IdleStateHandler(60, 0, 0));
-		pipeline.addLast("handler", new Handler());
+		pipeline.addLast("handler", handler);
 		
-		pipeline.addLast(new LoggingHandler());
+		pipeline.addLast(loggingHandler);
 
-		pipeline.addLast("clientHandler", new ClientHandler(moo));
+		pipeline.addLast("clientHandler", clientHandler);
 	}
 }

@@ -1,18 +1,22 @@
 package net.rizon.moo.protocol;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import java.util.Arrays;
 
-import net.rizon.moo.Channel;
-import net.rizon.moo.ChannelUserStatus;
-import net.rizon.moo.Event;
-import net.rizon.moo.Membership;
+import net.rizon.moo.irc.Channel;
+import net.rizon.moo.irc.ChannelUserStatus;
+import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.User;
+import net.rizon.moo.irc.User;
 import net.rizon.moo.events.EventMode;
 
 public class MessageMode extends Message
 {
+	@Inject
+	private EventBus eventBus;
+	
 	public MessageMode()
 	{
 		super("MODE");
@@ -67,6 +71,6 @@ public class MessageMode extends Message
 
 		handleModes(Moo.channels.find(message[0]), Arrays.copyOfRange(message, 1, message.length));
 
-		Moo.getEventBus().post(new EventMode(source, message[0], modes));
+		eventBus.post(new EventMode(source, message[0], modes));
 	}
 }

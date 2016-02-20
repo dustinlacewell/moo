@@ -1,10 +1,10 @@
 package net.rizon.moo.protocol;
 
-import net.rizon.moo.Channel;
-import net.rizon.moo.Membership;
+import net.rizon.moo.irc.Channel;
+import net.rizon.moo.irc.Membership;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.User;
+import net.rizon.moo.irc.User;
 
 public class Message353 extends Message
 {

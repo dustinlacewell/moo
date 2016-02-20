@@ -1,11 +1,15 @@
 package net.rizon.moo;
 
+import net.rizon.moo.irc.Nameable;
+import net.rizon.moo.irc.User;
+
 public class CommandSource
 {
 	private User user;
-	private Nameable dest;
+	private User destUser;
+	private Channel destChannel;
 
-	public CommandSource(User user, Nameable dest)
+	public CommandSource(User user, User dest)
 	{
 		this.user = user;
 		this.dest = dest;

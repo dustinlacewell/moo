@@ -1,6 +1,6 @@
 package net.rizon.moo.events;
 
-import net.rizon.moo.Server;
+import net.rizon.moo.irc.Server;
 
 public class OnXLineDel
 {

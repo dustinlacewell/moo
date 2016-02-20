@@ -1,12 +1,13 @@
-package net.rizon.moo;
+package net.rizon.moo.irc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
-public class User implements Nameable
+public class User
 {
 	private String nick;
-	private final HashMap<Channel, Membership> channels = new HashMap<Channel, Membership>();
+	private final Map<Channel, Membership> channels = new HashMap<>();
 
 	public User(String nick)
 	{
@@ -16,12 +17,6 @@ public class User implements Nameable
 	public String getNick()
 	{
 		return nick;
-	}
-
-	@Override
-	public String getName()
-	{
-		return this.getNick();
 	}
 
 	public void setNick(String nick)

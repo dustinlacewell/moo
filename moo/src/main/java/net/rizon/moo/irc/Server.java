@@ -1,4 +1,4 @@
-package net.rizon.moo;
+package net.rizon.moo.irc;
 
 import com.google.common.eventbus.Subscribe;
 import java.security.cert.X509Certificate;
@@ -10,11 +10,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import net.rizon.moo.Database;
+import net.rizon.moo.Moo;
+import net.rizon.moo.Split;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
 import net.rizon.moo.events.OnServerCreate;
 import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.events.SaveDatabases;
+import net.rizon.moo.util.Match;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -326,7 +330,7 @@ public class Server
 	{
 		for (Server s : servers)
 		{
-			if (Moo.matches(s.getName(), "*" + name + "*"))
+			if (Match.matches(s.getName(), "*" + name + "*"))
 				return s;
 		}
 		return null;

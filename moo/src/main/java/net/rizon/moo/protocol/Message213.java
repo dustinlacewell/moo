@@ -1,7 +1,7 @@
 package net.rizon.moo.protocol;
 
 import net.rizon.moo.Message;
-import net.rizon.moo.Server;
+import net.rizon.moo.irc.Server;
 
 /* /stats c */
 public class Message213 extends Message
