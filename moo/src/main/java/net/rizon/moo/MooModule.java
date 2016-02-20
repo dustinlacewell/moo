@@ -6,6 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 import net.rizon.moo.injectors.logger.LogTypeListener;
+import net.rizon.moo.irc.ServerManager;
 
 public class MooModule extends AbstractModule
 {
@@ -17,6 +18,7 @@ public class MooModule extends AbstractModule
 		bind(CommandManager.class);
 		bind(MessageManager.class);
 		bind(EventManager.class);
+		bind(ServerManager.class);
 		
 		bindListener(Matchers.any(), new LogTypeListener());
 	}

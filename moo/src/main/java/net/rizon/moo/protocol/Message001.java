@@ -10,6 +10,7 @@ import net.rizon.moo.events.OnConnect;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.IRC;
 import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.ServerManager;
 
 public class Message001 extends Message
 {
@@ -21,6 +22,9 @@ public class Message001 extends Message
 	
 	@Inject
 	private EventBus eventBus;
+
+	@Inject
+	private ServerManager serverManager;
 	
 	public Message001()
 	{
@@ -44,7 +48,7 @@ public class Message001 extends Message
 		protocol.write("MAP");
 		protocol.write("LINKS");
 
-		for (Server s : Server.getServers())
+		for (Server s : serverManager.getServers())
 		{
 			if (s.isServices())
 				continue;

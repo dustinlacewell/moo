@@ -25,8 +25,7 @@ import org.slf4j.Logger;
 public class Server
 {
 	private static final Logger logger = LoggerFactory.getLogger(Server.class);
-	public static long lastSplit = 0;
-	public static int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
+
 
 	private String name;
 	private Date created;
@@ -36,7 +35,6 @@ public class Server
 	// oper name -> flags
 	public HashMap<String, String> olines, olines_work = new HashMap<String, String>();
 	public Server uplink;
-	public static Server root;
 	public HashSet<Server> links = new HashSet<Server>();
 	public long bytes = 0;
 	public int users = 0, last_users = 0;
@@ -321,113 +319,6 @@ public class Server
 	public void setDesc(final String d)
 	{
 		this.desc = d;
-	}
-
-	private static LinkedList<Server> servers = new LinkedList<Server>();
-	public static Date last_link = null, last_split = null;
-
-	public static Server findServer(final String name)
-	{
-		for (Server s : servers)
-		{
-			if (Match.matches(s.getName(), "*" + name + "*"))
-				return s;
-		}
-		return null;
-	}
-
-	public static Server findServerAbsolute(final String name)
-	{
-		for (Server s : servers)
-		{
-			if (s.getName().equalsIgnoreCase(name))
-				return s;
-		}
-		return null;
-	}
-
-	public static final Server[] getServers()
-	{
-		Server[] s = new Server[servers.size()];
-		servers.toArray(s);
-		return s;
-	}
-
-	public static class db
-	{
-		@Subscribe
-		public void initDatabases(InitDatabases evt)
-		{
-			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS splits (`name` varchar(64), `from` varchar(64), `to` varchar(64), `when` date, `end` date, `reconnectedBy` varchar(64), `recursive`);");
-			Moo.db.executeUpdate("CREATE INDEX IF NOT EXISTS `splits_idx` on `splits` (`name`,`when`,`from`)");
-			Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS servers (`name`, `created` DATE DEFAULT CURRENT_TIMESTAMP, `desc`, `preferred_links`, `frozen`);");
-			Moo.db.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS `servers_name_idx` on `servers` (`name`);");
-		}
-
-		@Subscribe
-		public void loadDatabases(LoadDatabases evt)
-		{
-			try
-			{
-				PreparedStatement stmt = Moo.db.prepare("SELECT * FROM servers");
-				ResultSet rs = Moo.db.executeQuery(stmt);
-				while (rs.next())
-				{
-					String name = rs.getString("name"), desc = rs.getString("desc"), pl = rs.getString("preferred_links");
-					Date created = rs.getDate("created");
-					boolean frozen = rs.getBoolean("frozen");
-
-					Server s = Server.findServerAbsolute(name);
-					if (s == null)
-						s = new Server(name);
-					else
-						s.allowed_clines.clear();
-
-					if (desc != null)
-						s.desc = desc;
-					s.created = created;
-					for (String l : pl.split(" "))
-						if (l.trim().isEmpty() == false)
-							s.allowed_clines.add(l.trim());
-					s.frozen = frozen;
-				}
-				rs.close();
-				stmt.close();
-			}
-			catch (SQLException ex)
-			{
-				Database.handleException(ex);
-			}
-		}
-
-		@Subscribe
-		public void saveDatabases(SaveDatabases evt)
-		{
-			try
-			{
-				PreparedStatement statement;
-
-				for (Server s : Server.getServers())
-				{
-					statement = Moo.db.prepare("REPLACE INTO servers (`name`, `desc`, `preferred_links`, `frozen`) VALUES(?, ?, ?, ?)");
-					statement.setString(1, s.getName());
-					statement.setString(2, s.desc);
-					String links = "";
-					for (String string : s.allowed_clines)
-						links += string + " ";
-					links = links.trim();
-					statement.setString(3, links);
-					statement.setBoolean(4, s.frozen);
-
-					Moo.db.executeUpdate(statement);
-				}
-
-			}
-			catch (SQLException ex)
-			{
-				logger.warn("Error saving servers", ex);
-			}
-		}
 	}
 
 	public void requestStats()

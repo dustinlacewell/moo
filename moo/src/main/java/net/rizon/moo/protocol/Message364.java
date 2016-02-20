@@ -1,12 +1,17 @@
 package net.rizon.moo.protocol;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Message;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 
 /* LINKS */
 public class Message364 extends Message
 {
+	@Inject
+	private ServerManager serverManager;
+
 	public Message364()
 	{
 		super("364");
@@ -24,18 +29,18 @@ public class Message364 extends Message
 		if (from.equals(to))
 			return;
 
-		Server sfrom = Server.findServerAbsolute(from);
+		Server sfrom = serverManager.findServerAbsolute(from);
 		if (sfrom == null)
 			sfrom = new Server(from);
 
-		Server sto = Server.findServerAbsolute(to);
+		Server sto = serverManager.findServerAbsolute(to);
 		if (sto == null)
 			sto = new Server(to);
 
 		if (sfrom != sto)
 			sfrom.uplink = sto;
 		else
-			Server.root = sfrom;
+			serverManager.root = sfrom;
 		sfrom.link(sto);
 		sto.link(sfrom);
 	}

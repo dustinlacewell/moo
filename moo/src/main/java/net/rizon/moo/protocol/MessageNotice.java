@@ -1,7 +1,6 @@
 package net.rizon.moo.protocol;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +14,7 @@ import net.rizon.moo.events.OnServerSplit;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 
 public class MessageNotice extends Message
 {
@@ -25,6 +25,9 @@ public class MessageNotice extends Message
 	
 	@Inject
 	private EventBus eventBus;
+
+	@Inject
+	private ServerManager serverManager;
 
 	public MessageNotice()
 	{
@@ -68,8 +71,8 @@ public class MessageNotice extends Message
 			{
 				String[] tokens = message.split(" ");
 
-				Server serv = Server.findServerAbsolute(tokens[4]),
-						to = Server.findServerAbsolute(tokens[8]);
+				Server serv = serverManager.findServerAbsolute(tokens[4]),
+						to = serverManager.findServerAbsolute(tokens[8]);
 
 				if (to == null)
 					to = new Server(tokens[8]);
@@ -88,8 +91,8 @@ public class MessageNotice extends Message
 			{
 				String[] tokens = message.split(" ");
 
-				Server serv = Server.findServerAbsolute(tokens[7]),
-						to = Server.findServerAbsolute(source);
+				Server serv = serverManager.findServerAbsolute(tokens[7]),
+						to = serverManager.findServerAbsolute(source);
 				if (serv == null)
 					serv = new Server(tokens[7]);
 				if (to == null)
@@ -97,7 +100,7 @@ public class MessageNotice extends Message
 
 				serv.splitDel(to);
 
-				serv.uplink = Server.root;
+				serv.uplink = serverManager.root;
 				serv.link(to);
 				to.link(serv);
 
@@ -107,7 +110,7 @@ public class MessageNotice extends Message
 			{
 				String[] tokens = message.split(" ");
 
-				Server serv = Server.findServerAbsolute(tokens[4]), from = Server.findServerAbsolute(tokens[7]);
+				Server serv = serverManager.findServerAbsolute(tokens[4]), from = serverManager.findServerAbsolute(tokens[7]);
 				if (serv == null)
 					serv = new Server(tokens[4]);
 				if (from == null)

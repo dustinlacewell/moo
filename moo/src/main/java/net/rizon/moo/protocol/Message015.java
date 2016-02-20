@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import net.rizon.moo.Message;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 import org.slf4j.Logger;
 
 /* Map
@@ -14,6 +15,9 @@ class Message015 extends Message
 {
 	@Inject
 	private static Logger logger;
+
+	@Inject
+	private ServerManager serverManager;
 
 	public Message015()
 	{
@@ -66,12 +70,12 @@ class Message015 extends Message
 			}
 		}
 
-		Server serv = Server.findServerAbsolute(name);
+		Server serv = serverManager.findServerAbsolute(name);
 		if (serv == null)
 			serv = new Server(name);
 		serv.setSID(sid);
 		serv.last_users = serv.users;
 		serv.users = users;
-		Server.work_total_users += users;
+		serverManager.work_total_users += users;
 	}
 }
