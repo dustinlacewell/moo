@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JAR=moo/target/moo-moo-3.0-SNAPSHOT-jar-with-dependencies.jar
+JAR=moo/target/moo-moo-3.0-jar-with-dependencies.jar
 ARGS='-XX:+HeapDumpOnOutOfMemoryError -Xmx16M'
 
 if grep -q -E '^debug: false$' moo.yml ; then
