@@ -6,10 +6,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 import net.rizon.moo.injectors.logger.LogTypeListener;
+import net.rizon.moo.irc.IRC;
 import net.rizon.moo.irc.ServerManager;
 
 public class MooModule extends AbstractModule
 {
+	private static IRC irc = new IRC();
+
 	@Override
 	protected void configure()
 	{
@@ -19,13 +22,14 @@ public class MooModule extends AbstractModule
 		bind(MessageManager.class);
 		bind(EventManager.class);
 		bind(ServerManager.class);
+		bind(DatabaseTimer.class);
 		
 		bindListener(Matchers.any(), new LogTypeListener());
 	}
 
 	@Provides
-	io.netty.channel.Channel provideNettyChannel(Moo moo)
+	IRC provideIRC()
 	{
-		return moo.channel;
+		return irc;
 	}
 }

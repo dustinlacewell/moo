@@ -1,6 +1,8 @@
 package net.rizon.moo.plugin.core;
 
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
@@ -9,11 +11,14 @@ import net.rizon.moo.conf.Config;
 import net.rizon.moo.conf.Configuration;
 import net.rizon.moo.events.OnReload;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class CommandReload extends Command
 {
-	private static final Logger logger = LoggerFactory.getLogger(CommandReload.class);
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private EventBus eventBus;
 
 	public CommandReload(Plugin pkg)
 	{
@@ -35,7 +40,7 @@ class CommandReload extends Command
 		{
 			Config c = Configuration.load("moo.yml", Config.class);
 			
-			Moo.getEventBus().post(new OnReload(source));
+			eventBus.post(new OnReload(source));
 
 			Moo.conf = c;
 			source.reply("Successfully reloaded configuration");

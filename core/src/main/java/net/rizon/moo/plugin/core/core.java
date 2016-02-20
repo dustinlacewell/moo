@@ -1,18 +1,21 @@
 package net.rizon.moo.plugin.core;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.core.conf.CoreConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class core extends Plugin
+public class core extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(core.class);
+	@Inject
+	private static Logger logger;
 	
 	public static CoreConfiguration conf;
 
@@ -47,12 +50,14 @@ public class core extends Plugin
 		commandBinder.addBinding().toInstance(shell);
 		commandBinder.addBinding().toInstance(shutdown);
 		commandBinder.addBinding().toInstance(status);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 
 	@Override
 	public void start() throws Exception
 	{
-		Moo.getEventBus().register(this);
 	}
 
 	@Override
@@ -66,8 +71,6 @@ public class core extends Plugin
 		shell.remove();
 		shutdown.remove();
 		status.remove();
-		
-		Moo.getEventBus().unregister(this);
 	}
 	
 	@Subscribe

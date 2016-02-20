@@ -12,12 +12,16 @@ import net.rizon.moo.events.OnOLineChange;
 import net.rizon.moo.events.OnXLineAdd;
 import net.rizon.moo.events.OnXLineDel;
 import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.ServerManager;
 
 /* end of stats */
 public class Message219 extends Message
 {
 	@Inject
 	private EventBus eventBus;
+
+	@Inject
+	private ServerManager serverManager;
 	
 	public Message219()
 	{
@@ -60,9 +64,12 @@ public class Message219 extends Message
 	@Override
 	public void run(IRCMessage message)
 	{
-		Server serv = Server.findServerAbsolute(source);
+		Server serv = serverManager.findServerAbsolute(message.getSource());
 		if (serv == null)
-			serv = new Server(source);
+		{
+			serv = new Server(message.getSource());
+			serverManager.insertServer(serv);
+		}
 
 		if (message.getParams()[1].equals("c"))
 		{

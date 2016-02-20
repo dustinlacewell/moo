@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,17 +10,21 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.irc.Protocol;
 
 class shellExec extends Thread
 {
+	private Protocol protocol;
 	private CommandSource source;
 	private String command;
 
-	public shellExec(CommandSource source, final String command)
+	public shellExec(Protocol protocol, CommandSource source, String command)
 	{
+		this.protocol = protocol;
 		this.source = source;
 		this.command = command;
 	}
+
 
 	@Override
 	public void run()
@@ -33,7 +38,7 @@ class shellExec extends Thread
 				if (line.startsWith("!MOO!SHUTDOWN "))
 				{
 					source.reply("Caught shutdown signal.");
-					Moo.write("QUIT", line.substring(14));
+					protocol.write("QUIT", line.substring(14));
 					Moo.quitting = true;
 					break;
 				}
@@ -54,6 +59,9 @@ class shellExec extends Thread
 
 class CommandShell extends Command
 {
+	@Inject
+	private Protocol protocol;
+
 	public CommandShell(Plugin pkg)
 	{
 		super(pkg, "!SHELL", "Execute a shell command");
@@ -88,7 +96,7 @@ class CommandShell extends Command
 		if (param.indexOf("..") != -1)
 			return;
 
-		shellExec e = new shellExec(source, param);
+		shellExec e = new shellExec(protocol, source, param);
 		e.start();
 	}
 }

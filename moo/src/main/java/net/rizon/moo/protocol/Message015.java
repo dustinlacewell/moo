@@ -72,7 +72,11 @@ class Message015 extends Message
 
 		Server serv = serverManager.findServerAbsolute(name);
 		if (serv == null)
+		{
 			serv = new Server(name);
+			serverManager.insertServer(serv);
+		}
+		
 		serv.setSID(sid);
 		serv.last_users = serv.users;
 		serv.users = users;

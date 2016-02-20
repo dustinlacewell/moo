@@ -2,6 +2,7 @@ package net.rizon.moo.protocol;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,15 +76,24 @@ public class MessageNotice extends Message
 						to = serverManager.findServerAbsolute(tokens[8]);
 
 				if (to == null)
+				{
 					to = new Server(tokens[8]);
+					serverManager.insertServer(to);
+				}
 				if (serv == null)
+				{
 					serv = new Server(tokens[4]);
+					serverManager.insertServer(serv);
+				}
 
 				serv.splitDel(to);
+				serverManager.requestStats(serv);
 
 				serv.uplink = to;
 				serv.link(to);
 				to.link(serv);
+
+				serverManager.last_link = new Date();
 
 				eventBus.post(new OnServerLink(serv, to));
 			}
@@ -94,15 +104,24 @@ public class MessageNotice extends Message
 				Server serv = serverManager.findServerAbsolute(tokens[7]),
 						to = serverManager.findServerAbsolute(source);
 				if (serv == null)
+				{
 					serv = new Server(tokens[7]);
+					serverManager.insertServer(serv);
+				}
 				if (to == null)
+				{
 					to = new Server(source);
+					serverManager.insertServer(to);
+				}
 
 				serv.splitDel(to);
+				serverManager.requestStats(serv);
 
 				serv.uplink = serverManager.root;
 				serv.link(to);
 				to.link(serv);
+
+				serverManager.last_link = new Date();
 
 				eventBus.post(new OnServerLink(serv, to));
 			}
@@ -112,13 +131,21 @@ public class MessageNotice extends Message
 
 				Server serv = serverManager.findServerAbsolute(tokens[4]), from = serverManager.findServerAbsolute(tokens[7]);
 				if (serv == null)
+				{
 					serv = new Server(tokens[4]);
+					serverManager.insertServer(serv);
+				}
 				if (from == null)
+				{
 					from = new Server(tokens[7]);
+					serverManager.insertServer(from);
+				}
 
 				serv.uplink = null;
 				from.links.remove(serv);
 				serv.split(from);
+
+				serverManager.last_split = new Date();
 
 				eventBus.post(new OnServerSplit(serv, from));
 			}

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 
 public class LogTypeListener implements TypeListener
 {
+	@Override
 	public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter)
 	{
 		Class<?> clazz = typeLiteral.getRawType();

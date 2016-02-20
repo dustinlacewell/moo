@@ -20,11 +20,14 @@ public class Message213 extends Message
 	@Override
 	public void run(IRCMessage message)
 	{
-		Server serv = serverManager.findServerAbsolute(source);
+		Server serv = serverManager.findServerAbsolute(message.getSource());
 		if (serv == null)
-			serv = new Server(source);
+		{
+			serv = new Server(message.getSource());
+			serverManager.insertServer(serv);
+		}
 
-		if (message.length > 4)
-			serv.clines_work.add(message[4]);
+		if (message.getParams().length > 4)
+			serv.clines_work.add(message.getParams()[4]);
 	}
 }

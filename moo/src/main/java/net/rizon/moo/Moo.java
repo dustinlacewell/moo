@@ -1,10 +1,8 @@
 package net.rizon.moo;
 
 import com.google.common.eventbus.EventBus;
-import net.rizon.moo.irc.UserManager;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.User;
-import net.rizon.moo.irc.ChannelManager;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -33,15 +31,6 @@ import net.rizon.moo.events.OnShutdown;
 import net.rizon.moo.events.SaveDatabases;
 import net.rizon.moo.io.NettyModule;
 import net.rizon.moo.protocol.Plexus;
-
-class DatabaseTimer implements Runnable
-{
-	@Override
-	public void run()
-	{
-		Moo.getEventBus().post(new SaveDatabases());
-	}
-}
 
 class RunnableContainer implements Runnable
 {
@@ -73,12 +62,10 @@ public class Moo
 	private static Date created = new Date();
 	
 	private EventLoopGroup group = new NioEventLoopGroup(1);
-	io.netty.channel.Channel channel;
+	public static io.netty.channel.Channel channel;
 
 	public static Config conf = null;
 	public static Database db = null;
-//	public static ChannelManager channels = null;
-//	public static UserManager users = null;
 	public static boolean quitting = false;
 
 	public static String akillServ = "GeoServ";
@@ -93,6 +80,9 @@ public class Moo
 
 	@Inject
 	private ClientInitializer clientInitializer;
+
+	@Inject
+	private DatabaseTimer databaseTimer;
 	
 	public static void main(String[] args)
 	{
@@ -100,36 +90,26 @@ public class Moo
 		moo.start();
 	}
 	
-	Moo()
+	private Moo()
 	{
+		int i =5;
 	}
 	
 	private void run() throws InterruptedException
 	{
-		try
-		{
-			Bootstrap client = new Bootstrap()
-			    .group(group)
-			    .channel(NioSocketChannel.class)
-			    .handler(clientInitializer)
-			    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
-		    
-			channels = new ChannelManager();
-			users = new UserManager();
+		Bootstrap client = new Bootstrap()
+		    .group(group)
+		    .channel(NioSocketChannel.class)
+		    .handler(clientInitializer)
+		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
+		
+		if (conf.general.host != null)
+			client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
 
-			if (conf.general.host != null)
-				client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
+		ChannelFuture future = client.connect(conf.general.server, conf.general.port);
+		channel = future.channel();
 
-			ChannelFuture future = client.connect(conf.general.server, conf.general.port);
-			channel = future.channel();
-
-			channel.closeFuture().sync();
-		}
-		finally
-		{
-		    channels = null;
-		    users = null;
-		}
+		channel.closeFuture().sync();
 	}
 
 	public void start()
@@ -162,7 +142,7 @@ public class Moo
 			System.exit(-1);
 		}
 
-		Server.init();
+//		Server.init();
 
 //		try
 //		{
@@ -197,8 +177,7 @@ public class Moo
 		
 		injector = Guice.createInjector(modules);
 		
-		CommandManager cm = injector.getInstance(CommandManager.class);
-//		injector.injectMembers(this);
+		injector.injectMembers(this);
 
 		logger.info("moo v{} starting up", Version.getFullVersion());
 
@@ -206,7 +185,7 @@ public class Moo
 
 		eventBus.post(new LoadDatabases());
 		
-		scheduleWithFixedDelay(new DatabaseTimer(), 5, TimeUnit.MINUTES);
+		scheduleWithFixedDelay(databaseTimer, 5, TimeUnit.MINUTES);
 
 		while (quitting == false)
 		{

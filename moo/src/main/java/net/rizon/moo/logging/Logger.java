@@ -33,15 +33,15 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 			if (level == Level.INFO || bad)
 				for (final String ch : Moo.conf.moo_log_channels)
 				{
-					if (message != null)
-						Moo.privmsg(ch, message); // XXX logback makes this so can't really inject? post event? cant get eventbus.
-					if (stes != null)
-					{
-						if (throwable != null)
-							Moo.privmsg(ch, throwable.getMessage());
-						for (StackTraceElement ste : stes)
-							Moo.privmsg(ch, ste.toString());
-					}
+//					if (message != null)
+//						Moo.privmsg(ch, message); // XXX logback makes this so can't really inject? post event? cant get eventbus.
+//					if (stes != null)
+//					{
+//						if (throwable != null)
+//							Moo.privmsg(ch, throwable.getMessage());
+//						for (StackTraceElement ste : stes)
+//							Moo.privmsg(ch, ste.toString());
+//					}
 				}
 	}
 }

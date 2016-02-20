@@ -1,6 +1,5 @@
 package net.rizon.moo.irc;
 
-import com.google.common.eventbus.Subscribe;
 import java.security.cert.X509Certificate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,16 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Split;
-import net.rizon.moo.events.InitDatabases;
-import net.rizon.moo.events.LoadDatabases;
-import net.rizon.moo.events.OnServerCreate;
-import net.rizon.moo.events.OnServerDestroy;
-import net.rizon.moo.events.SaveDatabases;
-import net.rizon.moo.util.Match;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -50,48 +42,19 @@ public class Server
 	public Server(final String name)
 	{
 		this.name = name;
-		servers.push(this);
-
-		logger.debug("Adding server {}", this.getName());
-
-		this.requestStats();
-		if (!this.isServices())
-			Moo.write("VERSION", this.getName());
-		Moo.write("MAP");
-
-		Moo.getEventBus().post(new OnServerCreate(this));
 	}
 
-	public void destroy()
-	{
-		logger.debug("Removing server {}", this.getName());
-
-		Moo.getEventBus().post(new OnServerDestroy(this));
-
-		try
-		{
-			PreparedStatement statement = Moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
-			statement.setString(1, this.getName());
-			Moo.db.executeUpdate(statement);
-
-			statement = Moo.db.prepare("DELETE FROM splits WHERE `name` = ?");
-			statement.setString(1, this.getName());
-			Moo.db.executeUpdate(statement);
-		}
-		catch (SQLException ex)
-		{
-			logger.error("Error removing server from database", ex);
-		}
-
-		servers.remove(this);
-	}
-
-	public final String getName()
+	public String getName()
 	{
 		return this.name;
 	}
 
-	public final Date getCreated()
+	public void setCreated(Date created)
+	{
+		this.created = created;
+	}
+
+	public Date getCreated()
 	{
 		return this.created;
 	}
@@ -101,17 +64,17 @@ public class Server
 		this.sid = s;
 	}
 
-	public final String getSID()
+	public String getSID()
 	{
 		return this.sid;
 	}
 
-	public final boolean isHub()
+	public boolean isHub()
 	{
 		return (this.getSID() != null && this.getSID().endsWith("H")) || this.getName().endsWith(".hub") || this.getName().startsWith("hub.");
 	}
 
-	public final boolean isServices()
+	public boolean isServices()
 	{
 		String sid = this.getSID();
 		if (sid != null)
@@ -141,14 +104,12 @@ public class Server
 	public void link(final Server to)
 	{
 		this.links.add(to);
-		last_link = new Date();
 	}
 
 	public void split(Server from)
 	{
 		Date now = new Date();
 		this.links.remove(from);
-		last_split = now;
 
 		Split s = new Split();
 		s.me = this.getName();
@@ -157,28 +118,28 @@ public class Server
 		s.recursive = false;
 
 		// Find servers that split from this one at the same time
-		for (Server serv : Server.getServers())
-		{
-			Split sp = serv.getSplit();
-			if (sp != null && sp.from.equals(this.name) && sp.when.getTime() / 1000L == now.getTime() / 1000L)
-			{
-				sp.recursive = true;
-
-				try
-				{
-					PreparedStatement statement = Moo.db.prepare("UPDATE splits SET `recursive` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
-					statement.setBoolean(1, sp.recursive);
-					statement.setString(2, sp.me);
-					statement.setString(3, sp.from);
-					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
-					Moo.db.executeUpdate(statement);
-				}
-				catch (SQLException ex)
-				{
-					Database.handleException(ex);
-				}
-			}
-		}
+//		for (Server serv : Server.getServers())
+//		{
+//			Split sp = serv.getSplit();
+//			if (sp != null && sp.from.equals(this.name) && sp.when.getTime() / 1000L == now.getTime() / 1000L)
+//			{
+//				sp.recursive = true;
+//
+//				try
+//				{
+//					PreparedStatement statement = Moo.db.prepare("UPDATE splits SET `recursive` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
+//					statement.setBoolean(1, sp.recursive);
+//					statement.setString(2, sp.me);
+//					statement.setString(3, sp.from);
+//					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
+//					Moo.db.executeUpdate(statement);
+//				}
+//				catch (SQLException ex)
+//				{
+//					Database.handleException(ex);
+//				}
+//			}
+//		}
 
 		try
 		{
@@ -197,7 +158,6 @@ public class Server
 			Database.handleException(ex);
 		}
 
-		lastSplit = System.currentTimeMillis() / 1000L;
 		split = s;
 	}
 
@@ -287,8 +247,6 @@ public class Server
 		if (s == null)
 			return;
 
-		this.requestStats();
-
 		s.to = to.getName();
 		s.end = new Date();
 
@@ -319,29 +277,5 @@ public class Server
 	public void setDesc(final String d)
 	{
 		this.desc = d;
-	}
-
-	public void requestStats()
-	{
-		Moo.write("STATS", "c", this.getName());
-		Moo.write("STATS", "o", this.getName());
-	}
-
-	public static void init()
-	{
-		Moo.getEventBus().register(new db());
-
-		Runnable r = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				for (Server s : Server.getServers())
-					if (!s.isServices())
-						s.requestStats();
-				Moo.write("MAP");
-			}
-		};
-		Moo.scheduleWithFixedDelay(r, 5, TimeUnit.MINUTES);
 	}
 }

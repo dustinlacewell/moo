@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {
 	@Inject
-	private Logger logger;
+	private static Logger logger;
 	
 	@Inject
 	private Protocol protocol;

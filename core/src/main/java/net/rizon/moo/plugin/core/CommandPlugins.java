@@ -1,16 +1,17 @@
 package net.rizon.moo.plugin.core;
 
 
+import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class CommandPlugins extends Command
 {
-	private static final Logger logger = LoggerFactory.getLogger(CommandPlugins.class);
+	@Inject
+	private static Logger logger;
 	
 	public CommandPlugins(Plugin pkg)
 	{

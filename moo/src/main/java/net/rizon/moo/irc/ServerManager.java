@@ -1,18 +1,25 @@
 package net.rizon.moo.irc;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import io.netty.util.concurrent.ScheduledFuture;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
+import net.rizon.moo.events.OnServerCreate;
+import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.events.SaveDatabases;
 import net.rizon.moo.util.Match;
 import org.slf4j.Logger;
@@ -21,14 +28,74 @@ public class ServerManager implements EventListener
 {
 	@Inject
 	private static Logger logger;
+
+	@Inject
+	private EventBus eventBus;
+
+	@Inject
+	private Protocol protocol;
 	
-	public long lastSplit = 0;
 	public int last_total_users = 0, cur_total_users = 0, work_total_users = 0;
 
 	public Server root;
 
-	private List<Server> servers = new LinkedList<>();
+	private final List<Server> servers = new LinkedList<>();
 	public Date last_link = null, last_split = null;
+
+	private final Map<Server, ScheduledFuture> stats = new HashMap<>();
+
+	public void insertServer(final Server server)
+	{
+		servers.add(server);
+
+		logger.debug("Adding server {}", server.getName());
+
+		requestStats(server);
+		if (!server.isServices())
+			protocol.write("VERSION", server.getName());
+		protocol.write("MAP");
+
+		eventBus.post(new OnServerCreate(server));
+
+		Runnable r = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (!server.isServices())
+					requestStats(server);
+
+				protocol.write("MAP");
+			}
+		};
+		ScheduledFuture sf = Moo.scheduleWithFixedDelay(r, 5, TimeUnit.MINUTES);
+		stats.put(server, sf);
+	}
+
+	public void removeServer(Server server)
+	{
+		logger.debug("Removing server {}", server.getName());
+
+		eventBus.post(new OnServerDestroy(server));
+
+		try
+		{
+			PreparedStatement statement = Moo.db.prepare("DELETE FROM servers WHERE `name` = ?");
+			statement.setString(1, server.getName());
+			Moo.db.executeUpdate(statement);
+
+			statement = Moo.db.prepare("DELETE FROM splits WHERE `name` = ?");
+			statement.setString(1, server.getName());
+			Moo.db.executeUpdate(statement);
+		}
+		catch (SQLException ex)
+		{
+			logger.error("Error removing server from database", ex);
+		}
+
+		stats.get(server).cancel(true);
+		servers.remove(server);
+	}
 
 	public Server findServer(String name)
 	{
@@ -87,6 +154,7 @@ public class ServerManager implements EventListener
 				if (s == null)
 				{
 					s = new Server(name);
+					this.insertServer(s);
 				}
 				else
 				{
@@ -97,7 +165,7 @@ public class ServerManager implements EventListener
 				{
 					s.setDesc(desc);
 				}
-				s.created = created;
+				s.setCreated(created);
 				for (String l : pl.split(" "))
 				{
 					if (l.trim().isEmpty() == false)
@@ -145,5 +213,11 @@ public class ServerManager implements EventListener
 		{
 			logger.warn("Error saving servers", ex);
 		}
+	}
+
+	public void requestStats(Server server)
+	{
+		protocol.write("STATS", "c", server.getName());
+		protocol.write("STATS", "o", server.getName());
 	}
 }

@@ -53,7 +53,7 @@ public class Message001 extends Message
 			if (s.isServices())
 				continue;
 
-			s.requestStats();
+			serverManager.requestStats(s);
 			protocol.write("VERSION", s.getName());
 		}
 
