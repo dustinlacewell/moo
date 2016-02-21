@@ -1,9 +1,11 @@
 package net.rizon.moo.plugin.mxbl;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,19 +13,28 @@ import java.util.regex.Pattern;
 import javax.naming.NamingException;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventPrivmsg;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.mxbl.dns.NS;
 import net.rizon.moo.plugin.mxbl.dns.RecordType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Orillion <orillion@rizon.net>
  */
-public class EventRegister extends Event
+public class EventRegister extends Event implements EventListener
 {
-	private final static Logger logger = LoggerFactory.getLogger(EventRegister.class);
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private Config conf;
+	
+	@Inject
+	private Protocol protocol;
+
 	// "%s: '%s' registered by %s@%s (e-mail: %s)", s_NickServ, u->nick, u->username, u->host, (email ? email : "none")
 	private final String nickServRegex = "NickServ";
 	// Assumes nicks are valid (else they can't connect to the server anyway)
@@ -57,7 +68,7 @@ public class EventRegister extends Event
 			return;
 		}
 
-		for (String s : Moo.conf.log_channels)
+		for (String s : conf.log_channels)
 		{
 			if (evt.getChannel().equalsIgnoreCase(s))
 			{
@@ -143,8 +154,8 @@ public class EventRegister extends Event
 	 */
 	private void suspendNick(String nickname)
 	{
-		Moo.privmsgAll(Moo.conf.moo_log_channels, "Suspended nick [" + nickname + "] because it was registered with a blacklisted mailhost");
-		Moo.privmsg("NickServ", "SUSPEND " + nickname + " Registered using blacklisted mailhost");
+		protocol.privmsgAll(conf.moo_log_channels, "Suspended nick [" + nickname + "] because it was registered with a blacklisted mailhost");
+		protocol.privmsg("NickServ", "SUSPEND " + nickname + " Registered using blacklisted mailhost");
 	}
 
 	/**

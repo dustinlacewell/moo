@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.mxbl;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -7,8 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.plugin.mxbl.dns.NS;
 import net.rizon.moo.plugin.mxbl.dns.RecordType;
 
@@ -16,22 +16,23 @@ import net.rizon.moo.plugin.mxbl.dns.RecordType;
  *
  * @author Orillion <orillion@rizon.net>
  */
-public class CommandBlacklist extends Command
+class CommandBlacklist extends Command
 {
 
 	private final List<RecordType> MX_RECORDS = new ArrayList<>();
 	private final List<RecordType> IP_RECORDS = new ArrayList<>();
 
-	public CommandBlacklist(Plugin pkg)
+	@Inject
+	public CommandBlacklist(Config conf)
 	{
-		super(pkg, "!MXBL", "Modify or view MX blacklist.");
+		super("!MXBL", "Modify or view MX blacklist.");
 
 		MX_RECORDS.add(RecordType.MX);
 		IP_RECORDS.add(RecordType.A);
 		IP_RECORDS.add(RecordType.AAAA);
 
 		// TODO: Fill in correct channels.
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override

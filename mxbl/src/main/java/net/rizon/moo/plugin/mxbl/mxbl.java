@@ -1,8 +1,13 @@
 package net.rizon.moo.plugin.mxbl;
 
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.EventListener;
+import java.util.List;
 import net.rizon.moo.Command;
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
@@ -15,8 +20,8 @@ import net.rizon.moo.Plugin;
  */
 public class mxbl extends Plugin
 {
-	private Command blacklist;
-	private Event register;
+	@Inject
+	private CommandBlacklist blacklist;
 
 	public mxbl() throws Exception
 	{
@@ -70,10 +75,6 @@ public class mxbl extends Plugin
 		
 		rs.close();
 		ps.close();
-
-		blacklist = new CommandBlacklist(this);
-		register = new EventRegister();
-		Moo.getEventBus().register(register);
 	}
 
 	private void buildMailhosts(ResultSet rs, Mailhost mw) throws SQLException
@@ -95,14 +96,25 @@ public class mxbl extends Plugin
 	@Override
 	public void stop()
 	{
-		if (blacklist != null)
-		{
-			blacklist.remove();
-		}
-		if (register != null)
-		{
-			Moo.getEventBus().unregister(register);
-		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.<Command>asList(blacklist);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(mxbl.class).toInstance(this);
+
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().to(EventRegister.class);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandBlacklist.class);
 	}
 
 }
