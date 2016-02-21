@@ -12,9 +12,7 @@ public class MessageManager
 	public void run(IRCMessage message)
 	{
 		for (Message m : messages)
-		{
 			if (m.getName().equalsIgnoreCase(message.getCommand()))
 				m.run(message);
-		}
 	}
 }

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventClientConnect;
 import net.rizon.moo.events.EventNotice;
 import net.rizon.moo.events.OnServerLink;
@@ -29,6 +30,9 @@ public class MessageNotice extends Message
 
 	@Inject
 	private ServerManager serverManager;
+
+	@Inject
+	private Config conf;
 
 	public MessageNotice()
 	{
@@ -61,10 +65,10 @@ public class MessageNotice extends Message
 	// XXX this should be in a plugin
 	private void process(String source, String message)
 	{
-		if (Moo.conf.general.nickserv != null && source.equals(Moo.conf.general.nickserv.mask))
+		if (conf.general.nickserv != null && source.equals(conf.general.nickserv.mask))
 		{
 			if (message.contains("This nickname is registered"))
-				protocol.privmsg(source, "IDENTIFY " + Moo.conf.general.nickserv.pass);
+				protocol.privmsg(source, "IDENTIFY " + conf.general.nickserv.pass);
 		}
 		else if (source.indexOf('@') == -1)
 		{

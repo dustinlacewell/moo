@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.fun;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -8,15 +9,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.events.EventQuit;
+import net.rizon.moo.irc.Protocol;
 
 class TimedKill implements Runnable
 {
+	private Protocol protocol;
 	private String dest, reason;
 
-	public TimedKill(final String dest, final String reason)
+	public TimedKill(Protocol protocol, String dest, String reason)
 	{
+		this.protocol = protocol;
 		this.dest = dest;
 		this.reason = reason;
 	}
@@ -24,11 +29,11 @@ class TimedKill implements Runnable
 	@Override
 	public void run()
 	{
-		Moo.kill(this.dest, this.reason);
+		protocol.kill(this.dest, this.reason);
 	}
 }
 
-class EventFun
+class EventFun implements EventListener
 {
 	private static final Pattern killPattern = Pattern.compile("Killed \\(([^ ]*) \\(([^)]*)\\)\\)");
 
@@ -36,26 +41,29 @@ class EventFun
 			welcome = new HashMap<String, Integer>(),
 			gratz = new HashMap<String, Integer>();
 
+	@Inject
+	private Protocol protocol;
+
 	@Subscribe
 	public void onPrivmsg(EventPrivmsg evt)
 	{
 		String message = evt.getMessage(), source = evt.getSource(), channel = evt.getChannel();
 		
 		if (message.startsWith("\1ACTION pets " + Moo.me.getNick()))
-			Moo.privmsg(channel, "\1ACTION moos\1");
+			protocol.privmsg(channel, "\1ACTION moos\1");
 		else if (message.startsWith("\1ACTION milks " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
-			Moo.privmsg(channel, "\1ACTION kicks " + nick + " in the face\1");
+			protocol.privmsg(channel, "\1ACTION kicks " + nick + " in the face\1");
 		}
 		else if (message.startsWith("\1ACTION feeds " + Moo.me.getNick()))
-			Moo.privmsg(channel, "\1ACTION eats happily\1");
+			protocol.privmsg(channel, "\1ACTION eats happily\1");
 		else if (message.startsWith("\1ACTION kicks " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
-			Moo.privmsg(channel, "\1ACTION body slams " + nick + "\1");
+			protocol.privmsg(channel, "\1ACTION body slams " + nick + "\1");
 		}
 		else if (message.startsWith("\1ACTION brands " + Moo.me.getNick()))
 		{
@@ -64,24 +72,24 @@ class EventFun
 			boolean kill = new Random().nextInt(100) == 0;
 
 			if (kill == false)
-				Moo.privmsg(channel, "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
+				protocol.privmsg(channel, "\1ACTION headbutts " + nick + " and proceeds to stomp on their lifeless body\1");
 			else
 			{
-				Moo.privmsg(channel, "FEEL THE WRATH OF " + Moo.me.getNick().toUpperCase());
-				Moo.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + Moo.me.getNick().toUpperCase());
+				protocol.privmsg(channel, "FEEL THE WRATH OF " + Moo.me.getNick().toUpperCase());
+				protocol.kill(nick, "HOW DARE YOU ATTEMPT TO BRAND " + Moo.me.getNick().toUpperCase());
 			}
 		}
 		else if (message.startsWith("\1ACTION tips " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
-			Moo.privmsg(channel, "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
+			protocol.privmsg(channel, "\1ACTION inadvertently falls on " + nick + " and crushes them\1");
 		}
 		else if (message.startsWith("\1ACTION slaughters " + Moo.me.getNick()))
 		{
 			int e = source.indexOf('!');
 			String nick = source.substring(0, e != -1 ? e : source.length());
-			Moo.privmsg(channel, "\1ACTION runs " + nick + " through a food processor and proceeds to eat them\1");
+			protocol.privmsg(channel, "\1ACTION runs " + nick + " through a food processor and proceeds to eat them\1");
 		}
 	}
 
@@ -110,7 +118,7 @@ class EventFun
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
+					Moo.schedule(new TimedKill(protocol, killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 			else if (kill_reason.toLowerCase().indexOf("welcome") > -1)
@@ -131,7 +139,7 @@ class EventFun
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
+					Moo.schedule(new TimedKill(protocol, killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 			else if (kill_reason.toLowerCase().indexOf("congrat") > -1 || kill_reason.toLowerCase().indexOf("gratz") > -1)
@@ -146,7 +154,7 @@ class EventFun
 					if (r.nextBoolean())
 						my_kill_reason = my_kill_reason.toUpperCase();
 
-					Moo.schedule(new TimedKill(killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
+					Moo.schedule(new TimedKill(protocol, killee, my_kill_reason), new Random().nextInt(250) + 60, TimeUnit.SECONDS);
 				}
 			}
 		}

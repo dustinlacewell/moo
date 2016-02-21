@@ -7,6 +7,7 @@ import net.rizon.moo.CommandManager;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
@@ -21,6 +22,9 @@ public class MessagePrivmsg extends Message
 	
 	@Inject
 	private CommandManager manager;
+
+	@Inject
+	private Config conf;
 	
 	public MessagePrivmsg()
 	{
@@ -38,7 +42,7 @@ public class MessagePrivmsg extends Message
 		eventBus.post(new EventPrivmsg(message.getSource(), target, text));
 
 		if (text.equals("\1VERSION\1"))
-			protocol.notice(message.getNick(), "\1VERSION " + Moo.conf.version + "\1");
+			protocol.notice(message.getNick(), "\1VERSION " + conf.version + "\1");
 		else if (text.equals("\1TIME\1"))
 			protocol.notice(message.getNick(), "\1TIME " + (new Date().toString()) + "\1");
 		

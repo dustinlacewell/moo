@@ -4,8 +4,6 @@ import net.rizon.moo.plugin.dnsbl.Blacklist;
 
 public abstract class Action
 {
-	private static Action[] allActions = { new ActionAkill(), new ActionLog() };
-
 	private String name;
 	private String description;
 
@@ -30,19 +28,5 @@ public abstract class Action
 	public String getDescription()
 	{
 		return this.description;
-	}
-
-	public static Action[] getAllActions()
-	{
-		return allActions;
-	}
-
-	public static Action getByName(String name)
-	{
-		for (Action a : getAllActions())
-			if (a.name.equals(name))
-				return a;
-
-		return null;
 	}
 }

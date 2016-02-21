@@ -1,11 +1,19 @@
 package net.rizon.moo.plugin.dnsbl.actions;
 
-import net.rizon.moo.Moo;
+import com.google.inject.Inject;
+import static net.rizon.moo.Moo.moo;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.dnsbl.Blacklist;
-import net.rizon.moo.plugin.dnsbl.dnsbl;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 public class ActionAkill extends Action
 {
+	@Inject
+	private DnsblConfiguration conf;
+
+	@Inject
+	private Protocol protocol;
+
 	public ActionAkill()
 	{
 		super("AKILL", "Ban IP and terminate connection");
@@ -14,11 +22,11 @@ public class ActionAkill extends Action
 	@Override
 	public void onHit(Blacklist blacklist, String dnsblResponse, String nick, String ip)
 	{
-		String message = dnsbl.conf.akill.message
+		String message = conf.akill.message
 			.replace("%h", ip)
 			.replace("%d", blacklist.getName())
 			.replace("%r", dnsblResponse);
-		Moo.akill(ip, dnsbl.conf.akill.duration, message);
+		protocol.akill(ip, conf.akill.duration, message);
 	}
 
 	@Override

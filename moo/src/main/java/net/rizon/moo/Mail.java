@@ -1,9 +1,11 @@
 package net.rizon.moo;
 
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import net.rizon.moo.conf.Config;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -67,9 +69,12 @@ class mailThread extends Thread
 
 public class Mail
 {
-	public static void send(final String to, final String subject, final String message)
+	@Inject
+	private Config conf;
+	
+	public void send(final String to, final String subject, final String message)
 	{
-		String smpath = Moo.conf.mail.path;
+		String smpath = conf.mail.path;
 
 		File sendmail = new File(smpath);
 		if (sendmail.isFile() == false)

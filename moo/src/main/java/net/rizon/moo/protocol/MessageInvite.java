@@ -3,6 +3,7 @@ package net.rizon.moo.protocol;
 import com.google.inject.Inject;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 
@@ -10,6 +11,9 @@ public class MessageInvite extends Message
 {
 	@Inject
 	private Protocol protocol;
+
+	@Inject
+	private Config conf;
 	
 	public MessageInvite()
 	{
@@ -20,7 +24,7 @@ public class MessageInvite extends Message
 	public void run(IRCMessage message)
 	{
 		if (message.getParams().length > 1 && message.getParams()[0].equalsIgnoreCase(Moo.me.getNick()))
-			if (Moo.conf.channelsContains(message.getParams()[1]))
+			if (conf.channelsContains(message.getParams()[1]))
 				protocol.join(message.getParams()[1]);
 	}
 }

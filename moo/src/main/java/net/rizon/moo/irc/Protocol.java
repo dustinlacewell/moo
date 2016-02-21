@@ -5,13 +5,16 @@ import com.google.inject.Provider;
 import java.util.EnumSet;
 import net.rizon.moo.Moo;
 import static net.rizon.moo.Moo.akillServ;
-import static net.rizon.moo.Moo.conf;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.io.IRCMessage;
 
 public class Protocol
 {
 	@Inject
 	private Provider<io.netty.channel.Channel> channelProvider;
+
+	@Inject
+	private Config conf;
 	
 	public void write(String command, Object... args)
 	{
@@ -69,7 +72,7 @@ public class Protocol
 
 	public void reply(String source, String target, String buffer)
 	{
-		if (target.equalsIgnoreCase(Moo.conf.general.nick))
+		if (target.equalsIgnoreCase(conf.general.nick))
 			notice(source, buffer);
 		else
 			privmsg(target, buffer);

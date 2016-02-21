@@ -6,17 +6,22 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import org.slf4j.Logger;
 
 class CommandPlugins extends Command
 {
 	@Inject
 	private static Logger logger;
+
+	@Inject
+	private Moo moo;
 	
-	public CommandPlugins(Plugin pkg)
+	@Inject
+	CommandPlugins(Config conf)
 	{
-		super(pkg, "!PLUGINS", "Manage plugins");
-		this.requiresChannel(Moo.conf.admin_channels);
+		super("!PLUGINS", "Manage plugins");
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -34,6 +39,7 @@ class CommandPlugins extends Command
 			try
 			{
 				Plugin p = Plugin.loadPlugin(params[2]);
+				moo.rebuildInjector();
 				source.reply("Plugin " + p.getName() + " loaded");
 			}
 			catch (Throwable ex)
@@ -53,6 +59,7 @@ class CommandPlugins extends Command
 			else
 			{
 				p.remove();
+				moo.rebuildInjector();
 				source.reply("Plugin " + p.getName() + " removed");
 			}
 		}
@@ -66,10 +73,12 @@ class CommandPlugins extends Command
 			else
 			{
 				p.remove();
+				moo.rebuildInjector();
 
 				try
 				{
 					p = Plugin.loadPlugin(params[2]);
+					moo.rebuildInjector();
 					source.reply("Plugin " + p.getName() + " reloaded");
 				}
 				catch (Throwable ex)

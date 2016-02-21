@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.inject.Inject;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.rizon.moo.plugin.dnsbl.conf.CacheConfiguration;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 
 class ResultCache
 {
 	private static final long EXPIRE_TICK = 60 * 1000L;
 	private long lastExpired;
-	private int entryLifetime = 60;
+
+	@Inject
+	private DnsblConfiguration conf;
 
 	protected class Entry
 	{
@@ -40,16 +44,6 @@ class ResultCache
 
 	private Map<String, Entry> entries = new HashMap<String, Entry>();
 
-	/**
-	 * Loads the configuration for the ResultCache.
-	 * @param c Configuration settings to load.
-	 */
-	public void load(CacheConfiguration c)
-	{
-		if (c.lifetime > 0)
-			this.entryLifetime = c.lifetime;
-	}
-
 	public synchronized void addEntry(String ip, List<DnsblCheckResult> results)
 	{
 		if (System.currentTimeMillis() > lastExpired + EXPIRE_TICK)
@@ -63,7 +57,7 @@ class ResultCache
 		// Calculate expiration date.
 		Calendar c = Calendar.getInstance();
 		c.setTime(now);
-		c.add(Calendar.SECOND, this.entryLifetime);
+		c.add(Calendar.SECOND, conf.cache.lifetime > 0 ? conf.cache.lifetime : 60);
 
 		Date expiration = c.getTime();
 		this.entries.put(ip, new Entry(results, expiration));

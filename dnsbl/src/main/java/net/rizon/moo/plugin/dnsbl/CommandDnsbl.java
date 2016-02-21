@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,8 +9,7 @@ import java.util.Map;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 
 import org.xbill.DNS.Record;
@@ -17,15 +17,20 @@ import org.xbill.DNS.Record;
 
 class CommandDnsbl extends Command
 {
+	@Inject
 	private BlacklistManager blacklists;
+
+	@Inject
 	private ResultCache cache;
 
-	public CommandDnsbl(Plugin pkg, BlacklistManager blacklistManager, ResultCache cache)
+	@Inject
+	private dnsbl dnsbl;
+
+	@Inject
+	CommandDnsbl(Config conf)
 	{
-		super(pkg, "!DNSBL", "Manage DNSBL servers");
-		this.requiresChannel(Moo.conf.admin_channels);
-		this.blacklists = blacklistManager;
-		this.cache = cache;
+		super("!DNSBL", "Manage DNSBL servers");
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -51,7 +56,7 @@ class CommandDnsbl extends Command
 		source.notice("  Check IP against DNSBLs and return what actions would have been taken.");
 		source.notice("  If server is given, only check against server. ");
 		source.notice("Possible actions:");
-		for (Action a : Action.getAllActions())
+		for (Action a : dnsbl.getAllActions())
 			source.notice("  " + a.getName() + ": " + a.getDescription());
 	}
 
@@ -206,7 +211,7 @@ class CommandDnsbl extends Command
 
 		String host = params[0];
 		String response = params[1], actualResponse;
-		Action action = Action.getByName(params[2].toUpperCase());
+		Action action = dnsbl.getByName(params[2].toUpperCase());
 
 		if (response.equals(Rule.RESPONSE_ANY))
 			actualResponse = null;
@@ -254,7 +259,7 @@ class CommandDnsbl extends Command
 
 		String host = params[0];
 		String response = params[1], actualResponse;
-		Action action = Action.getByName(params[2].toUpperCase());
+		Action action = dnsbl.getByName(params[2].toUpperCase());
 
 		if (response.equals(Rule.RESPONSE_ANY))
 			actualResponse = null;

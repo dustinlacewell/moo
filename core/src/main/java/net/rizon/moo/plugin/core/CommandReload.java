@@ -18,12 +18,16 @@ class CommandReload extends Command
 	private static Logger logger;
 
 	@Inject
+	private Moo moo;
+
+	@Inject
 	private EventBus eventBus;
 
-	public CommandReload(Plugin pkg)
+	@Inject
+	CommandReload(Config conf)
 	{
-		super(pkg, "!RELOAD", "Reloads the configuration file");
-		this.requiresChannel(Moo.conf.admin_channels);
+		super("!RELOAD", "Reloads the configuration file");
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -42,7 +46,9 @@ class CommandReload extends Command
 			
 			eventBus.post(new OnReload(source));
 
-			Moo.conf = c;
+			moo.setConf(c);
+			moo.rebuildInjector();
+			
 			source.reply("Successfully reloaded configuration");
 		}
 		catch (Exception ex)

@@ -1,14 +1,16 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 
-public class CommandHelp extends Command
+class CommandHelp extends Command
 {
-	public CommandHelp(Plugin pkg)
+	CommandHelp()
 	{
-		super(pkg, "!HELP", "Shows this list");
+		super("!HELP", "Shows this list");
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class CommandHelp extends Command
 		{
 			boolean show_header = false;
 
-			for (Command c : pkg.commands)
+			for (Command c : pkg.getCommands())
 			{
 				if (!c.isRequiredChannel(source.getTargetName()))
 					continue;

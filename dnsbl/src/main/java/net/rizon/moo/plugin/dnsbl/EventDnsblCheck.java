@@ -1,36 +1,34 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
+import javax.inject.Inject;
 import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventClientConnect;
 import net.rizon.moo.events.EventDNSBLHit;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-class EventDnsblCheck
+class EventDnsblCheck implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(EventDnsblCheck.class);
-	
+	@Inject
+	private static Logger logger;
+
+	@Inject
 	private BlacklistManager rules;
+	@Inject
 	private ResultCache cache;
 
-	public EventDnsblCheck(BlacklistManager rules, ResultCache cache)
-	{
-		this.rules = rules;
-		this.cache = cache;
-	}
+	@Inject
+	private EventBus eventBus;
 
 	private void takeAction(String nick, String ip, List<DnsblCheckResult> results)
 	{
@@ -47,7 +45,7 @@ class EventDnsblCheck
 			for (Map.Entry<String, List<Action>> dnsblResult : result.getActions().entrySet())
 			{
 				// XXX this is calling event from a thread
-				Moo.getEventBus().post(new EventDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey()));
+				eventBus.post(new EventDNSBLHit(nick, ip, result.getBlacklist().getName(), dnsblResult.getKey()));
 
 				// And those responses each have a set of actions.
 				for (Action a : dnsblResult.getValue())
@@ -107,11 +105,11 @@ class EventDnsblCheck
 		try
 		{
 			DnsblConfiguration c = DnsblConfiguration.load();
-			rules.load(c.servers);
-			cache.load(c.cache);
-			cache.clear();
-			DnsblChecker.load(c);
-			dnsbl.conf = c;
+//			rules.load(c.servers);
+//			cache.load(c.cache);
+//			cache.clear();
+//			DnsblChecker.load(c);
+//			dnsbl.conf = c;
 		}
 		catch (Exception ex)
 		{

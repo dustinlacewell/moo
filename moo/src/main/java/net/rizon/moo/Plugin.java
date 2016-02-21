@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Plugin extends AbstractModule
 {
@@ -13,7 +14,7 @@ public abstract class Plugin extends AbstractModule
 	private String name, desc;
 	public String pname;
 	protected ClassLoader loader; // Loader for this plugin
-	public LinkedList<Command> commands = new LinkedList<Command>();
+	//public List<Command> commands = new LinkedList<>();
 
 	protected Plugin(String name, String desc)
 	{
@@ -48,6 +49,8 @@ public abstract class Plugin extends AbstractModule
 	public abstract void start() throws Exception;
 	public abstract void stop();
 
+	public abstract List<Command> getCommands();
+
 	//@SuppressWarnings("resource")
 	private static Plugin loadPlugin(String base, String name, boolean core) throws Throwable
 	{
@@ -72,7 +75,6 @@ public abstract class Plugin extends AbstractModule
 		p.pname = name;
 		p.loader = cl;
 
-		p.start();
 		return p;
 	}
 

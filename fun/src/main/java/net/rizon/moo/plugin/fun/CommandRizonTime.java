@@ -11,9 +11,9 @@ class CommandRizonTime extends Command
 {
 	private HashMap<String, String> cache = new HashMap<String, String>();
 
-	public CommandRizonTime(Plugin pkg)
+	CommandRizonTime()
 	{
-		super(pkg, "!RIZONTIME", "Calculates out a length of time in Rizon Time(tm)");
+		super("!RIZONTIME", "Calculates out a length of time in Rizon Time(tm)");
 	}
 
 	@Override

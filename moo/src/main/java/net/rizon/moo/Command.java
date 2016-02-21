@@ -1,13 +1,14 @@
 package net.rizon.moo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Command
 {
 	private Plugin pkg;
 	private String cmdname;
 	private String description;
-	private ArrayList<String> channels = new ArrayList<String>();
+	private List<String> channels = new ArrayList<>();
 
 	public Command(Plugin pkg, final String cmdname, final String desc)
 	{
@@ -15,14 +16,18 @@ public abstract class Command
 		this.cmdname = cmdname;
 		this.description = desc;
 
-		pkg.commands.add(this);
+		//pkg.commands.add(this);
 	}
 
-	//@Override
+	public Command(String cmdname, String description)
+	{
+		this.cmdname = cmdname;
+		this.description = description;
+	}
+
 	public void remove()
 	{
-		pkg.commands.remove(this);
-		//super.remove();
+		//pkg.commands.remove(this);
 	}
 
 	public Plugin getPackage()

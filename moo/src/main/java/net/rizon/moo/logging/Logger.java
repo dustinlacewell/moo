@@ -29,9 +29,9 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 		Level level = event.getLevel();
 		boolean bad = level == Level.ERROR || level == Level.WARN || level == Level.ALL;
 
-		if (Moo.conf != null)
-			if (level == Level.INFO || bad)
-				for (final String ch : Moo.conf.moo_log_channels)
+//		if (Moo.conf != null)
+//			if (level == Level.INFO || bad)
+//				for (final String ch : Moo.conf.moo_log_channels)
 				{
 //					if (message != null)
 //						Moo.privmsg(ch, message); // XXX logback makes this so can't really inject? post event? cant get eventbus.

@@ -1,33 +1,35 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import net.rizon.moo.plugin.dnsbl.actions.Action;
+import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblServerConfiguration;
 import net.rizon.moo.plugin.dnsbl.conf.RuleConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 class BlacklistManager
 {
-	private static final Logger logger = LoggerFactory.getLogger(BlacklistManager.class);
-	
-	private Map<String, Blacklist> blacklists = new HashMap<String, Blacklist>();
+	@Inject
+	private static Logger logger;
 
-	/**
-	 * Loads the list of DNSBL server configuration.
-	 * @param configuration List of server configurations.
-	 */
-	public void load(List<DnsblServerConfiguration> configuration)
+	@Inject
+	private dnsbl dnsbl;
+
+	@Inject
+	private DnsblConfiguration conf;
+	
+	private Map<String, Blacklist> blacklists = new HashMap<>();
+
+	public void load()
 	{
 		blacklists.clear();
 
-		for (DnsblServerConfiguration c : configuration)
+		for (DnsblServerConfiguration c : conf.servers)
 		{
 			Blacklist b = new Blacklist(c.address);
 			blacklists.put(c.address, b);
@@ -38,7 +40,7 @@ class BlacklistManager
 				if (response.equals(Rule.RESPONSE_ANY))
 					response = null;
 
-				Action action = Action.getByName(rule.action);
+				Action action = dnsbl.getByName(rule.action);
 				if (action == null)
 				{
 					// Invalid config item, ignore it.

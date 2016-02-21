@@ -11,8 +11,9 @@ public class ConsoleFilter extends Filter<ILoggingEvent>
 	@Override
 	public FilterReply decide(ILoggingEvent event)
 	{
-		boolean show = Moo.conf.debug || event.getLevel() != Level.DEBUG;
-		return show ? FilterReply.ACCEPT : FilterReply.DENY;
+		//boolean show = Moo.conf.debug || event.getLevel() != Level.DEBUG;
+		//return show ? FilterReply.ACCEPT : FilterReply.DENY;
+		return FilterReply.ACCEPT;
 	}
 
 }

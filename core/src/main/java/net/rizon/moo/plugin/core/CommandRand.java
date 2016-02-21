@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Inject;
 import java.util.Random;
 
 import net.rizon.moo.Command;
@@ -8,9 +9,10 @@ import net.rizon.moo.Plugin;
 
 class CommandRand extends Command
 {
-	public CommandRand(Plugin pkg)
+	@Inject
+	CommandRand()
 	{
-		super(pkg, ".RAND", "Generate a random string");
+		super(".RAND", "Generate a random string");
 	}
 
 	private static String randChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@_#^&%$";

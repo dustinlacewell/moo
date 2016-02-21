@@ -26,6 +26,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 
 public class ClientInitializer extends ChannelInitializer<SocketChannel>
 {
@@ -38,23 +39,26 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 	private LoggingHandler loggingHandler;
 	
 	@Inject
-	private ClientHandler clientHandler;	
+	private ClientHandler clientHandler;
+
+	@Inject
+	private Config conf;
 	
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception
 	{
 		ChannelPipeline pipeline = ch.pipeline();
 		
-		if (Moo.conf.general.ssl)
+		if (conf.general.ssl)
 		{
 			SslContext sslCtx;
 			
-			if (Moo.conf.general.cert != null && Moo.conf.general.key != null)
+			if (conf.general.cert != null && conf.general.key != null)
 			{
 				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
 				
-				byte[] certBytes = Files.readAllBytes(new File(Moo.conf.general.cert).toPath());
-				byte[] keyBytes = Files.readAllBytes(new File(Moo.conf.general.key).toPath());
+				byte[] certBytes = Files.readAllBytes(new File(conf.general.cert).toPath());
+				byte[] keyBytes = Files.readAllBytes(new File(conf.general.key).toPath());
 				
 				X509Certificate cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certBytes));
 				PrivateKey key = (PrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(keyBytes));

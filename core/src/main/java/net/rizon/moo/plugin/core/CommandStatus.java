@@ -1,16 +1,22 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.Version;
+import net.rizon.moo.conf.Config;
 
 class CommandStatus extends Command
 {
-	public CommandStatus(Plugin pkg)
+	@Inject
+	private Config conf;
+
+	@Inject
+	CommandStatus(Config conf)
 	{
-		super(pkg, "!STATUS", "View " + Moo.conf.general.nick + "'s status");
+		super("!STATUS", "View " + conf.general.nick + "'s status");
 	}
 
 	private String convertBytes(long bb)
@@ -56,14 +62,14 @@ class CommandStatus extends Command
 	public void onHelp(CommandSource source)
 	{
 		source.notice("Syntax: !STATUS");
-		source.notice("!STATUS prints misc info on " + Moo.conf.general.nick + ".");
-		source.notice("This includes the version, the date when " + Moo.conf.general.nick + " was started,");
+		source.notice("!STATUS prints misc info on " + conf.general.nick + ".");
+		source.notice("This includes the version, the date when " + conf.general.nick + " was started,");
 		source.notice("the amount of currently running threads and memory usage.");
 	}
 
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		source.reply("[STATUS] " + Moo.conf.general.nick + " version " + Moo.conf.version + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		source.reply("[STATUS] " + conf.general.nick + " version " + conf.version + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

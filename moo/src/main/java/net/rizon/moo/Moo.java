@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -62,10 +63,10 @@ public class Moo
 	private static final Logger logger = LoggerFactory.getLogger(Moo.class);
 	private static final Date created = new Date();
 	
-	private EventLoopGroup group = new NioEventLoopGroup(1);
+	private final EventLoopGroup group = new NioEventLoopGroup(1);
 	public static io.netty.channel.Channel channel;
 
-	public static Config conf = null;
+	private Config conf;
 	public static Database db = null;
 	public static boolean quitting = false;
 
@@ -94,9 +95,14 @@ public class Moo
 		moo.start();
 	}
 
-	// Don't allow guice to JIT bind Moo
-	private Moo()
+	public Config getConf()
 	{
+		return conf;
+	}
+
+	public void setConf(Config conf)
+	{
+		this.conf = conf;
 	}
 	
 	private void run() throws InterruptedException
@@ -160,24 +166,16 @@ public class Moo
 			}
 		}
 
-		this.rebuildInjector();
-//		List<Module> modules = new ArrayList<>();
-//		for (Plugin p : Plugin.getPlugins())
-//			modules.add(p);
-//		modules.add(new MooModule());
-//		modules.add(new NettyModule());
-//		modules.add(new Plexus());
-//
-//		injector = Guice.createInjector(modules);
-//
-//		injector.injectMembers(this);
-
 		logger.info("moo v{} starting up", Version.getFullVersion());
+
+		this.rebuildInjector();
+
+		eventManager.build();
 
 		eventBus.post(new InitDatabases());
 
 		eventBus.post(new LoadDatabases());
-		
+
 		scheduleWithFixedDelay(databaseTimer, 5, TimeUnit.MINUTES);
 
 		while (quitting == false)
@@ -240,11 +238,14 @@ public class Moo
 		return moo.group.schedule(r, t, unit);
 	}
 
-	private void rebuildInjector()
+	public void rebuildInjector()
 	{
+		for (Plugin p : Plugin.getPlugins())
+			p.stop();
+		
 		List<Module> modules = new ArrayList<>();
 
-		modules.add(new MooModule());
+		modules.add(new MooModule(this));
 		modules.add(new NettyModule());
 		modules.add(new Plexus());
 
@@ -257,6 +258,14 @@ public class Moo
 
 		eventManager.build();
 
-		// XXX these are scheduler stuff here
+		for (Plugin p : Plugin.getPlugins())
+			try
+			{
+				p.start();
+			}
+			catch (Exception ex)
+			{
+				logger.warn("unable to start plugin " + p.getName(), ex);
+			}
 	}
 }

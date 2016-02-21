@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.User;
 import net.rizon.moo.events.OnConnect;
@@ -25,6 +26,9 @@ public class Message001 extends Message
 
 	@Inject
 	private ServerManager serverManager;
+
+	@Inject
+	private Config conf;
 	
 	public Message001()
 	{
@@ -34,15 +38,15 @@ public class Message001 extends Message
 	@Override
 	public void run(IRCMessage message)
 	{
-		if (Moo.conf.general.oper != null)
-			protocol.write("OPER", Moo.conf.general.oper.name, Moo.conf.general.oper.pass);
-		if (Moo.conf.general.nickserv != null)
-			protocol.privmsg("NickServ", "IDENTIFY " + Moo.conf.general.nickserv.pass);
+		if (conf.general.oper != null)
+			protocol.write("OPER", conf.general.oper.name, conf.general.oper.pass);
+		if (conf.general.nickserv != null)
+			protocol.privmsg("NickServ", "IDENTIFY " + conf.general.nickserv.pass);
 
-		Moo.me = new User(Moo.conf.general.nick);
+		Moo.me = new User(conf.general.nick);
 		irc.insertUser(Moo.me);
 
-		for (String s : Moo.conf.channels)
+		for (String s : conf.channels)
 			protocol.join(s);
 
 		protocol.write("MAP");

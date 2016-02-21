@@ -1,22 +1,23 @@
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 
 class CommandHost extends Command
 {
-	public CommandHost(Plugin pkg)
+	@Inject
+	CommandHost(Config conf)
 	{
-		super(pkg, "!HOST", "Resolve a hostname");
+		super("!HOST", "Resolve a hostname");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
