@@ -1,33 +1,40 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 import org.slf4j.Logger;
 
-import org.slf4j.LoggerFactory;
 
 final class ScanListener extends Thread
 {
-	private static final Logger logger = LoggerFactory.getLogger(ScanListener.class);
+	@Inject
+	private static Logger logger;
 	
 	private static final Pattern typeMatchPatter = Pattern.compile("[a-z0-9_]+");
 
-	private final String ip;
-	private final int port;
+	@Inject
+	private ProxyscanConfiguration conf;
+
+	@Inject
+	private proxyscan proxyscan;
+
+//	private final String ip;
+//	private final int port;
 	private ServerSocket listener;
 
-	public ScanListener(final String ip, final int port)
-	{
-		this.ip = ip;
-		this.port = port;
-	}
+//	public ScanListener(final String ip, final int port)
+//	{
+//		this.ip = ip;
+//		this.port = port;
+//	}
 
 	@Override
 	public void run()
@@ -36,8 +43,8 @@ final class ScanListener extends Thread
 		{
 			logger.debug("Trying to create listener");
 			this.listener = new ServerSocket();
-			this.listener.bind(new InetSocketAddress(this.ip, this.port));
-			logger.debug("Bound to {}:{}", this.ip, this.port);
+			this.listener.bind(new InetSocketAddress(conf.server.ip, conf.server.port));
+			logger.debug("Bound to {}:{}", conf.server.ip, conf.server.port);
 
 			for (Socket client; (client = this.listener.accept()) != null;)
 			{
@@ -47,7 +54,7 @@ final class ScanListener extends Thread
 
 				try
 				{
-					s.write((proxyscan.conf.check_string + "\r\n").getBytes());
+					s.write((conf.check_string + "\r\n").getBytes());
 					s.flush();
 					logger.debug("Wrote check string.");
 

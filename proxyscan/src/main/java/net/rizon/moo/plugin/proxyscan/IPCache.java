@@ -1,11 +1,13 @@
 package net.rizon.moo.plugin.proxyscan;
 
+import com.google.inject.Inject;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 
 final class IPCache implements Runnable
 {
@@ -16,6 +18,9 @@ final class IPCache implements Runnable
 	 */
 	private final Deque<CacheEntry> cacheq = new ArrayDeque<CacheEntry>();
 	private final Map<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
+
+	@Inject
+	private ProxyscanConfiguration conf;
 
 	@Override
 	public synchronized void run()
@@ -40,7 +45,7 @@ final class IPCache implements Runnable
 
 	public synchronized void addCacheEntry(final String ip)
 	{
-		CacheEntry e = new CacheEntry(ip);
+		CacheEntry e = new CacheEntry(ip, conf.expiry);
 		this.cache.put(ip, e);
 		this.cacheq.addLast(e);
 	}

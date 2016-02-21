@@ -11,19 +11,22 @@ import net.rizon.moo.logging.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ConnectorThread extends Thread
+class Connector extends Thread
 {
-	static final Logger logger = LoggerFactory.getLogger(ConnectorThread.class);
+	static final Logger logger = LoggerFactory.getLogger(Connector.class);
 
 	private static final Pattern vars = Pattern.compile("%[^%]+%");
 
 	private String source;
-	private final String ip;
+	private String ip;
+	
+	private proxyscan proxyscan;
 
-	public ConnectorThread(String source, final String ip)
+	public Connector(String source, String ip, proxyscan proxyscan)
 	{
 		this.source = source;
 		this.ip = ip;
+		this.proxyscan = proxyscan;
 	}
 
 	@Override
@@ -33,7 +36,7 @@ final class ConnectorThread extends Thread
 
 		try
 		{
-			String args = proxyscan.conf.path + " " + proxyscan.conf.arguments;
+			String args = proxyscan.getConf().path + " " + proxyscan.getConf().arguments;
 			Matcher m = vars.matcher(args);
 			while (m.find())
 			{
@@ -106,20 +109,3 @@ final class ConnectorThread extends Thread
 	}
 }
 
-public final class Connector
-{
-	public static final void connect(String source, final String ip)
-	{
-		String path = proxyscan.conf.path;
-		if (path.isEmpty() == true)
-			return;
-
-		File proxycheck = new File(path);
-		if (proxycheck.exists() == false || proxycheck.isFile() == false || proxycheck.canExecute() == false)
-			return;
-
-		ConnectorThread t = new ConnectorThread(source, ip);
-		LoggerUtils.initThread(ConnectorThread.logger, t);
-		t.start();
-	}
-}

@@ -34,8 +34,8 @@
 		<module>grapher</module>
 		<module>logging</module>
 		<module>mxbl</module>
-		<module>osflood</module><!--
-		<module>proxyscan</module>
+		<module>osflood</module>
+		<module>proxyscan</module><!--
 		<module>random</module>
 		<module>servercontrol</module>
 		<module>servermonitor</module>
