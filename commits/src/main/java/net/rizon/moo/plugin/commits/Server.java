@@ -15,24 +15,26 @@ import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class Server extends Thread
 {
-	protected static final Logger logger = LoggerFactory.getLogger(commits.class);
+	@Inject
+	private static Logger logger;
+
 	private static final int maxPayload = 65535;
 
+	@Inject
+	private CommitsConfiguration conf;
+
+	@Inject
+	private Protocol protocol;
+
 	private ServerSocket sock;
-
-	private String ip;
-	private int port;
-
-	public Server(final String ip, int port)
-	{
-		this.ip = ip;
-		this.port = port;
-	}
 
 	public void stopServer()
 	{
@@ -52,7 +54,7 @@ class Server extends Thread
 		try
 		{
 			this.sock = new ServerSocket();
-			this.sock.bind(new InetSocketAddress(this.ip, this.port));
+			this.sock.bind(new InetSocketAddress(conf.ip, conf.port));
 
 			for (Socket client; (client = this.sock.accept()) != null;)
 			{
@@ -134,25 +136,25 @@ class Server extends Thread
 							if (!attrs.getAction().equals("update"))
 							{
 								// Update events are annoying, they get sent together with close / open.
-								Moo.privmsgAll(commits.conf.channels, "\2" + projectName + "\2: \00303" + attrs.getAction() + " issue\003 by \00303" + p.getUser().name + "\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + projectName + "\2: \00303" + attrs.getAction() + " issue\003 by \00303" + p.getUser().name + "\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
 						else if (p.getCommits() != null)
 						{
 							if (p.getPusher() != null)
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getPusher() + "\003 pushed \00307" + p.getCommits().size() + "\003 commit" + (p.getCommits().size() == 1 ? "" : "s") + " to \00307" + p.getBranch() + "\003");
 
 							for (Commit c : p.getCommits())
 							{
 								String branch = c.getBranch() != null ? c.getBranch() : p.getBranch();
 								if (c.getMessage().length > 1)
 								{
-									Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
+									protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
 									for (final String msg : c.getMessage())
-										Moo.privmsgAll(commits.conf.channels, msg);
+										protocol.privmsgAll(conf.channels, msg);
 								}
 								else if (c.getMessage().length == 1)
-									Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
+									protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
 							}
 						}
 						else if (p.getObjectKind() != null && p.getObjectKind().equals("note"))
@@ -160,23 +162,23 @@ class Server extends Thread
 							ObjectAttributes attrs = p.getObjectAttributes();
 							if (attrs.getNotableType().equals("Commit"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on commit \00307" + attrs.getCommitId() + "\003");
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on commit \00307" + attrs.getCommitId() + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 							else if (attrs.getNotableType().equals("MergeRequest"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on merge request \00307!" + p.getMergeRequest().iid + "\003");
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on merge request \00307!" + p.getMergeRequest().iid + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 							else if (attrs.getNotableType().equals("Issue"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on issue \00307#" + p.getIssue().iid + "\003 " + p.getIssue().title);
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on issue \00307#" + p.getIssue().iid + "\003 " + p.getIssue().title);
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 							else if (attrs.getNotableType().equals("Snippet"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on snippet \00307#" + attrs.getNotableId() + "\003");
-								Moo.privmsgAll(commits.conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + p.getUser().name + "\003 commented on snippet \00307#" + attrs.getNotableId() + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303Comment\003: " + attrs.getNote() + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
 						else if (p.getObjectKind() != null && p.getObjectKind().equals("merge_request"))
@@ -184,13 +186,13 @@ class Server extends Thread
 							ObjectAttributes attrs = p.getObjectAttributes();
 							if (attrs.getAction().equals("open"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 opened merge request \00307!" + attrs.getIid() + "\003");
-								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 opened merge request \00307!" + attrs.getIid() + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 							if (attrs.getAction().equals("close"))
 							{
-								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 closed merge request \00307!" + attrs.getIid() + "\003");
-								Moo.privmsgAll(commits.conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
+								protocol.privmsgAll(conf.channels, "\2" + attrs.getTarget().name + "\2: \00303" + p.getUser().name + "\003 closed merge request \00307!" + attrs.getIid() + "\003");
+								protocol.privmsgAll(conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
 						else

@@ -26,7 +26,7 @@
 
 		<module>antiidle</module>
 		<module>commands</module>
-		<!--<module>commits</module>-->
+		<module>commits</module>
 		<module>core</module>
 		<module>dnsbl</module>
 <!--		<module>dnsblstats</module>-->
