@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.commands;
 
+import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,7 +10,9 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 
 final class operComparator implements Comparator<String>
 {
@@ -50,13 +53,17 @@ class CommandOline extends Command
 {
 	private static final serverComparator servComparator = new serverComparator();
 
-	public CommandOline(Plugin pkg)
-	{
-		super(pkg, "!OLINE", "View olines");
+	@Inject
+	private ServerManager serverManager;
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+	@Inject
+	public CommandOline(Config conf)
+	{
+		super("!OLINE", "View olines");
+
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -103,7 +110,7 @@ class CommandOline extends Command
 			}
 
 			HashMap<String, Integer> oper_map = new HashMap<String, Integer>();
-			for (Server s : Server.getServers())
+			for (Server s : serverManager.getServers())
 			{
 				if (s.isServices() || s.olines == null)
 					continue;
@@ -203,7 +210,7 @@ class CommandOline extends Command
 				catch (NumberFormatException ex) { }
 			}
 
-			Server servers[] = Server.getServers();
+			Server servers[] = serverManager.getServers();
 			Arrays.sort(servers, servComparator);
 
 			source.reply("Servers with " + (params.length > 2 ? (Character.isDigit(params[2].charAt(0)) ? ">=" + count : params[2]) : ">=" + count) + " o:lines:");
@@ -248,7 +255,7 @@ class CommandOline extends Command
 		else
 		{
 			boolean found = false;
-			Server s = Server.findServer(params[1]);
+			Server s = serverManager.findServer(params[1]);
 			if (s != null)
 			{
 				String buffer = "o:lines for " + s.getName() + ": ";
@@ -269,7 +276,7 @@ class CommandOline extends Command
 			}
 
 			String servers = "";
-			for (Server s2 : Server.getServers())
+			for (Server s2 : serverManager.getServers())
 			{
 				if (s2.isServices())
 					continue;

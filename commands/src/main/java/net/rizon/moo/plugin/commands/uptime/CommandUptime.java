@@ -6,7 +6,6 @@ import java.util.Date;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
 import net.rizon.moo.Split;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
@@ -16,7 +15,7 @@ import net.rizon.moo.util.Match;
 import net.rizon.moo.util.TimeDifference;
 
 
-class CommandUptime extends Command
+public class CommandUptime extends Command
 {
 	@Inject
 	private ServerManager serverManager;
