@@ -29,7 +29,7 @@
 		<module>commits</module>
 		<module>core</module>
 		<module>dnsbl</module>
-<!--		<module>dnsblstats</module>-->
+		<module>dnsblstats</module>
 		<module>fun</module>
 <!--		<module>grapher</module>
 		<module>logging</module>

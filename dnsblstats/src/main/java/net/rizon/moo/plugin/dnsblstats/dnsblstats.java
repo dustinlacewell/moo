@@ -1,27 +1,47 @@
 package net.rizon.moo.plugin.dnsblstats;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 import net.rizon.moo.events.OnConnect;
 import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.events.OnServerLink;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.dnsblstats.comparators.CountComparator;
+import net.rizon.moo.plugin.dnsblstats.comparators.ServerComparator;
 
-public class dnsblstats extends Plugin
+public class dnsblstats extends Plugin implements EventListener
 {
-	private Command dnsbl;
-	private ScheduledFuture requester;
+	@Inject
+	private CommandDnsblStats dnsbl;
+
+	@Inject
+	private ServerManager serverManager;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private StatsRequester requester;
+	
+	private ScheduledFuture requesterFuture;
 	private Message n219, n227;
 
-	static HashMap<Server, DnsblInfo> infos = new HashMap<Server, DnsblInfo>();
+	private Map<Server, DnsblInfo> infos = new HashMap<>();
 
 	public dnsblstats()
 	{
@@ -31,24 +51,16 @@ public class dnsblstats extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		dnsbl = new CommandDnsblStats(this);
-		requester = Moo.scheduleWithFixedDelay(new StatsRequester(), 1, TimeUnit.MINUTES);
-		n219 = new Numeric219();
-		n227 = new Numeric227();
-		Moo.getEventBus().register(this);
+		requesterFuture = Moo.scheduleWithFixedDelay(requester, 1, TimeUnit.MINUTES);
 	}
 
 	@Override
 	public void stop()
 	{
-		dnsbl.remove();
-		requester.cancel(false);
-		n219.remove();
-		n227.remove();
-		Moo.getEventBus().unregister(this);
+		requesterFuture.cancel(false);
 	}
 
-	static DnsblInfo getDnsblInfoFor(Server s)
+	public DnsblInfo getDnsblInfoFor(Server s)
 	{
 		DnsblInfo i = infos.get(s);
 		if (i == null)
@@ -62,8 +74,8 @@ public class dnsblstats extends Plugin
 	@Subscribe
 	public void onConnect(OnConnect evt)
 	{
-		for (Server s : Server.getServers())
-			Moo.write("STATS", "B", s.getName());
+		for (Server s : serverManager.getServers())
+			protocol.write("STATS", "B", s.getName());
 	}
 
 	@Subscribe
@@ -72,7 +84,7 @@ public class dnsblstats extends Plugin
 		Server serv = evt.getServer();
 		
 		/* Be sure dnsbl stats are up to date, prevents long splits from tripping the dnsbl monitor */
-		Moo.write("STATS", "B", serv.getName());
+		protocol.write("STATS", "B", serv.getName());
 	}
 
 	@Subscribe
@@ -80,6 +92,32 @@ public class dnsblstats extends Plugin
 	{
 		Server serv = evt.getServer();
 		
-		dnsblstats.infos.remove(serv);
+		infos.remove(serv);
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.<Command>asList(dnsbl);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(dnsblstats.class).toInstance(this);
+
+		bind(StatsRequester.class);
+
+		bind(Numeric219.class);
+		bind(Numeric227.class);
+
+		bind(CountComparator.class);
+		bind(ServerComparator.class);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandDnsblStats.class);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 }

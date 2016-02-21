@@ -167,7 +167,7 @@ public class Moo
 
 		logger.info("moo v{} starting up", Version.getFullVersion());
 
-		this.rebuildInjector();
+		buildInjector();
 
 		eventManager.build();
 
@@ -237,11 +237,8 @@ public class Moo
 		return moo.group.schedule(r, t, unit);
 	}
 
-	public void rebuildInjector()
+	private void buildInjector()
 	{
-		for (Plugin p : Plugin.getPlugins())
-			p.stop();
-		
 		List<Module> modules = new ArrayList<>();
 
 		modules.add(new MooModule(this));
@@ -266,5 +263,13 @@ public class Moo
 			{
 				logger.warn("unable to start plugin " + p.getName(), ex);
 			}
+	}
+
+	public void rebuildInjector()
+	{
+		for (Plugin p : Plugin.getPlugins())
+			p.stop();
+
+		buildInjector();
 	}
 }

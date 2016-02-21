@@ -1,30 +1,51 @@
 package net.rizon.moo.plugin.dnsblstats;
 
+import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.dnsblstats.comparators.CountComparator;
+import net.rizon.moo.plugin.dnsblstats.comparators.ServerComparator;
 
 class CommandDnsblStats extends Command
 {
-	private static HashSet<String> command_waiting_on = new HashSet<String>();
+	private static Set<String> command_waiting_on = new HashSet<>();
 	private static CommandSource command_source;
 	private static boolean do_server_counts;
 	private static String do_server_name;
 
-	public CommandDnsblStats(Plugin pkg)
-	{
-		super(pkg, "!DNSBLSTATS", "Views DNSBL counts");
+	@Inject
+	private ServerManager serverManager;
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private dnsblstats dnsblstats;
+
+	@Inject
+	private CountComparator countComparator;
+
+	@Inject
+	private ServerComparator serverComparator;
+
+	@Inject
+	public CommandDnsblStats(Config conf)
+	{
+		super("!DNSBLSTATS", "Views DNSBL counts");
+
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -53,22 +74,22 @@ class CommandDnsblStats extends Command
 				do_server_name = params[2];
 		}
 
-		for (Server s : Server.getServers())
+		for (Server s : serverManager.getServers())
 			if (s.isNormal() && !s.isHub())
 			{
-				Moo.write("STATS", "B", s.getName());
+				protocol.write("STATS", "B", s.getName());
 				command_waiting_on.add(s.getName());
 			}
 	}
 
-	static void checkReply(String source)
+	void checkReply(String source)
 	{
 		command_waiting_on.remove(source);
 		if (command_waiting_on.isEmpty() && command_source != null)
 		{
 			if (CommandDnsblStats.do_server_name != null)
 			{
-				Server s = Server.findServer(do_server_name);
+				Server s = serverManager.findServer(do_server_name);
 				if (s == null)
 					command_source.reply("No servers found for " + do_server_name);
 				else
@@ -80,8 +101,8 @@ class CommandDnsblStats extends Command
 
 					String[] dnsbl_names = new String[info.hits.size()];
 					info.hits.keySet().toArray(dnsbl_names);
-					dnsblCountComparator.counts = info.hits;
-					Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
+					countComparator.counts = info.hits;
+					Arrays.sort(dnsbl_names, countComparator);
 
 					for (int i = dnsbl_names.length; i > 0; --i)
 					{
@@ -98,13 +119,13 @@ class CommandDnsblStats extends Command
 			else if (CommandDnsblStats.do_server_counts)
 			{
 				long total = 0;
-				for (Server s : Server.getServers())
+				for (Server s : serverManager.getServers())
 					total += dnsblstats.getDnsblInfoFor(s).getTotal();
 
 				command_source.reply("DNSBL counts by server (" + total + "):");
 
-				Server servers[] = Server.getServers();
-				Arrays.sort(servers, dnsblServerComparator.cmp);
+				Server servers[] = serverManager.getServers();
+				Arrays.sort(servers, serverComparator);
 
 				for (int i = servers.length; i > 0; --i)
 				{
@@ -124,7 +145,7 @@ class CommandDnsblStats extends Command
 			{
 				HashMap<String, Long> dnsbl_counts = new HashMap<String, Long>();
 				long total = 0;
-				for (Server s : Server.getServers())
+				for (Server s : serverManager.getServers())
 				{
 					DnsblInfo info = dnsblstats.getDnsblInfoFor(s);
 					total += info.getTotal();
@@ -144,8 +165,8 @@ class CommandDnsblStats extends Command
 
 				String[] dnsbl_names = new String[dnsbl_counts.size()];
 				dnsbl_counts.keySet().toArray(dnsbl_names);
-				dnsblCountComparator.counts = dnsbl_counts;
-				Arrays.sort(dnsbl_names, dnsblCountComparator.cmp);
+				countComparator.counts = dnsbl_counts;
+				Arrays.sort(dnsbl_names, countComparator);
 
 				for (int i = dnsbl_names.length; i > 0; --i)
 				{

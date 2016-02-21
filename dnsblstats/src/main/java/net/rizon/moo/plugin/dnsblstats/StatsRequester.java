@@ -1,20 +1,37 @@
 package net.rizon.moo.plugin.dnsblstats;
 
-import java.util.Date;
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+
 
 class StatsRequester implements Runnable
 {
 	private static boolean check_requested;
 	private static boolean first_run = true;
-	private static HashSet<String> requested = new HashSet<String>(), check_waiting_on = new HashSet<String>();
+	private static Set<String> requested = new HashSet<>(), check_waiting_on = new HashSet<>();
 	private static long before_total_count;
-	private static HashMap<String, Long> before_count = new HashMap<String, Long>();
+	private static Map<String, Long> before_count = new HashMap<>();
+
+	@Inject
+	private ServerManager serverManager;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private dnsblstats dnsblstats;
+
+	@Inject
+	private Config config;
 
 	@Override
 	public void run()
@@ -25,10 +42,10 @@ class StatsRequester implements Runnable
 		before_total_count = 0;
 		before_count.clear();
 
-		for (Server s : Server.getServers())
+		for (Server s : serverManager.getServers())
 			if (s.isNormal() && !s.isHub())
 			{
-				Moo.write("STATS", "B", s.getName());
+				protocol.write("STATS", "B", s.getName());
 
 				requested.add(s.getName());
 				check_waiting_on.add(s.getName());
@@ -42,7 +59,7 @@ class StatsRequester implements Runnable
 	private static final long global_threshold = 50;
 	private static final long server_threshold = 20;
 
-	static void checkWarn(String source)
+	void checkWarn(String source)
 	{
 		check_waiting_on.remove(source);
 
@@ -54,7 +71,7 @@ class StatsRequester implements Runnable
 
 		for (String ss : requested)
 		{
-			Server s = Server.findServerAbsolute(ss);
+			Server s = serverManager.findServerAbsolute(ss);
 			if (s != null && s.getSplit() == null && !s.isServices())
 			{
 				long count = dnsblstats.getDnsblInfoFor(s).getTotal();
@@ -71,7 +88,7 @@ class StatsRequester implements Runnable
 
 		for (Iterator<String> it = before_count.keySet().iterator(); it.hasNext();)
 		{
-			Server s = Server.findServerAbsolute(it.next());
+			Server s = serverManager.findServerAbsolute(it.next());
 			if (s == null)
 				continue;
 
@@ -89,7 +106,7 @@ class StatsRequester implements Runnable
 		}
 
 		if (!dnsbl_message.isEmpty() && !first_run)
-			Moo.privmsgAll(Moo.conf.oper_channels, dnsbl_message);
+			protocol.privmsgAll(config.oper_channels, dnsbl_message);
 
 		first_run = false;
 		check_requested = false;

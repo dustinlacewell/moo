@@ -1,10 +1,11 @@
 package net.rizon.moo.plugin.dnsblstats;
 
 import java.util.HashMap;
+import java.util.Map;
 
-class DnsblInfo
+public class DnsblInfo
 {
-	public HashMap<String, Long> hits = new HashMap<String, Long>();
+	public Map<String, Long> hits = new HashMap<>();
 
 	public long getTotal()
 	{

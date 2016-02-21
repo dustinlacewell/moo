@@ -1,14 +1,23 @@
 package net.rizon.moo.plugin.dnsblstats;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Message;
-import net.rizon.moo.Server;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /* /stats b */
 class Numeric227 extends Message
 {
-	private static final Logger logger = LoggerFactory.getLogger(Numeric227.class);
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private ServerManager serverManager;
+
+	@Inject
+	private dnsblstats dnsblstats;
 		
 	public Numeric227()
 	{
@@ -16,17 +25,17 @@ class Numeric227 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length < 4)
+		if (message.getParams().length < 4)
 			return;
 
-		final String name = message[2];
+		final String name = message.getParams()[2];
 		long count;
 
 		try
 		{
-			count = Long.parseLong(message[3]);
+			count = Long.parseLong(message.getParams()[3]);
 		}
 		catch (Exception ex)
 		{
@@ -34,9 +43,12 @@ class Numeric227 extends Message
 			return;
 		}
 
-		Server s = Server.findServer(source);
+		Server s = serverManager.findServer(message.getSource());
 		if (s == null)
-			s = new Server(source);
+		{
+			s = new Server(message.getSource());
+			serverManager.insertServer(s);
+		}
 
 		DnsblInfo info = dnsblstats.getDnsblInfoFor(s);
 		info.hits.put(name, count);
