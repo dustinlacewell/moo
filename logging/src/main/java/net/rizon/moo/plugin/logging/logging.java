@@ -1,22 +1,34 @@
 package net.rizon.moo.plugin.logging;
 
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.EventListener;
+import java.util.List;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class logging extends Plugin
 {
-	private static final Logger logger = LoggerFactory.getLogger(logging.class);
-	
-	private Command ls, sls, wls;
-	private EventLogging e;
-	public static LoggingConfiguration conf;
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private CommandLogSearch logsearch;
+
+	@Inject
+	private CommandSLogSearch slogsearch;
+
+	@Inject
+	private CommandWLogSearch wlogsearch;
+
+	private LoggingConfiguration conf;
 
 	public logging() throws Exception
 	{
@@ -27,22 +39,11 @@ public class logging extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		ls = new CommandLogSearch(this);
-		sls = new CommandSLogSearch(this);
-		wls = new CommandWLogSearch(this);
-
-		e = new EventLogging();
-		Moo.getEventBus().register(e);
 	}
 
 	@Override
 	public void stop()
 	{
-		ls.remove();
-		sls.remove();
-		wls.remove();
-
-		Moo.getEventBus().unregister(e);
 	}
 
 	public static void addEntry(String type, String source, String target, String reason)
@@ -62,5 +63,27 @@ public class logging extends Plugin
 		{
 			logger.warn("Unable to log log entry", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList(logsearch, slogsearch, wlogsearch);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(logging.class).toInstance(this);
+
+		bind(LoggingConfiguration.class).toInstance(conf);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().to(EventLogging.class);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandLogSearch.class);
+		commandBinder.addBinding().to(CommandWLogSearch.class);
+		commandBinder.addBinding().to(CommandSLogSearch.class);
 	}
 }

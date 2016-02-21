@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.logging;
 
+import com.google.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,21 +9,23 @@ import java.util.ArrayList;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class CommandLogSearch extends Command
 {
-	private static final Logger logger = LoggerFactory.getLogger(CommandLogSearch.class);
-	
-	public CommandLogSearch(Plugin pkg)
-	{
-		super(pkg, "!LOGSEARCH", "Search through server logs");
+	@Inject
+	private static Logger logger;
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+	@Inject
+	public CommandLogSearch(Config conf)
+	{
+		super("!LOGSEARCH", "Search through server logs");
+
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override

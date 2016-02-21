@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Command;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.OnReload;
@@ -24,7 +23,6 @@ import net.rizon.moo.plugin.grapher.graphs.TotalOlineGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalServerGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalUserGraph;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class grapher extends Plugin implements EventListener
 {

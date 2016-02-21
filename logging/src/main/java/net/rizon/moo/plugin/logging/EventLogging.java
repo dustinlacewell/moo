@@ -1,6 +1,7 @@
 package net.rizon.moo.plugin.logging;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.PreparedStatement;
@@ -10,12 +11,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventNotice;
 import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.events.EventWallops;
@@ -25,13 +27,30 @@ import net.rizon.moo.events.OnServerLink;
 import net.rizon.moo.events.OnServerSplit;
 import net.rizon.moo.events.OnXLineAdd;
 import net.rizon.moo.events.OnXLineDel;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EventLogging
+class EventLogging implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(EventLogging.class);
-		
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private Config conf;
+
+	@Inject
+	private LoggingConfiguration logconf;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private ServerManager serverManager;
+
 	@Subscribe
 	public void initDatabases(InitDatabases evt)
 	{
@@ -48,13 +67,13 @@ class EventLogging
 	{
 		String channel = evt.getChannel(), message = evt.getMessage();
 		
-		if (!Moo.conf.logChannelsContains(channel))
+		if (!conf.logChannelsContains(channel))
 			return;
 
-		DateFormat format = new SimpleDateFormat(logging.conf.date);
+		DateFormat format = new SimpleDateFormat(logconf.date);
 		Date now = new Date();
-		File logPath = new File(logging.conf.path);
-		File logFilePath = new File(logPath, logging.conf.filename.replace("%DATE%", format.format(now)));
+		File logPath = new File(logconf.path);
+		File logFilePath = new File(logPath, logconf.filename.replace("%DATE%", format.format(now)));
 		
 		logPath.mkdirs();
 		
@@ -114,7 +133,7 @@ class EventLogging
 		switch (type)
 		{
 			case 'O':
-				chan_list.addAll(Arrays.asList(Moo.conf.oper_channels));
+				chan_list.addAll(Arrays.asList(conf.oper_channels));
 				break;
 			default:
 				/* Default is admin_channels, which is handled below. */
@@ -122,10 +141,10 @@ class EventLogging
 		}
 
 		/* admin_channels must always know. */
-		chan_list.addAll(Arrays.asList(Moo.conf.admin_channels));
+		chan_list.addAll(Arrays.asList(conf.admin_channels));
 
 		for (final String chan : chan_list)
-			Moo.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " " + message);
+			protocol.privmsg(chan, "[" + type + "-LINE] " + serv.getName() + " " + message);
 	}
 
 	@Subscribe
@@ -255,7 +274,7 @@ class EventLogging
 	private static final Pattern connectPattern = Pattern.compile("Remote CONNECT ([^ ]*) [0-9]* from ([^ ]*)$");
 	private static final Pattern wallTypePattern = Pattern.compile("^([A-Z]+) - (.+)");
 	
-	private static void checkAkill(final String ip)
+	private void checkAkill(final String ip)
 	{
 		try
 		{
@@ -267,7 +286,7 @@ class EventLogging
 			{
 				int count = rs.getInt("count(*)");
 				if (count > 0 && count % 50 == 0)
-					Moo.operwall(ip + " has been akilled " + count + " times - consider akilling it longer");
+					protocol.operwall(ip + " has been akilled " + count + " times - consider akilling it longer");
 			}
 			
 			rs.close();
@@ -405,7 +424,7 @@ class EventLogging
 	
 	private void remoteConnectLog(Matcher m)
 	{
-		Server s = Server.findServer(m.group(1));
+		Server s = serverManager.findServer(m.group(1));
 		if (s == null)
 			return;
 

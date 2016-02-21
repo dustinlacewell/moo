@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.logging;
 
+import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +17,9 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
+import net.rizon.moo.util.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +28,14 @@ class logSearcher extends Thread
 	private CommandSource source;
 	private String search;
 	private int limit;
+	private LoggingConfiguration conf;
 
-	public logSearcher(CommandSource source, final String search, final int limit)
+	public logSearcher(CommandSource source, String search, int limit, LoggingConfiguration conf)
 	{
 		this.source = source;
 		this.search = search;
 		this.limit = limit;
+		this.conf = conf;
 	}
 
 	@Override
@@ -38,15 +44,15 @@ class logSearcher extends Thread
 		Deque<String> matches = new ArrayDeque<String>();
 		int nummatches = 0;
 		
-		for (int i = logging.conf.searchDays - 1; i >= 0; --i)
+		for (int i = conf.searchDays - 1; i >= 0; --i)
 		{
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -i);
 			Date then = cal.getTime();
 
-			DateFormat format = new SimpleDateFormat(logging.conf.date);
-			File logPath = new File(logging.conf.path);
-			File logFilePath = new File(logPath, logging.conf.filename.replace("%DATE%", format.format(then)));
+			DateFormat format = new SimpleDateFormat(conf.date);
+			File logPath = new File(conf.path);
+			File logFilePath = new File(logPath, conf.filename.replace("%DATE%", format.format(then)));
 			
 			if (!logFilePath.exists())
 				continue;
@@ -57,7 +63,7 @@ class logSearcher extends Thread
 				try
 				{
 					for (String line; (line = reader.readLine()) != null;)
-						if (Moo.matches(line, "*" + search + "*"))
+						if (Match.matches(line, "*" + search + "*"))
 						{
 							++nummatches;
 							matches.addLast(line);
@@ -86,13 +92,18 @@ class logSearcher extends Thread
 
 class CommandSLogSearch extends Command
 {
-	static final Logger logger = LoggerFactory.getLogger(CommandSLogSearch.class);
+	@Inject
+	static Logger logger;
+
+	@Inject
+	private LoggingConfiguration conf;
 	
-	public CommandSLogSearch(Plugin pkg)
+	@Inject
+	public CommandSLogSearch(Config conf)
 	{
-		super(pkg, "!SLOGSEARCH", "Search through services logs");
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		super("!SLOGSEARCH", "Search through services logs");
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 	
 	private static final int defaultLimit = 100;
@@ -113,6 +124,6 @@ class CommandSLogSearch extends Command
 			}
 			catch (NumberFormatException ex) { }
 
-		new logSearcher(source, params[1], limit).start();
+		new logSearcher(source, params[1], limit, conf).start();
 	}
 }
