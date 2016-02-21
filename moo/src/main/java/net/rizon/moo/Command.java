@@ -10,24 +10,10 @@ public abstract class Command
 	private String description;
 	private List<String> channels = new ArrayList<>();
 
-	public Command(Plugin pkg, final String cmdname, final String desc)
-	{
-		this.pkg = pkg;
-		this.cmdname = cmdname;
-		this.description = desc;
-
-		//pkg.commands.add(this);
-	}
-
 	public Command(String cmdname, String description)
 	{
 		this.cmdname = cmdname;
 		this.description = description;
-	}
-
-	public void remove()
-	{
-		//pkg.commands.remove(this);
 	}
 
 	public Plugin getPackage()
@@ -35,12 +21,12 @@ public abstract class Command
 		return this.pkg;
 	}
 
-	public final String getCommandName()
+	public String getCommandName()
 	{
 		return this.cmdname;
 	}
 
-	public final String getDescription()
+	public String getDescription()
 	{
 		return this.description;
 	}

@@ -1,79 +1,37 @@
-package net.rizon.moo.plugin.commands;
+package net.rizon.moo.plugin.commands.uptime;
 
+import com.google.inject.Inject;
 import java.util.Date;
-import java.util.HashSet;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 import net.rizon.moo.Split;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.util.Match;
+import net.rizon.moo.util.TimeDifference;
 
-class message242 extends Message
-{
-	protected static CommandSource source;
-	public static HashSet<String> waiting_for = new HashSet<String>();
-
-	public message242()
-	{
-		super("242");
-	}
-
-	@Override
-	public void run(String source, String[] message)
-	{
-		Server s = Server.findServerAbsolute(source);
-		if (s == null)
-			s = new Server(source);
-
-		String upstr = message[1];
-		String[] tokens = upstr.split(" ");
-		String[] times = tokens[4].split(":");
-
-		int days, hours, mins, secs;
-		try
-		{
-			days = Integer.parseInt(tokens[2]);
-			hours = Integer.parseInt(times[0]);
-			mins = Integer.parseInt(times[1]);
-			secs = Integer.parseInt(times[2]);
-		}
-		catch (NumberFormatException ex)
-		{
-			CommandUptime.logger.warn("Unable to parse 242", ex);
-			return;
-		}
-
-		long total_ago = secs + (mins * 60) + (hours * 60 * 60) + (days * 60 * 60 * 24 );
-		s.uptime = new Date(System.currentTimeMillis() - (total_ago * 1000L));
-
-		waiting_for.remove(s.getName());
-
-		if (waiting_for.isEmpty())
-		{
-			CommandUptime.post_update(message242.source);
-		}
-	}
-}
 
 class CommandUptime extends Command
 {
-	static final Logger logger = LoggerFactory.getLogger(CommandUptime.class);
-	
-	@SuppressWarnings("unused")
-	private static message242 message_242 = new message242();
+	@Inject
+	private ServerManager serverManager;
 
-	public CommandUptime(Plugin pkg)
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	public CommandUptime(Config conf)
 	{
-		super(pkg, "!UPTIME", "View server uptimes");
+		super("!UPTIME", "View server uptimes");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	private static boolean only_extremes;
@@ -112,26 +70,26 @@ class CommandUptime extends Command
 		else
 			only_extremes = true;
 
-		message242.waiting_for.clear();
-		for (Server s : Server.getServers())
+		Message242.waiting_for.clear();
+		for (Server s : serverManager.getServers())
 		{
 			if (s.isServices() == false && s.getSplit() == null)
 			{
-				Moo.write("STATS", "u", s.getName());
-				message242.waiting_for.add(s.getName());
+				protocol.write("STATS", "u", s.getName());
+				Message242.waiting_for.add(s.getName());
 			}
 		}
 
-		message242.source = source;
+		Message242.source = source;
 	}
 
-	private static Split findLastSplit(Server s)
+	private Split findLastSplit(Server s)
 	{
 		for (int i = s.getSplits().length; i > 0; --i)
 		{
 			Split sp = s.getSplits()[i - 1];
 
-			Server serv = Server.findServerAbsolute(sp.from);
+			Server serv = serverManager.findServerAbsolute(sp.from);
 			if (serv == null)
 				continue;
 
@@ -152,10 +110,10 @@ class CommandUptime extends Command
 		return null;
 	}
 
-	private static int dashesFor(Server s)
+	private int dashesFor(Server s)
 	{
 		int longest = 0;
-		for (Server s2 : Server.getServers())
+		for (Server s2 : serverManager.getServers())
 		{
 			int l = s2.getName().length();
 			if (l > longest)
@@ -165,13 +123,13 @@ class CommandUptime extends Command
 		return longest - s.getName().length() + 2;
 	}
 
-	public static void post_update(CommandSource source)
+	public void post_update(CommandSource source)
 	{
 		Date highest = null, lowest = null;
 		Split highest_sp = null, lowest_sp = null;
 		Date now = new Date();
 
-		for (Server s : Server.getServers())
+		for (Server s : serverManager.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
@@ -189,11 +147,11 @@ class CommandUptime extends Command
 		}
 
 		boolean shown = false;
-		for (Server s : Server.getServers())
+		for (Server s : serverManager.getServers())
 		{
 			if (s.isServices() || s.uptime == null)
 				continue;
-			else if (want_server != null && Moo.matches(s.getName(), "*" + want_server + "*") == false)
+			else if (want_server != null && Match.matches(s.getName(), "*" + want_server + "*") == false)
 				continue;
 
 			boolean is_extreme = false;
@@ -232,7 +190,7 @@ class CommandUptime extends Command
 					buffer += Message.COLOR_RED;
 					is_extreme = true;
 				}
-				buffer += Moo.difference(now, sp.when);
+				buffer += TimeDifference.difference(now, sp.when);
 				buffer += Message.COLOR_END;
 			}
 

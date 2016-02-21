@@ -26,7 +26,6 @@ public class fun extends Plugin implements EventListener
 	@Override
 	public void stop()
 	{
-	//	rt.remove();
 	}
 
 	@Override

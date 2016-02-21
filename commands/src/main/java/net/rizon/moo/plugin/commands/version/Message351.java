@@ -1,27 +1,32 @@
-package net.rizon.moo.plugin.commands;
+package net.rizon.moo.plugin.commands.version;
 
-import java.util.Map;
-import java.util.HashSet;
+import com.google.inject.Inject;
 import java.util.HashMap;
-
-import net.rizon.moo.Command;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
+import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-class message351 extends Message
+public class Message351 extends Message
 {
-	public message351()
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private ServerManager serverManager;
+	
+	public Message351()
 	{
 		super("351");
 	}
 
 	protected static CommandSource command_source;
-	public static HashSet<String> waiting_for = new HashSet<String>();
+	public static Set<String> waiting_for = new HashSet<>();
 	private static Map<Integer, Integer> max_vers = new HashMap<>();
 
 	final class ServerVersion
@@ -85,10 +90,10 @@ class message351 extends Message
 		return color;
 	}
 
-	private static int dashesFor(Server s)
+	private int dashesFor(Server s)
 	{
 		int longest = 0;
-		for (Server s2 : Server.getServers())
+		for (Server s2 : serverManager.getServers())
 		{
 			int l = s2.getName().length();
 			if (l > longest)
@@ -99,16 +104,19 @@ class message351 extends Message
 	}
 
 	@Override
-	public void run(String source, String[] msg)
+	public void run(IRCMessage message)
 	{
-		Server s = Server.findServerAbsolute(source);
+		Server s = serverManager.findServerAbsolute(message.getSource());
 		if (s == null)
-			s = new Server(source);
+		{
+			s = new Server(message.getSource());
+			serverManager.insertServer(s);
+		}
 
-		if (commandVersionsBase.want_server != null && commandVersionsBase.want_server != s)
+		if (CommandVersionBase.want_server != null && CommandVersionBase.want_server != s)
 			return;
 
-		String tok = msg[1];
+		String tok = message.getParams()[1];
 
 		int pos = tok.length() - 1;
 		for (; pos > 0 && tok.charAt(pos) != '('; --pos);
@@ -136,10 +144,10 @@ class message351 extends Message
 			if (command_source == null)
 				return;
 
-			if (commandVersionsBase.onlyOld && isMaxVersion(ver_num))
+			if (CommandVersionBase.onlyOld && isMaxVersion(ver_num))
 				return;
 
-			String buf = "[VERSION] " + source + " ";
+			String buf = "[VERSION] " + message.getSource() + " ";
 			for (int i = 0, dashes = dashesFor(s); i < dashes; ++i)
 				buf += "-";
 			buf += " ";
@@ -156,84 +164,7 @@ class message351 extends Message
 		}
 		catch (Exception ex)
 		{
-			commandVersionsBase.logger.warn("Unable to parse 351", ex);
+			logger.warn("Unable to parse 351", ex);
 		}
-	}
-}
-
-class commandVersionsBase extends Command
-{
-	static final Logger logger = LoggerFactory.getLogger(commandVersionsBase.class);
-	
-	@SuppressWarnings("unused")
-	private static message351 msg_351 = new message351();
-	static Server want_server = null;
-
-	public static boolean onlyOld;
-
-	public commandVersionsBase(Plugin pkg, final String command)
-	{
-		super(pkg, command, "View the IRCd versions");
-
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
-	}
-
-	@Override
-	public void onHelp(CommandSource source)
-	{
-		source.notice("Syntax: !VERSIONS [OLD|server]");
-		source.notice("This command gets the version and serno of all currently linked IRCds and lists them.");
-		source.notice("If OLD is given as a parameter, only versions that aren't the latest will be shown.");
-		source.notice("If a server name is given, the version for that server will be shown.");
-	}
-
-	@Override
-	public void execute(CommandSource source, String[] params)
-	{
-		if (params.length > 1)
-		{
-			if (params[1].equalsIgnoreCase("OLD"))
-			{
-				onlyOld = true;
-				want_server = null;
-			}
-			else
-			{
-				onlyOld = false;
-				want_server = Server.findServer(params[1]);
-			}
-		}
-		else
-			want_server = null;
-
-		for (Server s : Server.getServers())
-		{
-			if (s.isServices() == false)
-			{
-				Moo.write("VERSION", s.getName());
-				message351.waiting_for.add(s.getName());
-			}
-		}
-
-		message351.command_source = source;
-	}
-}
-
-class CommandVersions
-{
-	private Command vs, v;
-
-	public CommandVersions(Plugin pkg)
-	{
-		vs = new commandVersionsBase(pkg, "!VERSIONS");
-		// Some people can't type for their life...
-		v = new commandVersionsBase(pkg, "!VERSION");
-	}
-
-	public void remove()
-	{
-		vs.remove();
-		v.remove();
 	}
 }
