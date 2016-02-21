@@ -1,20 +1,40 @@
 package net.rizon.moo.plugin.random;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.Iterator;
 
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventAkillAdd;
 import net.rizon.moo.events.EventAkillDel;
 import net.rizon.moo.events.EventClientConnect;
 import net.rizon.moo.events.EventOPMHit;
 import net.rizon.moo.events.InitDatabases;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 
-class EventRandom
+class EventRandom implements EventListener
 {
+	@Inject
+	private EventBus eventBus;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private Config conf;
+
+	@Inject
+	private ServerManager serverManager;
+
+	@Inject
+	private random random;
+
 	@Subscribe
 	public void initDatabases(InitDatabases evt)
 	{
@@ -38,7 +58,7 @@ class EventRandom
 
 				if (ip.equals(nd.ip))
 				{
-					Moo.getEventBus().post(new EventOPMHit(nd.nick_str, ip, reason));
+					eventBus.post(new EventOPMHit(nd.nick_str, ip, reason));
 				}
 			}
 			return;
@@ -56,7 +76,7 @@ class EventRandom
 		String ip = evt.getIp();
 		
 		if (random.remove(ip))
-			Moo.privmsgAll(Moo.conf.flood_channels, "Removed IP " + ip + " from akill history.");
+			protocol.privmsgAll(conf.flood_channels, "Removed IP " + ip + " from akill history.");
 	}
 
 	@Subscribe
@@ -68,9 +88,9 @@ class EventRandom
 			ip = evt.getIp();
 		
 		Date then = new Date(System.currentTimeMillis() - (30 * 1000)); // 30 seconds ago
-		if (Server.last_link != null && Server.last_link.after(then))
+		if (serverManager.last_link != null && serverManager.last_link.after(then))
 			return;
-		else if (Server.last_split != null && Server.last_split.after(then))
+		else if (serverManager.last_split != null && serverManager.last_split.after(then))
 			return;
 
 		if (ident.equals("qwebirc") || ident.equals("cgiirc") || real.equals("http://www.mibbit.com") || real.equals("...")
@@ -78,7 +98,7 @@ class EventRandom
 				|| nick.startsWith("[EWG]"))
 			return;
 
-		NickData nd = new NickData(nick, ident, real, ip);
+		NickData nd = new NickData(random, nick, ident, real, ip);
 		random.addNickData(nd);
 	}
 

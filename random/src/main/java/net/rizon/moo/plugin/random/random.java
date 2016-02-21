@@ -1,61 +1,42 @@
 package net.rizon.moo.plugin.random;
 
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.EventListener;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-class DeadListChecker implements Runnable
-{
-	@Override
-	public void run()
-	{
-		long now_l = System.currentTimeMillis() / 1000L;
-
-		for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
-		{
-			FloodList p = it.next();
-
-			if (p.isClosed)
-				continue;
-
-			if (p.getMatches().isEmpty() || now_l - p.getTimes().getFirst() > random.timeforMatches)
-			{
-				if (p.isList)
-				{
-					Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] End of flood for " + p.toString() + " - " + p.getMatches().size() + " matches");
-
-					/* Don't really close this, we want the list to persist forever. */
-					p.isClosed = true;
-				}
-				else
-				{
-					/* List hasn't been touched in awhile, delete it */
-					it.remove();
-					p.close();
-				}
-			}
-		}
-	}
-}
 
 public class random extends Plugin
 {
 	protected static final int maxSize = 100, matchesForFlood = 20, timeforMatches = 60, scoreForRandom = 3, reconnectFloodLimit = 200;
-	
-	private static final Logger logger = LoggerFactory.getLogger(random.class);
 
-	private Command flood;
-	private EventRandom e;
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private CommandFlood flood;
+
+	@Inject
+	private DeadListChecker checker;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private Config conf;
+
 	private ScheduledFuture dl;
 
 	public random()
@@ -63,34 +44,36 @@ public class random extends Plugin
 		super("Random", "Detects flood and random nicks");
 	}
 
+	public Protocol getProtocol()
+	{
+		return protocol;
+	}
+
+	public Config getConf()
+	{
+		return conf;
+	}
 
 	@Override
 	public void start() throws Exception
 	{
-		flood = new CommandFlood(this);
-		
-		e = new EventRandom();
-		Moo.getEventBus().register(e);
-		
-		dl = Moo.scheduleWithFixedDelay(new DeadListChecker(), 30, TimeUnit.SECONDS);
+		dl = Moo.scheduleWithFixedDelay(checker, 30, TimeUnit.SECONDS);
 	}
 
 	@Override
 	public void stop()
 	{
-		flood.remove();
-		Moo.getEventBus().unregister(e);
 		dl.cancel(false);
 	}
 
-	private static LinkedList<NickData> nicks = new LinkedList<NickData>();
+	private LinkedList<NickData> nicks = new LinkedList<>();
 
-	public static LinkedList<NickData> getNicks()
+	public List<NickData> getNicks()
 	{
 		return nicks;
 	}
 
-	public static void addNickData(NickData nd)
+	public void addNickData(NickData nd)
 	{
 		nicks.addLast(nd);
 		nd.addToLists();
@@ -102,12 +85,12 @@ public class random extends Plugin
 		}
 	}
 
-	public static void logMatch(NickData nd, FloodList fl)
+	public void logMatch(NickData nd, FloodList fl)
 	{
-		Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
+		protocol.privmsgAll(conf.flood_channels, "[FLOOD MATCH " + fl + "] " + nd.nick_str + " (" + nd.user_str + "@" + nd.ip + ") [" + nd.realname_str + "]");
 	}
 
-	protected static void akill(final String ip)
+	protected void akill(final String ip)
 	{
 		try
 		{
@@ -125,7 +108,7 @@ public class random extends Plugin
 		}
 	}
 
-	protected static boolean remove(final String ip)
+	protected boolean remove(final String ip)
 	{
 		try
 		{
@@ -139,5 +122,25 @@ public class random extends Plugin
 		}
 
 		return false;
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.<Command>asList(flood);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(random.class).toInstance(this);
+
+		bind(DeadListChecker.class);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().to(EventRandom.class);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandFlood.class);
 	}
 }

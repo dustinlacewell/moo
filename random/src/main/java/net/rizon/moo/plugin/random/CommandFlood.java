@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.random;
 
+import com.google.inject.Inject;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -9,14 +10,23 @@ import java.util.regex.PatternSyntaxException;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.util.Match;
 
 class CommandFlood extends Command
 {
-	public CommandFlood(Plugin pkg)
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private random random;
+
+	@Inject
+	public CommandFlood(Config conf)
 	{
-		super(pkg, "!FLOOD", "Manage flood lists");
-		this.requiresChannel(Moo.conf.flood_channels);
+		super("!FLOOD", "Manage flood lists");
+		this.requiresChannel(conf.flood_channels);
 	}
 
 	@Override
@@ -91,7 +101,7 @@ class CommandFlood extends Command
 		{
 			source.reply("Nicks in history: " + random.getNicks().size());
 			if (random.getNicks().isEmpty() == false)
-				source.reply("  Oldest: " + new Date(random.getNicks().getFirst().time * 1000L) + ", Newest: " + new Date(random.getNicks().getLast().time * 1000L));
+				source.reply("  Oldest: " + new Date(random.getNicks().get(0).time * 1000L) + ", Newest: " + new Date(random.getNicks().get(random.getNicks().size() - 1).time * 1000L));
 			source.reply("Patterns: " + FloodList.getLists().size());
 			for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
 			{
@@ -135,11 +145,11 @@ class CommandFlood extends Command
 					nd.akilled = true;
 					++count;
 
-					Moo.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + "!" + nd.user_str + "@" + nd.ip + "/" + nd.realname_str + ")");
+					protocol.akill(nd.ip, "+2d", "Possible flood bot (" + nd.nick_str + "!" + nd.user_str + "@" + nd.ip + "/" + nd.realname_str + ")");
 				}
 			}
 
-			Moo.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
+			protocol.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
 
 			source.reply("Akilled " + count + " entries from " + lists + " lists with " + dupes + " duplicates. Removed " + purge() + " entries.");
 			return;
@@ -261,7 +271,7 @@ class CommandFlood extends Command
 					{
 						NickData fe = it.next();
 
-						if (Moo.matches(fe.ip, params[3]))
+						if (Match.matches(fe.ip, params[3]))
 						{
 							source.reply("Removed flood entry " + fe.ip);
 							it.remove();
@@ -315,10 +325,10 @@ class CommandFlood extends Command
 				fe.akilled = true;
 				++count;
 
-				Moo.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + "!" + fe.user_str + "@" + fe.ip + "/" + fe.realname_str + ")");
+				protocol.akill(fe.ip, "+" + duration, "Possible flood bot (" + fe.nick_str + "!" + fe.user_str + "@" + fe.ip + "/" + fe.realname_str + ")");
 			}
 
-			Moo.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
+			protocol.operwall(source.getUser().getNick() + " used AKILL for " + count + " flood entries");
 			source.reply("Akilled " + count + " entries with " + duplicates + " duplicates. Removed " + purge() + " entries.");
 			/* purge() is guaranteed to eat this list */
 			fl = null;
@@ -396,7 +406,7 @@ class CommandFlood extends Command
 			{
 				NickData nd = it.next();
 
-				if (Moo.wmatch(params[3], nd.nick_str))
+				if (Match.wmatch(params[3], nd.nick_str))
 					continue;
 
 				it.remove();

@@ -7,8 +7,10 @@ class DNSBL extends FloodList
 {
 	private String name;
 
-	private DNSBL(final String name)
+	private DNSBL(random random, String name)
 	{
+		super(random);
+		
 		this.name = name;
 		lists.add(this);
 	}
@@ -21,7 +23,7 @@ class DNSBL extends FloodList
 
 	private static LinkedList<DNSBL> lists = new LinkedList<DNSBL>();
 
-	public static synchronized DNSBL getList(final String name)
+	public static synchronized DNSBL getList(random random, String name)
 	{
 		for (Iterator<DNSBL> it = lists.iterator(); it.hasNext();)
 		{
@@ -40,7 +42,7 @@ class DNSBL extends FloodList
 			}
 		}
 
-		DNSBL d = new DNSBL(name);
+		DNSBL d = new DNSBL(random, name);
 		d.open();
 		return d;
 	}

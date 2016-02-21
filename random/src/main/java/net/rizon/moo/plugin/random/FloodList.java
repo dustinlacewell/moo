@@ -13,6 +13,13 @@ abstract class FloodList
 	protected boolean isList = false;
 	protected boolean isClosed = false;
 
+	private random random;
+
+	public FloodList(random random)
+	{
+		this.random = random;
+	}
+
 	@Override
 	public abstract String toString();
 
@@ -24,7 +31,7 @@ abstract class FloodList
 				++n.hits;
 				if (n.hits > random.reconnectFloodLimit)
 				{
-					Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
+					random.getProtocol().privmsgAll(random.getConf().flood_channels, "[FLOOD] Client " + n + " has hit flood list " + this + " multiple times (" + n.hits + ")");
 					return;
 				}
 			}
@@ -43,7 +50,7 @@ abstract class FloodList
 		long now = System.currentTimeMillis() / 1000L;
 		if (this.isList == false && now - first <= random.timeforMatches && this.getMatches().size() >= random.matchesForFlood)
 		{
-			Moo.privmsgAll(Moo.conf.flood_channels, "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
+			random.getProtocol().privmsgAll(random.getConf().flood_channels, "[FLOOD] Pattern " + this + " detected in incoming clients (" + random.matchesForFlood + " out of last " + random.maxSize + " users), collecting matching users...");
 
 			this.isList = true;
 

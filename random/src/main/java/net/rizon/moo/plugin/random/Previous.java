@@ -27,13 +27,18 @@ class Previous extends FloodList
 		}
 	}
 
+	public Previous(random random)
+	{
+		super(random);
+	}
+
 	@Override
 	public String toString()
 	{
 		return "PREVIOUS";
 	}
 
-	protected static FloodList matches(NickData nd)
+	protected static FloodList matches(random random, NickData nd)
 	{
 		try
 		{
@@ -46,7 +51,7 @@ class Previous extends FloodList
 				if (self == null || self.isClosed)
 				{
 					/* My list has been closed (and thus detached from everything), so start a new list. */
-					self = new Previous();
+					self = new Previous(random);
 					self.open();
 				}
 

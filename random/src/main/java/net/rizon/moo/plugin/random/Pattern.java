@@ -17,8 +17,10 @@ class Pattern extends FloodList
 	/* 0 = not, 1 = number */
 	private int numberMask = 0;
 
-	private Pattern(Field type, final String s)
+	private Pattern(random random, Field type, final String s)
 	{
+		super(random);
+		
 		this.type = type;
 
 		this.length = (short) s.length();
@@ -82,9 +84,9 @@ class Pattern extends FloodList
 		return true;
 	}
 
-	public static Pattern getOrCreatePattern(final Field type, final String s)
+	public static Pattern getOrCreatePattern(random random, Field type, String s)
 	{
-		Pattern p = new Pattern(type, s);
+		Pattern p = new Pattern(random, type, s);
 		for (Iterator<FloodList> it = FloodList.getLists().iterator(); it.hasNext();)
 		{
 			FloodList fl = it.next();

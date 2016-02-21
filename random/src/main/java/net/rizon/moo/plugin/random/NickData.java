@@ -5,29 +5,31 @@ import java.util.LinkedList;
 
 public class NickData
 {
+	private random random;
 	public String nick_str, user_str, realname_str, ip;
 	public long time;
 	private LinkedList<FloodList> lists = new LinkedList<FloodList>();
 	public boolean dead = false, akilled = false;
 	protected int hits;
 
-	public NickData(final String nick, final String user, final String real, final String ip)
+	public NickData(random random, String nick, String user, String real, String ip)
 	{
+		this.random = random;
 		this.nick_str = nick;
 		this.user_str = user;
 		this.realname_str = real;
 		this.ip = ip;
 		this.time = System.currentTimeMillis() / 1000L;
 
-		this.lists.add(Pattern.getOrCreatePattern(Field.FIELD_NICK, nick));
-		this.lists.add(Pattern.getOrCreatePattern(Field.FIELD_IDENT, user));
-		this.lists.add(Pattern.getOrCreatePattern(Field.FIELD_GECOS, real));
+		this.lists.add(Pattern.getOrCreatePattern(random, Field.FIELD_NICK, nick));
+		this.lists.add(Pattern.getOrCreatePattern(random, Field.FIELD_IDENT, user));
+		this.lists.add(Pattern.getOrCreatePattern(random, Field.FIELD_GECOS, real));
 
-		FloodList p = NURPattern.matches(this);
+		FloodList p = NURPattern.matches(random, this);
 		if (p != null)
 			this.lists.add(p);
 
-		p = Previous.matches(this);
+		p = Previous.matches(random, this);
 		if (p != null)
 			this.lists.add(p);
 	}
