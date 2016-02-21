@@ -24,7 +24,7 @@
 	<modules>
 		<module>moo</module>
 
-<!--		<module>antiidle</module>
+		<module>antiidle</module><!--
 		<module>commands</module>
 		<module>commits</module>-->
 		<module>core</module>

@@ -1,36 +1,48 @@
 package net.rizon.moo.plugin.antiidle;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Command;
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventJoin;
 import net.rizon.moo.events.EventKick;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.EventMode;
 import net.rizon.moo.events.EventNickChange;
 import net.rizon.moo.events.EventPart;
 import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.events.EventQuit;
 import net.rizon.moo.events.OnReload;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.antiidle.conf.AntiIdleConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class antiidle extends Plugin
+public class antiidle extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(antiidle.class);
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private Config config;
+
+	@Inject
+	private CommandIdle idle;
+
+	@Inject
+	static Protocol protocol;
 	
-	private Command idle;
-	private Message m;
-	public static AntiIdleConfiguration conf;
+	static AntiIdleConfiguration conf;
+	
 	protected static final List<Voicer> toBeVoiced = new ArrayList<>();
 
 	public antiidle() throws Exception
@@ -42,17 +54,11 @@ public class antiidle extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		idle = new CommandIdle(this);
-		Moo.getEventBus().register(this);
-		m = new MessageUserhost();
 	}
 
 	@Override
 	public void stop()
 	{
-		idle.remove();
-		Moo.getEventBus().unregister(this);
-		m.remove();
 	}
 	
 	@Subscribe
@@ -60,7 +66,7 @@ public class antiidle extends Plugin
 	{
 		String source = evt.getSource(), channel = evt.getChannel();
 		
-		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
+		if (config.general.nick.equals(source) || !conf.channel.equalsIgnoreCase(channel))
 			return;
 
 		AntiIdleEntry ai = new AntiIdleEntry(source);
@@ -71,7 +77,7 @@ public class antiidle extends Plugin
 		ScheduledFuture future = Moo.schedule(av, 5, TimeUnit.SECONDS);
 		av.future = future;
 		
-		Moo.schedule(ai, antiidle.conf.time, TimeUnit.MINUTES);
+		Moo.schedule(ai, conf.time, TimeUnit.MINUTES);
 	}
 
 	@Subscribe
@@ -79,7 +85,7 @@ public class antiidle extends Plugin
 	{
 		String source = evt.getSource(), channel = evt.getChannel();
 		
-		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
+		if (config.general.nick.equals(source) || !conf.channel.equalsIgnoreCase(channel))
 			return;
 
 		AntiIdleEntry.removeTimerFor(source);
@@ -90,7 +96,7 @@ public class antiidle extends Plugin
 	{
 		String source = evt.getSource(), channel = evt.getChannel(), target = evt.getTarget();
 		
-		if (Moo.conf.general.nick.equals(source) || !antiidle.conf.channel.equalsIgnoreCase(channel))
+		if (config.general.nick.equals(source) || !conf.channel.equalsIgnoreCase(channel))
 			return;
 
 		AntiIdleEntry.removeTimerFor(target);
@@ -101,7 +107,7 @@ public class antiidle extends Plugin
 	{
 		String channel = evt.getChannel(), modes = evt.getModes();
 		
-		if (!antiidle.conf.channel.equalsIgnoreCase(channel))
+		if (!conf.channel.equalsIgnoreCase(channel))
 			return;
 
 		for (final String s : modes.split(" "))
@@ -126,7 +132,7 @@ public class antiidle extends Plugin
 	{
 		String channel = evt.getChannel(), source = evt.getSource();
 		
-		if (!antiidle.conf.channel.equalsIgnoreCase(channel))
+		if (!conf.channel.equalsIgnoreCase(channel))
 			return;
 
 		AntiIdleEntry.removeTimerFor(source);
@@ -156,7 +162,7 @@ public class antiidle extends Plugin
 	{
 		try
 		{
-			antiidle.conf = AntiIdleConfiguration.load();
+			conf = AntiIdleConfiguration.load();
 		}
 		catch (Exception ex)
 		{
@@ -164,5 +170,28 @@ public class antiidle extends Plugin
 			
 			logger.warn("Unable to reload antiidle configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.<Command>asList(idle);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(antiidle.class).toInstance(this);
+
+		bind(AntiIdleConfiguration.class).toInstance(conf);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandIdle.class);
+
+		Multibinder<Message> messageBinder = Multibinder.newSetBinder(binder(), Message.class);
+		messageBinder.addBinding().to(MessageUserhost.class);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 }

@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.dnsbl;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
 import java.util.Arrays;
@@ -9,13 +10,18 @@ import java.util.Set;
 import net.rizon.moo.Command;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.EventListener;
+import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
 import net.rizon.moo.plugin.dnsbl.actions.ActionAkill;
 import net.rizon.moo.plugin.dnsbl.actions.ActionLog;
 import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
+import org.slf4j.Logger;
 
-public class dnsbl extends Plugin
+public class dnsbl extends Plugin implements EventListener
 {
+	@Inject
+	private static Logger logger;
+	
 	@Inject
 	private CommandDnsbl command;
 
@@ -88,5 +94,24 @@ public class dnsbl extends Plugin
 		}
 
 		return null;
+	}
+
+	@Subscribe
+	public void onReload(OnReload evt)
+	{
+		try
+		{
+			DnsblConfiguration c = DnsblConfiguration.load();
+			conf = c;
+
+			// Now the Guice graph gets rebuilt which reinjects conf everywhere, and then
+			// re starts the plugin, which applies the configuration
+		}
+		catch (Exception ex)
+		{
+			evt.getSource().reply("Error reloading dnsbl configuration: " + ex.getMessage());
+
+			logger.warn("Unable to reload dnsbl configuration", ex);
+		}
 	}
 }

@@ -2,6 +2,7 @@ package net.rizon.moo.plugin.antiidle;
 
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
+import net.rizon.moo.io.IRCMessage;
 
 class MessageUserhost extends Message
 {
@@ -11,19 +12,19 @@ class MessageUserhost extends Message
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (message.length != 2)
+		if (message.getParams().length != 2)
 			return;
 
-		int eq = message[1].indexOf('=');
+		int eq = message.getParams()[1].indexOf('=');
 		if (eq == -1)
 			return;
 
-		if (message[1].charAt(eq - 1) == '*')
+		if (message.getParams()[1].charAt(eq - 1) == '*')
 		{
-			AntiIdleEntry.removeTimerFor(message[1].substring(0, eq - 1));
-			Moo.mode(antiidle.conf.channel, "+v " + message[1].substring(0, eq - 1));
+			AntiIdleEntry.removeTimerFor(message.getParams()[1].substring(0, eq - 1));
+			antiidle.protocol.mode(antiidle.conf.channel, "+v " + message.getParams()[1].substring(0, eq - 1));
 		}
 	}
 }

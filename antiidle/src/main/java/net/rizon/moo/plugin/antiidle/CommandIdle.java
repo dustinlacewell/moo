@@ -1,18 +1,19 @@
 package net.rizon.moo.plugin.antiidle;
 
+import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 
-public class CommandIdle extends Command
+class CommandIdle extends Command
 {
-	public CommandIdle(Plugin pkg)
+	@Inject
+	CommandIdle(Config conf)
 	{
-		super(pkg, "!IDLE", "Excepts people from idle kick");
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		super("!IDLE", "Excepts people from idle kick");
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override

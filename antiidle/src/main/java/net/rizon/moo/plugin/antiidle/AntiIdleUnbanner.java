@@ -16,12 +16,12 @@ class AntiIdleUnbanner implements Runnable
 			host = "*!*@" + mask.substring(a + 1);
 		this.host = host;
 
-		Moo.mode(antiidle.conf.channel, "+b " + this.host);
+		antiidle.protocol.mode(antiidle.conf.channel, "+b " + this.host);
 	}
 
 	@Override
 	public void run()
 	{
-		Moo.mode(antiidle.conf.channel, "-b " + this.host);
+		antiidle.protocol.mode(antiidle.conf.channel, "-b " + this.host);
 	}
 }

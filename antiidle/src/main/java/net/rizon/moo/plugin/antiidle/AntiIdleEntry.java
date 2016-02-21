@@ -40,7 +40,7 @@ class AntiIdleEntry implements Runnable
 		
 		if (antiidle.conf.bantime > 0)
 			Moo.schedule(new AntiIdleUnbanner(this.mask), antiidle.conf.bantime, TimeUnit.MINUTES);
-		Moo.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
+		antiidle.protocol.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
 
 		entries.remove(this.nick.toLowerCase());
 	}

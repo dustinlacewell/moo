@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
-import net.rizon.moo.Moo;
 import net.rizon.moo.events.EventClientConnect;
 import net.rizon.moo.events.EventDNSBLHit;
 import net.rizon.moo.events.EventListener;
-import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.dnsbl.actions.Action;
-import net.rizon.moo.plugin.dnsbl.conf.DnsblConfiguration;
 import org.slf4j.Logger;
 
 class EventDnsblCheck implements EventListener
@@ -97,25 +94,5 @@ class EventDnsblCheck implements EventListener
 			}
 		});
 		checker.runAsynchronous();
-	}
-
-	@Subscribe
-	public void onReload(OnReload evt)
-	{
-		try
-		{
-			DnsblConfiguration c = DnsblConfiguration.load();
-//			rules.load(c.servers);
-//			cache.load(c.cache);
-//			cache.clear();
-//			DnsblChecker.load(c);
-//			dnsbl.conf = c;
-		}
-		catch (Exception ex)
-		{
-			evt.getSource().reply("Error reloading dnsbl configuration: " + ex.getMessage());
-			
-			logger.warn("Unable to reload dnsbl configuration", ex);
-		}
 	}
 }

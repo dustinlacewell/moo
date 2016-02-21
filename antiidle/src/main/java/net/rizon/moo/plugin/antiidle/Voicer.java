@@ -17,6 +17,6 @@ class Voicer implements Runnable
 	public void run()
 	{
 		antiidle.toBeVoiced.remove(this);
-		Moo.write("USERHOST", ai.nick);
+		antiidle.protocol.write("USERHOST", ai.nick);
 	}
 }
