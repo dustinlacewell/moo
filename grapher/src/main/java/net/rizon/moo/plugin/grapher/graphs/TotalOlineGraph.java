@@ -1,17 +1,25 @@
 package net.rizon.moo.plugin.grapher.graphs;
 
+import com.google.inject.Inject;
 import java.util.HashSet;
+import java.util.Set;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 
-import net.rizon.moo.Server;
 import net.rizon.moo.plugin.grapher.DataSourceType;
 import net.rizon.moo.plugin.grapher.Graph;
 import net.rizon.moo.plugin.grapher.RoundRobinArchiveType;
+import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 
 public class TotalOlineGraph extends Graph
 {
-	public TotalOlineGraph()
+	@Inject
+	private ServerManager serverManager;
+
+	@Inject
+	public TotalOlineGraph(GrapherConfiguration config)
 	{
-		super("opers");
+		super(config, "opers");
 
 		this.addDataSource("opers", DataSourceType.DST_GAUGE, 120, 0, 1000);
 		this.setRRA(RoundRobinArchiveType.RRA_MAX, 1, 525948); // 1 year
@@ -20,8 +28,8 @@ public class TotalOlineGraph extends Graph
 	@Override
 	public void run()
 	{
-		HashSet<String> olines = new HashSet<String>();
-		for (Server s : Server.getServers())
+		Set<String> olines = new HashSet<>();
+		for (Server s : serverManager.getServers())
 			if (s.olines != null)
 				olines.addAll(s.olines.keySet());
 

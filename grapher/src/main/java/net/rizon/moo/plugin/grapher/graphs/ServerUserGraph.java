@@ -1,21 +1,21 @@
 package net.rizon.moo.plugin.grapher.graphs;
 
 import io.netty.util.concurrent.ScheduledFuture;
-import java.util.Date;
+import net.rizon.moo.irc.Server;
 
-import net.rizon.moo.Server;
 import net.rizon.moo.plugin.grapher.DataSourceType;
 import net.rizon.moo.plugin.grapher.Graph;
 import net.rizon.moo.plugin.grapher.RoundRobinArchiveType;
+import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 
 public class ServerUserGraph extends Graph
 {
-	Server serv;
+	private Server serv;
 	public ScheduledFuture future;
 
-	public ServerUserGraph(Server s)
+	public ServerUserGraph(GrapherConfiguration config, Server s)
 	{
-		super(s.getName() + "-users");
+		super(config, s.getName() + "-users");
 
 		this.serv = s;
 

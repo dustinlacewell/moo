@@ -39,7 +39,6 @@ public class dnsblstats extends Plugin implements EventListener
 	private StatsRequester requester;
 	
 	private ScheduledFuture requesterFuture;
-	private Message n219, n227;
 
 	private Map<Server, DnsblInfo> infos = new HashMap<>();
 

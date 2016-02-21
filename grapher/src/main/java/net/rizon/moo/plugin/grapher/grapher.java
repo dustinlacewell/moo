@@ -1,18 +1,23 @@
 package net.rizon.moo.plugin.grapher;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import net.rizon.moo.Command;
 
 import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.events.OnServerCreate;
 import net.rizon.moo.events.OnServerDestroy;
+import net.rizon.moo.irc.Server;
 import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 import net.rizon.moo.plugin.grapher.graphs.ServerUserGraph;
 import net.rizon.moo.plugin.grapher.graphs.TotalOlineGraph;
@@ -21,13 +26,24 @@ import net.rizon.moo.plugin.grapher.graphs.TotalUserGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class grapher extends Plugin
+public class grapher extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(grapher.class);
-	
-	public static GrapherConfiguration conf;
+	@Inject
+	private static Logger logger;
 
-	protected Map<Server, ServerUserGraph> serverGraphs = new HashMap<Server, ServerUserGraph>();
+	@Inject
+	private GrapherConfiguration conf;
+
+	@Inject
+	private TotalOlineGraph totalOlineGraph;
+
+	@Inject
+	private TotalServerGraph totalServerGraph;
+
+	@Inject
+	private TotalUserGraph totalUserGraph;
+
+	protected Map<Server, ServerUserGraph> serverGraphs = new HashMap<>();
 
 	private ScheduledFuture oline, server, user;
 
@@ -41,11 +57,9 @@ public class grapher extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		Moo.getEventBus().register(this);
-
-		oline = Moo.scheduleAtFixedRate(new TotalOlineGraph(), 1, TimeUnit.MINUTES);
-		server = Moo.scheduleAtFixedRate(new TotalServerGraph(), 1, TimeUnit.MINUTES);
-		user = Moo.scheduleAtFixedRate(new TotalUserGraph(), 1, TimeUnit.MINUTES);
+		oline = Moo.scheduleAtFixedRate(totalOlineGraph, 1, TimeUnit.MINUTES);
+		server = Moo.scheduleAtFixedRate(totalServerGraph, 1, TimeUnit.MINUTES);
+		user = Moo.scheduleAtFixedRate(totalUserGraph, 1, TimeUnit.MINUTES);
 	}
 
 	@Override
@@ -57,8 +71,6 @@ public class grapher extends Plugin
 		oline.cancel(false);
 		server.cancel(false);
 		user.cancel(false);
-
-		Moo.getEventBus().unregister(this);
 	}
 	
 	@Subscribe
@@ -66,7 +78,7 @@ public class grapher extends Plugin
 	{
 		Server serv = evt.getServer();
 		
-		ServerUserGraph g = new ServerUserGraph(serv);
+		ServerUserGraph g = new ServerUserGraph(conf, serv);
 		ScheduledFuture future = Moo.scheduleAtFixedRate(g, 1, TimeUnit.MINUTES);
 		g.future = future;
 		
@@ -86,7 +98,7 @@ public class grapher extends Plugin
 	{
 		try
 		{
-			grapher.conf = GrapherConfiguration.load();
+			conf = GrapherConfiguration.load();
 		}
 		catch (Exception ex)
 		{
@@ -94,5 +106,23 @@ public class grapher extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList();
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(grapher.class).toInstance(this);
+
+		bind(GrapherConfiguration.class).toInstance(conf);
+
+		bind(TotalOlineGraph.class);
+		bind(TotalServerGraph.class);
+		bind(TotalUserGraph.class);
 	}
 }

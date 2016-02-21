@@ -31,7 +31,7 @@
 		<module>dnsbl</module>
 		<module>dnsblstats</module>
 		<module>fun</module>
-<!--		<module>grapher</module>
+		<module>grapher</module><!--
 		<module>logging</module>
 		<module>mxbl</module>
 		<module>osflood</module>

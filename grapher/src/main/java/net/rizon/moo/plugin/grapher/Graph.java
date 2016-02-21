@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import net.rizon.moo.plugin.grapher.conf.GrapherConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +12,8 @@ public abstract class Graph implements Runnable
 {
 	private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
-	private static File rrd_bin = new File(grapher.conf.bin),
-			rrd_graphdir = new File(grapher.conf.dir);
+	private static File rrd_bin,
+			rrd_graphdir;
 	private static Runtime rt = Runtime.getRuntime();
 
 	private class dataSource
@@ -31,10 +32,13 @@ public abstract class Graph implements Runnable
 	private long rra_steps;
 	private long rra_rows;
 
-	public Graph(final String name)
+	public Graph(GrapherConfiguration conf, String name)
 	{
 		this.name = name + ".rrd";
 		this.step = step;
+
+		rrd_bin = new File(conf.bin);
+		rrd_graphdir = new File(conf.dir);
 	}
 
 	private void exec(final String subcommand, final String args)
