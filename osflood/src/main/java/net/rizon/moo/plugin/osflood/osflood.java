@@ -1,24 +1,38 @@
 package net.rizon.moo.plugin.osflood;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.rizon.moo.Moo;
+import net.rizon.moo.Command;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventWallops;
 import net.rizon.moo.events.OnReload;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.osflood.conf.OsfloodConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class osflood extends Plugin
+public class osflood extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(osflood.class);
-	private final Pattern badOSPattern = Pattern.compile("Denied access to OperServ from [^@]+@([^ ]+) .*$");
+	private static final Pattern badOSPattern = Pattern.compile("Denied access to OperServ from [^@]+@([^ ]+) .*$");
+
+	@Inject
+	private static Logger logger;
+
+	@Inject
+	private Protocol protocol;
+
+	@Inject
+	private Config config;
 
 	private OsfloodConfiguration conf;
 
@@ -34,13 +48,11 @@ public class osflood extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		Moo.getEventBus().register(this);
 	}
 
 	@Override
 	public void stop()
 	{
-		Moo.getEventBus().unregister(this);
 	}
 
 	private boolean isExpired(OperServFlood fu)
@@ -90,11 +102,11 @@ public class osflood extends Plugin
 
 			if (fu.frequency >= conf.num)
 			{
-				Moo.akill(host, "+3d", "Services abuse");
+				protocol.akill(host, "+3d", "Services abuse");
 				osFlooders.remove(host);
 
-				for (String s : Moo.conf.flood_channels)
-					Moo.privmsg(s, "[FLOOD] Akilled *@" + host + " for flooding OperServ.");
+				for (String s : config.flood_channels)
+					protocol.privmsg(s, "[FLOOD] Akilled *@" + host + " for flooding OperServ.");
 			}
 		}
 	}
@@ -112,5 +124,22 @@ public class osflood extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList();
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(osflood.class).toInstance(this);
+
+		bind(OsfloodConfiguration.class).toInstance(conf);
+
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 }

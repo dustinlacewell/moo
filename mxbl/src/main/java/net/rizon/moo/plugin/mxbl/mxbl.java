@@ -109,7 +109,6 @@ public class mxbl extends Plugin
 	{
 		bind(mxbl.class).toInstance(this);
 
-
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().to(EventRegister.class);
 
