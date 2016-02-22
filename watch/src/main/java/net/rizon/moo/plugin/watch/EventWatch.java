@@ -1,22 +1,35 @@
 package net.rizon.moo.plugin.watch;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventAkillDel;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.EventOPMHit;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
+import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-class EventWatch
+class EventWatch implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(EventWatch.class);
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config conf;
+	
+	@Inject
+	private watch watch;
 
 	@Subscribe
 	public void initDatabases(InitDatabases evt)
@@ -70,7 +83,7 @@ class EventWatch
 
 		WatchEntry we = new WatchEntry();
 		we.nick = nick;
-		we.creator = Moo.conf.general.nick;
+		we.creator = conf.general.nick;
 		// Do not move IP from the end of the reason
 		we.reason = "Suspected open proxy (" + reason + ") on " + ip;
 		we.created = new Date();
@@ -81,7 +94,7 @@ class EventWatch
 		
 		watch.insert(we);
 
-		Moo.privmsgAll(Moo.conf.spam_channels, "Added watch for " + nick + " due to hitting the OPM.");
+		protocol.privmsgAll(conf.spam_channels, "Added watch for " + nick + " due to hitting the OPM.");
 	}
 
 	@Subscribe
@@ -97,7 +110,7 @@ class EventWatch
 			if (!e.reason.startsWith("Suspected open proxy") || !e.reason.endsWith(ip))
 				continue;
 
-			Moo.privmsgAll(Moo.conf.spam_channels, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
+			protocol.privmsgAll(conf.spam_channels, "Removed watch for " + e.nick + " due to removal of respective akill for " + ip + ".");
 
 			watch.remove(e);
 			it.remove();

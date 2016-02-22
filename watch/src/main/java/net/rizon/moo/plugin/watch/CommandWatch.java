@@ -1,23 +1,35 @@
 package net.rizon.moo.plugin.watch;
 
+import com.google.inject.Inject;
 import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.logging.logging;
 
 class CommandWatch extends Command
 {
-	public CommandWatch(Plugin pkg)
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config conf;
+	
+	@Inject
+	private watch watch;
+	
+	@Inject
+	CommandWatch(Config conf)
 	{
-		super(pkg, "!WATCH", "View or modify the watch list");
+		super("!WATCH", "View or modify the watch list");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -57,7 +69,7 @@ class CommandWatch extends Command
 				source.notice("" + ++count + ". " + e.nick + ", created on " + e.created + " by " + e.creator + ", expires on " + e.expires + ". Reason: " + e.reason);
 			}
 		}
-		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (Moo.conf.adminChannelsContains(source.getTargetName()) || Moo.conf.operChannelsContains(source.getTargetName())))
+		else if (params[1].equalsIgnoreCase("add") && params.length > 3 && (conf.adminChannelsContains(source.getTargetName()) || conf.operChannelsContains(source.getTargetName())))
 		{
 			WatchEntry we = watch.find(params[2]);
 
@@ -119,7 +131,7 @@ class CommandWatch extends Command
 			we.registered = state;
 
 			source.reply("Watch added for " + we.nick + " to expire on " + we.expires);
-			Moo.operwall(we.creator + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
+			protocol.operwall(we.creator + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
 			
 			if (Plugin.findPlugin("logging") != null)
 				logging.addEntry("WATCH", we.creator, we.nick, reason);

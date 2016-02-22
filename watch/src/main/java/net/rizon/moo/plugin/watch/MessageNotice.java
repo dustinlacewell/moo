@@ -1,22 +1,27 @@
 package net.rizon.moo.plugin.watch;
 
+import com.google.inject.Inject;
 import java.util.Iterator;
 
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 
 class MessageNotice extends Message
 {
-	public MessageNotice()
+	@Inject
+	private watch watch;
+	
+	MessageNotice()
 	{
 		super("NOTICE");
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
-		if (source.startsWith("NickServ!"))
+		if (message.getSource().startsWith("NickServ!"))
 		{
-			final String msg = message[1].replace("\2", "");
+			final String msg = message.getParams()[1].replace("\2", "");
 			String[] msg_params = msg.split(" ");
 
 			for (Iterator<WatchEntry> it = watch.watches.iterator(); it.hasNext();)
@@ -26,13 +31,13 @@ class MessageNotice extends Message
 				if (e.nick.equalsIgnoreCase(msg_params[0]) && msg.startsWith(e.nick + " is "))
 				{
 					e.registered = WatchEntry.registeredState.RS_REGISTERED;
-					e.handleWatch();
+					watch.handleWatch(e);
 					break;
 				}
 				else if (msg.endsWith(" isn't registered.") && e.nick.equalsIgnoreCase(msg_params[1]))
 				{
 					e.registered = WatchEntry.registeredState.RS_NOT_REGISTERED;
-					e.handleWatch();
+					watch.handleWatch(e);
 					break;
 				}
 			}

@@ -1,13 +1,21 @@
 package net.rizon.moo.plugin.watch;
 
+import com.google.inject.Inject;
 import java.util.Date;
 import java.util.Iterator;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 
 class WatchMonitor implements Runnable
 {
 	public static int request;
+	
+	@Inject
+	private watch watch;
+	
+	@Inject
+	private Protocol protocol;
 
 	@Override
 	public void run()
@@ -36,7 +44,7 @@ class WatchMonitor implements Runnable
 			if (buffer.length() > 450 || count >= 16)
 			{
 				request++;
-				Moo.write("ISON", buffer);
+				protocol.write("ISON", buffer);
 				buffer = "";
 				count = 0;
 			}
@@ -45,7 +53,7 @@ class WatchMonitor implements Runnable
 		if (buffer.isEmpty() == false)
 		{
 			request++;
-			Moo.write("ISON", buffer);
+			protocol.write("ISON", buffer);
 			buffer = "";
 			count = 0;
 		}

@@ -1,28 +1,32 @@
 package net.rizon.moo.plugin.watch;
 
-import java.util.Iterator;
+import com.google.inject.Inject;
 import net.rizon.moo.Message;
+import net.rizon.moo.io.IRCMessage;
 
 
 class WatchReply extends Message
 {
+	@Inject
+	private watch watch;
+	
 	public WatchReply()
 	{
 		super("303");
 	}
 
 	@Override
-	public void run(String source, String[] message)
+	public void run(IRCMessage message)
 	{
 		WatchMonitor.request--;
 
-		if (message.length > 1)
+		if (message.getParams().length > 1)
 			for (WatchEntry e : watch.watches)
 			{
-				for (final String nick : message[1].split(" "))
+				for (final String nick : message.getParams()[1].split(" "))
 					if (e.nick.equalsIgnoreCase(nick))
 					{
-						e.handleWatch();
+						watch.handleWatch(e);
 						break;
 					}
 			}
@@ -32,7 +36,7 @@ class WatchReply extends Message
 			for (WatchEntry e : watch.watches)
 			{
 				if (e.handled == false)
-					e.handleOffline();
+					watch.handleOffline(e);
 			}
 		}
 	}
