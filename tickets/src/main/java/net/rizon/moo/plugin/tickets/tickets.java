@@ -1,27 +1,35 @@
 package net.rizon.moo.plugin.tickets;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import net.rizon.moo.Command;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class tickets extends Plugin
+public class tickets extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(tickets.class);
+	@Inject
+	private static Logger logger;
 
 	private ScheduledFuture ticketTimer;
-	static HashMap<Integer, Ticket> tickets = new HashMap<Integer, Ticket>();
-	public static TicketsConfiguration conf;
+	
+	static Map<Integer, Ticket> tickets = new HashMap<>();
+	private TicketsConfiguration conf;
 
 	public tickets() throws Exception
 	{
@@ -36,14 +44,12 @@ public class tickets extends Plugin
 	public void start() throws Exception
 	{
 		ticketTimer = Moo.scheduleWithFixedDelay(new TicketTimer(), 1, TimeUnit.MINUTES);
-		Moo.getEventBus().register(this);
 	}
 
 	@Override
 	public void stop()
 	{
 		ticketTimer.cancel(false);
-		Moo.getEventBus().unregister(this);
 	}
 	
 	@Subscribe
@@ -59,5 +65,20 @@ public class tickets extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList();
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(tickets.class).toInstance(this);
+		
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 }

@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.tickets;
 
+import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -7,17 +8,28 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class TicketChecker extends Thread
 {
-	private static final Logger logger = LoggerFactory.getLogger(TicketChecker.class);
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private TicketsConfiguration conf;
+	
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config config;
 	
 	private static final int reminder = 30; // minutes
 	private static final Pattern pattern = Pattern.compile("<tr(?: class=\"closed\")?><td><a href=\"/akills/view/([0-9]*)\">#\\1</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td class=\"date\">(.*?)</td><td(?:.*?)>(?:At )?(.*?)</td><td>(.*?)</td></tr>");
@@ -30,7 +42,7 @@ class TicketChecker extends Thread
 
 		try
 		{
-			URL url = new URL(tickets.conf.url);
+			URL url = new URL(conf.url);
 			connection = (HttpURLConnection) url.openConnection();
 
 			connection.setRequestMethod("POST");
@@ -38,7 +50,7 @@ class TicketChecker extends Thread
 			connection.setReadTimeout(15 * 1000);
 			connection.setDoOutput(true);
 
-			String postData = "username=" + URLEncoder.encode(tickets.conf.username, "UTF-8") + "&password=" + URLEncoder.encode(tickets.conf.password, "UTF-8");
+			String postData = "username=" + URLEncoder.encode(conf.username, "UTF-8") + "&password=" + URLEncoder.encode(conf.password, "UTF-8");
 
 			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(postData);
@@ -113,7 +125,7 @@ class TicketChecker extends Thread
 					message = "#" + id + ": " + message + " (" + date + ") :: " + type + " :: " + ip + " :: " + contact + " :: http://abuse.rizon.net/" + id;
 
 					if (!firstRun)
-						Moo.privmsgAll(Moo.conf.kline_channels, message);
+						protocol.privmsgAll(config.kline_channels, message);
 
 					if (t == null)
 					{
@@ -132,7 +144,7 @@ class TicketChecker extends Thread
 
 			if (!firstRun)
 				if (reminded > 1)
-					Moo.privmsgAll(Moo.conf.kline_channels, "Remaining tickets: " + (reminded - 1));
+					protocol.privmsgAll(config.kline_channels, "Remaining tickets: " + (reminded - 1));
 
 			firstRun = false;
 		}
