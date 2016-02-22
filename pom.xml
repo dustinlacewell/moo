@@ -36,8 +36,8 @@
 		<module>mxbl</module>
 		<module>osflood</module>
 		<module>proxyscan</module>
-		<module>random</module><!--
-		<module>servercontrol</module>
+		<module>random</module>
+		<module>servercontrol</module><!--
 		<module>servermonitor</module>
 		<module>tickets</module>
 		<module>tinc</module>
