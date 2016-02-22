@@ -39,8 +39,8 @@
 		<module>random</module>
 		<module>servercontrol</module>
 		<module>servermonitor</module>
-		<module>tickets</module><!--
-		<module>tinc</module>
+		<module>tickets</module>
+		<module>tinc</module><!--
 		<module>vote</module>
 		<module>watch</module>
 		<module>wiki</module>-->
