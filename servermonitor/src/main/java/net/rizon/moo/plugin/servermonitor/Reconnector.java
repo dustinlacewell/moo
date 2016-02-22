@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import com.google.inject.Inject;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,11 +10,27 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
 import net.rizon.moo.Split;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 
 class Reconnector implements Runnable
 {
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private ServerMonitorConfiguration conf;
+	
+	@Inject
+	private Config config;
+	
+	@Inject
+	private ServerManager serverManager;
+	
 	private Server serv, from;
 	private Split sp;
 	private int tick = 0, tries = 0;
@@ -69,7 +86,7 @@ class Reconnector implements Runnable
 		for (Iterator<String> it = this.serv.allowed_clines.iterator(); it.hasNext();)
 		{
 			final String pname = it.next();
-			Server pserver = Server.findServerAbsolute(pname);
+			Server pserver = serverManager.findServerAbsolute(pname);
 
 			if (isGood(pserver))
 				return pserver;
@@ -85,7 +102,7 @@ class Reconnector implements Runnable
 		Server highest = null;
 		for (Iterator<String> it = this.serv.clines.iterator(); it.hasNext();)
 		{
-			Server altserver = Server.findServerAbsolute(it.next());
+			Server altserver = serverManager.findServerAbsolute(it.next());
 			if (isGood(altserver) && altserver.isHub()
 					&& (highest == null || altserver.links.size() > highest.links.size()))
 				highest = altserver;
@@ -104,16 +121,16 @@ class Reconnector implements Runnable
 
 		++this.tick;
 
-		Server s = Server.findServerAbsolute(this.serv.getName());
+		Server s = serverManager.findServerAbsolute(this.serv.getName());
 		if (s == null || this.sp == null || !this.sp.equals(s.getSplit()))
 		{
 			this.destroy();
 			return;
 		}
 
-		if (!servermonitor.conf.reconnect)
+		if (!conf.reconnect)
 		{
-			Moo.privmsgAll(Moo.conf.split_channels, "Disabling reconnect for frozen server " + s.getName());
+			protocol.privmsgAll(config.split_channels, "Disabling reconnect for frozen server " + s.getName());
 
 			this.destroy();
 			return;
@@ -122,13 +139,13 @@ class Reconnector implements Runnable
 		Server targ = this.findPreferred();
 		if (targ == this.serv) // Special case, hold due to the split probably being between me and serv
 		{
-			Moo.privmsgAll(Moo.conf.split_channels, "Delaying reconnect for " + this.serv.getName() + " due to its uplink being split");
+			protocol.privmsgAll(config.split_channels, "Delaying reconnect for " + this.serv.getName() + " due to its uplink being split");
 			return;
 		}
 
 		if (this.tries == 7 || targ == null)
 		{
-			for (final String chan : Moo.conf.split_channels)
+			for (final String chan : config.split_channels)
 			{
 				if (targ == null)
 				{
@@ -143,7 +160,7 @@ class Reconnector implements Runnable
 					Server guess = null;
 					for (String s2 : others)
 					{
-						Server tmp = Server.findServerAbsolute(s2);
+						Server tmp = serverManager.findServerAbsolute(s2);
 						if (tmp != null && isGood(tmp) && tmp.isHub() && (guess == null || tmp.links.size() > guess.links.size()))
 							guess = tmp;
 					}
@@ -153,9 +170,9 @@ class Reconnector implements Runnable
 						buf += " My best guess is " + guess.getName() + ".";
 
 					if (!others.isEmpty())
-						Moo.privmsg(chan, buf);
+						protocol.privmsg(chan, buf);
 				}
-				Moo.privmsg(chan, "Giving up reconnecting " + s.getName() + ", tried " + this.tries + " times in " + this.tick + " minutes to " + this.attempted.size() + " servers: " + this.attempted.toString());
+				protocol.privmsg(chan, "Giving up reconnecting " + s.getName() + ", tried " + this.tries + " times in " + this.tick + " minutes to " + this.attempted.size() + " servers: " + this.attempted.toString());
 			}
 
 			this.destroy();
@@ -169,16 +186,16 @@ class Reconnector implements Runnable
 		{
 			int wait = 0;
 			for (int i = this.tick; i % delay != 0; ++wait, ++i);
-			Moo.privmsgAll(Moo.conf.split_channels, "Will reconnect " + s.getName() + " to " + targ.getName() + " in " + wait + " minute" + (wait != 1 ? "s" : ""));
+			protocol.privmsgAll(config.split_channels, "Will reconnect " + s.getName() + " to " + targ.getName() + " in " + wait + " minute" + (wait != 1 ? "s" : ""));
 			return;
 		}
 
 		++this.tries;
 
-		Moo.privmsgAll(Moo.conf.split_channels, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
+		protocol.privmsgAll(config.split_channels, "Reconnect #" + this.tries + " for " + s.getName() + " to " + targ.getName());
 
-		Moo.write("CONNECT", s.getName(), servermonitor.conf.port, targ.getName());
-		this.sp.reconnectedBy = Moo.conf.general.nick;
+		protocol.write("CONNECT", s.getName(), conf.port, targ.getName());
+		this.sp.reconnectedBy = config.general.nick;
 
 		last_reconnect = System.currentTimeMillis() / 1000L;
 		if (this.tries != 1) // Allow two tries on the first server

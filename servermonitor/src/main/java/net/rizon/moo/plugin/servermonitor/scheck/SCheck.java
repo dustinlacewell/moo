@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.servermonitor.scheck;
 
+import com.google.inject.Inject;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -24,14 +25,23 @@ import java.util.Random;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 import net.rizon.moo.Moo;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.io.IRCMessage;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.util.TimeDifference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SCheck
 {
 	private static final Logger logger = LoggerFactory.getLogger(SCheck.class);
+	
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config conf;
 	
 	private Server server;
 	private int port;
@@ -82,7 +92,7 @@ public class SCheck
 	private void reply(final String msg)
 	{
 		for (String s : this.targets)
-			Moo.reply(null, s, msg);
+			protocol.reply(null, s, msg);
 	}
 
 	public SCheck(Server serv, String[] targets, boolean ssl, int port, boolean quiet, boolean use_v6)
@@ -98,8 +108,8 @@ public class SCheck
 	
 	public void handshake()
 	{
-		write("USER", Moo.conf.general.ident, ".", ".", Moo.conf.general.realname);
-		write("NICK", Moo.conf.general.nick + "-" + getRandom());
+		write("USER", conf.general.ident, ".", ".", conf.general.realname);
+		write("NICK", conf.general.nick + "-" + getRandom());
 	}
 	
 	public void process(IRCMessage message)
@@ -182,7 +192,7 @@ public class SCheck
 						}
 						catch (CertificateExpiredException e)
 						{
-							reply(this.prefix + "[WARNING] SSL certificate for " + server.getName() + " expires on " + server.cert.getNotAfter() + ", which is " + Moo.difference(now, server.cert.getNotAfter()) + " from now");
+							reply(this.prefix + "[WARNING] SSL certificate for " + server.getName() + " expires on " + server.cert.getNotAfter() + ", which is " + TimeDifference.difference(now, server.cert.getNotAfter()) + " from now");
 						}
 					}
 					catch (CertificateExpiredException e)
@@ -255,10 +265,10 @@ public class SCheck
 		    .handler(new SCheckInitializer(this))
 		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15 * 1000);
 		
-		if (Moo.conf.general.host != null && !use_v6)
+		if (conf.general.host != null && !use_v6)
 			try
 			{
-				client.bind(new InetSocketAddress(Moo.conf.general.host, 0)).sync().await();
+				client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
 			}
 			catch (InterruptedException ex) { }
 		

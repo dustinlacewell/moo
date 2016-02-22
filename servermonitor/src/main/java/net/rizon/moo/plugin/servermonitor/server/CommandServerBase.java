@@ -1,24 +1,32 @@
-package net.rizon.moo.plugin.servermonitor;
+package net.rizon.moo.plugin.servermonitor.server;
 
+import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
-import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+import net.rizon.moo.util.Match;
 
-class commandServerBase extends Command
+class CommandServerBase extends Command
 {
-	public commandServerBase(Plugin pkg, final String command)
+	@Inject
+	private ServerManager serverManager;
+	
+	@Inject
+	private ServerMonitorConfiguration conf;
+	
+	public CommandServerBase(Config conf, String command)
 	{
-		super(pkg, command, "Views servers");
+		super(command, "Views servers");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	private static boolean isLink(Server s, Server targ)
@@ -39,7 +47,7 @@ class commandServerBase extends Command
 	{
 		if (params.length >= 3 && params[1].equalsIgnoreCase("FREEZE"))
 		{
-			Server s = Server.findServer(params[2]);
+			Server s = serverManager.findServer(params[2]);
 			if (s == null)
 				source.reply("No such server " + params[2]);
 			else if (s.frozen == true)
@@ -52,7 +60,7 @@ class commandServerBase extends Command
 		}
 		else if (params.length >= 3 && params[1].equalsIgnoreCase("UNFREEZE"))
 		{
-			Server s = Server.findServer(params[2]);
+			Server s = serverManager.findServer(params[2]);
 			if (s == null)
 				source.reply("No such server " + params[2]);
 			else if (s.frozen == false)
@@ -65,18 +73,18 @@ class commandServerBase extends Command
 		}
 		else if (params.length >= 3 && (params[1].equalsIgnoreCase("DELETE") || params[1].equalsIgnoreCase("DEL")))
 		{
-			Server s = Server.findServerAbsolute(params[2]);
+			Server s = serverManager.findServerAbsolute(params[2]);
 			if (s == null)
 				source.reply("No such server " + params[2] + ", full name required");
 			else
 			{
 				source.reply("Deleted server " + s.getName());
-				s.destroy();
+				serverManager.removeServer(s);
 			}
 		}
 		else if (params.length >= 3 && params[1].equalsIgnoreCase("DESC"))
 		{
-			Server s = Server.findServer(params[2]);
+			Server s = serverManager.findServer(params[2]);
 			if (s == null)
 				source.reply("No such server " + params[2]);
 			else if (params.length == 3)
@@ -95,7 +103,7 @@ class commandServerBase extends Command
 		}
 		else if (params.length >= 3)
 		{
-			Server s = Server.findServer(params[1]);
+			Server s = serverManager.findServer(params[1]);
 			if (s == null)
 				source.reply("Server " + params[1] + " not found");
 			else if (params[2].equals("."))
@@ -109,7 +117,7 @@ class commandServerBase extends Command
 
 				for (int i = 2; i < params.length; ++i)
 				{
-					Server arg = Server.findServer(params[i].substring(1));
+					Server arg = serverManager.findServer(params[i].substring(1));
 					if (arg == null)
 					{
 						source.reply("No such server: " + params[i]);
@@ -149,13 +157,13 @@ class commandServerBase extends Command
 			if (match != null)
 				all = true;
 			boolean all_output = false;
-			for (Server s : Server.getServers())
+			for (Server s : serverManager.getServers())
 			{
 				boolean output = false;
 
 				if (match != null)
 				{
-					if (Moo.matches(s.getName(), "*" + match + "*"))
+					if (Match.matches(s.getName(), "*" + match + "*"))
 						output = true;
 					else
 						continue;
@@ -176,7 +184,7 @@ class commandServerBase extends Command
 				for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 				{
 					String link_name = it.next();
-					Server link_server = Server.findServerAbsolute(link_name);
+					Server link_server = serverManager.findServerAbsolute(link_name);
 
 					if (link_server == null)
 					{
@@ -224,7 +232,7 @@ class commandServerBase extends Command
 					msg += Message.COLOR_RED;
 					output = true;
 				}
-				else if (s.frozen || !servermonitor.conf.reconnect)
+				else if (s.frozen || !conf.reconnect)
 				{
 					msg += Message.COLOR_BRIGHTBLUE;
 					output = true;
@@ -239,7 +247,7 @@ class commandServerBase extends Command
 					boolean good = false;
 					for (Iterator<String> it = s.allowed_clines.iterator(); it.hasNext();)
 					{
-						Server p_s = Server.findServerAbsolute(it.next());
+						Server p_s = serverManager.findServerAbsolute(it.next());
 						if (p_s != null && isLink(s, p_s))
 							good = true;
 					}
@@ -263,7 +271,7 @@ class commandServerBase extends Command
 					int frzcount = 0;
 					for (String linkname : s.clines)
 					{
-						Server link = Server.findServerAbsolute(linkname);
+						Server link = serverManager.findServerAbsolute(linkname);
 						if (link == null)
 							continue;
 
@@ -288,7 +296,7 @@ class commandServerBase extends Command
 				for (Iterator<String> it = s.clines.iterator(); it.hasNext();)
 				{
 					String cline_name = it.next();
-					Server cline_server = Server.findServerAbsolute(cline_name);
+					Server cline_server = serverManager.findServerAbsolute(cline_name);
 
 					if (cline_server == null)
 						links += Message.COLOR_RED;
@@ -341,13 +349,13 @@ class commandServerBase extends Command
 				}
 			}
 
-			int total_diff = Server.cur_total_users - Server.last_total_users;
+			int total_diff = serverManager.cur_total_users - serverManager.last_total_users;
 			String change = String.valueOf(total_diff);
 			if (change.startsWith("-") == false)
 				change = "+" + change;
 
 			if (match == null && (all_output || all))
-				source.reply("Total Users: " + Server.cur_total_users + change);
+				source.reply("Total Users: " + serverManager.cur_total_users + change);
 		}
 	}
 
@@ -376,41 +384,5 @@ class commandServerBase extends Command
 		source.notice("Executing this command with no parameters will only show problem servers and and the problem C-Lines on those servers.");
 		source.notice("When using ALL or searching for a specific name all C-Lines will be shown.");
 		source.notice("If a single dot is provided after server.name, all allowed C-Lines will be unset.");
-	}
-}
-
-class commandCline extends commandServerBase
-{
-	public commandCline(Plugin pkg)
-	{
-		super(pkg, "!CLINE");
-	}
-
-	@Override
-	public void execute(CommandSource source, String[] params)
-	{
-		if (params.length == 2)
-			super.execute(source, params);
-	}
-}
-
-class CommandServer
-{
-	private Command e, d, c;
-
-	public CommandServer(Plugin pkg)
-	{
-		e = new commandServerBase(pkg, "!SERVER");
-		d = new commandServerBase(pkg, ".SERVER");
-
-		c = new commandCline(pkg);
-	}
-
-	public void remove()
-	{
-		e.remove();
-		d.remove();
-
-		c.remove();
 	}
 }

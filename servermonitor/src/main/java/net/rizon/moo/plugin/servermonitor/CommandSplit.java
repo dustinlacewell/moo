@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,8 +13,12 @@ import net.rizon.moo.CommandSource;
 import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 import net.rizon.moo.Split;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+import net.rizon.moo.util.TimeDifference;
 
 class splitComparator implements Comparator<Split>
 {
@@ -30,13 +35,20 @@ class splitComparator implements Comparator<Split>
 
 class CommandSplit extends Command
 {
-	public CommandSplit(Plugin pkg)
+	@Inject
+	private ServerManager serverManager;
+	
+	@Inject
+	private ServerMonitorConfiguration conf;
+	
+	@Inject
+	public CommandSplit(Config conf)
 	{
-		super(pkg, "!SPLIT", "Views split servers");
+		super( "!SPLIT", "Views split servers");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -58,7 +70,7 @@ class CommandSplit extends Command
 			Date now = new Date();
 			int count = 0, split = 0;
 
-			for (Server s : Server.getServers())
+			for (Server s : serverManager.getServers())
 			{
 				Split sp = s.getSplit();
 				++count;
@@ -67,13 +79,13 @@ class CommandSplit extends Command
 				{
 					++split;
 					String s_name;
-					if (s.frozen || !servermonitor.conf.reconnect)
+					if (s.frozen || !conf.reconnect)
 						s_name = Message.COLOR_BRIGHTBLUE + s.getName() + Message.COLOR_END;
 					else
 						s_name = s.getName();
 					String buffer;
 					if (sp != null)
-						buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+						buffer = "[SPLIT] " + s_name + " <-> " + sp.from + ", " + TimeDifference.difference(now, sp.when) + " ago.";
 					else
 						buffer = "[SPLIT] " + s_name + ".";
 					Reconnector r = Reconnector.findValidReconnectorFor(s);
@@ -83,7 +95,7 @@ class CommandSplit extends Command
 						if (to == s)
 							buffer += " Delaying due to uplink being split.";
 						else
-							buffer += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+							buffer += " Will reconnect in " + TimeDifference.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 					}
 					source.reply(buffer);
 				}
@@ -97,7 +109,7 @@ class CommandSplit extends Command
 			TreeSet<Split> ts = new TreeSet<Split>(new splitComparator());
 			Date now = new Date();
 
-			for (Server s : Server.getServers())
+			for (Server s : serverManager.getServers())
 			{
 				Split[] splits = s.getSplits();
 
@@ -129,22 +141,22 @@ class CommandSplit extends Command
 				{
 					Split sp = it.next();
 
-					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+					String buf = "[SPLIT] " + sp.me + " <-> " + sp.from + ", " + TimeDifference.difference(now, sp.when) + " ago.";
 					if (sp.end != null && sp.to != null)
 					{
-						buf += " Reconnected to " + sp.to + " " + Moo.difference(sp.end, sp.when) + " later";
+						buf += " Reconnected to " + sp.to + " " + TimeDifference.difference(sp.end, sp.when) + " later";
 						if (sp.reconnectedBy != null)
 							buf += " by " + sp.reconnectedBy;
 						buf += ".";
 					}
 					else
 					{
-						Server s = Server.findServerAbsolute(sp.me);
+						Server s = serverManager.findServerAbsolute(sp.me);
 						if (s != null)
 						{
 							Reconnector r = Reconnector.findValidReconnectorFor(s);
 							if (r != null)
-								buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+								buf += " Will reconnect in " + TimeDifference.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 						}
 					}
 
@@ -154,7 +166,7 @@ class CommandSplit extends Command
 		}
 		else if (params.length > 2 && params[1].equalsIgnoreCase("del"))
 		{
-			Server s = Server.findServer(params[2]);
+			Server s = serverManager.findServer(params[2]);
 			if (s == null)
 				source.reply("[SPLIT] Server " + params[2] + " not found");
 			else if (s.getSplit() == null)
@@ -162,12 +174,12 @@ class CommandSplit extends Command
 			else
 			{
 				source.reply("Deleted server " + s.getName());
-				s.destroy();
+				serverManager.removeServer(s);
 			}
 		}
 		else if (params.length > 2 && params[1].equalsIgnoreCase("stop"))
 		{
-			Server s = Server.findServer(params[2]);
+			Server s = serverManager.findServer(params[2]);
 			if (s == null)
 				source.reply("[SPLIT] Server " + params[2] + " not found");
 			else if (s.getSplit() == null)
@@ -179,19 +191,19 @@ class CommandSplit extends Command
 		}
 		else if (params[1].equalsIgnoreCase("freeze"))
 		{
-			servermonitor.conf.reconnect = false;
-			for (Server s : Server.getServers())
+			conf.reconnect = false;
+			for (Server s : serverManager.getServers())
 				Reconnector.removeReconnectsFor(s);
 			source.reply("[SPLIT] Disabled all reconnects and all future reconnects");
 		}
 		else if (params[1].equalsIgnoreCase("unfreeze"))
 		{
-			servermonitor.conf.reconnect = true;
+			conf.reconnect = true;
 			source.reply("[SPLIT] Reenabled reconnects");
 		}
 		else
 		{
-			Server s = Server.findServer(params[1]);
+			Server s = serverManager.findServer(params[1]);
 			Date now = new Date();
 
 			if (s == null)
@@ -225,10 +237,10 @@ class CommandSplit extends Command
 			{
 				Split sp = splits.get(i - 1);
 
-				String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + Moo.difference(now, sp.when) + " ago.";
+				String buf = "[SPLIT] " + s.getName() + " <-> " + sp.from + ", " + TimeDifference.difference(now, sp.when) + " ago.";
 				if (sp.end != null && sp.to != null)
 				{
-					buf += " Reconnected to " + sp.to + " " + Moo.difference(sp.end, sp.when) + " later";
+					buf += " Reconnected to " + sp.to + " " + TimeDifference.difference(sp.end, sp.when) + " later";
 					if (sp.reconnectedBy != null)
 						buf += " by " + sp.reconnectedBy;
 					buf += ".";
@@ -237,7 +249,7 @@ class CommandSplit extends Command
 				{
 					Reconnector r = Reconnector.findValidReconnectorFor(s);
 					if (r != null)
-						buf += " Will reconnect in " + Moo.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
+						buf += " Will reconnect in " + TimeDifference.difference(now, r.reconnectTime()) + " to " + r.findPreferred().getName() + ".";
 				}
 
 				source.reply(buf);

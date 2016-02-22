@@ -1,49 +1,78 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import net.rizon.moo.plugin.servermonitor.server.CommandServer;
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.util.Arrays;
+import java.util.EventListener;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.inject.Inject;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
 import net.rizon.moo.Split;
+import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventWallops;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.events.OnServerLink;
 import net.rizon.moo.events.OnServerSplit;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class Requester implements Runnable
 {
 	@Override
 	public void run()
 	{
-		new DNSChecker().start();
+		DNSChecker checker = new DNSChecker();
+		Moo.injector.injectMembers(checker);
+		checker.start();
 
-		CertChecker.run();
+		CertChecker cc = new CertChecker();
+		Moo.injector.injectMembers(cc);
+		checker.start();
 	}
 }
 
-public class servermonitor extends Plugin
+public class servermonitor extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(servermonitor.class);
+	@Inject
+	private static Logger logger;
 	
-	private Command scheck;
+	@Inject
+	private CommandScheck scheck;
+	
+	@Inject
 	private CommandServer server;
-	private Command split;
+	
+	@Inject
+	private CommandSplit split;
+	
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config config;
+	
+	@Inject
+	private ServerManager serverManager;
+	
 	private ScheduledFuture requester;
-	public static ServerMonitorConfiguration conf;
-	protected static TextDelay texts;
+	
+	private ServerMonitorConfiguration conf;
+	
+	protected TextDelay texts;
 
 	public servermonitor() throws Exception
 	{
@@ -54,24 +83,12 @@ public class servermonitor extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		scheck = new CommandScheck(this);
-		server = new CommandServer(this);
-		split = new CommandSplit(this);
-
-		Moo.getEventBus().register(this);
-
 		requester = Moo.scheduleWithFixedDelay(new Requester(), 5, TimeUnit.MINUTES);
 	}
 
 	@Override
 	public void stop()
 	{
-		scheck.remove();
-		server.remove();
-		split.remove();
-
-		Moo.getEventBus().unregister(this);
-
 		requester.cancel(false);
 	}
 	
@@ -82,18 +99,19 @@ public class servermonitor extends Plugin
 		
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 
-		if (servermonitor.conf.messages)
+		if (conf.messages)
 		{
 			if (pypsd)
-				Moo.privmsgAll(Moo.conf.dev_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+				protocol.privmsgAll(config.dev_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 			else
-				Moo.privmsgAll(Moo.conf.split_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
+				protocol.privmsgAll(config.split_channels, "\2" + serv.getName() + " introduced by " + to.getName() + "\2");
 		}
 		if (!pypsd)
 		{
 			if (texts == null)
 			{
 				texts = new TextDelay();
+				Moo.injector.injectMembers(texts);
 				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
 			}
 			texts.messages.add(serv.getName() + " introduced by " + to.getName());
@@ -120,23 +138,19 @@ public class servermonitor extends Plugin
 		
 		boolean pypsd = serv.getName().startsWith("py") && serv.getName().endsWith(".rizon.net");
 
-		if (servermonitor.conf.messages)
+		if (conf.messages)
 		{
 			if (pypsd)
-				Moo.privmsgAll(Moo.conf.dev_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2. " + pypsdMockery[rand.nextInt(pypsdMockery.length)]);
+				protocol.privmsgAll(config.dev_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2. " + pypsdMockery[rand.nextInt(pypsdMockery.length)]);
 			else
 			{
-				Moo.privmsgAll(Moo.conf.split_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
-				for (Server s : Server.getServers())
+				protocol.privmsgAll(config.split_channels, "\2" + serv.getName() + " split from " + from.getName() + "\2 - " + serv.users + " users lost");
+				for (Server s : serverManager.getServers())
 				{
 					if (s.isHub() == true && s.getSplit() == null)
-						for (Iterator<String> it2 = s.clines.iterator(); it2.hasNext();)
-						{
-							String cline = it2.next();
-
+						for (String cline : s.clines)
 							if (serv.getName().equalsIgnoreCase(cline))
-								Moo.privmsgAll(Moo.conf.split_channels, serv.getName() + " can connect to " + s.getName());
-						}
+								protocol.privmsgAll(config.split_channels, serv.getName() + " can connect to " + s.getName());
 				}
 			}
 		}
@@ -146,14 +160,16 @@ public class servermonitor extends Plugin
 			if (texts == null)
 			{
 				texts = new TextDelay();
+				Moo.injector.injectMembers(texts);
 				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
 			}
 			texts.messages.add(serv.getName() + " split from " + from.getName());
 		}
 
-		if (servermonitor.conf.reconnect && !serv.isServices())
+		if (conf.reconnect && !serv.isServices())
 		{
 			Reconnector r = new Reconnector(serv, from);
+			Moo.injector.injectMembers(r);
 			ScheduledFuture future = Moo.scheduleAtFixedRate(r, 1, TimeUnit.MINUTES);
 			r.future = future;
 		}
@@ -178,7 +194,7 @@ public class servermonitor extends Plugin
 		Matcher m = connectPattern.matcher(message);
 		if (m.find())
 		{
-			Server s = Server.findServer(m.group(1));
+			Server s = serverManager.findServer(m.group(1));
 			if (s == null)
 				return;
 
@@ -195,7 +211,7 @@ public class servermonitor extends Plugin
 	{
 		try
 		{
-			servermonitor.conf = ServerMonitorConfiguration.load();
+			conf = ServerMonitorConfiguration.load();
 		}
 		catch (Exception ex)
 		{
@@ -203,5 +219,25 @@ public class servermonitor extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList(scheck, server, split);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(servermonitor.class).toInstance(this);
+		
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandScheck.class);
+		commandBinder.addBinding().to(CommandServer.class);
+		commandBinder.addBinding().to(CommandSplit.class);
 	}
 }

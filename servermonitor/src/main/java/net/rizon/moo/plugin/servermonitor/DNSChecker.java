@@ -1,5 +1,6 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import com.google.inject.Inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -11,12 +12,24 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class DNSChecker extends Thread
 {
-	private static final Logger logger = LoggerFactory.getLogger(DNSChecker.class);
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private ServerMonitorConfiguration conf;
+	
+	@Inject
+	private Config config;
+	
+	@Inject
+	private Protocol protocol;
 	
 	@Override
 	public void run()
@@ -32,7 +45,7 @@ class DNSChecker extends Thread
 			String what = "NS";
 			String[] what_array = { what };
 
-			Attributes attributes = idir.getAttributes(servermonitor.conf.domain, what_array);
+			Attributes attributes = idir.getAttributes(conf.domain, what_array);
 			Attribute attr = attributes.get(what);
 
 			long serial = -1;
@@ -50,7 +63,7 @@ class DNSChecker extends Thread
 					what = "SOA";
 					what_array[0] = what;
 
-					Attributes nameserver_attributes = idir2.getAttributes(servermonitor.conf.domain, what_array);
+					Attributes nameserver_attributes = idir2.getAttributes(conf.domain, what_array);
 					Attribute nameserver_attr = nameserver_attributes.get(what);
 
 					final String soa = nameserver_attr.get(0).toString();
@@ -61,16 +74,16 @@ class DNSChecker extends Thread
 					if (serial == -1)
 						serial = soa_serial;
 					else if (serial != soa_serial)
-						Moo.privmsgAll(Moo.conf.admin_channels, "DNS: SOA mismatch for " + ns + ": Expected " + serial + " but got " + soa_serial);
+						protocol.privmsgAll(config.admin_channels, "DNS: SOA mismatch for " + ns + ": Expected " + serial + " but got " + soa_serial);
 				}
 				catch (NamingException ex)
 				{
-					Moo.privmsgAll(Moo.conf.admin_channels, "DNS: NamingError checking serial for " + ns + ": " + ex);
+					protocol.privmsgAll(config.admin_channels, "DNS: NamingError checking serial for " + ns + ": " + ex);
 					logger.warn("Unable to check serial for " + ns, ex);
 				}
 				catch (Exception ex)
 				{
-					Moo.privmsgAll(Moo.conf.admin_channels, "DNS: Error checking serial for " + ns + ": " + ex);
+					protocol.privmsgAll(config.admin_channels, "DNS: Error checking serial for " + ns + ": " + ex);
 					logger.warn("Unable to check serial for " + ns, ex);
 				}
 				finally
@@ -81,12 +94,12 @@ class DNSChecker extends Thread
 		}
 		catch (NamingException ex)
 		{
-			Moo.privmsgAll(Moo.conf.admin_channels, "DNS: NamingError checking nameserver serials: " + ex);
+			protocol.privmsgAll(config.admin_channels, "DNS: NamingError checking nameserver serials: " + ex);
 			logger.warn("Unable to nameserver serials", ex);
 		}
 		catch (Exception ex)
 		{
-			Moo.privmsgAll(Moo.conf.admin_channels, "DNS: Error checking nameserver serials: " + ex);
+			protocol.privmsgAll(config.admin_channels, "DNS: Error checking nameserver serials: " + ex);
 			logger.warn("Unable to nameserver serials", ex);
 		}
 		finally
@@ -94,7 +107,7 @@ class DNSChecker extends Thread
 			try { idir.close(); } catch (Exception ex) { }
 		}
 
-		for (final String r : servermonitor.conf.check)
+		for (String r : conf.check)
 		{
 			try
 			{
@@ -102,7 +115,7 @@ class DNSChecker extends Thread
 			}
 			catch (UnknownHostException e)
 			{
-				Moo.privmsgAll(Moo.conf.admin_channels, "DNS: Unable to resolve " + r + ": " + e.getMessage());
+				protocol.privmsgAll(config.admin_channels, "DNS: Unable to resolve " + r + ": " + e.getMessage());
 			}
 		}
 	}

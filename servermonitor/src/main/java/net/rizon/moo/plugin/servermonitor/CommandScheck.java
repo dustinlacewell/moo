@@ -1,12 +1,15 @@
 package net.rizon.moo.plugin.servermonitor;
 
+import com.google.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.Server;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Server;
+import net.rizon.moo.irc.ServerManager;
 import net.rizon.moo.plugin.servermonitor.scheck.SCheck;
 
 class SCheckTimer implements Runnable
@@ -32,6 +35,7 @@ class SCheckTimer implements Runnable
 	public void run()
 	{
 		SCheck check = new SCheck(this.server, this.targets, this.ssl, this.port, true, this.use_v6);
+		Moo.injector.injectMembers(check);
 		check.start();
 	}
 }
@@ -54,13 +58,17 @@ class SCheckEndTimer implements Runnable
 
 class CommandScheck extends Command
 {
-	public CommandScheck(Plugin pkg)
+	@Inject
+	private ServerManager serverManager;
+	
+	@Inject
+	public CommandScheck(Config conf)
 	{
-		super(pkg, "!SCHECK", "Check if a server is online");
+		super("!SCHECK", "Check if a server is online");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -79,7 +87,7 @@ class CommandScheck extends Command
 			source.reply("Syntax: !scheck <server> [port] [+6]");
 		else
 		{
-			Server serv = Server.findServer(params[1]);
+			Server serv = serverManager.findServer(params[1]);
 			if (serv == null && params[1].equalsIgnoreCase("ALL") == false)
 				source.reply("[SCHECK] Server " + params[1] + " not found");
 			else
@@ -122,13 +130,14 @@ class CommandScheck extends Command
 				if (params[1].equalsIgnoreCase("ALL") == false)
 				{
 					SCheck check = new SCheck(serv, new String[] { source.getTargetName() }, ssl, port, false, use_v6);
+					Moo.injector.injectMembers(check);
 					check.start();
 				}
 				else
 				{
 					int delay = 0;
 
-					for (Server s : Server.getServers())
+					for (Server s : serverManager.getServers())
 					{
 						if (s.isHub() || s.isServices())
 							continue;
