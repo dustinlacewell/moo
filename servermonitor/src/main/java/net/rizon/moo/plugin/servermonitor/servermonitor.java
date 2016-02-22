@@ -40,7 +40,7 @@ class Requester implements Runnable
 
 		CertChecker cc = new CertChecker();
 		Moo.injector.injectMembers(cc);
-		checker.start();
+		cc.start();
 	}
 }
 

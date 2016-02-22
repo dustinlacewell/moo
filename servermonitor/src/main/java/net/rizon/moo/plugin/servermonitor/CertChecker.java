@@ -7,7 +7,7 @@ import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
 import net.rizon.moo.plugin.servermonitor.scheck.SCheck;
 
-class CertChecker implements Runnable
+class CertChecker extends Thread
 {
 	private static final int sslPort = 6697;
 	private static int lastIdx = -1;
