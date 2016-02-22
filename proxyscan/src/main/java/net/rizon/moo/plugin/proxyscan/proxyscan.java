@@ -8,7 +8,6 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +15,7 @@ import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.EventClientConnect;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.logging.LoggerUtils;

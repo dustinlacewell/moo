@@ -4,7 +4,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import java.util.Date;
-import java.util.EventListener;
 import java.util.Iterator;
 
 import net.rizon.moo.Moo;
@@ -12,10 +11,10 @@ import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventAkillAdd;
 import net.rizon.moo.events.EventAkillDel;
 import net.rizon.moo.events.EventClientConnect;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.EventOPMHit;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.irc.Protocol;
-import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
 
 class EventRandom implements EventListener

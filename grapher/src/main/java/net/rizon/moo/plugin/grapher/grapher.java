@@ -4,7 +4,6 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Arrays;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import net.rizon.moo.Command;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.events.OnServerCreate;
 import net.rizon.moo.events.OnServerDestroy;

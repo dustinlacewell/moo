@@ -6,7 +6,6 @@ import io.netty.util.concurrent.ScheduledFuture;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.EventListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +14,7 @@ import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.conf.Config;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
 

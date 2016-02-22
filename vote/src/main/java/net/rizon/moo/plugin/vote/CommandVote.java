@@ -1,26 +1,45 @@
 package net.rizon.moo.plugin.vote;
 
+import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.Date;
 
-import net.rizon.moo.Channel;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Mail;
-import net.rizon.moo.Membership;
 import net.rizon.moo.Moo;
-import net.rizon.moo.Plugin;
-import net.rizon.moo.User;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Channel;
+import net.rizon.moo.irc.IRC;
+import net.rizon.moo.irc.Membership;
+import net.rizon.moo.irc.Protocol;
+import net.rizon.moo.irc.User;
+import net.rizon.moo.plugin.vote.conf.Vote;
+import net.rizon.moo.plugin.vote.conf.VoteConfiguration;
+import net.rizon.moo.util.TimeDifference;
 
-class commandVoteBase extends Command
+class CommandVote extends Command
 {
-	public commandVoteBase(Plugin pkg, final String command)
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Mail mail;
+	
+	@Inject
+	private IRC irc;
+	
+	@Inject
+	private VoteConfiguration conf;
+	
+	@Inject
+	CommandVote(Config conf)
 	{
-		super(pkg, command, "Vote and manage votes");
+		super("!VOTE", "Vote and manage votes");
 
-		this.requiresChannel(Moo.conf.staff_channels);
-		this.requiresChannel(Moo.conf.oper_channels);
-		this.requiresChannel(Moo.conf.admin_channels);
+		this.requiresChannel(conf.staff_channels);
+		this.requiresChannel(conf.oper_channels);
+		this.requiresChannel(conf.admin_channels);
 	}
 
 	@Override
@@ -33,6 +52,15 @@ class commandVoteBase extends Command
 		source.notice(this.getCommandName() + " INFO <num> -- show info about a certain vote (date added, who added, votes)");
 		source.notice(this.getCommandName() + " LIST [ALL] -- list known votes. If ALL is given, closed votes will also be shown");
 		source.notice(this.getCommandName() + " <num> yes/no -- vote on a certain vote");
+	}
+	
+	private String getVoteEmailFor(String chan)
+	{
+		for (Vote v : conf.vote)
+			if (v.channel.equals(chan))
+				return v.email;
+
+		return null;
 	}
 
 	@Override
@@ -51,11 +79,11 @@ class commandVoteBase extends Command
 			for (final VoteInfo v : votes)
 				if (all || v.closed == false)
 				{
-					String msg = "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.";
+					String msg = "[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + TimeDifference.difference(date, v.date) + " ago.";
 					if (all)
-						Moo.notice(target, msg);
+						protocol.notice(target, msg);
 					else
-						source.reply("[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + Moo.difference(date, v.date) + " ago.");
+						source.reply("[VOTE #" + v.id + "] " + v.info + " by: " + v.owner + " " + TimeDifference.difference(date, v.date) + " ago.");
 					any = true;
 				}
 
@@ -87,9 +115,9 @@ class commandVoteBase extends Command
 
 			source.reply("Added vote #" + v.id);
 
-			String email = vote.getVoteEmailFor(target);
+			String email = getVoteEmailFor(target);
 			if (email != null)
-				Mail.send(email, "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
+				mail.send(email, "New vote in " + target, nick + " has added a new vote at " + date + " in " + target + ": " + v.info);
 		}
 		else if (params[1].equalsIgnoreCase("info") && params.length > 2)
 		{
@@ -111,7 +139,7 @@ class commandVoteBase extends Command
 				return;
 			}
 
-			source.reply("Vote #" + vnum + " for " + target + " added by " + v.owner + " " + Moo.difference(new Date(), v.date) + " ago.");
+			source.reply("Vote #" + vnum + " for " + target + " added by " + v.owner + " " + TimeDifference.difference(new Date(), v.date) + " ago.");
 			source.reply(v.info);
 
 			Cast[] casts = Cast.getCastsFor(v);
@@ -182,7 +210,7 @@ class commandVoteBase extends Command
 				return;
 			}
 
-			Channel c = Moo.channels.find(target);
+			Channel c = irc.findChannel(target);
 			Collection<Membership> users = c.getUsers();
 			StringBuilder sb = new StringBuilder("People who need to vote on vote #");
 			sb.append(vnum);
@@ -274,22 +302,5 @@ class commandVoteBase extends Command
 		{
 			this.onHelp(source);
 		}
-	}
-}
-
-class CommandVote
-{
-	private Command mv, v;
-
-	public CommandVote(Plugin pkg)
-	{
-		mv = new commandVoteBase(pkg, "!MOO-VOTE");
-		v = new commandVoteBase(pkg, "!VOTE");
-	}
-
-	public void remove()
-	{
-		mv.remove();
-		v.remove();
 	}
 }

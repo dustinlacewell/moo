@@ -1,20 +1,27 @@
 package net.rizon.moo.plugin.vote;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
+import java.util.Arrays;
+import java.util.List;
+import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.vote.conf.Vote;
 import net.rizon.moo.plugin.vote.conf.VoteConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class vote extends Plugin
+public class vote extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(vote.class);
+	@Inject
+	private static Logger logger;
 
-	public static VoteConfiguration conf;
+	private VoteConfiguration conf;
 
+	@Inject
 	private CommandVote vote;
 
 	public vote() throws Exception
@@ -29,24 +36,11 @@ public class vote extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		vote = new CommandVote(this);
-		Moo.getEventBus().register(this);
 	}
 
 	@Override
 	public void stop()
 	{
-		vote.remove();
-		Moo.getEventBus().unregister(this);
-	}
-
-	protected static String getVoteEmailFor(String chan)
-	{
-		for (Vote v : conf.vote)
-			if (v.channel.equals(chan))
-				return v.email;
-
-		return null;
 	}
 	
 	@Subscribe
@@ -62,5 +56,23 @@ public class vote extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.<Command>asList(vote);
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(vote.class).toInstance(this);
+		
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
+
+		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
+		commandBinder.addBinding().to(CommandVote.class);
 	}
 }

@@ -5,16 +5,15 @@ import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Arrays;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
-import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnConnect;
 import net.rizon.moo.events.OnServerDestroy;
 import net.rizon.moo.events.OnServerLink;

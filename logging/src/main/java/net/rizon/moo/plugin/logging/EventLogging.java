@@ -11,13 +11,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.EventListener;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rizon.moo.Moo;
 import net.rizon.moo.conf.Config;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.EventNotice;
 import net.rizon.moo.events.EventPrivmsg;
 import net.rizon.moo.events.EventWallops;
@@ -32,7 +32,6 @@ import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
 import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class EventLogging implements EventListener
 {
