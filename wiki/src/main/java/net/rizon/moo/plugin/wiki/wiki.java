@@ -1,20 +1,24 @@
 package net.rizon.moo.plugin.wiki;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-import net.rizon.moo.CommandSource;
-import net.rizon.moo.Event;
+import javax.inject.Inject;
+import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.OnReload;
 import net.rizon.moo.plugin.wiki.conf.WikiConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class wiki extends Plugin
+public class wiki extends Plugin implements EventListener
 {
-	private static final Logger logger = LoggerFactory.getLogger(wiki.class);
+	@Inject
+	private static Logger logger;
 	
 	private ScheduledFuture wiki;
 	public static WikiConfiguration conf;
@@ -28,7 +32,6 @@ public class wiki extends Plugin
 	@Override
 	public void start() throws Exception
 	{
-		Moo.getEventBus().register(this);
 		wiki = Moo.scheduleWithFixedDelay(new WikiTimer(), 1, TimeUnit.MINUTES);
 	}
 
@@ -36,7 +39,6 @@ public class wiki extends Plugin
 	public void stop()
 	{
 		wiki.cancel(false);
-		Moo.getEventBus().unregister(this);
 	}
 	
 	@Subscribe
@@ -53,5 +55,20 @@ public class wiki extends Plugin
 			
 			logger.warn("Unable to reload configuration", ex);
 		}
+	}
+
+	@Override
+	public List<Command> getCommands()
+	{
+		return Arrays.asList();
+	}
+
+	@Override
+	protected void configure()
+	{
+		bind(wiki.class).toInstance(this);
+		
+		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
+		eventListenerBinder.addBinding().toInstance(this);
 	}
 }

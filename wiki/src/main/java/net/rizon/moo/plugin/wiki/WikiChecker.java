@@ -1,17 +1,18 @@
 package net.rizon.moo.plugin.wiki;
 
+import com.google.inject.Inject;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,7 +20,14 @@ import org.w3c.dom.NodeList;
 
 class WikiChecker extends Thread
 {
-	private static final Logger logger = LoggerFactory.getLogger(WikiChecker.class);
+	@Inject
+	private static Logger logger;
+	
+	@Inject
+	private Protocol protocol;
+	
+	@Inject
+	private Config conf;
 	
 	private static final SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -59,7 +67,7 @@ class WikiChecker extends Thread
 						author = n.getElementsByTagName("author").item(0).getTextContent(),
 						link = n.getElementsByTagName("link").item(0).getAttributes().getNamedItem("href").getTextContent();
 
-				Moo.privmsgAll(Moo.conf.help_channels, title + " modified by " + author + " (" + link + ")");
+				protocol.privmsgAll(conf.help_channels, title + " modified by " + author + " (" + link + ")");
 			}
 
 			if (highest != null)
