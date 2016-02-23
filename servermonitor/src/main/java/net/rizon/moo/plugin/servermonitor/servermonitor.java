@@ -230,6 +230,7 @@ public class servermonitor extends Plugin implements EventListener
 	protected void configure()
 	{
 		bind(servermonitor.class).toInstance(this);
+		bind(ServerMonitorConfiguration.class).toInstance(conf);
 		
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().toInstance(this);

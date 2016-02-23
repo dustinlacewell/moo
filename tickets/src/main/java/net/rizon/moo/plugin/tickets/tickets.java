@@ -77,6 +77,7 @@ public class tickets extends Plugin implements EventListener
 	protected void configure()
 	{
 		bind(tickets.class).toInstance(this);
+		bind(TicketsConfiguration.class).toInstance(conf);
 		
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().toInstance(this);
