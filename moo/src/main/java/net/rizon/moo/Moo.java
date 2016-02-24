@@ -80,9 +80,6 @@ public class Moo
 	private EventBus eventBus;
 
 	@Inject
-	private ClientInitializer clientInitializer;
-
-	@Inject
 	private DatabaseTimer databaseTimer;
 
 	@Inject
@@ -109,7 +106,7 @@ public class Moo
 		Bootstrap client = new Bootstrap()
 		    .group(group)
 		    .channel(NioSocketChannel.class)
-		    .handler(clientInitializer)
+		    .handler(injector.getInstance(ClientInitializer.class))
 		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
 		
 		if (conf.general.host != null)

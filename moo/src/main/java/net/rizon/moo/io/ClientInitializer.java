@@ -25,7 +25,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import net.rizon.moo.Moo;
 import net.rizon.moo.conf.Config;
 
 public class ClientInitializer extends ChannelInitializer<SocketChannel>

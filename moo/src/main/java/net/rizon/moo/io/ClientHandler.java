@@ -1,12 +1,14 @@
 package net.rizon.moo.io;
 
 import com.google.inject.Inject;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.rizon.moo.MessageManager;
 import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
 
+@Sharable
 class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {
 	@Inject
