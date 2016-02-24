@@ -36,7 +36,9 @@ public class proxyscan extends Plugin implements EventListener
 	@Inject
 	private IPCache cache;
 
+	@Inject
 	private ScanListener sc;
+
 	private ScheduledFuture cacheFuture;
 
 	private ProxyscanConfiguration conf;

@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
-import net.rizon.moo.Moo;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
 import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
 
@@ -19,7 +18,6 @@ import com.google.inject.Inject;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class Server extends Thread
 {

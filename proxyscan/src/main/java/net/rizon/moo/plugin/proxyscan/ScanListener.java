@@ -26,15 +26,7 @@ final class ScanListener extends Thread
 	@Inject
 	private proxyscan proxyscan;
 
-//	private final String ip;
-//	private final int port;
 	private ServerSocket listener;
-
-//	public ScanListener(final String ip, final int port)
-//	{
-//		this.ip = ip;
-//		this.port = port;
-//	}
 
 	@Override
 	public void run()

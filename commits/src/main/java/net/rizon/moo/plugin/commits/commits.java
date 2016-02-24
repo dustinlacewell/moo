@@ -6,8 +6,6 @@ import com.google.inject.multibindings.Multibinder;
 import java.util.Arrays;
 import java.util.List;
 import net.rizon.moo.Command;
-import net.rizon.moo.Event;
-import net.rizon.moo.Moo;
 import net.rizon.moo.logging.LoggerUtils;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.EventListener;
@@ -15,7 +13,6 @@ import net.rizon.moo.events.OnReload;
 import net.rizon.moo.events.OnShutdown;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class commits extends Plugin implements EventListener
 {
@@ -80,6 +77,7 @@ public class commits extends Plugin implements EventListener
 	protected void configure()
 	{
 		bind(commits.class).toInstance(this);
+		bind(CommitsConfiguration.class).toInstance(conf);
 
 		bind(Server.class);
 
