@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Database;
 import net.rizon.moo.Moo;
+import net.rizon.moo.Split;
 import net.rizon.moo.events.EventListener;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
@@ -219,5 +220,36 @@ public class ServerManager implements EventListener
 	{
 		protocol.write("STATS", "c", server.getName());
 		protocol.write("STATS", "o", server.getName());
+	}
+	
+	public void split(Server server, Server from)
+	{
+		server.split(from);
+		
+		Date now = new Date();
+		
+		// Find servers that split from this one at the same time
+		for (Server serv : getServers())
+		{
+			Split sp = serv.getSplit();
+			if (sp != null && sp.from.equals(server.getName()) && sp.when.getTime() / 1000L == now.getTime() / 1000L)
+			{
+				sp.recursive = true;
+
+				try
+				{
+					PreparedStatement statement = Moo.db.prepare("UPDATE splits SET `recursive` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
+					statement.setBoolean(1, sp.recursive);
+					statement.setString(2, sp.me);
+					statement.setString(3, sp.from);
+					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
+					Moo.db.executeUpdate(statement);
+				}
+				catch (SQLException ex)
+				{
+					Database.handleException(ex);
+				}
+			}
+		}
 	}
 }

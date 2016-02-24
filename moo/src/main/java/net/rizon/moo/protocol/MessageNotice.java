@@ -145,9 +145,7 @@ public class MessageNotice extends Message
 					serverManager.insertServer(from);
 				}
 
-				serv.uplink = null;
-				from.links.remove(serv);
-				serv.split(from);
+				serverManager.split(serv, from);
 
 				serverManager.last_split = new Date();
 

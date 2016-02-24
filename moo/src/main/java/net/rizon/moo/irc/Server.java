@@ -109,6 +109,8 @@ public class Server
 	public void split(Server from)
 	{
 		Date now = new Date();
+		
+		this.uplink = null;
 		this.links.remove(from);
 
 		Split s = new Split();
@@ -116,30 +118,6 @@ public class Server
 		s.from = from.name;
 		s.when = now;
 		s.recursive = false;
-
-		// Find servers that split from this one at the same time
-//		for (Server serv : Server.getServers())
-//		{
-//			Split sp = serv.getSplit();
-//			if (sp != null && sp.from.equals(this.name) && sp.when.getTime() / 1000L == now.getTime() / 1000L)
-//			{
-//				sp.recursive = true;
-//
-//				try
-//				{
-//					PreparedStatement statement = Moo.db.prepare("UPDATE splits SET `recursive` = ? WHERE `name` = ? AND `from` = ? AND `when` = ?");
-//					statement.setBoolean(1, sp.recursive);
-//					statement.setString(2, sp.me);
-//					statement.setString(3, sp.from);
-//					statement.setDate(4, new java.sql.Date(sp.when.getTime()));
-//					Moo.db.executeUpdate(statement);
-//				}
-//				catch (SQLException ex)
-//				{
-//					Database.handleException(ex);
-//				}
-//			}
-//		}
 
 		try
 		{

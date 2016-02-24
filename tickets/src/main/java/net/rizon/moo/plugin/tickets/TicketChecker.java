@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rizon.moo.Moo;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.tickets.conf.TicketsConfiguration;
