@@ -8,12 +8,25 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import java.util.ArrayList;
 import java.util.List;
 import net.rizon.moo.Moo;
+import net.rizon.moo.conf.Config;
+import net.rizon.moo.irc.Protocol;
 
 public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 {
 	@Override
 	protected void append(ILoggingEvent event)
-	{		
+	{
+		if (Moo.injector == null)
+		{
+			return;
+		}
+
+		Level level = event.getLevel();
+		if (!level.isGreaterOrEqual(Level.INFO))
+		{
+			return;
+		}
+
 		String message = event.getMessage();
 		IThrowableProxy throwable = event.getThrowableProxy();
 		StackTraceElement[] stes = null;
@@ -22,26 +35,32 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 		{
 			List<StackTraceElement> list = new ArrayList<>();
 			for (StackTraceElementProxy step : throwable.getStackTraceElementProxyArray())
+			{
 				list.add(step.getStackTraceElement());
+			}
 			stes = list.toArray(new StackTraceElement[0]);
 		}
 
-		Level level = event.getLevel();
-		boolean bad = level == Level.ERROR || level == Level.WARN || level == Level.ALL;
+		Config conf = Moo.injector.getInstance(Config.class);
+		Protocol protocol = Moo.injector.getInstance(Protocol.class);
 
-//		if (Moo.conf != null)
-//			if (level == Level.INFO || bad)
-//				for (final String ch : Moo.conf.moo_log_channels)
+		for (final String ch : conf.moo_log_channels)
+		{
+			if (message != null)
+			{
+				protocol.privmsg(ch, message);
+			}
+			if (stes != null)
+			{
+				if (throwable != null)
 				{
-//					if (message != null)
-//						Moo.privmsg(ch, message); // XXX logback makes this so can't really inject? post event? cant get eventbus.
-//					if (stes != null)
-//					{
-//						if (throwable != null)
-//							Moo.privmsg(ch, throwable.getMessage());
-//						for (StackTraceElement ste : stes)
-//							Moo.privmsg(ch, ste.toString());
-//					}
+					protocol.privmsg(ch, throwable.getMessage());
 				}
+				for (StackTraceElement ste : stes)
+				{
+					protocol.privmsg(ch, ste.toString());
+				}
+			}
+		}
 	}
 }
