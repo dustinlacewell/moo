@@ -71,6 +71,7 @@
 						</manifest>
 						<manifestEntries>
 							<Author>Adam &lt;Adam@rizon.net&gt;</Author>
+							<Build-Number>${buildNumber}</Build-Number>
 						</manifestEntries>
 					</archive>
 					<descriptorRefs>
