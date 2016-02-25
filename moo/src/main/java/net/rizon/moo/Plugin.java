@@ -1,10 +1,13 @@
 package net.rizon.moo;
 
 import com.google.inject.AbstractModule;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.Manifest;
 
 public abstract class Plugin extends AbstractModule
 {
@@ -12,12 +15,18 @@ public abstract class Plugin extends AbstractModule
 	private static LinkedList<Plugin> plugins = new LinkedList<Plugin>();
 
 	private String name, desc;
+	private PluginInfo info;
 	public String pname;
 	protected ClassLoader loader; // Loader for this plugin
 	//public List<Command> commands = new LinkedList<>();
 
 	protected Plugin(String name, String desc)
 	{
+		/*
+		 In case people try to get plugininfo during construction.
+		 Will just return empty strings for everything.
+		 */
+		this.info = new PluginInfo(null);
 		this.name = name;
 		this.desc = desc;
 	}
@@ -46,10 +55,39 @@ public abstract class Plugin extends AbstractModule
 		return this.desc;
 	}
 
+	public final PluginInfo getPluginInfo()
+	{
+		return this.info;
+	}
+
 	public abstract void start() throws Exception;
 	public abstract void stop();
 
 	public abstract List<Command> getCommands();
+
+	public static Manifest findPluginManifest(Class pluginClass)
+	{
+		String className = pluginClass.getSimpleName() + ".class";
+		String classPath = pluginClass.getResource(className).toString();
+
+		if (!classPath.startsWith("jar"))
+		{
+			// Class not loaded from a jar file.
+			return null;
+		}
+
+		String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
+				+ "/META-INF/MANIFEST.MF";
+
+		try
+		{
+			return new Manifest(new URL(manifestPath).openStream());
+		}
+		catch (IOException ex)
+		{
+			return null;
+		}
+	}
 
 	//@SuppressWarnings("resource")
 	private static Plugin loadPlugin(String base, String name, boolean core) throws Throwable
@@ -70,6 +108,8 @@ public abstract class Plugin extends AbstractModule
 			//cl.close();
 			throw ex.getCause();
 		}
+
+		p.info = new PluginInfo(findPluginManifest(c));
 
 		plugins.add(p);
 		p.pname = name;
