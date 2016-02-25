@@ -2,8 +2,10 @@ package net.rizon.moo;
 
 import com.google.inject.AbstractModule;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,11 +81,22 @@ public abstract class Plugin extends AbstractModule
 		String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
 				+ "/META-INF/MANIFEST.MF";
 
+		URL url;
+
 		try
 		{
-			return new Manifest(new URL(manifestPath).openStream());
+			url = new URL(manifestPath);
 		}
-		catch (IOException ex)
+		catch (MalformedURLException e)
+		{
+			return null;
+		}
+
+		try (InputStream manifestInputStream = url.openStream())
+		{
+			return new Manifest(manifestInputStream);
+		}
+		catch (IOException e)
 		{
 			return null;
 		}
