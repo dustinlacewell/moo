@@ -69,23 +69,8 @@
 						<manifest>
 							<mainClass>net.rizon.moo.Moo</mainClass>
 						</manifest>
-						<manifestEntries>
-							<Author>Adam &lt;Adam@rizon.net&gt;</Author>
-							<Build-Number>${buildNumber}</Build-Number>
-						</manifestEntries>
 					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
