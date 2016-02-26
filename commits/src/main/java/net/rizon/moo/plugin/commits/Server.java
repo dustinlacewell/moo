@@ -230,7 +230,8 @@ class Server extends Thread
 		}
 		catch (IOException ex)
 		{
-			logger.warn("Error in commits server", ex);
+			if (sock == null || sock.isClosed() == false)
+				logger.warn("Error in commits server", ex);
 		}
 	}
 

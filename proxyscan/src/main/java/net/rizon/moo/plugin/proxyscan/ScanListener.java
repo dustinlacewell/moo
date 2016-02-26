@@ -91,7 +91,8 @@ final class ScanListener extends Thread
 		}
 		catch (Exception ex)
 		{
-			logger.warn("Error running scan listener", ex);
+			if (listener == null || listener.isClosed() == false)
+				logger.warn("Error running scan listener", ex);
 		}
 	}
 
