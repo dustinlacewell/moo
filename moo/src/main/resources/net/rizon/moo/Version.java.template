@@ -2,8 +2,6 @@ package net.rizon.moo;
 
 public final class Version
 {
-	public static final String BUILD_TIME = "@buildtime@";
-	public static final String POM_VERSION = "@pomversion@";
 	public static final String GIT_TAG = "@Git-Tag@";
 	public static final String GIT_REVISION = "@Git-Revision@";
 	public static final String GIT_REVISION_SHORT = "@Git-Revision-Short@";

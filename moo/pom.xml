@@ -104,14 +104,6 @@
 					<outputFile>src/main/java/net/rizon/moo/Version.java</outputFile>
 					<replacements>
 						<replacement>
-							<token>@buildtime@</token>
-							<value>${maven.build.timestamp}</value>
-						</replacement>
-						<replacement>
-							<token>@pomversion@</token>
-							<value>${project.version}</value>
-						</replacement>
-						<replacement>
 							<token>@Git-Tag@</token>
 							<value>${mvngit.tag}</value>
 						</replacement>
