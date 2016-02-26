@@ -112,11 +112,8 @@ public class Moo
 		    .channel(NioSocketChannel.class)
 		    .handler(injector.getInstance(ClientInitializer.class))
 		    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30 * 1000);
-		
-		if (conf.general.host != null)
-			client.bind(new InetSocketAddress(conf.general.host, 0)).sync().await();
 
-		ChannelFuture future = client.connect(conf.general.server, conf.general.port);
+		ChannelFuture future = client.connect(new InetSocketAddress(conf.general.server, conf.general.port), new InetSocketAddress(conf.general.host != null ? conf.general.host : "0.0.0.0", 0));
 		channel = future.channel();
 
 		channel.closeFuture().sync();
