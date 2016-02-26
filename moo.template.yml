@@ -66,23 +66,64 @@ help_channels: ["#h"]
 mail:
   path: /usr/sbin/sendmail
 
+plugin_repository: ~/.m2/repository
+
 plugins:
-- commands
-- core
-- dnsbl
-- dnsblstats
-- servercontrol
-- servermonitor
-- watch
-- vote
-- logging
-- grapher
-- random
-- antiidle
-- osflood
-- commits
-- fun
-- wiki
-- tickets
-- proxyscan
-- mxbl
+ - groupId: net.rizon
+   artifactId: moo-commands
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-core
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-dnsbl
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-dnsblstats
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-servercontrol
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-servermonitor
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-watch
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-vote
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-logging
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-grapher
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-random
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-antiidle
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-osflood
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-commits
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-fun
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-wiki
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-tickets
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-proxyscan
+   version: 3.0
+ - groupId: net.rizon
+   artifactId: moo-mxbl
+   version: 3.0
+

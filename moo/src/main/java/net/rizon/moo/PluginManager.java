@@ -107,6 +107,7 @@ public class PluginManager
 			p.loader = cl;
 			cl = null;
 			p.manifest = mf;
+			p.pname = artifactId;
 
 			plugins.add(p);
 
@@ -117,6 +118,12 @@ public class PluginManager
 			if (cl != null)
 				cl.close();
 		}
+	}
+
+	public void remove(Plugin p)
+	{
+		p.remove();
+		plugins.remove(p);
 	}
 
 	public Plugin[] getPlugins()

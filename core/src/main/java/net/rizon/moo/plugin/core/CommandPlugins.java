@@ -70,7 +70,7 @@ class CommandPlugins extends Command
 			}
 			else
 			{
-				p.remove();
+				pluginManager.remove(p);
 				moo.rebuildInjector();
 				source.reply("Plugin " + p.getName() + " removed");
 			}
