@@ -50,11 +50,12 @@ class CommandPlugins extends Command
 
 			try
 			{
+				moo.stopPlugins();
 				Plugin p = pluginManager.loadPlugin(pinfo[0], pinfo[1], pinfo[2]);
-				moo.rebuildInjector();
+				moo.buildInjector();
 				source.reply("Plugin " + p.getName() + " loaded");
 			}
-			catch (Throwable ex)
+			catch (Exception ex)
 			{
 				source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
 				
@@ -71,7 +72,8 @@ class CommandPlugins extends Command
 			else
 			{
 				pluginManager.remove(p);
-				moo.rebuildInjector();
+				moo.stopPlugins();
+				moo.buildInjector();
 				source.reply("Plugin " + p.getName() + " removed");
 			}
 		}
@@ -81,25 +83,26 @@ class CommandPlugins extends Command
 			if (p == null)
 			{
 				source.reply("Plugin " + params[2] + " is not loaded");
+				return;
 			}
-			else
-			{
-				Artifact a = p.getArtifact();
-				p.remove();
-				moo.rebuildInjector();
 
-				try
-				{
-					p = pluginManager.loadPlugin(a.getGroupId(), a.getArtifactId(), a.getVersion());
-					moo.rebuildInjector();
-					source.reply("Plugin " + p.getName() + " reloaded");
-				}
-				catch (Throwable ex)
-				{
-					source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
-					
-					logger.warn("Unable to reload plugin " + params[2], ex);
-				}
+			Artifact a = p.getArtifact();
+			pluginManager.remove(p);
+			moo.stopPlugins();
+			moo.buildInjector();
+
+			try
+			{
+				moo.stopPlugins();
+				p = pluginManager.loadPlugin(a.getGroupId(), a.getArtifactId(), a.getVersion());
+				moo.buildInjector();
+				source.reply("Plugin " + p.getName() + " reloaded");
+			}
+			catch (Exception ex)
+			{
+				source.reply("Unable to load plugin " + params[2] + ": " + ex.getMessage());
+
+				logger.warn("Unable to reload plugin " + params[2], ex);
 			}
 		}
 	}

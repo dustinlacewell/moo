@@ -235,7 +235,7 @@ public class Moo
 		return moo.group.schedule(r, t, unit);
 	}
 
-	private void buildInjector()
+	public void buildInjector()
 	{
 		List<Module> modules = new ArrayList<>();
 
@@ -264,11 +264,9 @@ public class Moo
 			}
 	}
 
-	public void rebuildInjector()
+	public void stopPlugins()
 	{
 		for (Plugin p : pluginManager.getPlugins())
 			p.stop();
-
-		buildInjector();
 	}
 }

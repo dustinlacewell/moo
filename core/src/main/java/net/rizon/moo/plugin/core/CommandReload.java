@@ -47,7 +47,8 @@ class CommandReload extends Command
 			eventBus.post(new OnReload(source));
 
 			moo.setConf(c);
-			moo.rebuildInjector();
+			moo.stopPlugins();
+			moo.buildInjector();
 			
 			source.reply("Successfully reloaded configuration");
 		}
