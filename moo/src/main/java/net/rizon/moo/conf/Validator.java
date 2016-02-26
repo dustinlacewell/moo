@@ -233,6 +233,7 @@ public class Validator
 	 */
 	public static void validatePath(final String name, final String path) throws ConfigurationException
 	{
+		validateNotNull(name, path);
 		File f = new File(path);
 		if (f.exists() && !f.canRead())
 			throw new ConfigurationException(name + " (" + path + ") is not readable");

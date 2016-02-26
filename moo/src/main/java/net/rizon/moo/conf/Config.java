@@ -6,6 +6,7 @@ public class Config extends Configuration
 {
 	public boolean debug, protocol_debug;
 	public String version;
+	public String plugin_repository;
 	public General general;
 	public DatabaseConfiguration database;
 	public String[] channels;
@@ -21,7 +22,7 @@ public class Config extends Configuration
 	public String[] kline_channels;
 	public String[] help_channels;
 	public Mail mail;
-	public List<String> plugins;
+	public List<ConfPlugin> plugins;
 
 	/**
 	 * Loads the general configuration.
@@ -41,6 +42,7 @@ public class Config extends Configuration
 	public void validate() throws ConfigurationException
 	{
 		Validator.validateNotEmpty("Version number", version);
+		Validator.validatePath("Plugin repository", plugin_repository);
 
 		general.validate();
 		database.validate();
@@ -60,7 +62,7 @@ public class Config extends Configuration
 
 		mail.validate();
 
-		Validator.validateStringList("Plugins", plugins);
+		Validator.validateList(plugins);
 	}
 
 	/**

@@ -6,8 +6,10 @@ import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.PluginManager;
 import net.rizon.moo.conf.Config;
 import org.slf4j.Logger;
+import org.sonatype.aether.artifact.Artifact;
 
 class CommandPlugins extends Command
 {
@@ -16,6 +18,9 @@ class CommandPlugins extends Command
 
 	@Inject
 	private Moo moo;
+
+	@Inject
+	private PluginManager pluginManager;
 	
 	@Inject
 	CommandPlugins(Config conf)
@@ -31,14 +36,21 @@ class CommandPlugins extends Command
 		{
 			source.reply("Currently loaded plugins:");
 
-			for (Plugin pl : Plugin.getPlugins())
+			for (Plugin pl : pluginManager.getPlugins())
 				source.reply("  " + pl.pname + " (" + pl.getName() + ")");
 		}
 		else if (params[1].equalsIgnoreCase("load"))
 		{
+			String[] pinfo = params[2].split(":");
+			if (pinfo.length != 3)
+			{
+				source.reply("Use group:artifact:version");
+				return;
+			}
+
 			try
 			{
-				Plugin p = Plugin.loadPlugin(params[2]);
+				Plugin p = pluginManager.loadPlugin(pinfo[0], pinfo[1], pinfo[2]);
 				moo.rebuildInjector();
 				source.reply("Plugin " + p.getName() + " loaded");
 			}
@@ -51,7 +63,7 @@ class CommandPlugins extends Command
 		}
 		else if (params[1].equalsIgnoreCase("unload"))
 		{
-			Plugin p = Plugin.findPlugin(params[2]);
+			Plugin p = pluginManager.findPlugin(params[2]);
 			if (p == null)
 			{
 				source.reply("Plugin " + params[2] + " is not loaded");
@@ -65,19 +77,20 @@ class CommandPlugins extends Command
 		}
 		else if (params[1].equalsIgnoreCase("reload"))
 		{
-			Plugin p = Plugin.findPlugin(params[2]);
+			Plugin p = pluginManager.findPlugin(params[2]);
 			if (p == null)
 			{
 				source.reply("Plugin " + params[2] + " is not loaded");
 			}
 			else
 			{
+				Artifact a = p.getArtifact();
 				p.remove();
 				moo.rebuildInjector();
 
 				try
 				{
-					p = Plugin.loadPlugin(params[2]);
+					p = pluginManager.loadPlugin(a.getGroupId(), a.getArtifactId(), a.getVersion());
 					moo.rebuildInjector();
 					source.reply("Plugin " + p.getName() + " reloaded");
 				}

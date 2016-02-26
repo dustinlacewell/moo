@@ -7,6 +7,7 @@ import java.util.Iterator;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
+import net.rizon.moo.PluginManager;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.logging.logging;
@@ -21,6 +22,9 @@ class CommandWatch extends Command
 	
 	@Inject
 	private watch watch;
+
+	@Inject
+	private PluginManager pluginManager;
 	
 	@Inject
 	CommandWatch(Config conf)
@@ -133,7 +137,7 @@ class CommandWatch extends Command
 			source.reply("Watch added for " + we.nick + " to expire on " + we.expires);
 			protocol.operwall(we.creator + " added a watch entry (" + (state == WatchEntry.registeredState.RS_MANUAL_CAPTURE ? "capture" : "akill") + ") for " + we.nick + " to expire on " + we.expires + ". Reason: " + reason);
 			
-			if (Plugin.findPlugin("logging") != null)
+			if (pluginManager.findPlugin("logging") != null)
 				logging.addEntry("WATCH", we.creator, we.nick, reason);
 			
 			// does insert or replace

@@ -52,7 +52,7 @@ class CommandStatus extends Command
 			return tmp + " " + what;
 	}
 
-	private final String getMemory()
+	private String getMemory()
 	{
 		long mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		return this.convertBytes(mem);
@@ -70,6 +70,6 @@ class CommandStatus extends Command
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		source.reply("[STATUS] " + conf.general.nick + " version " + conf.version + ", created on " + Moo.getCreated() + ". Revision " + Version.getFullVersion() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		source.reply("[STATUS] " + conf.general.nick + " version " + conf.version + ", started on " + Moo.getCreated() + ", revision " + Version.getRevision() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

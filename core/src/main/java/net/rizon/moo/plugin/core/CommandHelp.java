@@ -4,10 +4,13 @@ import com.google.inject.Inject;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Plugin;
-import net.rizon.moo.conf.Config;
+import net.rizon.moo.PluginManager;
 
 class CommandHelp extends Command
 {
+	@Inject
+	private PluginManager pluginManager;
+
 	CommandHelp()
 	{
 		super("!HELP", "Shows this list");
@@ -23,7 +26,7 @@ class CommandHelp extends Command
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		for (Plugin pkg : Plugin.getPlugins())
+		for (Plugin pkg : pluginManager.getPlugins())
 		{
 			boolean show_header = false;
 

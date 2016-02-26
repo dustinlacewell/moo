@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.rizon.moo.conf.ConfPlugin;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -84,6 +85,9 @@ public class Moo
 
 	@Inject
 	private EventManager eventManager;
+
+	@Inject
+	private PluginManager pluginManager;
 	
 	public static void main(String[] args)
 	{
@@ -120,8 +124,6 @@ public class Moo
 
 	public void start()
 	{
-		Version.load();
-
 		try
 		{
 			conf = Config.load();
@@ -148,21 +150,26 @@ public class Moo
 			System.exit(-1);
 		}
 
-		for (String pkg : conf.plugins)
+		buildInjector();
+
+		for (ConfPlugin plugin : conf.plugins)
 		{
-			logger.debug("Loading plugin: {}", pkg);
+			logger.debug("Loading plugin: {}/{}/{}", plugin.groupId, plugin.artifactId, plugin.version);
+
 			try
 			{
-				Plugin.loadPlugin(pkg);
+				pluginManager.loadPlugin(plugin.groupId, plugin.artifactId, plugin.version);
 			}
 			catch (Throwable ex)
 			{
-				logger.error("Error loading plugin " + pkg, ex);
+				logger.error("Error loading plugin", ex);
+				//logger.error("Error loading plugin " + pkg, ex);
 				System.exit(-1);
 			}
 		}
 
-		logger.info("moo v{} starting up", Version.getFullVersion());
+		//PluginInfo pi = new PluginInfo(Plugin.findPluginManifest(Moo.class));
+		logger.info("moo revision {} starting up", Version.getRevision());
 
 		buildInjector();
 
@@ -242,8 +249,9 @@ public class Moo
 		modules.add(new NettyModule());
 		modules.add(new Plexus());
 
-		for (Plugin p : Plugin.getPlugins())
-			modules.add(p);
+		if (pluginManager != null)
+			for (Plugin p : pluginManager.getPlugins())
+				modules.add(p);
 
 		injector = Guice.createInjector(Stage.PRODUCTION, modules);
 
@@ -251,7 +259,7 @@ public class Moo
 
 		eventManager.build();
 
-		for (Plugin p : Plugin.getPlugins())
+		for (Plugin p : pluginManager.getPlugins())
 			try
 			{
 				p.start();
@@ -264,7 +272,7 @@ public class Moo
 
 	public void rebuildInjector()
 	{
-		for (Plugin p : Plugin.getPlugins())
+		for (Plugin p : pluginManager.getPlugins())
 			p.stop();
 
 		buildInjector();

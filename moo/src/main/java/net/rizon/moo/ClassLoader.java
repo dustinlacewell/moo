@@ -11,95 +11,21 @@ public final class ClassLoader extends URLClassLoader
 {
 	private static final Logger logger = LoggerFactory.getLogger(ClassLoader.class);
 
-	public ClassLoader(String plugin, String classname)
+	private URL url;
+	private PluginManager pluginManager;
+
+	public ClassLoader(PluginManager pluginManager, File jar) throws MalformedURLException
 	{
 		super(new URL[0]);
 
-		File jar = null;
-
-		if (plugin != null)
-		{
-			File targetFolder = new File(plugin + "/target/");
-			if (!targetFolder.exists())
-				targetFolder = new File("../" + plugin + "/target/");
-
-			/* can't find the directory where we expect it */
-			if (!targetFolder.exists())
-			{
-				logger.warn("Unable to find {}/target/ directory to source the JAR from.", plugin);
-				return;
-			}
-
-			File[] targetFiles = targetFolder.listFiles();
-
-			for (File loadCandidate : targetFiles)
-			{
-				String name = loadCandidate.getName();
-
-				if (name.endsWith(".jar") && name.startsWith("moo-" + plugin))
-				{
-					jar = loadCandidate;
-
-					/*
-					 * `jar-with-dependencies` is the best load candidate, so
-					 * use it straight away, otherwise look for any other matching jar.
-					 */
-					if (name.endsWith("-jar-with-dependencies.jar"))
-						break;
-				}
-			}
-
-			if (jar == null)
-			{
-				File f = new File(targetFolder, "classes/");
-				if (!f.isDirectory())
-				{
-					logger.warn("Unable to locate plugin JAR/class files for {}", plugin);
-					return;
-				}
-
-				logger.debug("Using classes/ for plugin {}", plugin);
-				try
-				{
-					this.addURL(f.toURI().toURL());
-				}
-				catch (MalformedURLException ex)
-				{
-					logger.warn("Unable to add class URL for " + plugin + " [" + f.toURI() + "]", ex);
-				}
-				return;
-			}
-			else
-			{
-				logger.debug("Found load candidate {} for plugin `{}`", jar.getName(), plugin);
-			}
-		}
-		else
-		{
-			/* no plugin so use the main jar */
-			jar = new File(ClassLoader.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-		}
-
-		if (jar.exists())
-		{
-			try
-			{
-				this.addURL(jar.toURI().toURL());
-			}
-			catch (MalformedURLException ex)
-			{
-				logger.warn("Unable to add plugin JAR URL for " + plugin + " [" + jar.toURI() + "]", ex);
-			}
-		}
-		else
-		{
-			logger.warn("Unable to locate JAR for plugin {}", plugin);
-		}
+		url = jar.toURI().toURL();
+		this.addURL(jar.toURI().toURL());
+		this.pluginManager = pluginManager;
 	}
 
-	public ClassLoader(String classname)
+	public void addFile(File f) throws MalformedURLException
 	{
-		this(null, classname);
+		this.addURL(f.toURI().toURL());
 	}
 
 	@Override
@@ -116,8 +42,13 @@ public final class ClassLoader extends URLClassLoader
 		}
 		catch (ClassNotFoundException ex)
 		{
+			if (recurse && name.contains("Oline"))
+			{
+				ex.printStackTrace();
+				int i = 5;
+			}
 			if (recurse)
-				for (Plugin p : Plugin.getPlugins())
+				for (Plugin p : pluginManager.getPlugins())
 					try
 					{
 						return p.loader.loadClassRecurse(name, false);
@@ -126,6 +57,10 @@ public final class ClassLoader extends URLClassLoader
 					{
 					}
 
+			if (recurse && name.contains("Oline"))
+			{
+				int i = 5;
+			}
 			throw ex;
 		}
 	}

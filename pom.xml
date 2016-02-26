@@ -98,7 +98,7 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
+					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.6</version>
 					<configuration>
 						<archive>
@@ -112,18 +112,7 @@
 								<Git-Author-Email>${mvngit.commit.author.email}</Git-Author-Email>
 							</manifestEntries>
 						</archive>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
 					</configuration>
-					<executions>
-						<execution>
-							<phase>package</phase>
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

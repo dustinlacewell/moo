@@ -31,7 +31,7 @@ public abstract class Command
 		return this.description;
 	}
 
-	protected void requiresChannel(final String[] chans)
+	protected final void requiresChannel(final String[] chans)
 	{
 		for (String c : chans)
 			channels.add(c.toLowerCase());
