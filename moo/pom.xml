@@ -78,7 +78,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
