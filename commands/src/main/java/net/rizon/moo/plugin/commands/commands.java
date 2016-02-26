@@ -4,10 +4,13 @@ import com.google.inject.Inject;
 import net.rizon.moo.plugin.commands.why.CommandWhy;
 import net.rizon.moo.plugin.commands.version.CommandVersions;
 import com.google.inject.multibindings.Multibinder;
+import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import net.rizon.moo.Command;
 import net.rizon.moo.Message;
+import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.plugin.commands.climit.CommandClimit;
 import net.rizon.moo.plugin.commands.climit.Message005;
@@ -22,6 +25,7 @@ import net.rizon.moo.plugin.commands.sid.CommandSidHub;
 import net.rizon.moo.plugin.commands.slackers.CommandSlackers;
 import net.rizon.moo.plugin.commands.slackers.Message219Slackers;
 import net.rizon.moo.plugin.commands.slackers.Message249;
+import net.rizon.moo.plugin.commands.time.CheckTimesTimer;
 import net.rizon.moo.plugin.commands.time.CommandTime;
 import net.rizon.moo.plugin.commands.time.Message391;
 import net.rizon.moo.plugin.commands.uptime.CommandUptime;
@@ -66,6 +70,11 @@ public class commands extends Plugin
 
 	@Inject
 	private CommandWhy why;
+
+	@Inject
+	private CheckTimesTimer checkTimesTimer;
+
+	private ScheduledFuture checkTimesTimerFuture;
 	
 	public commands()
 	{
@@ -75,11 +84,13 @@ public class commands extends Plugin
 	@Override
 	public void start() throws Exception
 	{
+		checkTimesTimerFuture = Moo.scheduleWithFixedDelay(checkTimesTimer, 15, TimeUnit.MINUTES);
 	}
 
 	@Override
 	public void stop()
 	{
+		checkTimesTimerFuture.cancel(false);
 	}
 
 	@Override
@@ -92,6 +103,8 @@ public class commands extends Plugin
 	protected void configure()
 	{
 		bind(commands.class).toInstance(this);
+
+		bind(CheckTimesTimer.class);
 
 		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
 		Multibinder<Message> messageBinder = Multibinder.newSetBinder(binder(), Message.class);

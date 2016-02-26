@@ -52,7 +52,7 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 			}
 			if (stes != null)
 			{
-				if (throwable != null)
+				if (throwable != null && throwable.getMessage() != null)
 				{
 					protocol.privmsg(ch, throwable.getMessage());
 				}
