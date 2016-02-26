@@ -169,8 +169,6 @@ public class Moo
 
 		buildInjector();
 
-		eventManager.build();
-
 		eventBus.post(new InitDatabases());
 
 		eventBus.post(new LoadDatabases());

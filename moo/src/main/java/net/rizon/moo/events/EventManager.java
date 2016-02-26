@@ -15,6 +15,6 @@ public class EventManager
 	public void build()
 	{
 		for (EventListener l : eventListeners)
-			bus.register(bus);
+			bus.register(l);
 	}
 }
