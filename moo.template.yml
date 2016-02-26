@@ -1,0 +1,88 @@
+# moo configuration file
+
+debug: false
+
+version: moo v3
+
+general:
+  nick: moo
+  ident: moo
+  realname: Rizon Bot
+  server: 192.168.1.2
+  port: 6667
+  ssl: false
+  cert: certs/moo.cer
+  key: certs/moo.pkcs
+  # Optional settings
+  #host: 127.0.0.1
+  #server_pass: moo
+  oper:
+    name: moo
+    pass: somepass
+  nickserv:
+    pass: moooo
+    mask: NickServ!service@rizon.net
+
+database:
+  connection: jdbc:sqlite:moo.db
+
+# Comma separated list of channels to join
+channels: ["#opers", "#o", "#a", "#r", "#x", "#d", "#kline", "#kline-spam", "#w", "#services", "#h", "#adam", "#r-spam"]
+
+# Comma separated list of developer channels.
+dev_channels:  ["#d"]
+
+# Comma separated list of spam channels, where non important messages can go
+spam_channels: ["#kline-spam"]
+
+# Comma separated list of channels to announce and control floods to
+flood_channels: ["#w"]
+
+# Comma separated list of channels to announce splits to
+split_channels: ["#opers"]
+
+# Non SO staff channels
+staff_channels: ["#opers", "#kline"]
+
+# Comma separated list of oper channels
+oper_channels: ["#o"]
+
+# Comma separated list of admin channels
+admin_channels: ["#r", "#x"]
+
+# Comma separated list of services log channels
+log_channels: ["#services"]
+
+# Comma separated list of moo log channels
+moo_log_channels: ["#r-spam"]
+
+# Comma separated list of kline team channels
+kline_channels: ["#kline"]
+
+# Comma separated list of help channels
+help_channels: ["#h"]
+
+
+mail:
+  path: /usr/sbin/sendmail
+
+plugins:
+- commands
+- core
+- dnsbl
+- dnsblstats
+- servercontrol
+- servermonitor
+- watch
+- vote
+- logging
+- grapher
+- random
+- antiidle
+- osflood
+- commits
+- fun
+- wiki
+- tickets
+- proxyscan
+- mxbl
