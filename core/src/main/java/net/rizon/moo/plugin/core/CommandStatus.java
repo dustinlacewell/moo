@@ -70,6 +70,7 @@ class CommandStatus extends Command
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		source.reply("[STATUS] " + conf.general.nick + " version " + conf.version + ", started on " + Moo.getCreated() + ", revision " + Version.getRevision() + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
+		String version = Version.GIT_REVISION_SHORT + " by " + Version.GIT_AUTHOR + " (" + Version.GIT_AUTHOR_EMAIL + ")";
+		source.reply("[STATUS] " + conf.general.nick + " version " + conf.version + ", started on " + Moo.getCreated() + ", revision " + version + ". Using " + Thread.activeCount() + " threads and " + this.getMemory() + " of memory");
 	}
 }

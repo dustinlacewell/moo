@@ -168,8 +168,7 @@ public class Moo
 			}
 		}
 
-		//PluginInfo pi = new PluginInfo(Plugin.findPluginManifest(Moo.class));
-		logger.info("moo revision {} starting up", Version.getRevision());
+		logger.info("moo revision {} starting up", Version.GIT_REVISION);
 
 		buildInjector();
 
