@@ -104,7 +104,6 @@
 						<artifactId>exec-maven-plugin</artifactId>
 						<version>1.4.0</version>
 						<configuration>
-							<executable>moo/src/main/resources/run.sh</executable>
 							<arguments>
 								<argument>-XX:+HeapDumpOnOutOfMemoryError</argument>
 								<argument>-Xmx16M</argument>

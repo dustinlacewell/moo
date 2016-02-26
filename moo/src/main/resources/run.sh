@@ -1,2 +1,2 @@
 #!/bin/sh
-java $* > /dev/null 2>&1 &
+java $* > moo.log 2>&1 &
