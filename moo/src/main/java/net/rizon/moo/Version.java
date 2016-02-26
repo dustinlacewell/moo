@@ -1,30 +1,12 @@
 package net.rizon.moo;
 
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-public class Version
+public final class Version
 {
-	private static final Logger logger = LoggerFactory.getLogger(Version.class);
-	
-	public static String getRevision()
-	{
-		return "FIX THIS";
-//		try
-//		{
-//			Manifest mf = new Manifest();
-//			mf.read(Version.class.getResourceAsStream("META-INF/MANIFEST.MF"));
-//
-//			Attributes att = mf.getMainAttributes();
-//			return att.getValue("Build-Number");
-//		}
-//		catch (IOException ex)
-//		{
-//			logger.warn("unable to get revision", ex);
-//			return "UNKNOWN";
-//		}
-	}
+	public static final String BUILD_TIME = "unknown";
+	public static final String POM_VERSION = "unknown";
+	public static final String GIT_TAG = "unknown";
+	public static final String GIT_REVISION = "unknown";
+	public static final String GIT_REVISION_SHORT = "unknown";
+	public static final String GIT_AUTHOR = "unknown";
+	public static final String GIT_AUTHOR_EMAIL = "unknown";
 }
