@@ -79,6 +79,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
@@ -89,4 +90,34 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<activation>
+				<os>
+					<family>!windows</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.4.0</version>
+						<configuration>
+							<executable>moo/src/main/resources/run.sh</executable>
+							<arguments>
+								<argument>-XX:+HeapDumpOnOutOfMemoryError</argument>
+								<argument>-Xmx16M</argument>
+								<argument>-classpath</argument>
+								<classpath/>
+								<argument>net.rizon.moo.Moo</argument>
+							</arguments>
+							<workingDirectory>${project.basedir}/..</workingDirectory>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
