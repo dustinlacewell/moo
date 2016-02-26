@@ -2,10 +2,10 @@ package net.rizon.moo;
 
 public final class Version
 {
-	public static final String GIT_TAG = "@Git-Tag@";
-	public static final String GIT_REVISION = "@Git-Revision@";
-	public static final String GIT_REVISION_SHORT = "@Git-Revision-Short@";
-	public static final String GIT_AUTHOR = "@Git-Author@";
-	public static final String GIT_AUTHOR_EMAIL = "@Git-Author-Email@";
-	public static final String GIT_AUTHOR_DATE = "@Git-Author-Date@";
+	public static String GIT_TAG = "@Git-Tag@";
+	public static String GIT_REVISION = "@Git-Revision@";
+	public static String GIT_REVISION_SHORT = "@Git-Revision-Short@";
+	public static String GIT_AUTHOR = "@Git-Author@";
+	public static String GIT_AUTHOR_EMAIL = "@Git-Author-Email@";
+	public static String GIT_AUTHOR_DATE = "@Git-Author-Date@";
 }
