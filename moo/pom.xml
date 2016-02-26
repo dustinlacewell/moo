@@ -123,6 +123,10 @@
 							<token>@Git-Author-Email@</token>
 							<value>${mvngit.commit.author.email}</value>
 						</replacement>
+						<replacement>
+							<token>@Git-Author-Date@</token>
+							<value>${mvngit.commit.author.date}</value>
+						</replacement>
 					</replacements>
 				</configuration>
 			</plugin>
