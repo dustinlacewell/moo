@@ -66,7 +66,7 @@ help_channels: ["#h"]
 mail:
   path: /usr/sbin/sendmail
 
-plugin_repository: ~/.m2/repository
+plugin_repository: c:/users/adam/.m2/repository
 
 plugins:
  - groupId: net.rizon

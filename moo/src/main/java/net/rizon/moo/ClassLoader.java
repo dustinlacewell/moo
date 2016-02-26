@@ -42,11 +42,6 @@ public final class ClassLoader extends URLClassLoader
 		}
 		catch (ClassNotFoundException ex)
 		{
-			if (recurse && name.contains("Oline"))
-			{
-				ex.printStackTrace();
-				int i = 5;
-			}
 			if (recurse)
 				for (Plugin p : pluginManager.getPlugins())
 					try
@@ -57,10 +52,6 @@ public final class ClassLoader extends URLClassLoader
 					{
 					}
 
-			if (recurse && name.contains("Oline"))
-			{
-				int i = 5;
-			}
 			throw ex;
 		}
 	}
