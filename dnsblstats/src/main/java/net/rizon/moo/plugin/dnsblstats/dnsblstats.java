@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Command;
+import net.rizon.moo.Message;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.events.EventListener;
@@ -114,6 +115,10 @@ public class dnsblstats extends Plugin implements EventListener
 
 		Multibinder<Command> commandBinder = Multibinder.newSetBinder(binder(), Command.class);
 		commandBinder.addBinding().to(CommandDnsblStats.class);
+
+		Multibinder<Message> messageBinder = Multibinder.newSetBinder(binder(), Message.class);
+		messageBinder.addBinding().to(Numeric219.class);
+		messageBinder.addBinding().to(Numeric227.class);
 
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().toInstance(this);
