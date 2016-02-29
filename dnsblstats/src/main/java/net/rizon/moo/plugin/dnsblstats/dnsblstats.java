@@ -107,9 +107,6 @@ public class dnsblstats extends Plugin implements EventListener
 
 		bind(StatsRequester.class);
 
-		bind(Numeric219.class);
-		bind(Numeric227.class);
-
 		bind(CountComparator.class);
 		bind(ServerComparator.class);
 
