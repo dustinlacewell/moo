@@ -127,7 +127,6 @@ public class EventRegister extends Event implements EventListener
 
 	private boolean wildcardMatch(String mailhost, List<String> list) throws NamingException, UnknownHostException
 	{
-		System.out.println("Matching wildcards " + mailhost);
 		Collection<Mailhost> wildcards = Mailhost.getMailhosts();
 		for (Mailhost mw : wildcards)
 		{
