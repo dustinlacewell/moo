@@ -41,28 +41,15 @@ public class PluginManager
 		return new ArrayList<>(deps);
 	}
 
-	private Manifest getManifest(File jar)
+	private Manifest getManifest(File jar) throws IOException
 	{
 		String manifestPath = "jar:file:" + jar.getAbsolutePath() + "!/META-INF/MANIFEST.MF";
 
-		URL url;
-
-		try
-		{
-			url = new URL(manifestPath);
-		}
-		catch (MalformedURLException e)
-		{
-			return null;
-		}
+		URL url = new URL(manifestPath);
 
 		try (InputStream manifestInputStream = url.openStream())
 		{
 			return new Manifest(manifestInputStream);
-		}
-		catch (IOException e)
-		{
-			return null;
 		}
 	}
 
