@@ -239,7 +239,8 @@ class Server extends Thread
 	{
 		try
 		{
-			this.sock.close();
+			if (this.sock != null)
+				this.sock.close();
 		}
 		catch (IOException e)
 		{

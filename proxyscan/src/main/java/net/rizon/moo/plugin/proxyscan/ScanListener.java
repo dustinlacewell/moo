@@ -100,9 +100,10 @@ final class ScanListener extends Thread
 	{
 		try
 		{
-			this.listener.close();
+			if (listener != null)
+				listener.close();
 		}
-		catch (Exception ex)
+		catch (IOException ex)
 		{
 			logger.error("Unable to shutdown listener", ex);
 		}
