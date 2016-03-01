@@ -1,10 +1,12 @@
 package net.rizon.moo.plugin.antiidle;
 
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,9 @@ class AntiIdleEntry implements Runnable
 	public String nick;
 	public String mask;
 	private boolean defunct;
+
+	@Inject
+	private Protocol protocol;
 
 	public AntiIdleEntry(final String mask)
 	{
@@ -39,8 +44,16 @@ class AntiIdleEntry implements Runnable
 			return;
 		
 		if (antiidle.conf.bantime > 0)
-			Moo.schedule(new AntiIdleUnbanner(this.mask), antiidle.conf.bantime, TimeUnit.MINUTES);
-		antiidle.protocol.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
+		{
+			AntiIdleUnbanner antiIdleUnbanner = new AntiIdleUnbanner(this.mask);
+
+			Moo.injector.injectMembers(antiIdleUnbanner);
+			antiIdleUnbanner.init();
+
+			Moo.schedule(antiIdleUnbanner, antiidle.conf.bantime, TimeUnit.MINUTES);
+		}
+
+		protocol.kick(this.nick, antiidle.conf.channel, "You may not idle in this channel for more than " + antiidle.conf.time + " minutes.");
 
 		entries.remove(this.nick.toLowerCase());
 	}
