@@ -1,12 +1,16 @@
 package net.rizon.moo.plugin.antiidle;
 
+import com.google.inject.Inject;
 import io.netty.util.concurrent.ScheduledFuture;
-import net.rizon.moo.Moo;
+import net.rizon.moo.irc.Protocol;
 
 class Voicer implements Runnable
 {
 	protected final AntiIdleEntry ai;
 	protected ScheduledFuture future;
+
+	@Inject
+	private Protocol protocol;
 
 	public Voicer(AntiIdleEntry ai)
 	{
@@ -17,6 +21,6 @@ class Voicer implements Runnable
 	public void run()
 	{
 		antiidle.toBeVoiced.remove(this);
-		antiidle.protocol.write("USERHOST", ai.nick);
+		protocol.write("USERHOST", ai.nick);
 	}
 }

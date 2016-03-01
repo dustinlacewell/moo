@@ -39,8 +39,8 @@ public class antiidle extends Plugin implements EventListener
 	private CommandIdle idle;
 
 	@Inject
-	static Protocol protocol;
-	
+	private Protocol protocol;
+
 	static AntiIdleConfiguration conf;
 	
 	protected static final List<Voicer> toBeVoiced = new ArrayList<>();
@@ -71,7 +71,10 @@ public class antiidle extends Plugin implements EventListener
 
 		AntiIdleEntry ai = new AntiIdleEntry(source);
 		Voicer av = new Voicer(ai);
-		
+
+		Moo.injector.injectMembers(ai);
+		Moo.injector.injectMembers(av);
+
 		toBeVoiced.add(av);
 		
 		ScheduledFuture future = Moo.schedule(av, 5, TimeUnit.SECONDS);
