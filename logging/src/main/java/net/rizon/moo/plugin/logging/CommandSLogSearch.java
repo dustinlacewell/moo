@@ -187,6 +187,18 @@ class CommandSLogSearch extends Command
 
 		String[] args = Arrays.copyOfRange(params, index, params.length);
 
-		new logSearcher(source, String.join("*", args), limit, days).start();
+		new logSearcher(source, join("*", args), limit, days).start();
+	}
+
+	private String join(String what, String[] args)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append('*');
+		for (String s : args)
+		{
+			sb.append(s);
+			sb.append('*');
+		}
+		return sb.toString();
 	}
 }
