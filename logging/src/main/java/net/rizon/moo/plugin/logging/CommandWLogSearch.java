@@ -30,10 +30,22 @@ final class CommandWLogSearch extends Command
 	@Override
 	public void onHelp(CommandSource source)
 	{
-		source.notice("Syntax: !WLOGSEARCH [+limit] <search terms>");
+		source.notice("Syntax: \002!WLOGSEARCH \u001F[+limit]\u001F \u001F<search terms>\u001F\002");
+		source.notice(" ");
 		source.notice("Searches through moo's WALLOPS logs, finding entries that match all search terms.");
 		source.notice("by default, only 10 items will be shown, unless there is a limit specifying otherwise.");
-		source.notice("Replies for a limit greater than 10 will be given via notice.");
+		source.notice("NOTE: Replies for a limit greater than 10 will be given via notice.");
+		source.notice(" ");
+		source.notice("Examples:");
+		source.notice(" ");
+		source.notice("    \002!WLOGSEARCH +30 watch\002");
+		source.notice("        Searches the WALLOPS log for the word 'watch' and");
+		source.notice("        shows the 30 most recent ones (in notice)");
+		source.notice(" ");
+		source.notice("    \002!WLOGSEARCH cakes pie\002");
+		source.notice("        Searches the WALLOPS log for the word 'cakes' and");
+		source.notice("        'pie', and shows the 10 (default) most recent ones");
+		source.notice("        (in channel)");
 	}
 	
 	private void replyWithLimit(CommandSource source, int limit, String buffer)
@@ -98,9 +110,8 @@ final class CommandWLogSearch extends Command
 				
 				++count;
 				
-				if (limit > 0)
+				if (count <= limit)
 				{
-					--limit;
 					++shown;
 					
 					if (src != null && !src.isEmpty())
