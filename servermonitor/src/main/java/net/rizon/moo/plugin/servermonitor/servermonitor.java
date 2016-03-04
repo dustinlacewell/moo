@@ -1,6 +1,5 @@
 package net.rizon.moo.plugin.servermonitor;
 
-import net.rizon.moo.plugin.servermonitor.server.CommandServer;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.multibindings.Multibinder;
 import io.netty.util.concurrent.ScheduledFuture;
@@ -11,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
@@ -27,6 +25,7 @@ import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
 import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+import net.rizon.moo.plugin.servermonitor.server.CommandServer;
 import org.slf4j.Logger;
 
 class Requester implements Runnable
@@ -70,8 +69,9 @@ public class servermonitor extends Plugin implements EventListener
 	private ScheduledFuture requester;
 	
 	private ServerMonitorConfiguration conf;
-	
-	protected TextDelay texts;
+
+	protected TextDelay splitTexts;
+	protected TextDelay linkTexts;
 
 	public servermonitor() throws Exception
 	{
@@ -107,13 +107,14 @@ public class servermonitor extends Plugin implements EventListener
 		}
 		if (!pypsd)
 		{
-			if (texts == null)
+			if (linkTexts == null)
 			{
-				texts = new TextDelay();
-				Moo.injector.injectMembers(texts);
-				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
+				linkTexts = new TextDelay();
+				linkTexts.type = TextDelay.LinkType.RELINK;
+				Moo.injector.injectMembers(linkTexts);
+				Moo.schedule(linkTexts, TextDelay.delay, TimeUnit.SECONDS);
 			}
-			texts.messages.add(serv.getName() + " introduced by " + to.getName());
+			linkTexts.messages.add(serv.getName() + " introduced by " + to.getName());
 		}
 	}
 
@@ -156,13 +157,14 @@ public class servermonitor extends Plugin implements EventListener
 
 		if (!pypsd)
 		{
-			if (texts == null)
+			if (splitTexts == null)
 			{
-				texts = new TextDelay();
-				Moo.injector.injectMembers(texts);
-				Moo.schedule(texts, TextDelay.delay, TimeUnit.SECONDS);
+				splitTexts = new TextDelay();
+				splitTexts.type = TextDelay.LinkType.SPLIT;
+				Moo.injector.injectMembers(splitTexts);
+				Moo.schedule(splitTexts, TextDelay.delay, TimeUnit.SECONDS);
 			}
-			texts.messages.add(serv.getName() + " split from " + from.getName());
+			splitTexts.messages.add(serv.getName() + " split from " + from.getName());
 		}
 
 		if (conf.reconnect && !serv.isServices())
