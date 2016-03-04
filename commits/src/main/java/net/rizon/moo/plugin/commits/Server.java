@@ -150,6 +150,7 @@ class Server extends Thread
 									protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003:");
 									for (final String msg : c.getMessage())
 										protocol.privmsgAll(conf.channels, msg);
+									protocol.privmsgAll(conf.channels, "\u001f" + c.getUrl() + "\u000f");
 								}
 								else if (c.getMessage().length == 1)
 									protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: \00303" + c.getAuthor() + "\003 \00307" + branch + "\003: " + c.getMessage()[0] + " \u001f" + c.getUrl() + "\u000f");
