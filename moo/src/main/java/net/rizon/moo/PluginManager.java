@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +47,10 @@ public class PluginManager
 
 		URL url = new URL(manifestPath);
 
-		try (InputStream manifestInputStream = url.openStream())
+		URLConnection con = url.openConnection();
+		con.setUseCaches(false);
+
+		try (InputStream manifestInputStream = con.getInputStream())
 		{
 			return new Manifest(manifestInputStream);
 		}
