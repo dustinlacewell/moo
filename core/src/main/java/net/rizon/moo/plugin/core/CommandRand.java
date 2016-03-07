@@ -5,7 +5,6 @@ import java.util.Random;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Plugin;
 
 class CommandRand extends Command
 {

@@ -1,16 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.rizon.moo.plugin.core;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import net.rizon.moo.CommandSource;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,25 +24,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class CommandRandTest
 {
 	private static final String COMMAND_NAME = "!rand";
+	
+	@Inject
 	private CommandRand testCommand;
+	
 	@Mock
 	private CommandSource source;
-	ArgumentCaptor<String> commandSourceCaptor = ArgumentCaptor.forClass(String.class);
-
-	public CommandRandTest()
-	{
-	}
+	
+	private final ArgumentCaptor<String> commandSourceCaptor = ArgumentCaptor.forClass(String.class);
 
 	@Before
 	public void setUp()
 	{
-		testCommand = new CommandRand();
-	}
-
-	@After
-	public void tearDown()
-	{
-		testCommand = null;
+		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
 	}
 
 	/**

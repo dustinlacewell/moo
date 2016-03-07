@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.rizon.moo.plugin.dnsblstats;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +15,6 @@ import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author Orillion {@literal <orillion@rizon.net>}
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CommandDnsblStatsTest// extends AbstractModule
+public class CommandDnsblStatsTest
 {
 	private static final String COMMAND_NAME = "!dnsblstats";
 	private static final String COMMAND_ARGUMENT = "server";
@@ -65,30 +59,16 @@ public class CommandDnsblStatsTest// extends AbstractModule
 	@Mock
 	private Config mockConfig;
 
-	private ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
-
-	public CommandDnsblStatsTest()
-	{
-	}
+	private final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
 
 	@Before
 	public void setUp()
 	{
-		//MockitoAnnotations.initMocks(this);
-
 		mockConfig.admin_channels = REQUIRED_CHANNELS;
 		mockConfig.oper_channels = REQUIRED_CHANNELS;
 		mockConfig.staff_channels = REQUIRED_CHANNELS;
 
-		
-
 		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
-	}
-
-	@After
-	public void tearDown()
-	{
-		testCommand = null;
 	}
 
 	/**
