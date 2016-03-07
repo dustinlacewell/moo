@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -50,19 +52,25 @@ public class CommandDnsblStatsTest
 	private CommandDnsblStats testCommand;
 
 	@Bind
+	@Mock
 	private Protocol mockProtocol;
 
 	@Bind
+	@Mock
 	private Provider<Channel> mockChannelProvider;
 
 	@Bind
+	@Mock
 	private ServerManager mockServerManager;
 
+	@Mock
 	private Server mockServer;
 
+	@Mock
 	private CommandSource mockCommandSource;
 
 	@Bind
+	@Mock
 	private Config mockConfig;
 
 	private ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
@@ -74,13 +82,7 @@ public class CommandDnsblStatsTest
 	@Before
 	public void setUp()
 	{
-		// Can't use @Mock here, since they are apparently initialised after @Before.
-		mockServerManager = mock(ServerManager.class);
-		mockServer = mock(Server.class);
-		mockConfig = mock(Config.class);
-		mockCommandSource = mock(CommandSource.class);
-		mockChannelProvider = mock(Provider.class);
-		mockProtocol = mock(Protocol.class);
+		MockitoAnnotations.initMocks(this);
 
 		mockConfig.admin_channels = REQUIRED_CHANNELS;
 		mockConfig.oper_channels = REQUIRED_CHANNELS;
