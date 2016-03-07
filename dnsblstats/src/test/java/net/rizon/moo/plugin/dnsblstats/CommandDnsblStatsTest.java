@@ -29,13 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class CommandDnsblStatsTest
 {
 	private static final String COMMAND_NAME = "!dnsblstats";
-	private static final String COMMAND_ARGUMENT = "server";
 	private static final String SERVER_NAME = "test.rizon.net";
-
-	// Empty list of required channels, we don't use that anyway in this test.
-	private static final String[] REQUIRED_CHANNELS =
-	{
-	};
 
 	@Inject
 	private CommandDnsblStats testCommand;
