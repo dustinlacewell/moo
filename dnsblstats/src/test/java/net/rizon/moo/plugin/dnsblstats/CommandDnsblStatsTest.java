@@ -11,7 +11,6 @@ import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import java.util.List;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
@@ -55,19 +54,11 @@ public class CommandDnsblStatsTest
 	@Mock
 	private CommandSource mockCommandSource;
 
-	@Bind
-	@Mock
-	private Config mockConfig;
-
 	private final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
 
 	@Before
 	public void setUp()
 	{
-		mockConfig.admin_channels = REQUIRED_CHANNELS;
-		mockConfig.oper_channels = REQUIRED_CHANNELS;
-		mockConfig.staff_channels = REQUIRED_CHANNELS;
-
 		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
 	}
 
