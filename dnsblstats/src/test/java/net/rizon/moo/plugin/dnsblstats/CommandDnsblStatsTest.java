@@ -1,6 +1,5 @@
 package net.rizon.moo.plugin.dnsblstats;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,7 +8,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
-import java.util.List;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
@@ -17,7 +15,6 @@ import net.rizon.moo.irc.ServerManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -47,8 +44,6 @@ public class CommandDnsblStatsTest
 
 	@Mock
 	private CommandSource mockCommandSource;
-
-	private final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
 
 	@Before
 	public void setUp()
@@ -85,14 +80,7 @@ public class CommandDnsblStatsTest
 
 		testCommand.execute(mockCommandSource, params);
 
-		verify(mockProtocol, times(1)).write(stringCaptor.capture(), stringCaptor.capture(), stringCaptor.capture());
-		List<String> capturedStrings = stringCaptor.getAllValues();
-
-		// "STATS"
-		assertEquals(expectedCommand, capturedStrings.get(0));
-		// "B"
-		assertEquals(expectedArgument, capturedStrings.get(1));
-		// "test.rizon.net"
-		assertEquals(expectedServer, capturedStrings.get(2));
+		verify(mockProtocol, times(1)).write(
+				expectedCommand, expectedArgument, expectedServer);
 	}
 }
