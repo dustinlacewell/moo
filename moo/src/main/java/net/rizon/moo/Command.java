@@ -33,6 +33,11 @@ public abstract class Command
 
 	protected final void requiresChannel(final String[] chans)
 	{
+		if (chans == null)
+		{
+			return;
+		}
+
 		for (String c : chans)
 			channels.add(c.toLowerCase());
 	}
