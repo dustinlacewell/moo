@@ -122,7 +122,7 @@ public class ServerManager implements EventListener
 		return null;
 	}
 
-	public final Server[] getServers()
+	public Server[] getServers()
 	{
 		Server[] s = new Server[servers.size()];
 		servers.toArray(s);
