@@ -6,17 +6,14 @@
 package net.rizon.moo.plugin.dnsblstats;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
-import io.netty.channel.Channel;
 import java.util.List;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.conf.Config;
@@ -29,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -37,7 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author Orillion {@literal <orillion@rizon.net>}
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CommandDnsblStatsTest
+public class CommandDnsblStatsTest// extends AbstractModule
 {
 	private static final String COMMAND_NAME = "!dnsblstats";
 	private static final String COMMAND_ARGUMENT = "server";
@@ -54,10 +50,6 @@ public class CommandDnsblStatsTest
 	@Bind
 	@Mock
 	private Protocol mockProtocol;
-
-	@Bind
-	@Mock
-	private Provider<Channel> mockChannelProvider;
 
 	@Bind
 	@Mock
@@ -82,7 +74,7 @@ public class CommandDnsblStatsTest
 	@Before
 	public void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
+		//MockitoAnnotations.initMocks(this);
 
 		mockConfig.admin_channels = REQUIRED_CHANNELS;
 		mockConfig.oper_channels = REQUIRED_CHANNELS;

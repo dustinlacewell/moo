@@ -1,7 +1,6 @@
 package net.rizon.moo.irc;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import java.util.EnumSet;
 import net.rizon.moo.Moo;
 import static net.rizon.moo.Moo.akillServ;
@@ -11,15 +10,12 @@ import net.rizon.moo.io.IRCMessage;
 public class Protocol
 {
 	@Inject
-	private Provider<io.netty.channel.Channel> channelProvider;
-
-	@Inject
 	private Config conf;
 	
 	public void write(String command, Object... args)
 	{
-		io.netty.channel.Channel channel = channelProvider.get();
-		
+		io.netty.channel.Channel channel = Moo.channel;
+
 		if (channel == null)
 			return;
 		

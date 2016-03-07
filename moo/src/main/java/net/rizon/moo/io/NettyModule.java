@@ -16,6 +16,5 @@ public class NettyModule extends AbstractModule
 		bind(Handler.class);
 		bind(LoggingHandler.class);
 		bind(ClientHandler.class).toInstance(handler);
-		bind(Channel.class).toProvider(ChannelProvider.class);
 	}
 }
