@@ -4,25 +4,22 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.testing.fieldbinder.Bind;
-import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
-import org.junit.Before;
+import net.rizon.moo.test.MooJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  *
  * @author Orillion {@literal <orillion@rizon.net>}
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MooJUnitRunner.class)
 public class CommandDnsblStatsTest
 {
 	private static final String COMMAND_NAME = "!dnsblstats";
@@ -44,12 +41,6 @@ public class CommandDnsblStatsTest
 
 	@Mock
 	private CommandSource mockCommandSource;
-
-	@Before
-	public void setUp()
-	{
-		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
-	}
 
 	/**
 	 * Test of execute method, of class CommandDnsblStats.

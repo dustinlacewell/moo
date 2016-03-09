@@ -1,26 +1,23 @@
 package net.rizon.moo.plugin.core;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.google.inject.Inject;
 import net.rizon.moo.CommandSource;
+import net.rizon.moo.test.MooJUnitRunner;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  *
  * @author Orillion {@literal <orillion@rizon.net>}
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MooJUnitRunner.class)
 public class CommandRandTest
 {
 	private static final String COMMAND_NAME = "!rand";
@@ -32,12 +29,6 @@ public class CommandRandTest
 	private CommandSource source;
 	
 	private final ArgumentCaptor<String> commandSourceCaptor = ArgumentCaptor.forClass(String.class);
-
-	@Before
-	public void setUp()
-	{
-		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
-	}
 
 	/**
 	 * Test of execute method, with no parameters.

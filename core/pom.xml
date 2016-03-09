@@ -29,6 +29,13 @@
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-testlib</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>test</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 	
 	<build>
