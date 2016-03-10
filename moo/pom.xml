@@ -73,20 +73,6 @@
 			<artifactId>maven-core</artifactId>
 			<version>3.0.3</version>
 		</dependency>
-	 <dependency>
-	  <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-	  <version>4.11</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>com.google.inject.extensions</groupId>
-	  <artifactId>guice-testlib</artifactId>
-	  <version>4.0</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
 	</dependencies>
 
 	<build>

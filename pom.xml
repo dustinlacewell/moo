@@ -27,6 +27,7 @@
 
 	<modules>
 		<module>moo</module>
+		<module>test</module>
 
 		<module>antiidle</module>
 		<module>commands</module>
@@ -48,7 +49,6 @@
 		<module>vote</module>
 		<module>watch</module>
 		<module>wiki</module>
-	 <module>test</module>
 	</modules>
 
 	<dependencyManagement>
@@ -64,22 +64,26 @@
 				<version>${gson.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>${guice.version}</version>
+			</dependency>
+
+			<!-- test dependencies -->
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.10</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
 				<version>1.10.19</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject.extensions</groupId>
 				<artifactId>guice-testlib</artifactId>
-				<version>4.0</version>
-				<scope>test</scope>
+				<version>${guice.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
