@@ -17,24 +17,28 @@
 			<artifactId>moo-moo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>net.rizon</groupId>
+			<artifactId>moo-test</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-testlib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.rizon.moo</groupId>
-			<artifactId>test</artifactId>
-			<version>3.0</version>
 			<scope>test</scope>
-			<type>jar</type>
 		</dependency>
 	</dependencies>
 	
