@@ -77,6 +77,7 @@ public class logging extends Plugin
 		bind(logging.class).toInstance(this);
 
 		bind(LoggingConfiguration.class).toInstance(conf);
+		bind(LogSearcher.class);
 
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().to(EventLogging.class);

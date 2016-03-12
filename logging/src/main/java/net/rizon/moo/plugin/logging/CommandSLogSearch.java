@@ -1,95 +1,14 @@
 package net.rizon.moo.plugin.logging;
 
 import com.google.inject.Inject;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Deque;
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
+import net.rizon.moo.Moo;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.plugin.logging.conf.LoggingConfiguration;
 import net.rizon.moo.util.ArgumentParser;
-import net.rizon.moo.util.Match;
 import org.slf4j.Logger;
-
-class logSearcher extends Thread
-{
-	private CommandSource source;
-	private String search;
-	private int limit;
-	private int days;
-	@Inject
-	private LoggingConfiguration conf;
-
-	public logSearcher(CommandSource source, String search, int limit, int days)
-	{
-		this.source = source;
-		this.search = search;
-		this.limit = limit;
-		this.days = days;
-	}
-
-	@Override
-	public void run()
-	{
-		Deque<String> matches = new ArrayDeque<String>();
-		int nummatches = 0;
-		
-		for (int i = this.days - 1; i >= 0; --i)
-		{
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -i);
-			Date then = cal.getTime();
-
-			DateFormat format = new SimpleDateFormat(conf.date);
-			File logPath = new File(conf.path);
-			File logFilePath = new File(logPath, conf.filename.replace("%DATE%", format.format(then)));
-			
-			if (!logFilePath.exists())
-				continue;
-			
-			try
-			{
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFilePath)));
-				try
-				{
-					for (String line; (line = reader.readLine()) != null;)
-						if (Match.matches(line, "*" + search + "*"))
-						{
-							++nummatches;
-							matches.addLast(line);
-
-							if (limit > 0 && matches.size() >= limit)
-							{
-								matches.pop();
-							}
-						}
-				}
-				finally
-				{
-					reader.close();
-				}
-			}
-			catch (Exception e)
-			{
-				CommandSLogSearch.logger.warn("Unable to search logfile", e);
-			}
-		}
-		
-		for (String match : matches)
-			source.notice(match);
-
-		source.reply("Done, " + matches.size() + "/" + nummatches + " shown.");
-	}
-}
 
 class CommandSLogSearch extends Command
 {
@@ -187,17 +106,24 @@ class CommandSLogSearch extends Command
 
 		String[] args = Arrays.copyOfRange(params, index, params.length);
 
-		new logSearcher(source, join("*", args), limit, days).start();
+		LogSearcher ls = Moo.injector.getInstance(LogSearcher.class);
+		
+		ls.setSource(source);
+		ls.setSearch(join("*", args));
+		ls.setLimit(limit);
+		ls.setDays(days);
+		
+		ls.start();
 	}
 
 	private String join(String what, String[] args)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append('*');
+		sb.append(what);
 		for (String s : args)
 		{
 			sb.append(s);
-			sb.append('*');
+			sb.append(what);
 		}
 		return sb.toString();
 	}
