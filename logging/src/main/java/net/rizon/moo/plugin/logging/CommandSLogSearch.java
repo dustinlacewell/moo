@@ -32,8 +32,10 @@ class CommandSLogSearch extends Command
 		source.notice("Syntax: \002!SLOGSEARCH \u001F[+limit]\u001F \u001F[+days]\u001F \u001F<search terms>\u001F\002");
 		source.notice(" ");
 		source.notice("Searches through moo's Services logs, finding entries that match all search terms.");
-		source.notice("by default, only 30 items will be shown, unless there is a limit specifying otherwise.");
-		source.notice("Valid days modifiers are d (days), w (weeks), m|M (months), y (years)");
+		source.notice("by default, only 100 items will be shown and moo will look back " + conf.searchDays + " days,");
+		source.notice("unless specified otherwise.");
+		source.notice(" ");
+		source.notice("Valid days modifiers are: d (days), w (weeks), m|M (months), y (years)");
 		source.notice(" ");
 		source.notice("Examples:");
 		source.notice(" ");
