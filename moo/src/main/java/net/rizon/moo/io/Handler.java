@@ -1,14 +1,14 @@
 package net.rizon.moo.io;
 
 import com.google.inject.Inject;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import net.rizon.moo.irc.Protocol;
 import org.slf4j.Logger;
 
-public class Handler extends ChannelHandlerAdapter
+public class Handler extends SimpleChannelInboundHandler
 {
 	@Inject
 	private static Logger logger;
@@ -19,10 +19,11 @@ public class Handler extends ChannelHandlerAdapter
 	private boolean idle;
 	
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
+	public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception
 	{
 		idle = false;
-		super.channelRead(ctx, msg);
+
+		ctx.fireChannelRead(msg);
 	}
 	
 	@Override

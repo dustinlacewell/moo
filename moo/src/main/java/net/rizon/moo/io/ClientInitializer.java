@@ -35,7 +35,10 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 	private Handler handler;
 	
 	@Inject
-	private LoggingHandler loggingHandler;
+	private InboundLoggingHandler inboundLoggingHandler;
+
+	@Inject
+	private OutboundLoggingHandler outboundLoggingHandler;
 	
 	@Inject
 	private ClientHandler clientHandler;
@@ -96,7 +99,8 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel>
 		pipeline.addLast("idleStateHandler", new IdleStateHandler(60, 0, 0));
 		pipeline.addLast("handler", handler);
 		
-		pipeline.addLast(loggingHandler);
+		pipeline.addLast(inboundLoggingHandler);
+		pipeline.addLast(outboundLoggingHandler);
 
 		pipeline.addLast("clientHandler", clientHandler);
 	}

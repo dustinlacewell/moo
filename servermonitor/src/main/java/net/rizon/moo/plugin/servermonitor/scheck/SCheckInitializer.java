@@ -13,7 +13,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 import net.rizon.moo.io.IRCDecoder;
 import net.rizon.moo.io.IRCEncoder;
 import net.rizon.moo.io.LineBasedFrameEncoder;
-import net.rizon.moo.io.LoggingHandler;
 
 class SCheckInitializer extends ChannelInitializer<SocketChannel>
 {
@@ -48,8 +47,6 @@ class SCheckInitializer extends ChannelInitializer<SocketChannel>
 		
 		pipeline.addLast("idleStateHandler", new IdleStateHandler(60, 60, 0));
 		pipeline.addLast("handler", new SCheckHandler());
-		
-		pipeline.addLast(new LoggingHandler());
 
 		pipeline.addLast("clientHandler", new SCheckClientHandler(scheck));
 	}

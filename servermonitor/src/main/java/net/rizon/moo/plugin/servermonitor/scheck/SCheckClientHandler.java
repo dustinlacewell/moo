@@ -3,7 +3,6 @@ package net.rizon.moo.plugin.servermonitor.scheck;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.rizon.moo.io.IRCMessage;
-import net.rizon.moo.Message;
 
 class SCheckClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 {
@@ -21,7 +20,7 @@ class SCheckClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	}
 
 	@Override
-	protected void messageReceived(ChannelHandlerContext ctx, IRCMessage message) throws Exception
+	protected void channelRead0(ChannelHandlerContext ctx, IRCMessage message) throws Exception
 	{
 		scheck.process(message);
 	}
