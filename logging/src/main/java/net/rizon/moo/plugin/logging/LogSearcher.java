@@ -72,7 +72,7 @@ class LogSearcher extends Thread
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFilePath))))
 			{
 				for (String line; (line = reader.readLine()) != null;)
-					if (Match.matches(line, "*" + search + "*"))
+					if (Match.matches(line, search))
 					{
 						++nummatches;
 						matches.addLast(line);
