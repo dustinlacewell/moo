@@ -91,6 +91,8 @@ final class CommandWLogSearch extends Command
 			
 			queryBuffer.append("`message` LIKE ?");
 		}
+
+		queryBuffer.append(" ORDER BY date DESC");
 		
 		try
 		{
