@@ -35,6 +35,6 @@ class ClientHandler extends SimpleChannelInboundHandler<IRCMessage>
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception
 	{
-		logger.error("exception caught in handler for context " + ctx, cause);
+		logger.error("exception caught in handler for context " + ctx + ": " + cause.getMessage(), cause);
 	}
 }
