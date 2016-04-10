@@ -68,6 +68,7 @@ public class vote extends Plugin implements EventListener
 	protected void configure()
 	{
 		bind(vote.class).toInstance(this);
+		bind(VoteConfiguration.class).toInstance(conf);
 		
 		Multibinder<EventListener> eventListenerBinder = Multibinder.newSetBinder(binder(), EventListener.class);
 		eventListenerBinder.addBinding().toInstance(this);
