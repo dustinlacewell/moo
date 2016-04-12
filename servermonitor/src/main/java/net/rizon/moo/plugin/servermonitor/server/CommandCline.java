@@ -15,7 +15,7 @@ public class CommandCline extends CommandServerBase
 	@Override
 	public void execute(CommandSource source, String[] params)
 	{
-		if (params.length == 2)
+		if (params.length >= 1)
 			super.execute(source, params);
 	}
 }
