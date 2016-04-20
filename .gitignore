@@ -10,6 +10,7 @@ bin
 *.iml
 
 *.yml
+!.gitlab-ci.yml
 moo/nbactions.xml
 moo.properties
 mxbl/nb-configuration.xml
