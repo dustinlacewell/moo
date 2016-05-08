@@ -232,7 +232,11 @@ public class Moo
 	
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
 	{
-		return moo.group.schedule(r, t, unit);
+		ScheduledFuture future = moo.group.schedule(r, t, unit);
+
+		future.addListener(Moo.injector.getInstance(FutureExceptionListener.class));
+
+		return future;
 	}
 
 	public void buildInjector()
