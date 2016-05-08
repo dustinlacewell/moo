@@ -9,6 +9,8 @@ public class Plexus extends AbstractModule
 	@Override
 	protected void configure()
 	{
+		bind(GeoChecker.class);
+
 		Multibinder<Message> messageBinder = Multibinder.newSetBinder(binder(), Message.class);
 		
 		messageBinder.addBinding().to(Message001.class);

@@ -11,8 +11,13 @@ import org.slf4j.Logger;
 
 class GeoChecker implements Runnable
 {
+	private final Protocol protocol;
+
 	@Inject
-	private Protocol protocol;
+	public GeoChecker(Protocol protocol)
+	{
+		this.protocol = protocol;
+	}
 		
 	@Override
 	public void run()
@@ -43,7 +48,8 @@ public class Message401 extends Message
 			Moo.akillServ = "OperServ";
 
 			logger.info("GeoServ has gone away! Changing akillserv to OperServ");
-			Moo.schedule(new GeoChecker(), 10, TimeUnit.SECONDS);
+
+			Moo.schedule(Moo.injector.getInstance(GeoChecker.class), 10, TimeUnit.SECONDS);
 		}
 		else if (message.getParams()[1].equalsIgnoreCase("OperServ"))
 		{
