@@ -6,7 +6,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.util.Providers;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventListener;
 import net.rizon.moo.injectors.logger.LogTypeListener;
@@ -40,6 +39,7 @@ public class MooModule extends AbstractModule
 		bind(ServerManager.class).toInstance(serverManager);
 		bind(DatabaseTimer.class).toInstance(new DatabaseTimer());
 		bind(PluginManager.class).toInstance(pluginManager);
+		bind(FutureExceptionListener.class);
 
 		bindListener(Matchers.any(), new LogTypeListener());
 		

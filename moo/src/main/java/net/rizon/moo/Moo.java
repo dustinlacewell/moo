@@ -1,13 +1,11 @@
 package net.rizon.moo;
 
 import com.google.common.eventbus.EventBus;
-import net.rizon.moo.irc.User;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
-import net.rizon.moo.io.ClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -22,41 +20,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.rizon.moo.conf.ConfPlugin;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventManager;
 import net.rizon.moo.events.InitDatabases;
 import net.rizon.moo.events.LoadDatabases;
 import net.rizon.moo.events.OnShutdown;
 import net.rizon.moo.events.SaveDatabases;
+import net.rizon.moo.io.ClientInitializer;
 import net.rizon.moo.io.NettyModule;
+import net.rizon.moo.irc.User;
 import net.rizon.moo.protocol.Plexus;
-
-class RunnableContainer implements Runnable
-{
-	private static final Logger logger = LoggerFactory.getLogger(RunnableContainer.class);
-	private final Runnable runnable;
-
-	public RunnableContainer(Runnable r)
-	{
-		this.runnable = r;
-	}
-
-	@Override
-	public void run()
-	{
-		try
-		{
-			this.runnable.run();
-		}
-		catch (Exception ex)
-		{
-			logger.warn("Error while running scheduled event", ex);
-		}
-	}
-}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Moo
 {
@@ -222,17 +197,36 @@ public class Moo
 	
 	public static ScheduledFuture scheduleWithFixedDelay(Runnable r, long t, TimeUnit unit)
 	{
-		return moo.group.scheduleWithFixedDelay(new RunnableContainer(r), t, t, unit);
+		ScheduledFuture future = moo.group.scheduleWithFixedDelay(r, t, t, unit);
+		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
+
+		listener.setRescheduleParameters(r, t, t, unit, FutureExceptionListener.ScheduleType.FIXED_DELAY);
+
+		future.addListener(listener);
+
+		return future;
 	}
 	
 	public static ScheduledFuture scheduleAtFixedRate(Runnable r, long t, TimeUnit unit)
 	{
-		return moo.group.scheduleAtFixedRate(new RunnableContainer(r), t, t, unit);
+		ScheduledFuture future = moo.group.scheduleAtFixedRate(r, t, t, unit);
+		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
+
+		listener.setRescheduleParameters(r, t, t, unit, FutureExceptionListener.ScheduleType.FIXED_RATE);
+
+		future.addListener(listener);
+
+		return future;
 	}
-	
+
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
 	{
-		return moo.group.schedule(r, t, unit);
+		ScheduledFuture future = moo.group.schedule(r, t, unit);
+		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
+
+		future.addListener(listener);
+
+		return future;
 	}
 
 	public void buildInjector()
