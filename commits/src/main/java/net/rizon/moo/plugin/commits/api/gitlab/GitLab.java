@@ -10,6 +10,8 @@ public class GitLab implements Push
 	private String ref; // refs/heads/branch
 	private List<Commit> commits;
 	private Repository repository;
+	private Commit commit;
+	private String build_id;
 
 	private ObjectAttributes object_attributes;
 	private String object_kind;
@@ -17,10 +19,24 @@ public class GitLab implements Push
 	private Issue issue;
 	private MergeRequest merge_request;
 
+	private String build_name;
+	private String build_status;
+	private String build_stage;
+
 	@Override
 	public String getProjectName()
 	{
 		return this.repository.name;
+	}
+
+	public Repository getRepository()
+	{
+		return this.repository;
+	}
+
+	public Commit getCommit()
+	{
+		return commit;
 	}
 
 	@Override
@@ -70,5 +86,25 @@ public class GitLab implements Push
 	public MergeRequest getMergeRequest()
 	{
 		return merge_request;
+	}
+
+	public String getBuildName()
+	{
+		return build_name;
+	}
+
+	public String getBuildStage()
+	{
+		return build_stage;
+	}
+
+	public String getBuildStatus()
+	{
+		return build_status;
+	}
+
+	public String getBuildId()
+	{
+		return build_id;
 	}
 }
