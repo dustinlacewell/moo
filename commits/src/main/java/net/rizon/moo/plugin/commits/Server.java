@@ -194,6 +194,35 @@ class Server extends Thread
 								protocol.privmsgAll(conf.channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
+						else if (p.getObjectKind() != null && p.getObjectKind().equals("build"))
+						{
+							String status = p.getBuildStatus();
+
+							if (status.equals("pending"))
+							{
+								status = "\00307" + status + "\003";
+							}
+							else if (status.equals("running"))
+							{
+								status = "\00307" + status + "\003";
+							}
+							else if (status.equals("success"))
+							{
+								status = "\00303" + status + "\003";
+							}
+							else
+							{
+								// Failure
+								status = "\00304" + status + "\004";
+							}
+
+							protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: " + p.getBuildName() + "[" + p.getBuildStage() + "]: " + status + " for commit \00307" + p.getCommit().getShortSha() + "\003 by \00303" + p.getCommit().getAuthor() + "\003");
+
+							if (p.getBuildStatus().equals("pending"))
+							{
+								protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: " + p.getRepository().homepage + "/builds/" + p.getBuildId());
+							}
+						}
 						else
 						{
 							logger.warn("Unknown GitLab event, payload was: {}", json);
