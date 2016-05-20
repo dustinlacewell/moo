@@ -82,9 +82,6 @@ plugins:
    artifactId: moo-dnsblstats
    version: 3.0
  - groupId: net.rizon
-   artifactId: moo-servercontrol
-   version: 3.0
- - groupId: net.rizon
    artifactId: moo-servermonitor
    version: 3.0
  - groupId: net.rizon
