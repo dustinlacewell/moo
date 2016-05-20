@@ -9,17 +9,19 @@
 	</parent>
 
 	<name>Watch</name>
-	<artifactId>moo-watch</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>watch</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-moo</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>moo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-logging</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>logging</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

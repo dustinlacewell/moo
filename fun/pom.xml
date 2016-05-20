@@ -9,12 +9,14 @@
 	</parent>
 
 	<name>Fun</name>
-	<artifactId>moo-fun</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>fun</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-moo</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>moo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

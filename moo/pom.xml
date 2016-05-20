@@ -9,7 +9,9 @@
 	</parent>
 
 	<name>Moo</name>
-	<artifactId>moo-moo</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>moo</artifactId>
 
 	<properties>
 		<netty.version>4.1.0.CR5</netty.version>

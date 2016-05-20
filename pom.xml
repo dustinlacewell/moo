@@ -5,6 +5,7 @@
 	<groupId>net.rizon</groupId>
 	<artifactId>moo</artifactId>
 	<version>3.0</version>
+	
 	<packaging>pom</packaging>
 
 	<name>moo</name>

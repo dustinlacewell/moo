@@ -9,12 +9,14 @@
 	</parent>
 
 	<name>Server Monitor</name>
-	<artifactId>moo-servermonitor</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>servermonitor</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-moo</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>moo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

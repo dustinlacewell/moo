@@ -69,58 +69,58 @@ mail:
 plugin_repository: c:/users/adam/.m2/repository
 
 plugins:
- - groupId: net.rizon
-   artifactId: moo-commands
+ - groupId: net.rizon.moo
+   artifactId: commands
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-core
+ - groupId: net.rizon.moo
+   artifactId: core
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-dnsbl
+ - groupId: net.rizon.moo
+   artifactId: dnsbl
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-dnsblstats
+ - groupId: net.rizon.moo
+   artifactId: dnsblstats
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-servermonitor
+ - groupId: net.rizon.moo
+   artifactId: servermonitor
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-watch
+ - groupId: net.rizon.moo
+   artifactId: watch
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-vote
+ - groupId: net.rizon.moo
+   artifactId: vote
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-logging
+ - groupId: net.rizon.moo
+   artifactId: logging
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-grapher
+ - groupId: net.rizon.moo
+   artifactId: grapher
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-random
+ - groupId: net.rizon.moo
+   artifactId: random
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-antiidle
+ - groupId: net.rizon.moo
+   artifactId: antiidle
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-osflood
+ - groupId: net.rizon.moo
+   artifactId: osflood
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-commits
+ - groupId: net.rizon.moo
+   artifactId: commits
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-fun
+ - groupId: net.rizon.moo
+   artifactId: fun
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-wiki
+ - groupId: net.rizon.moo
+   artifactId: wiki
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-tickets
+ - groupId: net.rizon.moo
+   artifactId: tickets
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-proxyscan
+ - groupId: net.rizon.moo
+   artifactId: proxyscan
    version: 3.0
- - groupId: net.rizon
-   artifactId: moo-mxbl
+ - groupId: net.rizon.moo
+   artifactId: mxbl
    version: 3.0
 

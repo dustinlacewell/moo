@@ -9,19 +9,21 @@
 	</parent>
 
 	<name>DNSBL Stats</name>
-	<artifactId>moo-dnsblstats</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>dnsblstats</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-moo</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>moo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<!-- test dependencies -->
 		<dependency>
-			<groupId>net.rizon</groupId>
-			<artifactId>moo-test</artifactId>
+			<groupId>net.rizon.moo</groupId>
+			<artifactId>test-utils</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

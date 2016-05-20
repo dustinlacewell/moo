@@ -8,8 +8,9 @@
 	</parent>
 	
 	<name>Test Utilities</name>
-	
-	<artifactId>moo-test</artifactId>
+
+	<groupId>net.rizon.moo</groupId>
+	<artifactId>test-utils</artifactId>
 	
 	<dependencies>
 		<dependency>
