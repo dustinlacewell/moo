@@ -213,7 +213,7 @@ class Server extends Thread
 							else
 							{
 								// Failure
-								status = "\00304" + status + "\004";
+								status = "\00304" + status + "\003";
 							}
 
 							protocol.privmsgAll(conf.channels, "\2" + p.getProjectName() + "\2: " + p.getBuildName() + "[" + p.getBuildStage() + "]: " + status + " for commit \00307" + p.getCommit().getShortSha() + "\003 by \00303" + p.getCommit().getAuthor() + "\003");
