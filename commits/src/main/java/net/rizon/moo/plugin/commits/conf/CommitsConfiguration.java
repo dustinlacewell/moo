@@ -4,11 +4,14 @@ import net.rizon.moo.conf.Configuration;
 import net.rizon.moo.conf.ConfigurationException;
 import net.rizon.moo.conf.Validator;
 
+import java.util.Map;
+
 public class CommitsConfiguration extends Configuration
 {
 	public String ip;
 	public int port;
-	public String[] channels;
+	public Map<String, String[]> channels;
+	public String[] defaultChannels;
 
 	/**
 	 * Loads Commits Configuration settings.
@@ -25,6 +28,9 @@ public class CommitsConfiguration extends Configuration
 	{
 		Validator.validateHost("Commits ip", ip);
 		Validator.validatePort("Commits port", port, false);
-		Validator.validateChannelList("Commits channels", channels);
+		Validator.validateChannelList("Default commits channels", defaultChannels);
+		for (Map.Entry<String, String[]> entry : channels.entrySet()) {
+			Validator.validateChannelList("Commits channels for repo " + entry.getKey(), entry.getValue());
+		}
 	}
 }
