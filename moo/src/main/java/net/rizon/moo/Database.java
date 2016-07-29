@@ -48,6 +48,19 @@ public class Database
 		return ps.executeQuery();
 	}
 
+	public synchronized int[] executeBatch(PreparedStatement ps) throws SQLException
+	{
+		try
+		{
+			logger.debug("Executing batch query: {}", ps);
+			return ps.executeBatch();
+		}
+		finally
+		{
+			closeStatement(ps);
+		}
+	}
+
 	public synchronized int executeUpdate(final String statement)
 	{
 		PreparedStatement ps;
