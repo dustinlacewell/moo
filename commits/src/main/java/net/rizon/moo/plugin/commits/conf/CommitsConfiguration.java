@@ -6,7 +6,6 @@ import net.rizon.moo.conf.Configuration;
 import net.rizon.moo.conf.ConfigurationException;
 import net.rizon.moo.conf.Validator;
 
-
 public class CommitsConfiguration extends Configuration
 {
 	public String ip;
@@ -16,6 +15,7 @@ public class CommitsConfiguration extends Configuration
 
 	/**
 	 * Loads Commits Configuration settings.
+	 *
 	 * @return Configuration settings.
 	 * @throws Exception Thrown when something goes wrong.
 	 */
@@ -47,13 +47,16 @@ public class CommitsConfiguration extends Configuration
 
 		List<String> chans = new ArrayList<>();
 
-		for (RepositoriesConfiguration conf : channels)
+		if (channels != null)
 		{
-			if (conf.repositories.contains(repository.toLowerCase()))
+			for (RepositoriesConfiguration conf : channels)
 			{
-				chans.addAll(conf.channels);
+				if (conf.repositories.contains(repository.toLowerCase()))
+				{
+					chans.addAll(conf.channels);
 
-				found = true;
+					found = true;
+				}
 			}
 		}
 
