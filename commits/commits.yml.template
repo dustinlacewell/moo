@@ -1,7 +1,13 @@
 # IP and port for the commit push server to listen on
 ip: 192.168.1.101
 port: 8081
+
 # Channel to report commits to, mapped from repo to list of channels
-channels: {"rizon": ["#dev"]}
+channels:
+ - repositories: ["rizon"]
+   channels: ["#dev"]
+ - repositories: ["gitlab"]
+   channels: ["#gitlab"]
+
 # default channels, in case repo isn't in map above
 defaultChannels: ["#d"]

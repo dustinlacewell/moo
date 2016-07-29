@@ -3,7 +3,6 @@ package net.rizon.moo.conf;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -183,6 +182,23 @@ public class Validator
 	{
 		for (String c : channels)
 			validateChannelName(name, c);
+	}
+
+	/**
+	 * Checks if the list of channels is RFC1459 compliant.
+	 * <p>
+	 * @param name     Configuration item name.
+	 * @param channels List of channels.
+	 * <p>
+	 * @throws ConfigurationException When a channel is invalid or not RFC1459
+	 *                                compliant.
+	 */
+	public static void validateChannelList(final String name, final List<String> channels) throws ConfigurationException
+	{
+		for (String c : channels)
+		{
+			validateChannelName(name, c);
+		}
 	}
 
 	/**

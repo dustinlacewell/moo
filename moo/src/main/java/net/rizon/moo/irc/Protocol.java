@@ -1,9 +1,11 @@
 package net.rizon.moo.irc;
 
+import static net.rizon.moo.Moo.akillServ;
+
 import com.google.inject.Inject;
 import java.util.EnumSet;
+import java.util.List;
 import net.rizon.moo.Moo;
-import static net.rizon.moo.Moo.akillServ;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.io.IRCMessage;
 
@@ -56,6 +58,20 @@ public class Protocol
 	{
 		for (String s : targets)
 			privmsg(s, buffer);
+	}
+
+	/**
+	 * Sends the same message to all targets.
+	 * <p>
+	 * @param targets Array of targets.
+	 * @param buffer  Message to send.
+	 */
+	public void privmsgAll(List<String> targets, String buffer)
+	{
+		for (String s : targets)
+		{
+			privmsg(s, buffer);
+		}
 	}
 
 	public void notice(String target, String buffer)

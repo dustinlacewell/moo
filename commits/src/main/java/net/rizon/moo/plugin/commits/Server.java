@@ -1,5 +1,8 @@
 package net.rizon.moo.plugin.commits;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,13 +12,10 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.util.List;
+import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
 import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.inject.Inject;
-import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
 import org.slf4j.Logger;
 
@@ -116,12 +116,9 @@ class Server extends Thread
 					{
 						GitLab p = new Gson().fromJson(json, GitLab.class);
 
-						String[] channels;
-						if (conf.channels.containsKey(p.getRepository().name)) {
-							channels = conf.channels.get(p.getRepository().name);
-						} else {
-							channels = conf.defaultChannels;
-						}
+						List<String> channels;
+
+						channels = conf.getChannelsForRepository(p.getRepository().name);
 
 						if (p.getObjectKind() != null && p.getObjectKind().equals("issue"))
 						{
