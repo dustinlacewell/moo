@@ -138,9 +138,12 @@ public class proxyscan extends Plugin implements EventListener
 			curIp = 0;
 		String source = ips[curIp++];
 
-		String notice = conf.scan_notice.replace("%bindip%", source);
-		if (!notice.isEmpty())
-			protocol.notice(nick, notice);
+		if (conf.scan_notice != null)
+		{
+			String notice = conf.scan_notice.replace("%bindip%", source);
+			if (!notice.isEmpty())
+				protocol.notice(nick, notice);
+		}
 
 		cache.addCacheEntry(ip);
 		scan(source, ip);

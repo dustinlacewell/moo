@@ -37,7 +37,6 @@ public class ProxyscanConfiguration extends Configuration
 		Validator.validateNullOrNotEmpty("Proxyscan arguments", arguments);
 		Validator.validateNotEmpty("Proxyscan check_string", check_string);
 		Validator.validateNotEmpty("Proxyscan ban_message", ban_message);
-		Validator.validateNotEmpty("Proxyscan scan_notice", scan_notice);
 		Validator.validateNotNull("Proxyscan py_opers", py_opers);
 		Validator.validateChannelList("Proxyscan channels", channels);
 	}
