@@ -2,12 +2,15 @@
 ip: 192.168.1.101
 port: 8081
 
-# Channel to report commits to, mapped from repo to list of channels
+# Channel to report commits to, mapped from repo to list of channels.
+# A repository is for example:
+# https://gitlab.com/rizon/plexus4
+# where "plexus4" is the repository name that should be filled in below.
 channels:
- - repositories: ["rizon"]
+ - repositories: ["plexus4"]
    channels: ["#dev"]
- - repositories: ["gitlab"]
-   channels: ["#gitlab"]
+ - repositories: ["moo"]
+   channels: ["#develop"]
 
 # default channels, in case repo isn't in map above
 defaultChannels: ["#d"]
