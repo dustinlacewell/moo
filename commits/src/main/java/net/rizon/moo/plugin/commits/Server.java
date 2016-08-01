@@ -139,7 +139,6 @@ class Server extends Thread
 							{
 								// Update events are annoying, they get sent together with close / open.
 								protocol.privmsgAll(channels, "\2" + projectName + "\2: \00303" + attrs.getAction() + " issue\003 by \00303" + p.getUser().name + "\003: " + attrs.getTitle() + " \u001f" + attrs.getUrl() + "\u000f");
-								protocol.privmsgAll(channels, p.getRepository().name);
 							}
 						}
 						else if (p.getCommits() != null)
