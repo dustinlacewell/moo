@@ -35,8 +35,8 @@ final class ScanListener extends Thread
 		{
 			logger.debug("Trying to create listener");
 			this.listener = new ServerSocket();
-			this.listener.bind(new InetSocketAddress(conf.getServer().ip, conf.getServer().port));
-			logger.debug("Bound to {}:{}", conf.getServer().ip, conf.getServer().port);
+			this.listener.bind(new InetSocketAddress(conf.getServer().getIp(), conf.getServer().getPort()));
+			logger.debug("Bound to {}:{}", conf.getServer().getIp(), conf.getServer().getPort());
 
 			for (Socket client; (client = this.listener.accept()) != null;)
 			{
