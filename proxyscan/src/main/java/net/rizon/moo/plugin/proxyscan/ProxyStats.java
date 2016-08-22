@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
 import net.rizon.moo.Moo;
@@ -19,7 +18,7 @@ public class ProxyStats extends Command
 	@Inject
 	public ProxyStats(Config conf)
 	{
-		super( "!PROXYSTATS", "View proxy hit statistics");
+		super("!PROXYSTATS", "View proxy hit statistics");
 		this.requiresChannel(conf.oper_channels);
 		this.requiresChannel(conf.admin_channels);
 	}
@@ -30,12 +29,15 @@ public class ProxyStats extends Command
 		source.reply("Proxy stats:");
 		try
 		{
-			PreparedStatement ps = Moo.db.prepare("select protocol,port,count(*) from proxies group by protocol, port order by count(*) desc");
-			ResultSet rs = Moo.db.executeQuery(ps);
-			while (rs.next())
-				source.reply(rs.getString("protocol") + " " + rs.getString("port") + ": " + rs.getString("count(*)"));
-			rs.close();
-			ps.close();
+			try (PreparedStatement ps = Moo.db.prepare("select protocol,port,count(*) from proxies group by protocol, port order by count(*) desc"))
+			{
+				try (ResultSet rs = Moo.db.executeQuery(ps))
+				{
+					while (rs.next())
+						source.reply(rs.getString("protocol") + " " + rs.getString("port") + ": " + rs.getString("count(*)"));
+					rs.close();
+				}
+			}
 		}
 		catch (SQLException ex)
 		{
