@@ -42,12 +42,19 @@ public class proxyscan extends Plugin implements EventListener
 	private ScheduledFuture cacheFuture;
 
 	private ProxyscanConfiguration conf;
+	
+	private IpCycler v4Ips;
+	private IpCycler v6Ips;
 
 	public proxyscan() throws Exception
 	{
 		super("Proxyscan", "Checks connecting users for proxies");
 		Moo.db.executeUpdate("CREATE TABLE IF NOT EXISTS `proxies` (protocol, port, ip, date timestamp default current_timestamp)");
+		
 		conf = ProxyscanConfiguration.load();
+		
+		v4Ips = new IpCycler(conf.bindip);
+		v6Ips = new IpCycler(conf.bindip6);
 	}
 
 	public ProxyscanConfiguration getConf()
@@ -130,13 +137,9 @@ public class proxyscan extends Plugin implements EventListener
 
 		logger.debug("Scanning {}", ip);
 
-		String[] ips = ip.contains(":") ? conf.bindip6 : conf.bindip;
-		if (ips.length == 0)
+		String source = ip.contains(":") ? v6Ips.getIp() : v4Ips.getIp();
+		if (source == null)
 			return;
-
-		if (curIp >= ips.length)
-			curIp = 0;
-		String source = ips[curIp++];
 
 		if (conf.scan_notice != null)
 		{
@@ -170,6 +173,9 @@ public class proxyscan extends Plugin implements EventListener
 		try
 		{
 			conf = ProxyscanConfiguration.load();
+			
+			v4Ips = new IpCycler(conf.bindip);
+			v6Ips = new IpCycler(conf.bindip6);
 		}
 		catch (Exception ex)
 		{
