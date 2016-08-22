@@ -78,12 +78,17 @@ public class proxyscan extends Plugin implements EventListener
 
 	public void akill(String ip, int port, String type, boolean input)
 	{
-		if (cache.hit(ip))
+		CacheEntry entry = cache.hit(ip);
+		
+		if (entry == null)
 			return;
 
 		String message = conf.ban_message.replace("%i", ip).replace("%p", "" + port).replace("%t", type);
 
-		protocol.privmsgAll(conf.channels, "PROXY FOUND: " + ip + ":" + port + " " + type + " (from input: " + input + ")");
+		protocol.privmsgAll(conf.channels, "PROXY FOUND: " +
+			entry.getClient().getNick() + "!" + entry.getClient().getIdent() +
+			"@" + entry.getClient().getIp() + " [" + entry.getClient().getGecos() + "] " + 
+			"type " + ip + ":" + port + " " + type + " (from input: " + input + ")");
 		protocol.akill(ip, "+3d", message);
 
 		try
@@ -125,7 +130,9 @@ public class proxyscan extends Plugin implements EventListener
 	public void onClientConnect(EventClientConnect evt)
 	{
 		String nick = evt.getNick();
+		String ident = evt.getIdent();
 		String ip = evt.getIp();
+		String realname = evt.getRealname();
 		
 		logger.debug("Client connecting from {}", ip);
 
@@ -134,6 +141,8 @@ public class proxyscan extends Plugin implements EventListener
 
 		if (!nickOk(nick))
 			return;
+		
+		Client client = new Client(nick, ident, ip, realname);
 
 		logger.debug("Scanning {}", ip);
 
@@ -148,11 +157,10 @@ public class proxyscan extends Plugin implements EventListener
 				protocol.notice(nick, notice);
 		}
 
-		cache.addCacheEntry(ip);
-		scan(source, ip);
+		scan(source, client);
 	}
 
-	private void scan(String source, String ip)
+	private void scan(String sourceIp, Client client)
 	{
 		String path = conf.path;
 		if (path.isEmpty() == true)
@@ -161,8 +169,10 @@ public class proxyscan extends Plugin implements EventListener
 		File proxycheck = new File(path);
 		if (proxycheck.exists() == false || proxycheck.isFile() == false || proxycheck.canExecute() == false)
 			return;
+		
+		cache.addClient(client);
 
-		Connector t = new Connector(source, ip, this);
+		Connector t = new Connector(sourceIp, client, this);
 		LoggerUtils.initThread(Connector.logger, t);
 		t.start();
 	}

@@ -1,13 +1,11 @@
 package net.rizon.moo.plugin.proxyscan;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.rizon.moo.logging.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,15 +15,15 @@ class Connector extends Thread
 
 	private static final Pattern vars = Pattern.compile("%[^%]+%");
 
-	private String source;
-	private String ip;
+	private final String sourceIp;
+	private final Client client;
 	
 	private proxyscan proxyscan;
 
-	public Connector(String source, String ip, proxyscan proxyscan)
+	public Connector(String sourceIp, Client client, proxyscan proxyscan)
 	{
-		this.source = source;
-		this.ip = ip;
+		this.sourceIp = sourceIp;
+		this.client = client;
 		this.proxyscan = proxyscan;
 	}
 
@@ -33,6 +31,7 @@ class Connector extends Thread
 	public void run()
 	{
 		Process proc = null;
+		String ip = client.getIp();
 
 		try
 		{
@@ -44,9 +43,9 @@ class Connector extends Thread
 
 				String replacement;
 				if (var.equals("destip"))
-					replacement = this.ip.contains(":") ? "[" + this.ip + "]" : this.ip;
+					replacement = ip.contains(":") ? "[" + ip + "]" : ip;
 				else if (var.equals("bindip"))
-					replacement = this.source.contains(":") ? "[" + this.source + "]" : this.source;
+					replacement = this.sourceIp.contains(":") ? "[" + this.sourceIp + "]" : this.sourceIp;
 				else
 					replacement = "";
 
@@ -77,7 +76,7 @@ class Connector extends Thread
 					String port = parts_colon[1];
 					String type = parts_colon[0];
 
-					proxyscan.akill(this.ip, Integer.parseInt(port), type, false);
+					proxyscan.akill(ip, Integer.parseInt(port), type, false);
 				}
 			}
 			catch (Exception ex)

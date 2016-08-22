@@ -4,14 +4,14 @@ import java.util.Date;
 
 final class CacheEntry
 {
-	public final String ip;
+	private final Client client;
 	public final long added;
 	public boolean hit;
 	private int expiry;
 
-	public CacheEntry(String ip, int expiry)
+	public CacheEntry(Client client, int expiry)
 	{
-		this.ip = ip;
+		this.client = client;
 		this.added = System.currentTimeMillis();
 		this.expiry = expiry;
 	}
@@ -19,5 +19,10 @@ final class CacheEntry
 	public boolean isExpired(Date now)
 	{
 		return new Date(this.added + (expiry * 1000L)).before(now);
+	}
+
+	public Client getClient()
+	{
+		return client;
 	}
 }

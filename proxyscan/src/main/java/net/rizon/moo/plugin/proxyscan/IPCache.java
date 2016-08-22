@@ -16,8 +16,8 @@ final class IPCache implements Runnable
 	 * queue for faster expiry by only looping over the items that are likely to
 	 * have expired.
 	 */
-	private final Deque<CacheEntry> cacheq = new ArrayDeque<CacheEntry>();
-	private final Map<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
+	private final Deque<CacheEntry> cacheq = new ArrayDeque<>();
+	private final Map<String, CacheEntry> cache = new HashMap<>();
 
 	@Inject
 	private ProxyscanConfiguration conf;
@@ -38,16 +38,18 @@ final class IPCache implements Runnable
 				 */
 				break;
 
-			cache.remove(e.ip);
+			cache.remove(e.getClient().getIp());
 			it.remove();
 		}
 	}
-
-	public synchronized void addCacheEntry(final String ip)
+	
+	public synchronized void addClient(Client client)
 	{
-		CacheEntry e = new CacheEntry(ip, conf.expiry);
-		this.cache.put(ip, e);
-		this.cacheq.addLast(e);
+		String ip = client.getIp();
+		CacheEntry entry = new CacheEntry(client, conf.expiry);
+		
+		this.cache.put(ip, entry);
+		this.cacheq.addLast(entry);
 	}
 
 	public synchronized boolean isCached(final String ip)
@@ -55,15 +57,16 @@ final class IPCache implements Runnable
 		return this.cache.get(ip) != null;
 	}
 
-	public synchronized boolean hit(String ip)
+	public synchronized CacheEntry hit(String ip)
 	{
 		CacheEntry e = this.cache.get(ip);
-		if (e != null)
+		
+		if (e != null && e.hit == false)
 		{
-			boolean save = e.hit;
 			e.hit = true;
-			return save;
+			return e;
 		}
-		return false;
+		
+		return null;
 	}
 }
