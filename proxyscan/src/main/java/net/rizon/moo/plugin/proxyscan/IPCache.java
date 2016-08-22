@@ -46,7 +46,7 @@ final class IPCache implements Runnable
 	public synchronized void addClient(Client client)
 	{
 		String ip = client.getIp();
-		CacheEntry entry = new CacheEntry(client, conf.expiry);
+		CacheEntry entry = new CacheEntry(client, conf.getExpiry());
 		
 		this.cache.put(ip, entry);
 		this.cacheq.addLast(entry);

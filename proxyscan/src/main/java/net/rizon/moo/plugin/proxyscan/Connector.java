@@ -35,7 +35,7 @@ class Connector extends Thread
 
 		try
 		{
-			String args = proxyscan.getConf().path + " " + proxyscan.getConf().arguments;
+			String args = proxyscan.getConf().getPath() + " " + proxyscan.getConf().getArguments();
 			Matcher m = vars.matcher(args);
 			while (m.find())
 			{

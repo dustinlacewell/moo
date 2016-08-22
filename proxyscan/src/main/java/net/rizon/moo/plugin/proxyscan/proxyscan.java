@@ -53,8 +53,8 @@ public class proxyscan extends Plugin implements EventListener
 		
 		conf = ProxyscanConfiguration.load();
 		
-		v4Ips = new IpCycler(conf.bindip);
-		v6Ips = new IpCycler(conf.bindip6);
+		v4Ips = new IpCycler(conf.getBindip());
+		v6Ips = new IpCycler(conf.getBindip6());
 	}
 
 	public ProxyscanConfiguration getConf()
@@ -83,9 +83,9 @@ public class proxyscan extends Plugin implements EventListener
 		if (entry == null)
 			return;
 
-		String message = conf.ban_message.replace("%i", ip).replace("%p", "" + port).replace("%t", type);
+		String message = conf.getBan_message().replace("%i", ip).replace("%p", "" + port).replace("%t", type);
 
-		protocol.privmsgAll(conf.channels, "PROXY FOUND: " +
+		protocol.privmsgAll(conf.getChannels(), "PROXY FOUND: " +
 			entry.getClient().getNick() + "!" + entry.getClient().getIdent() +
 			"@" + entry.getClient().getIp() + " [" + entry.getClient().getGecos() + "] " + 
 			"type " + ip + ":" + port + " " + type + " (from input: " + input + ")");
@@ -104,7 +104,7 @@ public class proxyscan extends Plugin implements EventListener
 			logger.warn("Unable to record proxy hit", ex);
 		}
 
-		if (conf.py_opers)
+		if (conf.isPy_opers())
 			protocol.privmsg("py-opers", "~dnsbl_admin.add " + ip + " 1 " + message);
 	}
 	
@@ -150,9 +150,9 @@ public class proxyscan extends Plugin implements EventListener
 		if (source == null)
 			return;
 
-		if (conf.scan_notice != null)
+		if (conf.getScan_notice() != null)
 		{
-			String notice = conf.scan_notice.replace("%bindip%", source);
+			String notice = conf.getScan_notice().replace("%bindip%", source);
 			if (!notice.isEmpty())
 				protocol.notice(nick, notice);
 		}
@@ -162,7 +162,7 @@ public class proxyscan extends Plugin implements EventListener
 
 	private void scan(String sourceIp, Client client)
 	{
-		String path = conf.path;
+		String path = conf.getPath();
 		if (path.isEmpty() == true)
 			return;
 
@@ -184,8 +184,8 @@ public class proxyscan extends Plugin implements EventListener
 		{
 			conf = ProxyscanConfiguration.load();
 			
-			v4Ips = new IpCycler(conf.bindip);
-			v6Ips = new IpCycler(conf.bindip6);
+			v4Ips = new IpCycler(conf.getBindip());
+			v6Ips = new IpCycler(conf.getBindip6());
 		}
 		catch (Exception ex)
 		{
