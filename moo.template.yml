@@ -27,16 +27,16 @@ database:
   connection: jdbc:sqlite:moo.db
 
 # Comma separated list of channels to join
-channels: ["#opers", "#o", "#a", "#r", "#x", "#d", "#kline", "#kline-spam", "#w", "#services", "#h", "#adam", "#r-spam"]
+channels: ["#opers" ]
 
 # Comma separated list of developer channels.
-dev_channels:  ["#d"]
+dev_channels:  ["#dev"]
 
 # Comma separated list of spam channels, where non important messages can go
-spam_channels: ["#kline-spam"]
+spam_channels: ["#spam"]
 
 # Comma separated list of channels to announce and control floods to
-flood_channels: ["#w"]
+flood_channels: ["#flood"]
 
 # Comma separated list of channels to announce splits to
 split_channels: ["#opers"]
@@ -45,22 +45,22 @@ split_channels: ["#opers"]
 staff_channels: ["#opers", "#kline"]
 
 # Comma separated list of oper channels
-oper_channels: ["#o"]
+oper_channels: ["#so"]
 
 # Comma separated list of admin channels
-admin_channels: ["#r", "#x"]
+admin_channels: ["#admin"
 
 # Comma separated list of services log channels
 log_channels: ["#services"]
 
 # Comma separated list of moo log channels
-moo_log_channels: ["#r-spam"]
+moo_log_channels: ["#spam"]
 
 # Comma separated list of kline team channels
 kline_channels: ["#kline"]
 
 # Comma separated list of help channels
-help_channels: ["#h"]
+help_channels: ["#help"]
 
 
 mail:
