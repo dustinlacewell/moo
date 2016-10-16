@@ -52,10 +52,16 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 			}
 			if (stes != null)
 			{
-				if (throwable != null && throwable.getMessage() != null)
+				if (throwable != null)
 				{
-					protocol.privmsg(ch, throwable.getMessage());
+					String exception = throwable.getMessage() == null ? throwable.getClassName() : throwable.getMessage();
+
+					if (exception != null)
+					{
+						protocol.privmsg(ch, exception);
+					}
 				}
+
 				for (StackTraceElement ste : stes)
 				{
 					protocol.privmsg(ch, ste.toString());
