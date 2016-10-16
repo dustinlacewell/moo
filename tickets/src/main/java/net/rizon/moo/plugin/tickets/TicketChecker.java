@@ -73,32 +73,35 @@ class TicketChecker extends Thread
 				{
 					message = "new ticket";
 				}
-				else if (ticketState == TicketState.RESOLVED && t.state != TicketState.RESOLVED)
+				else if (ticketState == TicketState.RESOLVED && t.getState() != TicketState.RESOLVED)
 				{
 					// Notify overlords that ticket has been resolved.
 					message = "resolved by " + wt.getLastReplier();
 				}
-				else if (ticketState == TicketState.CLOSED && t.state != TicketState.CLOSED)
+				else if (ticketState == TicketState.CLOSED && t.getState() != TicketState.CLOSED)
 				{
 					// Notify overlords that ticket has been closed.
 					message = "closed by " + wt.getLastReplier();
 				}
-				else if (ticketState != TicketState.CLOSED && t.state == TicketState.CLOSED)
+				else if (ticketState != TicketState.CLOSED && t.getState() == TicketState.CLOSED)
 				{
 					// Notify overlords that ticket has been reopened.
 					message = "reopened by " + wt.getLastReplier();
 				}
-				else if ((ticketState == TicketState.PENDING || ticketState == TicketState.IN_PROGRESS) && !t.lastReplier.equalsIgnoreCase(wt.getLastReplier()))
+				else if ((ticketState == TicketState.PENDING || ticketState == TicketState.IN_PROGRESS) && !t.getLastReplier().equalsIgnoreCase(wt.getLastReplier()))
 				{
 					message = "new reply from " + wt.getLastReplier();
-					t.lastReplier = wt.getLastReplier();
+					t.setLastReplier(wt.getLastReplier());
 				}
-				else if (ticketState == TicketState.PENDING && t.nextReminder.before(now))
+				else if (ticketState == TicketState.PENDING && t.getNextReminder().before(now))
 				{
 					if (reminded++ > 0)
 						continue;
 
-					t.nextReminder = new Date(now.getTime() + ((reminder * ++t.reminded) * 60 * 1000));
+					int r = t.getReminded();
+					t.setReminded(++r);
+
+					t.setNextReminder(new Date(now.getTime() + ((reminder * r) * 60 * 1000)));
 					message = "reminder";
 				}
 
@@ -117,14 +120,14 @@ class TicketChecker extends Thread
 				if (t == null)
 				{
 					t = new Ticket();
-					t.lastReplier = wt.getLastReplier();
-					t.nextReminder = new Date(now.getTime() + (reminder * 60 * 1000));
-					t.state = ticketState;
+					t.setLastReplier(wt.getLastReplier());
+					t.setNextReminder(new Date(now.getTime() + (reminder * 60 * 1000)));
+					t.setState(ticketState);
 					tickets.tickets.put(ticket, t);
 				}
 				else
 				{
-					t.state = ticketState;
+					t.setState(ticketState);
 				}
 			}
 
