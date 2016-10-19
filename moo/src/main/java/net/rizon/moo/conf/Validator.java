@@ -44,7 +44,7 @@ public class Validator
 	 * @param obj Configuration item.
 	 * @throws ConfigurationException Thrown when string is null or empty.
 	 */
-	public static void validateNotEmpty(final String name, final String obj) throws ConfigurationException
+	public static void validateNotEmpty(String name, String obj) throws ConfigurationException
 	{
 		validateNotNull(name, obj);
 		if (obj.isEmpty())
@@ -58,7 +58,7 @@ public class Validator
 	 * @param obj Collection.
 	 * @throws ConfigurationException Thrown when {@link Collection} is empty.
 	 */
-	public static <T extends Collection<?>> void validateNotEmpty(final String name, final T obj) throws ConfigurationException
+	public static <T extends Collection<?>> void validateNotEmpty(String name, T obj) throws ConfigurationException
 	{
 		validateNotNull(name, obj);
 		if (obj.isEmpty())
@@ -71,7 +71,7 @@ public class Validator
 	 * @param i Integer to validate.
 	 * @throws ConfigurationException Thrown when integer is 0.
 	 */
-	public static void validateNotZero(final String name, final int i) throws ConfigurationException
+	public static void validateNotZero(String name, int i) throws ConfigurationException
 	{
 		if (i == 0)
 			throw new ConfigurationException(name + " must be non zero");
@@ -83,7 +83,7 @@ public class Validator
 	 * @param i Integer to validate
 	 * @throws ConfigurationException Throw when integer is smaller than 0.
 	 */
-	public static void validatePositive(final String name, final int i) throws ConfigurationException
+	public static void validatePositive(String name, int i) throws ConfigurationException
 	{
 		if (i < 0)
 			throw new ConfigurationException(name + " must be 0 or higher");
@@ -96,7 +96,7 @@ public class Validator
 	 * @param outgoing Specifies if this port is used to connect to another computer (true) or create a local socket (false).
 	 * @throws ConfigurationException Thrown when the integer is not a valid port.
 	 */
-	public static void validatePort(final String name, final int i, final boolean outgoing) throws ConfigurationException
+	public static void validatePort(String name, int i, boolean outgoing) throws ConfigurationException
 	{
 		int lowerBound = outgoing ? 1 : 0;
 		if (i < lowerBound || i > 65535)
@@ -112,12 +112,12 @@ public class Validator
 	 * @param obj Host name or IP Address.
 	 * @throws ConfigurationException When Host name or IP Address is invalid.
 	 */
-	public static void validateHost(final String name, final String obj) throws ConfigurationException
+	public static void validateHost(String name, String obj) throws ConfigurationException
 	{
 		validateNotEmpty(name, obj);
 	}
 
-	public static void validateHostList(final String name, final String[] obj) throws ConfigurationException
+	public static void validateHostList(String name, String[] obj) throws ConfigurationException
 	{
 		validateNotNull(name, obj);
 		for (String s : obj)
@@ -130,7 +130,7 @@ public class Validator
 	 * @param obj Host name or IP Address. (Or null)
 	 * @throws ConfigurationException When Host name or IP Address is invalid if defined.
 	 */
-	public static void validateNullOrHost(final String name, final String obj) throws ConfigurationException
+	public static void validateNullOrHost(String name, String obj) throws ConfigurationException
 	{
 		if (obj != null)
 			validateHost(name, obj);
@@ -142,7 +142,7 @@ public class Validator
 	 * @param obj Item. (Or null)
 	 * @throws ConfigurationException When configuration item is not valid if defined.
 	 */
-	public static void validateNullOrNotEmpty(final String name, final String obj) throws ConfigurationException
+	public static void validateNullOrNotEmpty(String name, String obj) throws ConfigurationException
 	{
 		if (obj != null)
 			Validator.validateNotEmpty(name, obj);
@@ -155,7 +155,7 @@ public class Validator
 	 * @param obj Object. (Or null)
 	 * @throws ConfigurationException When configuration item is not valid if defined.
 	 */
-	public static <T extends Validatable> void validateNullOrValid(final String name, final T obj) throws ConfigurationException
+	public static <T extends Validatable> void validateNullOrValid(String name, T obj) throws ConfigurationException
 	{
 		if (obj != null)
 			obj.validate();
@@ -167,7 +167,7 @@ public class Validator
 	 * @param mask IRC Mask.
 	 * @throws ConfigurationException When configuration item is null or not valid.
 	 */
-	public static void validateIRCMask(final String name, final String mask) throws ConfigurationException
+	public static void validateIRCMask(String name, String mask) throws ConfigurationException
 	{
 		// XXX ?
 	}
@@ -178,7 +178,7 @@ public class Validator
 	 * @param channels List of channels.
 	 * @throws ConfigurationException When a channel is invalid or not RFC1459 compliant.
 	 */
-	public static void validateChannelList(final String name, final String[] channels) throws ConfigurationException
+	public static void validateChannelList(String name, String[] channels) throws ConfigurationException
 	{
 		for (String c : channels)
 			validateChannelName(name, c);
@@ -193,7 +193,7 @@ public class Validator
 	 * @throws ConfigurationException When a channel is invalid or not RFC1459
 	 *                                compliant.
 	 */
-	public static void validateChannelList(final String name, final List<String> channels) throws ConfigurationException
+	public static void validateChannelList(String name, List<String> channels) throws ConfigurationException
 	{
 		for (String c : channels)
 		{
@@ -207,7 +207,7 @@ public class Validator
 	 * @param channel Channel name.
 	 * @throws ConfigurationException When the channel name is invalid or not RFC compliant.
 	 */
-	public static void validateChannelName(final String name, final String channel) throws ConfigurationException
+	public static void validateChannelName(String name, String channel) throws ConfigurationException
 	{
 		validateNotEmpty(name, channel);
 		// TODO: Better check :D
@@ -221,7 +221,7 @@ public class Validator
 	 * @param emails List of email addresses.
 	 * @throws ConfigurationException When an email is invalid.
 	 */
-	public static void validateEmailList(final String name, final List<String> emails) throws ConfigurationException
+	public static void validateEmailList(String name, List<String> emails) throws ConfigurationException
 	{
 		for (String email : emails)
 			validateEmail(name, email);
@@ -233,7 +233,7 @@ public class Validator
 	 * @param email Email address.
 	 * @throws ConfigurationException When email is invalid.
 	 */
-	public static void validateEmail(final String name, final String email) throws ConfigurationException
+	public static void validateEmail(String name, String email) throws ConfigurationException
 	{
 		validateNotEmpty(name, email);
 		if (!ev.isValid(email))
@@ -247,7 +247,7 @@ public class Validator
 	 * @param path Path to check.
 	 * @throws ConfigurationException When path is non-existent.
 	 */
-	public static void validatePath(final String name, final String path) throws ConfigurationException
+	public static void validatePath(String name, String path) throws ConfigurationException
 	{
 		validateNotNull(name, path);
 		File f = new File(path);
@@ -261,7 +261,7 @@ public class Validator
 	 * @param paths Paths to check.
 	 * @throws ConfigurationException When path is non-existent.
 	 */
-	public static void validatePathList(final String name, final String[] paths) throws ConfigurationException
+	public static void validatePathList(String name, String[] paths) throws ConfigurationException
 	{
 		validateNotNull(name, paths);
 		for (String s : paths)
@@ -274,7 +274,7 @@ public class Validator
 	 * @param list List of strings.
 	 * @throws ConfigurationException When a string is empty.
 	 */
-	public static void validateStringList(final String name, final List<String> list) throws ConfigurationException
+	public static void validateStringList(String name, List<String> list) throws ConfigurationException
 	{
 		for (String s : list)
 			validateNotEmpty(name, s);
@@ -286,7 +286,7 @@ public class Validator
 	 * @param url URL to check.
 	 * @throws ConfigurationException When URL is not valid.
 	 */
-	public static void validateURL(final String name, final String url) throws ConfigurationException
+	public static void validateURL(String name, String url) throws ConfigurationException
 	{
 		if (!uv.isValid(url))
 			throw new ConfigurationException(name + " (" + url + ") is not a valid URL.");
@@ -298,7 +298,7 @@ public class Validator
 	 * @param urls URLs to check.
 	 * @throws ConfigurationException When a URL is not valid.
 	 */
-	public static void validateURLList(final String name, final List<String> urls) throws ConfigurationException
+	public static void validateURLList(String name, List<String> urls) throws ConfigurationException
 	{
 		validateNotNull(name, urls);
 		for (String s : urls)
