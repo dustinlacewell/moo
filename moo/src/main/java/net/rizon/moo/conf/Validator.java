@@ -180,6 +180,9 @@ public class Validator
 	 */
 	public static void validateChannelList(String name, String[] channels) throws ConfigurationException
 	{
+		if (channels == null)
+			return;
+		
 		for (String c : channels)
 			validateChannelName(name, c);
 	}
@@ -195,6 +198,9 @@ public class Validator
 	 */
 	public static void validateChannelList(String name, List<String> channels) throws ConfigurationException
 	{
+		if (channels == null)
+			return;
+		
 		for (String c : channels)
 		{
 			validateChannelName(name, c);
