@@ -1,7 +1,6 @@
 package net.rizon.moo;
 
 import com.google.inject.Inject;
-import com.jcabi.aether.Aether;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,11 +13,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.jar.Manifest;
 import net.rizon.moo.conf.Config;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.slf4j.Logger;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.DependencyResolutionException;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 public class PluginManager
 {
@@ -29,17 +27,6 @@ public class PluginManager
 	private Config conf;
 
 	private final List<Plugin> plugins = new ArrayList<>();
-
-	private List<Artifact> resolveArtifacts(Artifact artifact) throws DependencyResolutionException
-	{
-		File local = new File(conf.plugin_repository);
-		Collection<RemoteRepository> remotes = Arrays.asList();
-
-		Aether a = new Aether(remotes, local);
-
-		Collection<Artifact> deps = a.resolve(artifact, "runtime");
-		return new ArrayList<>(deps);
-	}
 
 	private Manifest getManifest(File jar) throws IOException
 	{
@@ -64,18 +51,21 @@ public class PluginManager
 		if (p != null)
 			return p;
 
-		List<Artifact> artifacts = resolveArtifacts(a);
+		ArtifactResolver resolver = new ArtifactResolver();
+		List<ArtifactResult> artifacts = resolver.resolveArtifacts(a);
 
-		Artifact artifact = artifacts.remove(0);
+		ArtifactResult artifact = artifacts.remove(0);
 		// artifacts contains dependencies now
 
-		ClassLoader cl = new ClassLoader(this, artifact.getFile());
+		logger.debug("Located artifact {}: {}", artifact, artifact.getArtifact().getFile());
+
+		ClassLoader cl = new ClassLoader(this, artifact.getArtifact().getFile());
 		try
 		{
-			for (Artifact a2 : artifacts)
-				cl.addFile(a2.getFile());
+			for (ArtifactResult a2 : artifacts)
+				cl.addFile(a2.getArtifact().getFile());
 
-			Manifest mf = getManifest(artifact.getFile());
+			Manifest mf = getManifest(artifact.getArtifact().getFile());
 
 			Class<?> c;
 			try
@@ -93,7 +83,7 @@ public class PluginManager
 
 			p = (Plugin) con.newInstance();
 
-			p.artifact = artifact;
+			p.artifact = artifact.getArtifact();
 			p.loader = cl;
 			cl = null;
 			p.manifest = mf;

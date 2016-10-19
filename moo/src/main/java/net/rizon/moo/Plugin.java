@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.jar.Manifest;
+import org.eclipse.aether.artifact.Artifact;
 import org.slf4j.Logger;
-import org.sonatype.aether.artifact.Artifact;
 
 public abstract class Plugin extends AbstractModule
 {
