@@ -8,8 +8,8 @@ import net.rizon.moo.Moo;
 import net.rizon.moo.Plugin;
 import net.rizon.moo.PluginManager;
 import net.rizon.moo.conf.Config;
+import org.eclipse.aether.artifact.Artifact;
 import org.slf4j.Logger;
-import org.sonatype.aether.artifact.Artifact;
 
 class CommandPlugins extends Command
 {
