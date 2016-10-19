@@ -39,7 +39,6 @@ public class MooModule extends AbstractModule
 		bind(ServerManager.class).toInstance(serverManager);
 		bind(DatabaseTimer.class).toInstance(new DatabaseTimer());
 		bind(PluginManager.class).toInstance(pluginManager);
-		bind(FutureExceptionListener.class);
 
 		bindListener(Matchers.any(), new LogTypeListener());
 		

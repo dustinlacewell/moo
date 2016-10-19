@@ -194,38 +194,45 @@ public class Moo
 	{
 		return created.toString();
 	}
+
+	private static class RunnableWrapper implements Runnable
+	{
+		private final Runnable r;
+
+		RunnableWrapper(Runnable r)
+		{
+			this.r = r;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				r.run();
+			}
+			catch (Throwable ex)
+			{
+				logger.warn("uncaught exception thrown out of task", ex);
+			}
+		}
+	}
 	
 	public static ScheduledFuture scheduleWithFixedDelay(Runnable r, long t, TimeUnit unit)
 	{
-		ScheduledFuture future = moo.group.scheduleWithFixedDelay(r, t, t, unit);
-		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
-
-		listener.setRescheduleParameters(r, t, t, unit, FutureExceptionListener.ScheduleType.FIXED_DELAY);
-
-		future.addListener(listener);
-
+		ScheduledFuture future = moo.group.scheduleWithFixedDelay(new RunnableWrapper(r), t, t, unit);
 		return future;
 	}
 	
 	public static ScheduledFuture scheduleAtFixedRate(Runnable r, long t, TimeUnit unit)
 	{
-		ScheduledFuture future = moo.group.scheduleAtFixedRate(r, t, t, unit);
-		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
-
-		listener.setRescheduleParameters(r, t, t, unit, FutureExceptionListener.ScheduleType.FIXED_RATE);
-
-		future.addListener(listener);
-
+		ScheduledFuture future = moo.group.scheduleAtFixedRate(new RunnableWrapper(r), t, t, unit);
 		return future;
 	}
 
 	public static ScheduledFuture schedule(Runnable r, long t, TimeUnit unit)
 	{
-		ScheduledFuture future = moo.group.schedule(r, t, unit);
-		FutureExceptionListener listener = Moo.injector.getInstance(FutureExceptionListener.class);
-
-		future.addListener(listener);
-
+		ScheduledFuture future = moo.group.schedule(new RunnableWrapper(r), t, unit);
 		return future;
 	}
 
