@@ -31,8 +31,7 @@ class CommandBlacklist extends Command
 		IP_RECORDS.add(RecordType.A);
 		IP_RECORDS.add(RecordType.AAAA);
 
-		// TODO: Fill in correct channels.
-		this.requiresChannel(conf.admin_channels);
+		this.requiresChannel(conf.oper_channels);
 	}
 
 	@Override
