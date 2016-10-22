@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -36,19 +37,23 @@ public class NS
 		try
 		{
 			Hashtable env = new Hashtable();
-			env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
-			DirContext ictx = new InitialDirContext(env);
-			String[] s = new String[types.size()];
-			for (int i = 0; i < types.size(); i++)
-			{
-				s[i] = types.get(i).toString();
-			}
-			Attributes attrs = ictx.getAttributes(hostname, s);
 
-			for (RecordType r : types)
+			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
+
+			DirContext ictx = new InitialDirContext(env);
+
+			for (RecordType record : types)
 			{
-				List<String> records = processRecords(attrs.get(r.toString()));
-				m.put(r, records);
+				String r = record.toString();
+
+				Attributes attrs = ictx.getAttributes(hostname, new String[]
+				{
+					r
+				});
+
+				List<String> records = processRecords(attrs.get(r));
+
+				m.put(record, records);
 			}
 
 			return m;
