@@ -101,7 +101,7 @@ public class EventRegister extends Event implements EventListener
 
 		if (!mailHostOkay(mailhost))
 		{
-			suspendNick(nickname);
+			suspendNick(nickname, mailhost);
 			return;
 		}
 
@@ -112,7 +112,7 @@ public class EventRegister extends Event implements EventListener
 
 			if (list != null && (!mailHostsOkay(list) || wildcardMatch(mailhost, list)))
 			{
-				suspendNick(nickname);
+				suspendNick(nickname, mailhost);
 			}
 		}
 		catch (NamingException ex)
@@ -150,9 +150,9 @@ public class EventRegister extends Event implements EventListener
 	 * <p>
 	 * @param nickname Nick to suspend.
 	 */
-	private void suspendNick(String nickname)
+	private void suspendNick(String nickname, String mailhost)
 	{
-		protocol.privmsgAll(conf.moo_log_channels, "Suspended nick [" + nickname + "] because it was registered with a blacklisted mailhost");
+		protocol.privmsgAll(conf.spam_channels, "Suspended nick [" + nickname + "] because it was registered with a blacklisted mailhost " + mailhost);
 		protocol.privmsg("NickServ", "SUSPEND " + nickname + " Registered using blacklisted mailhost");
 	}
 
