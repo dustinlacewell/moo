@@ -27,7 +27,7 @@ public class Logger extends UnsynchronizedAppenderBase<ILoggingEvent>
 			return;
 		}
 
-		String message = event.getMessage();
+		String message = event.getFormattedMessage();
 		IThrowableProxy throwable = event.getThrowableProxy();
 		StackTraceElement[] stes = null;
 
