@@ -116,9 +116,10 @@ class Server extends Thread
 					{
 						GitLab p = new Gson().fromJson(json, GitLab.class);
 
-						List<String> channels;
+						if (p.getRepository() == null)
+							continue;
 
-						channels = conf.getChannelsForRepository(p.getRepository().name);
+						List<String> channels = conf.getChannelsForRepository(p.getRepository().name);
 
 						if (p.getObjectKind() != null && p.getObjectKind().equals("issue"))
 						{
