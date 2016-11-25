@@ -21,6 +21,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
@@ -29,6 +30,9 @@ import net.rizon.moo.conf.Config;
 import net.rizon.moo.io.IRCMessage;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
+import net.rizon.moo.plugin.servermonitor.conf.ServerCheckConfiguration;
+import net.rizon.moo.plugin.servermonitor.conf.ServerMonitorConfiguration;
+import net.rizon.moo.plugin.servermonitor.servermonitor;
 import net.rizon.moo.util.TimeDifference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,9 @@ public class SCheck
 	
 	@Inject
 	private Config conf;
+	
+	@Inject
+	private ServerMonitorConfiguration monitorConfiguration;
 	
 	private Server server;
 	private int port;
@@ -226,24 +233,38 @@ public class SCheck
 		logger.error("Error in scheck", cause);
 		channel.close();
 	}
-	
+
+	/**
+	 * Attempts to find the matching IP address for the specified server in the
+	 * configuration file.
+	 * 
+	 * @return Returns an {@link InetAddress} containing the server IP, or null
+	 *         if none can be found.
+	 */
 	private InetAddress getServerIp()
 	{
-		InetAddress[] address;
 		try
 		{
-			address = InetAddress.getAllByName(server.getName());
+			for (ServerCheckConfiguration serverConf : this.monitorConfiguration.servers)
+			{
+				if (!serverConf.server.equalsIgnoreCase(server.getName()))
+				{
+					continue;
+				}
+				
+				if (use_v6 && serverConf.ip6 != null)
+				{
+					return InetAddress.getByName(serverConf.ip6);
+				}
+				else if (!use_v6 && serverConf.ip != null)
+				{
+					return InetAddress.getByName(serverConf.ip);
+				}
+			}
 		}
 		catch (UnknownHostException ex)
 		{
-			return null;
-		}
-		for (InetAddress addr : address)
-		{
-			if (addr instanceof Inet6Address && use_v6)
-				return addr;
-			else if (addr instanceof Inet4Address && !use_v6)
-				return addr;
+			logger.error("Invalid ip specified for server", ex);
 		}
 		
 		return null;
