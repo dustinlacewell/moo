@@ -10,6 +10,7 @@ public class ServerMonitorConfiguration extends Configuration
 {
 	public String domain;
 	public String[] check;
+	public List<ServerCheckConfiguration> servers;
 	public boolean reconnect;
 	public boolean messages;
 	public int port;
@@ -30,6 +31,7 @@ public class ServerMonitorConfiguration extends Configuration
 	{
 		Validator.validateHost("ServerMonitor domain", domain);
 		Validator.validateHostList("ServerMonitor check", check);
+		Validator.validateList(servers);
 		Validator.validateNotNull("ServerMonitor reconnect", reconnect);
 		Validator.validateNotNull("ServerMonitor messages", messages);
 		Validator.validatePort("ServerMonitor Reconnect port", port, true);

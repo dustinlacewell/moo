@@ -8,6 +8,11 @@ check:
 - fr.iso.rizon.net
 - de.iso.rizon.net
 
+servers:
+- server: irc.rizon.net
+  ip: 192.168.0.1
+  ip6: ::1
+
 reconnect: true
 messages: true
 port: 27888
