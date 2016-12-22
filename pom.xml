@@ -32,6 +32,7 @@
 		<module>dnsbl</module>
 		<module>dnsblstats</module>
 		<module>fun</module>
+		<module>grafana</module>
 		<module>grapher</module>
 		<module>logging</module>
 		<module>mxbl</module>

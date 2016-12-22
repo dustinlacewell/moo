@@ -112,6 +112,9 @@ plugins:
    artifactId: fun
    version: 3.0
  - groupId: net.rizon.moo
+   artifactId: grafana
+   version: 3.0
+ - groupId: net.rizon.moo
    artifactId: wiki
    version: 3.0
  - groupId: net.rizon.moo

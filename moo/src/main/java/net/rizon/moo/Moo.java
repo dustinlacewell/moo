@@ -135,7 +135,6 @@ public class Moo
 			catch (Throwable ex)
 			{
 				logger.error("Error loading plugin", ex);
-				//logger.error("Error loading plugin " + pkg, ex);
 				System.exit(-1);
 			}
 		}
@@ -187,7 +186,7 @@ public class Moo
 	
 	public static void stop()
 	{
-		moo.channel.close();
+		channel.close();
 	}
 
 	public static final String getCreated()
