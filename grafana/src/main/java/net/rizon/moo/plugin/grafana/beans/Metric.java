@@ -22,12 +22,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package net.rizon.moo.plugin.grafana.beans;
 
 public class Metric
 {
+	private String value;
 	private String metric;
+	private String tags;
+
+	public Metric()
+	{
+	}
+
+	public Metric(String value, String metric, String tags)
+	{
+		this.value = value;
+		this.metric = metric;
+		this.tags = tags;
+	}
+
+	public String getValue()
+	{
+		return value;
+	}
+
+	public void setValue(String value)
+	{
+		this.value = value;
+	}
 
 	public String getMetric()
 	{
@@ -37,5 +59,15 @@ public class Metric
 	public void setMetric(String metric)
 	{
 		this.metric = metric;
+	}
+
+	public String getTags()
+	{
+		return tags;
+	}
+
+	public void setTags(String tags)
+	{
+		this.tags = tags;
 	}
 }

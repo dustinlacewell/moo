@@ -31,6 +31,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.grafana.beans.GrafanaNotification;
+import net.rizon.moo.plugin.grafana.beans.Metric;
 import net.rizon.moo.plugin.grafana.conf.GrafanaConfiguration;
 
 @Sharable
@@ -51,8 +52,16 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<GrafanaNotifi
 		{
 			return;
 		}
+		
+		StringBuilder builder = new StringBuilder();
+		for (Metric metric : notification.getEvalMatches())
+		{
+			builder.append(metric.getMetric()).append(" (").append(metric.getValue()).append("), ");
+		}
+		
+		String message = builder.substring(0, builder.length() - 2);
 
-		protocol.privmsg(conf.getReportChannel(), "Grafana: " + notification.getRuleName() + " is now in state " + notification.getState() + " for metric " + notification.getEvalMatches().get(0).getMetric());
+		protocol.privmsg(conf.getReportChannel(), "Grafana: " + notification.getRuleName() + " is now in state " + notification.getState() + " for metric(s): " + message);
 
 		ctx.close();
 	}

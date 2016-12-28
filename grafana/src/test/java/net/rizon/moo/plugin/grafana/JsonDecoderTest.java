@@ -40,20 +40,16 @@ import static org.mockito.Mockito.when;
 public class JsonDecoderTest
 {
 	private static final String NOTIFICATION = "{\n"
-		+ "  \"title\": \"My alert\",\n"
-		+ "  \"ruleId\": 1,\n"
-		+ "  \"ruleName\": \"Load peaking!\",\n"
-		+ "  \"ruleUrl\": \"http://url.to.grafana/db/dashboard/my_dashboard?panelId=2\",\n"
-		+ "  \"state\": \"Alerting\",\n"
-		+ "  \"imageUrl\": \"http://s3.image.url\",\n"
-		+ "  \"message\": \"Load is peaking. Make sure the traffic is real and spin up more webfronts\",\n"
-		+ "  \"evalMatches\": [\n"
-		+ "    {\n"
-		+ "      \"metric\": \"requests\",\n"
-		+ "      \"tags\": {},\n"
-		+ "      \"value\": 122\n"
-		+ "    }\n"
-		+ "  ]\n"
+		+ "	\"evalMatches\": [{\n"
+		+ "		\"value\": 80.98168494963444,\n"
+		+ "		\"metric\": \"uworld.hub (/)\",\n"
+		+ "		\"tags\": null\n"
+		+ "	}],\n"
+		+ "	\"ruleId\": 4,\n"
+		+ "	\"ruleName\": \"High Disk Usage (\\u003e90%)\",\n"
+		+ "	\"ruleUrl\": \"http://grafana/dashboard/db/alerts?fullscreen\\u0026edit\\u0026tab=alert\\u0026panelId=4\",\n"
+		+ "	\"state\": \"alerting\",\n"
+		+ "	\"title\": \"[Alerting] High Disk Usage (\\u003e90%)\"\n"
 		+ "}";
 
 	@Mock
@@ -65,13 +61,13 @@ public class JsonDecoderTest
 		when(request.content()).thenReturn(Unpooled.wrappedBuffer(NOTIFICATION.getBytes()));
 
 		JsonDecoder decoder = new JsonDecoder(GrafanaNotification.class);
-		
+
 		List<Object> objects = new ArrayList<>();
 		decoder.decode(null, request, objects);
-		
+
 		GrafanaNotification notification = (GrafanaNotification) objects.get(0);
 
-		Assert.assertEquals("My alert", notification.getTitle());
+		Assert.assertEquals("[Alerting] High Disk Usage (>90%)", notification.getTitle());
 		Assert.assertEquals(1, notification.getEvalMatches().size());
 	}
 
