@@ -58,10 +58,10 @@ public class HttpServerHandlerTest
 	private GrafanaConfiguration conf;
 
 	@Bind
-	private Provider<GrafanaConfiguration> confProvider = new Provider()
+	private Provider<GrafanaConfiguration> confProvider = new Provider<GrafanaConfiguration>()
 	{
 		@Override
-		public Object get()
+		public GrafanaConfiguration get()
 		{
 			return conf;
 		}
