@@ -22,6 +22,7 @@ public class ProxyscanConfiguration extends Configuration
 
 	/**
 	 * Loads the Proxyscan Configuration settings.
+	 *
 	 * @return Configuration settings.
 	 * @throws Exception Thrown when something goes wrong.
 	 */
@@ -35,7 +36,11 @@ public class ProxyscanConfiguration extends Configuration
 	{
 		server.validate();
 		connect.validate();
-		dronebl.validate();
+
+		if (dronebl != null)
+		{
+			dronebl.validate();
+		}
 
 		Validator.validateHostList("Proxyscan bindipsv4", bindip);
 		Validator.validateHostList("Proxyscan bindipsv6", bindip6);
