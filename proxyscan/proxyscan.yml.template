@@ -31,3 +31,7 @@ channels: ["#kline-spam"]
 ban_message: "Using or hosting open proxies is not permitted, detected %t/%p."
 py_opers: false
 scan_notice: "For network safety, your client is being scanned for open proxies by scanner.rizon.net (%bindip%). This scan will not harm your computer."
+
+dronebl:
+  droneblHost: dronebl.org
+  rpcKey: moo

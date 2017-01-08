@@ -6,6 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
+import io.netty.channel.EventLoopGroup;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.events.EventListener;
 import net.rizon.moo.injectors.logger.LogTypeListener;
@@ -58,5 +59,11 @@ public class MooModule extends AbstractModule
 	IRC provideIRC()
 	{
 		return irc;
+	}
+
+	@Provides
+	EventLoopGroup provideEventLoopGroup()
+	{
+		return moo.getGroup();
 	}
 }

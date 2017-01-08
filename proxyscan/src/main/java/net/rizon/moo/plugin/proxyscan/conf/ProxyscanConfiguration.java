@@ -18,6 +18,7 @@ public class ProxyscanConfiguration extends Configuration
 	private String scan_notice;
 	private boolean py_opers;
 	private String[] channels;
+	private DroneBL dronebl;
 
 	/**
 	 * Loads the Proxyscan Configuration settings.
@@ -34,6 +35,7 @@ public class ProxyscanConfiguration extends Configuration
 	{
 		server.validate();
 		connect.validate();
+		dronebl.validate();
 
 		Validator.validateHostList("Proxyscan bindipsv4", bindip);
 		Validator.validateHostList("Proxyscan bindipsv6", bindip6);
@@ -164,5 +166,15 @@ public class ProxyscanConfiguration extends Configuration
 	public void setChannels(String[] channels)
 	{
 		this.channels = channels;
+	}
+
+	public DroneBL getDronebl()
+	{
+		return dronebl;
+	}
+
+	public void setDronebl(DroneBL dronebl)
+	{
+		this.dronebl = dronebl;
 	}
 }
