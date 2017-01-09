@@ -61,7 +61,6 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject>
 		encoder.addParam("rpckey", config.getDronebl().getRpcKey());
 		encoder.addParam("ip", blacklist.getIp());
 		encoder.addParam("type", "" + blacklist.getReportas());
-		encoder.addParam("comment", blacklist.getComment());
 		encoder.addParam("port", "" + blacklist.getPort());
 
 		URI uriGet = new URI(encoder.toString());
