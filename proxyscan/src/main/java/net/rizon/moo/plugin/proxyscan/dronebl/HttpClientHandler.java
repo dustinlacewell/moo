@@ -57,6 +57,7 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject>
 	public void channelActive(ChannelHandlerContext ctx) throws URISyntaxException
 	{
 		QueryStringEncoder encoder = new QueryStringEncoder(RPC);
+		encoder.addParam("action", "add");
 		encoder.addParam("rpckey", config.getDronebl().getRpcKey());
 		encoder.addParam("ip", blacklist.getIp());
 		encoder.addParam("type", "" + blacklist.getReportas());
