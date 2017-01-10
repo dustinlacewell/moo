@@ -34,6 +34,11 @@ public class DroneBLClient
 {
 	private static final int HTTP_PORT = 80;
 
+	private static final int SOCKS_PROXY = 8;
+	private static final int HTTP_PROXY = 9;
+	private static final int COMPROMISED_ROUTER = 15;
+	private static final int UNKNOWN = 255;
+
 	@Inject
 	private EventLoopGroup group;
 
@@ -57,12 +62,14 @@ public class DroneBLClient
 
 	public static int typeToDroneBL(String type)
 	{
+		if (type.equals("http_auth"))
+			return COMPROMISED_ROUTER;
 		if (type.startsWith("http"))
-			return 9;
+			return HTTP_PROXY;
 		if (type.startsWith("socks"))
-			return 8;
+			return SOCKS_PROXY;
 		if (type.contains("cisco"))
-			return 15;
-		return 255;
+			return COMPROMISED_ROUTER;
+		return UNKNOWN;
 	}
 }
