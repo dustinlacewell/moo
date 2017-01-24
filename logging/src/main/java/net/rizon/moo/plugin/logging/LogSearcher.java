@@ -92,6 +92,6 @@ class LogSearcher extends Thread
 		for (String match : matches)
 			source.notice(match);
 
-		source.reply("Done, " + matches.size() + "/" + nummatches + " shown.");
+		source.reply("Search for \u0002" + search + "\u0002 done, " + matches.size() + "/" + nummatches + " shown.");
 	}
 }
