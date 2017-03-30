@@ -60,7 +60,7 @@ public class EventRegister extends Event implements EventListener
 	@Subscribe
 	public void onPrivmsg(EventPrivmsg evt)
 	{
-		boolean isLogChannel = true;
+		boolean isLogChannel = false;
 
 		if (evt.getChannel() == null)
 		{
