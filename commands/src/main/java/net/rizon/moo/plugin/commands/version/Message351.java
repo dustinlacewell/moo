@@ -28,6 +28,7 @@ public class Message351 extends Message
 	protected static CommandSource command_source;
 	public static Set<String> waiting_for = new HashSet<>();
 	private static Map<Integer, Integer> max_vers = new HashMap<>();
+	private int max_major = 0;
 
 	final class ServerVersion
 	{
@@ -47,6 +48,12 @@ public class Message351 extends Message
 		int release = ver % 100;
 
 		return new ServerVersion(major_version, release);
+	}
+
+	private void updateMaxMajor(int ver)
+	{
+		ServerVersion version = splitVersion(ver);
+		max_major = Math.max(version.major, max_major);
 	}
 
 	private void updateMaxVersion(int ver)
@@ -78,7 +85,7 @@ public class Message351 extends Message
 
 		String color;
 
-		if (rel >= 0 && rel < max_rel - 4)
+		if (version.major < max_major || rel >= 0 && rel < max_rel - 4)
 			color = Message.COLOR_RED;
 		else if (rel >= 0 && rel < max_rel - 1)
 			color = Message.COLOR_YELLOW;
@@ -135,6 +142,7 @@ public class Message351 extends Message
 			{
 				ver_num = Integer.parseInt(ver);
 				updateMaxVersion(ver_num);
+				updateMaxMajor(ver_num);
 			}
 			catch (NumberFormatException ex) { }
 
