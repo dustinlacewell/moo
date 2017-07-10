@@ -1,7 +1,10 @@
 package net.rizon.moo.plugin.commits.api.gitlab;
 
+import java.util.List;
+
 public class ObjectAttributes
 {
+
 	private String updated_at;
 	private String created_at;
 	private String title;
@@ -15,6 +18,9 @@ public class ObjectAttributes
 	private String target_branch;
 	private String iid;
 	private Target target;
+	private String status;
+	private List<String> stages;
+	private int duration;
 
 	public String getUpdatedAt()
 	{
@@ -79,5 +85,20 @@ public class ObjectAttributes
 	public Target getTarget()
 	{
 		return target;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public List<String> getStages()
+	{
+		return stages;
+	}
+
+	public int getDuration()
+	{
+		return duration;
 	}
 }

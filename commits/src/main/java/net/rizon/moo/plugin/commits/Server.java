@@ -16,6 +16,7 @@ import java.util.List;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.plugin.commits.api.gitlab.GitLab;
 import net.rizon.moo.plugin.commits.api.gitlab.ObjectAttributes;
+import net.rizon.moo.plugin.commits.api.gitlab.PipelineStatus;
 import net.rizon.moo.plugin.commits.conf.CommitsConfiguration;
 import org.slf4j.Logger;
 
@@ -116,10 +117,7 @@ class Server extends Thread
 					{
 						GitLab p = new Gson().fromJson(json, GitLab.class);
 
-						if (p.getRepository() == null)
-							continue;
-
-						List<String> channels = conf.getChannelsForRepository(p.getRepository().name);
+						List<String> channels = conf.getChannelsForRepository(p.getProjectName());
 
 						if (p.getObjectKind() != null && p.getObjectKind().equals("issue"))
 						{
@@ -199,33 +197,54 @@ class Server extends Thread
 								protocol.privmsgAll(channels, "\2" + attrs.getTarget().name + "\2:" + " \u001f" + attrs.getUrl() + "\u000f");
 							}
 						}
-						else if (p.getObjectKind() != null && p.getObjectKind().equals("build"))
+						else if (p.getObjectKind() != null && p.getObjectKind().equals("pipeline"))
 						{
-							String status = p.getBuildStatus();
+							PipelineStatus status = p.getPipelineStatus();
+							String statusString;
 
-							if (status.equals("pending"))
+							switch (status)
 							{
-								status = "\00307" + status + "\003";
-							}
-							else if (status.equals("running"))
-							{
-								status = "\00307" + status + "\003";
-							}
-							else if (status.equals("success"))
-							{
-								status = "\00303" + status + "\003";
-							}
-							else
-							{
-								// Failure
-								status = "\00304" + status + "\003";
+								case PENDING:
+									statusString = "\00307" + status + "\003";
+									break;
+								case RUNNING:
+									statusString = "\00311" + status + "\003";
+									break;
+								case SUCCESS:
+									statusString = "\00303" + status + "\003";
+									break;
+								case FAILED:
+									statusString = "\00304" + status + "\003";
+									break;
+								case CREATED:
+								case SKIPPED:
+								default:
+									statusString = "\00314" + status + "\003";
+									break;
+
 							}
 
-							protocol.privmsgAll(channels, "\2" + p.getProjectName() + "\2: " + p.getBuildName() + "[" + p.getBuildStage() + "]: " + status + " for commit \00307" + p.getCommit().getShortSha() + "\003 by \00303" + p.getCommit().getAuthor() + "\003");
-
-							if (p.getBuildStatus().equals("pending"))
+							if (status == PipelineStatus.SUCCESS)
 							{
-								protocol.privmsgAll(channels, "\2" + p.getProjectName() + "\2: " + p.getRepository().homepage + "/builds/" + p.getBuildId());
+								int duration = p.getObjectAttributes().getDuration();
+								// Print out build duration
+								protocol.privmsgAll(channels,
+										String.format("\2%s\2: pipeline %s for commit \00307%s\003 by \00303%s\003 took %d second%s",
+												p.getProject().getName(),
+												statusString,
+												p.getCommit().getShortSha(),
+												p.getCommit().getAuthor(),
+												duration,
+												duration == 1 ? "" : "s"));
+							}
+							else if (status == PipelineStatus.FAILED || status == PipelineStatus.SKIPPED)
+							{
+								protocol.privmsgAll(channels,
+										String.format("\2%s\2: pipeline %s for commit \00307%s\003 by \00303%s\003",
+												p.getProject().getName(),
+												statusString,
+												p.getCommit().getShortSha(),
+												p.getCommit().getAuthor()));
 							}
 						}
 						else
