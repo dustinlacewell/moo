@@ -237,7 +237,7 @@ class Server extends Thread
 												duration,
 												duration == 1 ? "" : "s"));
 							}
-							else
+							else if (status == PipelineStatus.FAILED || status == PipelineStatus.SKIPPED)
 							{
 								protocol.privmsgAll(channels,
 										String.format("\2%s\2: pipeline %s for commit \00307%s\003 by \00303%s\003",
