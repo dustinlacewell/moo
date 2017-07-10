@@ -2,22 +2,22 @@ package net.rizon.moo.plugin.commits.api.gitlab;
 
 public class Commit implements net.rizon.moo.plugin.commits.Commit
 {
+
 	private String message;
 	private String id;
 	private Author author;
 	private String author_name;
 	private String author_email;
 	private String url;
-	private String sha;
 
 	public String getSha()
 	{
-		return sha;
+		return id;
 	}
 
 	public String getShortSha()
 	{
-		return sha.substring(0, 7);
+		return id.substring(0, 7);
 	}
 
 	@Override

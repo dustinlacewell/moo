@@ -23,10 +23,49 @@ public class GitLab implements Push
 	private String build_status;
 	private String build_stage;
 
+	private Project project;
+	private List<Build> builds;
+
 	@Override
 	public String getProjectName()
 	{
-		return this.repository.name;
+		// @NOTE(Orillion): Apparently having a consistent payload is hard for
+		// gitlab, so we need to grab the name from 3 different places.
+		if (this.repository != null)
+		{
+			/*
+			For the following events:
+			- PUSH
+			- TAG
+			- ISSUE
+			- COMMENT
+			- BUILD
+			 */
+			return this.repository.name;
+		}
+		else if (this.project != null)
+		{
+			/*
+			For the following events:
+			- PUSH
+			- TAG
+			- ISSUE
+			- COMMENT
+			- WIKI
+			- PIPELINE
+			 */
+			return this.project.getName();
+		}
+		else if (this.object_attributes != null && this.object_attributes.getTarget() != null)
+		{
+			/*
+			For the following events:
+			- MERGE
+			 */
+			return this.object_attributes.getTarget().name;
+		}
+
+		return null;
 	}
 
 	public Repository getRepository()
@@ -106,5 +145,47 @@ public class GitLab implements Push
 	public String getBuildId()
 	{
 		return build_id;
+	}
+
+	public Project getProject()
+	{
+		return project;
+	}
+
+	public List<Build> getBuilds()
+	{
+		return builds;
+	}
+
+	public PipelineStatus getPipelineStatus()
+	{
+		String status = this.getObjectAttributes().getStatus();
+
+		if ("success".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.SUCCESS;
+		}
+		else if ("pending".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.PENDING;
+		}
+		else if ("created".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.CREATED;
+		}
+		else if ("failed".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.FAILED;
+		}
+		else if ("running".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.RUNNING;
+		}
+		else if ("skipped".equalsIgnoreCase(status))
+		{
+			return PipelineStatus.SKIPPED;
+		}
+
+		return PipelineStatus.UNKNOWN;
 	}
 }
