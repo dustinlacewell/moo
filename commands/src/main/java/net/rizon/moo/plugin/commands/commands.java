@@ -1,6 +1,9 @@
 package net.rizon.moo.plugin.commands;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import net.rizon.moo.events.OnReload;
+import net.rizon.moo.plugin.commands.conf.CommandsConfiguration;
 import net.rizon.moo.plugin.commands.why.CommandWhy;
 import net.rizon.moo.plugin.commands.version.CommandVersions;
 import com.google.inject.multibindings.Multibinder;
@@ -35,9 +38,15 @@ import net.rizon.moo.plugin.commands.version.Message351;
 import net.rizon.moo.plugin.commands.why.Message216;
 import net.rizon.moo.plugin.commands.why.Message219Why;
 import net.rizon.moo.plugin.commands.why.Message225;
+import org.slf4j.Logger;
 
 public class commands extends Plugin
 {
+	public static CommandsConfiguration conf;
+
+	@Inject
+	private static Logger logger;
+
 	@Inject
 	private CommandOline oline;
 
@@ -76,9 +85,10 @@ public class commands extends Plugin
 
 	private ScheduledFuture checkTimesTimerFuture;
 	
-	public commands()
+	public commands() throws Exception
 	{
 		super("Administation Commands", "Common IRC administration commands");
+		conf = CommandsConfiguration.load();
 	}
 
 	@Override
@@ -103,6 +113,8 @@ public class commands extends Plugin
 	protected void configure()
 	{
 		bind(commands.class).toInstance(this);
+
+		bind(CommandsConfiguration.class).toInstance(conf);
 
 		bind(CheckTimesTimer.class);
 
@@ -143,5 +155,20 @@ public class commands extends Plugin
 
 		commandBinder.addBinding().to(CommandUptime.class);
 		messageBinder.addBinding().to(Message242.class);
+	}
+
+	@Subscribe
+	public void onReload(OnReload evt)
+	{
+		try
+		{
+			conf = CommandsConfiguration.load();
+		}
+		catch (Exception ex)
+		{
+			evt.getSource().reply("Error reloading commands configuration: " + ex.getMessage());
+
+			logger.warn("Unable to reload commands configuration", ex);
+		}
 	}
 }
