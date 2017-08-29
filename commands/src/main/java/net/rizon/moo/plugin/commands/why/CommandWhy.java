@@ -6,16 +6,14 @@ import java.net.UnknownHostException;
 
 import net.rizon.moo.Command;
 import net.rizon.moo.CommandSource;
-import net.rizon.moo.Moo;
 import net.rizon.moo.conf.Config;
 import net.rizon.moo.irc.Protocol;
 import net.rizon.moo.irc.Server;
 import net.rizon.moo.irc.ServerManager;
+import net.rizon.moo.plugin.commands.commands;
 
 class DNSBLChecker extends Thread
 {
-	private static final String DNSBLs[] = { "rbl.efnetrbl.org", "dnsbl.dronebl.org" };
-
 	private CommandSource source;
 
 	private String ip;
@@ -35,7 +33,7 @@ class DNSBLChecker extends Thread
 
 		String reverse_ip = octets[3] + "." + octets[2] + "." + octets[1] + "." + octets[0];
 
-		for (final String dnsbl : DNSBLs)
+		for (final String dnsbl : commands.conf.why.servers)
 		{
 			String lookup_addr = reverse_ip + "." + dnsbl;
 
@@ -58,7 +56,7 @@ public class CommandWhy extends Command
 
 	@Inject
 	private Protocol protocol;
-	
+
 	protected static CommandSource command_source;
 	public static String host_ip = "", host_host = "";
 	public static int requested = 0;
