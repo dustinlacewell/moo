@@ -247,6 +247,12 @@ class Server extends Thread
 												p.getCommit().getAuthor()));
 							}
 						}
+						else if (p.getObjectKind() != null && p.getObjectKind().equals("build"))
+						{
+							// @NOTE(Orillion): Not actually an unknown event,
+							// just an event we don't care about. Do nothing,
+							// this calmes the mink.
+						}
 						else
 						{
 							logger.warn("Unknown GitLab event, payload was: {}", json);
