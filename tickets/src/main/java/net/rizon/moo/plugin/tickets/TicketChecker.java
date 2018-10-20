@@ -112,7 +112,7 @@ class TicketChecker extends Thread
 
 				String type = wt.getHostNumber() > 0 ? "SLI" : "Ban";
 
-				message = "#" + ticket + ": " + message + " (" + wt.getAdded() + ") :: " + type + " :: " + wt.getIp() + " :: " + wt.getContactName() + " :: http://abuse.rizon.net/" + ticket;
+				message = "#" + ticket + ": " + message + " (" + wt.getAdded() + ") :: " + type + " :: " + wt.getIp() + " :: " + wt.getContactName() + " :: https://abuse.rizon.net/" + ticket;
 
 				if (!firstRun)
 					protocol.privmsgAll(config.kline_channels, message);
