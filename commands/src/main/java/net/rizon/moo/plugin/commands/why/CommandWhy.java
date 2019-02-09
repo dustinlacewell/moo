@@ -39,8 +39,11 @@ class DNSBLChecker extends Thread
 
 			try
 			{
-				InetAddress.getAllByName(lookup_addr);
-				source.reply(this.ip + " is listed in " + dnsbl);
+				InetAddress[] res = InetAddress.getAllByName(lookup_addr);
+				// We're only interested in the first result
+				String type = res[0].getHostAddress();
+
+				source.reply(this.ip + " is listed in " + dnsbl + " as type " + type);
 			}
 			catch (UnknownHostException ex)
 			{
