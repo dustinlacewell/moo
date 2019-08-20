@@ -48,7 +48,7 @@ staff_channels: ["#opers", "#kline"]
 oper_channels: ["#so"]
 
 # Comma separated list of admin channels
-admin_channels: ["#admin"
+admin_channels: ["#admin"]
 
 # Comma separated list of services log channels
 log_channels: ["#services"]
