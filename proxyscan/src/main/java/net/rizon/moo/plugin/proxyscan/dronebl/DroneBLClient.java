@@ -32,7 +32,7 @@ import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 
 public class DroneBLClient
 {
-	private static final int HTTP_PORT = 80;
+	private static final int HTTP_PORT = 443;
 
 	private static final int SOCKS_PROXY = 8;
 	private static final int HTTP_PROXY = 9;

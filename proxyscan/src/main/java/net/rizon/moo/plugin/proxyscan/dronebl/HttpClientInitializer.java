@@ -28,6 +28,10 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import javax.net.ssl.SSLException;
 import net.rizon.moo.plugin.proxyscan.conf.ProxyscanConfiguration;
 
 public class HttpClientInitializer extends ChannelInitializer<SocketChannel>
@@ -42,10 +46,15 @@ public class HttpClientInitializer extends ChannelInitializer<SocketChannel>
 	}
 
 	@Override
-	public void initChannel(SocketChannel ch)
+	public void initChannel(SocketChannel ch) throws SSLException
 	{
 		ChannelPipeline pipeline = ch.pipeline();
 
+		SslContext sslCtx = SslContextBuilder.forClient()
+			.trustManager(InsecureTrustManagerFactory.INSTANCE)
+			.build();
+
+		pipeline.addLast("ssl", sslCtx.newHandler(ch.alloc()));
 		pipeline.addLast("codec", new HttpClientCodec());
 		pipeline.addLast("handler", new HttpClientHandler(config, blacklist));
 	}
