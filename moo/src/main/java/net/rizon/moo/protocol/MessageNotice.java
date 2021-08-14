@@ -21,10 +21,10 @@ import net.rizon.moo.irc.ServerManager;
 public class MessageNotice extends Message
 {
 	private static final Pattern connectPattern = Pattern.compile(".* Client connecting.*: ([^ ]*) \\(~?([^@]*).*?\\) \\[([AaBbCcDdEeFf0-9.:]*)\\] (?:\\{[^}]*\\} )?\\[(.*)\\]");
-	
+
 	@Inject
 	private Protocol protocol;
-	
+
 	@Inject
 	private EventBus eventBus;
 
@@ -42,13 +42,14 @@ public class MessageNotice extends Message
 	@Override
 	public void run(IRCMessage message)
 	{
+		System.out.print(message.toString());
 		if (message.getParams().length < 2)
 			return;
 
 		String target = message.getParams()[0], text = message.getParams()[1];
 
 		eventBus.post(new EventNotice(message.getSource(), target, text));
-		
+
 		process(message.getSource(), text);
 
 		Matcher m = connectPattern.matcher(text);
@@ -129,19 +130,24 @@ public class MessageNotice extends Message
 
 				eventBus.post(new OnServerLink(serv, to));
 			}
-			else if (message.contains("split from"))
+			else if (message.contains("Netsplit") && message.contains(" <-> "))
 			{
 				String[] tokens = message.split(" ");
+				String servHost = tokens[6];
+				String fromHost = tokens[8];
 
-				Server serv = serverManager.findServerAbsolute(tokens[4]), from = serverManager.findServerAbsolute(tokens[7]);
+				System.out.print("servHost: " + servHost + "\n");
+				System.out.print("fromHost: " + fromHost + "\n");
+				
+				Server serv = serverManager.findServerAbsolute(servHost), from = serverManager.findServerAbsolute(fromHost);
 				if (serv == null)
 				{
-					serv = new Server(tokens[4]);
+					serv = new Server(servHost);
 					serverManager.insertServer(serv);
 				}
 				if (from == null)
 				{
-					from = new Server(tokens[7]);
+					from = new Server(fromHost);
 					serverManager.insertServer(from);
 				}
 
